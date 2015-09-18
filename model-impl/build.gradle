@@ -1,0 +1,7 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+dependencies {
+    compile 'org.apache.commons:commons-lang3:3.4'
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+}
