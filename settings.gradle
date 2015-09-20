@@ -1,1 +1,1 @@
-include ':model-impl'
+include ':model-impl', ':version-api'

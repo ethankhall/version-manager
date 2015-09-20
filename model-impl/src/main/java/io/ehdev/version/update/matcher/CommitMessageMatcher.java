@@ -1,4 +1,4 @@
-package io.ehdev.version.update.message;
+package io.ehdev.version.update.matcher;
 
 public interface CommitMessageMatcher {
 

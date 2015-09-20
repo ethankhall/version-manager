@@ -1,4 +1,4 @@
-package io.ehdev.version.model;
+package io.ehdev.version.commit;
 
 public enum VersionGroup {
     MAJOR(0),

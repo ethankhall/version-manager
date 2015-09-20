@@ -1,8 +1,9 @@
 package io.ehdev.version.update;
 
-import io.ehdev.version.model.CommitVersion;
-
+import io.ehdev.version.commit.CommitDetails;
+import io.ehdev.version.commit.RepositoryCommit;
 
 public interface VersionBumper {
-    CommitVersion bump(CommitVersion parent, CommitDetails commitDetails);
+    NextVersion createNextVersion(RepositoryCommit parent, CommitDetails commitDetails);
+    String name();
 }

@@ -1,6 +1,6 @@
-package io.ehdev.version.update.message;
+package io.ehdev.version.update.matcher;
 
-import io.ehdev.version.model.VersionGroup;
+import io.ehdev.version.commit.VersionGroup;
 import org.apache.commons.lang3.StringUtils;
 
 

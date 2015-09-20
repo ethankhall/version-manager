@@ -1,56 +1,66 @@
-package io.ehdev.version.model;
+package io.ehdev.version.commit.internal;
+
+import io.ehdev.version.commit.CommitVersion;
+import io.ehdev.version.commit.VersionGroup;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Objects;
-import org.apache.commons.lang3.StringUtils;
 
 
-public class CommitVersion implements Comparable<CommitVersion> {
+public class DefaultCommitVersion implements CommitVersion {
     final int[] versionList;
     final String postFix;
 
-    private CommitVersion(int[] versionList, String postFix) {
+    private DefaultCommitVersion(int[] versionList, String postFix) {
         this.versionList = Arrays.copyOf(versionList, 4);
         this.postFix = postFix;
     }
 
-    public CommitVersion(int major, int minor, int patch, int build, String postFix) {
+    public DefaultCommitVersion(int major, int minor, int patch, int build, String postFix) {
         this(new int[]{major, minor, patch, build}, postFix);
     }
 
-    public CommitVersion(int major, int minor, int patch, int build) {
+    public DefaultCommitVersion(int major, int minor, int patch, int build) {
         this(new int[]{major, minor, patch, build}, null);
     }
 
-    public CommitVersion(int major, int minor, int patch) {
+    public DefaultCommitVersion(int major, int minor, int patch) {
         this(major, minor, patch, 0, null);
     }
 
+    @Override
     public int getMajor() {
         return getGroup(VersionGroup.MAJOR);
     }
 
+    @Override
     public int getMinor() {
         return getGroup(VersionGroup.MINOR);
     }
 
+    @Override
     public int getPatch() {
         return getGroup(VersionGroup.PATCH);
     }
 
+    @Override
     public int getBuild() {
         return getGroup(VersionGroup.BUILD);
     }
 
+    @Override
     public String getPostFix() {
         return postFix;
     }
 
+    @Override
     public int getGroup(VersionGroup versionGroup) {
-        return versionList[versionGroup.groupNumber];
+        return versionList[versionGroup.getGroupNumber()];
     }
 
-    protected CommitVersion bump(VersionGroup versionGroup) {
+    @Override
+    public CommitVersion bump(VersionGroup versionGroup) {
         int[] nextVersionList = Arrays.copyOf(versionList, versionList.length);
         //Set the lower digits to 0
         for (int i = versionGroup.getGroupNumber() + 1; i < versionList.length; i++) {
@@ -60,32 +70,48 @@ public class CommitVersion implements Comparable<CommitVersion> {
         //Bump the version
         nextVersionList[versionGroup.getGroupNumber()]++;
 
-        return new CommitVersion(nextVersionList, null);
+        return new DefaultCommitVersion(nextVersionList, null);
     }
 
+    @Override
     public CommitVersion bumpBuild() {
         return bump(VersionGroup.BUILD);
     }
 
+    @Override
     public CommitVersion bumpPatch() {
 
         return bump(VersionGroup.PATCH);
     }
 
+    @Override
     public CommitVersion bumpMinor() {
         return bump(VersionGroup.MINOR);
     }
 
+    @Override
     public CommitVersion bumpMajor() {
         return bump(VersionGroup.MAJOR);
     }
 
+    @Override
     public CommitVersion withPostfix(String postfix) {
-        return new CommitVersion(getMajor(), getMinor(), getPatch(), getBuild(), postfix);
+        return new DefaultCommitVersion(getMajor(), getMinor(), getPatch(), getBuild(), postfix);
     }
 
+    @Override
     public CommitVersion asSnapshot() {
         return withPostfix("SNAPSHOT");
+    }
+
+    @Override
+    public String toVersionString() {
+        String stringPostfix = (postFix != null ? '-' + postFix : "");
+        if (versionList[VersionGroup.BUILD.getGroupNumber()] == 0) {
+            return String.format("%d.%d.%d%s", getMajor(), getMinor(), getPatch(), stringPostfix);
+        } else {
+            return String.format("%d.%d.%d.%d%s", getMajor(), getMinor(), getPatch(), getBuild(), stringPostfix);
+        }
     }
 
     public static CommitVersion parse(String version) {
@@ -103,7 +129,7 @@ public class CommitVersion implements Comparable<CommitVersion> {
             versionList[i] = Integer.parseInt(splitVersion[i]);
         }
 
-        return new CommitVersion(versionList, postfix);
+        return new DefaultCommitVersion(versionList, postfix);
     }
 
     @Override
@@ -114,7 +140,7 @@ public class CommitVersion implements Comparable<CommitVersion> {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        CommitVersion that = (CommitVersion) o;
+        DefaultCommitVersion that = (DefaultCommitVersion) o;
         return Arrays.equals(versionList, that.versionList) && Objects.equals(postFix, that.postFix);
     }
 
@@ -125,12 +151,7 @@ public class CommitVersion implements Comparable<CommitVersion> {
 
     @Override
     public String toString() {
-        String stringPostfix = (postFix != null ? '-' + postFix : "");
-        if (versionList[VersionGroup.BUILD.groupNumber] == 0) {
-            return String.format("%d.%d.%d%s", getMajor(), getMinor(), getPatch(), stringPostfix);
-        } else {
-            return String.format("%d.%d.%d.%d%s", getMajor(), getMinor(), getPatch(), getBuild(), stringPostfix);
-        }
+        return toVersionString();
     }
 
     @Override

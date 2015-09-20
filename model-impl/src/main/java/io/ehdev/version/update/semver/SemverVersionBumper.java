@@ -1,0 +1,57 @@
+package io.ehdev.version.update.semver;
+
+import io.ehdev.version.commit.CommitDetails;
+import io.ehdev.version.commit.CommitVersion;
+import io.ehdev.version.commit.RepositoryCommit;
+import io.ehdev.version.commit.VersionGroup;
+import io.ehdev.version.update.NextVersion;
+import io.ehdev.version.update.VersionBumper;
+import io.ehdev.version.update.DefaultNextVersion;
+import io.ehdev.version.update.matcher.SquareBracketMatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class SemverVersionBumper implements VersionBumper {
+
+    private static final Logger log = LoggerFactory.getLogger(SemverVersionBumper.class);
+
+    @Override
+    public NextVersion createNextVersion(RepositoryCommit parent, CommitDetails commitDetails) {
+        if(null != parent.getNextCommit() && null != parent.getBugfixCommit()) {
+            throw new UnableToBumpVersionDueToFullCommitException(parent.getCommitId());
+        }
+
+        VersionGroup versionGroup = findVersionGroupForBump(commitDetails);
+        CommitVersion nextVersion = parent.getVersion().bump(versionGroup);
+        NextVersion.Type commitType = NextVersion.Type.NEXT;
+        if(null != parent.getNextCommit() && versionGroup != VersionGroup.BUILD) {
+            log.info("Commit {}, has next commit. Forcing to bugfix.", parent.getCommitId());
+            nextVersion = parent.getVersion().bump(VersionGroup.BUILD);
+            commitType = NextVersion.Type.BUGFIX;
+        }
+
+        log.info("Commit {} will be assigned version {}", commitDetails.getCommitId(), nextVersion.toString());
+
+        return new DefaultNextVersion(nextVersion, commitType);
+    }
+
+    @Override
+    public String name() {
+        return SemverVersionBumper.class.getSimpleName();
+    }
+
+    VersionGroup findVersionGroupForBump(CommitDetails commitDetails) {
+        for (VersionGroup versionGroup : VersionGroup.values()) {
+            if(commitDetails.messageContains(new SquareBracketMatcher(versionGroup))) {
+                return versionGroup;
+            }
+        }
+        return VersionGroup.PATCH;
+    }
+
+    public static class UnableToBumpVersionDueToFullCommitException extends RuntimeException {
+        public UnableToBumpVersionDueToFullCommitException(String commitId) {
+            super("Unable to create commit for commit " + commitId);
+        }
+    }
+}

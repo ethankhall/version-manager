@@ -2,6 +2,15 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 
 dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.12'
+    compile 'org.springframework:spring-context:4.2.1.RELEASE'
     compile 'org.apache.commons:commons-lang3:3.4'
+    compile 'org.springframework.data:spring-data-jpa:1.9.0.RELEASE'
+    compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
+    compile 'org.hibernate:hibernate-validator:5.2.1.Final'
+    compile 'javax.transaction:javax.transaction-api:1.2'
+    compile 'javax.el:javax.el-api:3.0.0'
+
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    testCompile 'org.springframework:spring-test:4.2.1.RELEASE'
 }
