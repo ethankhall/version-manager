@@ -6,9 +6,10 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Table(
-    uniqueConstraints = @UniqueConstraint(columnNames = {"commitId", "scmMetaData"})
+    uniqueConstraints = @UniqueConstraint(columnNames = {"commit_id", "scm_meta_data"})
 )
 @Entity
 public class RepositoryCommitModel implements RepositoryCommit {
@@ -17,14 +18,17 @@ public class RepositoryCommitModel implements RepositoryCommit {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column(name = "commitId", length = 40)
+    @Column(name = "commit_id", length = 40)
     String commitId;
 
     @Convert(converter = CommitVersionConverter.class)
     @Column(name = "version", length = 128)
     CommitVersion version;
 
-    @JoinColumn(name = "scmMetaData")
+    @Column(name = "created_at")
+    LocalDateTime createdAt;
+
+    @JoinColumn(name = "scm_meta_data")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     ScmMetaDataModel scmMetaDataModel;
 
@@ -46,6 +50,11 @@ public class RepositoryCommitModel implements RepositoryCommit {
 
     public RepositoryCommitModel(String commitId, CommitVersion version) {
         this(commitId, version, null, null);
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
     }
 
     public String getCommitId() {
@@ -86,6 +95,10 @@ public class RepositoryCommitModel implements RepositoryCommit {
 
     public void setBugfixCommit(RepositoryCommitModel bugfixCommit) {
         this.bugfixCommit = bugfixCommit;
+    }
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
     }
 
     @Override
