@@ -30,7 +30,7 @@ public class RepositoryCommitBuilder {
         return this;
     }
 
-    public RepositoryCommit build() {
+    public RepositoryCommitModel build() {
         if (StringUtils.isBlank(repoName) || StringUtils.isBlank(commitId) || null == version) {
             throw new RuntimeException("Unable to build repository version without name, commit, and version");
         }

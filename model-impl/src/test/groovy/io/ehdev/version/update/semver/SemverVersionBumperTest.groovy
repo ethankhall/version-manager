@@ -17,7 +17,7 @@ class SemverVersionBumperTest extends Specification {
     @Unroll
     def 'when claim is called, then \'#commitMessage\' will be of type #type'() {
         when:
-        def details = new DefaultCommitDetails(commitMessage, null, null)
+        def details = new DefaultCommitDetails(commitMessage, null, null, null)
 
         then:
         semverBumper.findVersionGroupForBump(details) == type
@@ -33,7 +33,7 @@ class SemverVersionBumperTest extends Specification {
     def 'when there is no next version, then it will take the next location'() {
         setup:
         def parent = createParent()
-        def details = new DefaultCommitDetails('this is a normal commit', 'as234', 'foo')
+        def details = new DefaultCommitDetails('this is a normal commit', 'as234', 'foo', null)
 
         when:
         def nextVersion = semverBumper.createNextVersion(parent, details)
@@ -46,7 +46,7 @@ class SemverVersionBumperTest extends Specification {
     def 'when there is a next version, then it will take the bugfix location'() {
         setup:
         def parent = createParent(true)
-        def details = new DefaultCommitDetails('this is a normal commit', 'as234', 'foo')
+        def details = new DefaultCommitDetails('this is a normal commit', 'as234', 'foo', null)
 
         when:
         def nextVersion = semverBumper.createNextVersion(parent, details)
@@ -59,7 +59,7 @@ class SemverVersionBumperTest extends Specification {
     def 'when there next and bugfix are taken, it will throw'() {
         setup:
         def parent = createParent(true, true)
-        def details = new DefaultCommitDetails('this is a normal commit', 'as234', 'foo')
+        def details = new DefaultCommitDetails('this is a normal commit', 'as234', 'foo', null)
 
         when:
         semverBumper.createNextVersion(parent, details)
