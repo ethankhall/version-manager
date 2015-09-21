@@ -1,16 +1,15 @@
 package io.ehdev.version.service;
 
 import io.ehdev.version.commit.CommitVersion;
+import io.ehdev.version.commit.RepositoryCommit;
 import io.ehdev.version.commit.model.RepositoryCommitModel;
 import io.ehdev.version.manager.VersionBumperManager;
 import io.ehdev.version.manager.VersionManager;
 import io.ehdev.version.repository.CommitModelRepository;
+import io.ehdev.version.service.model.VersionCreation;
 import io.ehdev.version.service.model.VersionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 
@@ -36,5 +35,11 @@ public class VersionService {
 
         CommitVersion buildVersion = versionBumperManager.findVersionBumper(parentCommit).createBuildVersion(parentCommit);
         return new VersionResponse(repoId, buildVersion);
+    }
+
+    @RequestMapping(method = RequestMethod.POST)
+    VersionResponse createNewCommitRevision(@RequestBody VersionCreation newVersion) {
+        RepositoryCommit repositoryCommit = versionManager.claimVersion(newVersion.toCommitDetails());
+        return new VersionResponse(newVersion.getRepoId(), repositoryCommit.getVersion());
     }
 }
