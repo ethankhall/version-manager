@@ -24,13 +24,20 @@ public class SemverVersionBumper implements VersionBumper {
         }
 
         VersionGroup versionGroup = findVersionGroupForBump(commitDetails);
-        CommitVersion nextVersion = parent.getVersion().bump(versionGroup);
-        NextVersion.Type commitType = NextVersion.Type.NEXT;
+        CommitVersion nextVersion;
+        NextVersion.Type commitType;
         if(null != parent.getNextCommit() && versionGroup != VersionGroup.BUILD) {
             log.info("Commit {}, has next commit. Forcing to bugfix.", parent.getCommitId());
-            nextVersion = parent.getVersion().bump(VersionGroup.BUILD);
+            versionGroup = VersionGroup.BUILD;
             commitType = NextVersion.Type.BUGFIX;
+        } else if (null == versionGroup && parent.getVersion().getBuild() != 0) {
+            commitType = NextVersion.Type.BUGFIX;
+            versionGroup = VersionGroup.BUILD;
+        } else {
+            versionGroup = VersionGroup.PATCH;
+            commitType = NextVersion.Type.NEXT;
         }
+        nextVersion = parent.getVersion().bump(versionGroup);
 
         log.info("Commit {} will be assigned version {}", commitDetails.getCommitId(), nextVersion.toString());
 
@@ -57,7 +64,7 @@ public class SemverVersionBumper implements VersionBumper {
                 return versionGroup;
             }
         }
-        return VersionGroup.PATCH;
+        return null;
     }
 
     public static class UnableToBumpVersionDueToFullCommitException extends RuntimeException {

@@ -1,7 +1,7 @@
 package io.ehdev.version.service
-
 import io.ehdev.version.IntegrationTestConfiguration
 import io.ehdev.version.TestDataLoader
+import io.ehdev.version.service.model.VersionCreation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.test.annotation.Rollback
@@ -40,5 +40,37 @@ class VersionServiceIntegrationTest extends Specification {
         TestDataLoader.PARENT_COMMIT_ID      | 'next'        | '1.2.4-SNAPSHOT'
         TestDataLoader.CHILD_COMMIT_ID       | 'next'        | '1.2.5-SNAPSHOT'
         TestDataLoader.BUGFIX_COMMIT_ID      | 'build'       | '1.2.3.2-SNAPSHOT'
+    }
+
+    def 'will claim good versions'() {
+        setup:
+        testDataLoader.loadData()
+
+        when:
+        def creation = new VersionCreation()
+        creation.setParentCommitId(TestDataLoader.PARENT_COMMIT_ID)
+        creation.setRepoId('next')
+        creation.setCommitMessage('normal message')
+        def commits = (0..9).collect {
+            String newCommitId = 'thisCommit' + it
+            creation.setCommitId(newCommitId)
+            def revision = versionService.createNewCommitRevision(creation)
+            creation.setParentCommitId(newCommitId)
+            return revision
+        }
+
+        then:
+        commits.size() == 10
+        (0..9).each {
+            assert commits[it].getVersionString() == '1.2.3.' + (it + 1)
+        }
+
+        when:
+        creation.setCommitId('new bump')
+        creation.setCommitMessage('this message has [bump minor] in it')
+        def revision = versionService.createNewCommitRevision(creation)
+
+        then:
+        revision.getVersionString() == '1.2.4'
     }
 }

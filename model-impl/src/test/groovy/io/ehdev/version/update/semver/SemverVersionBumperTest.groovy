@@ -26,8 +26,8 @@ class SemverVersionBumperTest extends Specification {
         commitMessage         | type
         '[bump major]\n\nfoo' | VersionGroup.MAJOR
         '[bump minor]'        | VersionGroup.MINOR
-        'this is a commit'    | VersionGroup.PATCH
         '[bump build]'        | VersionGroup.BUILD
+        'this is a commit'    | null
     }
 
     def 'when there is no next version, then it will take the next location'() {
