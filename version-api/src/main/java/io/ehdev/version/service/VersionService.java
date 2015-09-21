@@ -6,6 +6,7 @@ import io.ehdev.version.commit.model.RepositoryCommitModel;
 import io.ehdev.version.manager.VersionBumperManager;
 import io.ehdev.version.manager.VersionManager;
 import io.ehdev.version.repository.CommitModelRepository;
+import io.ehdev.version.service.exception.VersionNotFoundException;
 import io.ehdev.version.service.model.VersionCreation;
 import io.ehdev.version.service.model.VersionResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,7 +15,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.transaction.Transactional;
 
 @Transactional
-@RestController("/api/version")
+@RestController
+@RequestMapping("/api/version")
 public class VersionService {
 
     @Autowired

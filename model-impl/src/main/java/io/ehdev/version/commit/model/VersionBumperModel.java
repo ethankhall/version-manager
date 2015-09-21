@@ -5,6 +5,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
 
+@Table(
+    uniqueConstraints = {@UniqueConstraint(columnNames = "bumper_name")}
+)
 @Entity
 public class VersionBumperModel {
 
@@ -14,7 +17,7 @@ public class VersionBumperModel {
 
     @NotBlank
     @NotEmpty
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true, name = "bumper_name")
     private String bumperName;
 
     public String getBumperName() {
