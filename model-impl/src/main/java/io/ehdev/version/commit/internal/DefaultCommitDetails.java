@@ -8,13 +8,13 @@ public class DefaultCommitDetails implements CommitDetails {
     private final String message;
     private final String commitSha;
     private final String parentCommit;
-    private final String scmRepo;
+    private final String scmRepoId;
 
-    public DefaultCommitDetails(String message, String commitSha, String parentCommit, String scmRepo) {
+    public DefaultCommitDetails(String message, String commitSha, String parentCommit, String scmRepoId) {
         this.message = message;
         this.commitSha = commitSha;
         this.parentCommit = parentCommit;
-        this.scmRepo = scmRepo;
+        this.scmRepoId = scmRepoId;
     }
 
     @Override
@@ -32,7 +32,7 @@ public class DefaultCommitDetails implements CommitDetails {
     }
 
     @Override
-    public String getScmRepository() {
-        return scmRepo;
+    public String getScmRepositoryId() {
+        return scmRepoId;
     }
 }

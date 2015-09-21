@@ -10,7 +10,9 @@ import io.ehdev.version.update.DefaultNextVersion;
 import io.ehdev.version.update.matcher.SquareBracketMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
+@Service
 public class SemverVersionBumper implements VersionBumper {
 
     private static final Logger log = LoggerFactory.getLogger(SemverVersionBumper.class);
@@ -33,6 +35,15 @@ public class SemverVersionBumper implements VersionBumper {
         log.info("Commit {} will be assigned version {}", commitDetails.getCommitId(), nextVersion.toString());
 
         return new DefaultNextVersion(nextVersion, commitType);
+    }
+
+    @Override
+    public CommitVersion createBuildVersion(RepositoryCommit parentCommit) {
+        if(0 != parentCommit.getVersion().getBuild()) {
+            return parentCommit.getVersion().bump(VersionGroup.BUILD).asSnapshot();
+        } else {
+            return parentCommit.getVersion().bump(VersionGroup.PATCH).asSnapshot();
+        }
     }
 
     @Override

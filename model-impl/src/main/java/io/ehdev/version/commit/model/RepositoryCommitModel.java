@@ -4,6 +4,7 @@ import io.ehdev.version.commit.CommitVersion;
 import io.ehdev.version.commit.RepositoryCommit;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -25,11 +26,12 @@ public class RepositoryCommitModel implements RepositoryCommit {
     @Column(name = "version", length = 128)
     CommitVersion version;
 
+    @CreatedDate
     @Column(name = "created_at")
     LocalDateTime createdAt;
 
     @JoinColumn(name = "scm_meta_data")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(fetch = FetchType.EAGER, optional = false)
     ScmMetaDataModel scmMetaDataModel;
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -50,11 +52,6 @@ public class RepositoryCommitModel implements RepositoryCommit {
 
     public RepositoryCommitModel(String commitId, CommitVersion version) {
         this(commitId, version, null, null);
-    }
-
-    @PrePersist
-    protected void onCreate() {
-        createdAt = LocalDateTime.now();
     }
 
     public String getCommitId() {

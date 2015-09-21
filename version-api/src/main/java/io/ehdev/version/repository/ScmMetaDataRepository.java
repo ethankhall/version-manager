@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ScmMetaDataRepository extends JpaRepository<ScmMetaDataModel, Long> {
 
-    public ScmMetaDataModel findByRepoName(String repository);
+    ScmMetaDataModel findByRepoName(String repository);
 }

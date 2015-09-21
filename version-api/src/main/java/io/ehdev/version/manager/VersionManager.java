@@ -1,4 +1,4 @@
-package io.ehdev.version.update.matcher;
+package io.ehdev.version.manager;
 
 import io.ehdev.version.commit.CommitDetails;
 import io.ehdev.version.commit.RepositoryCommit;
@@ -11,12 +11,11 @@ import io.ehdev.version.update.VersionBumper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
+@Service
 @Transactional
 public class VersionManager {
 
@@ -24,31 +23,28 @@ public class VersionManager {
 
     final CommitModelRepository commitRepository;
     final ScmMetaDataRepository scmMetaDataRepository;
-    final Map<String, VersionBumper> versionBumpers = new HashMap<>();
+    final VersionBumperManager versionBumperManager;
     
     @Autowired
     public VersionManager(CommitModelRepository commitRepository,
                           ScmMetaDataRepository scmMetaDataRepository,
-                          final Set<VersionBumper> bumperSet) {
-        bumperSet.forEach(bumper -> versionBumpers.put(bumper.name(), bumper));
+                          VersionBumperManager versionBumperManager) {
         this.commitRepository = commitRepository;
         this.scmMetaDataRepository = scmMetaDataRepository;
+        this.versionBumperManager = versionBumperManager;
     }
 
     public RepositoryCommit claimVersion(CommitDetails commitDetails) {
         String parentCommitId = commitDetails.getParentCommitId();
         log.debug("[{}] Parent Commit ID: {}", commitDetails.getCommitId(), parentCommitId);
 
-        RepositoryCommitModel parentCommit = commitRepository.findByCommitId(parentCommitId);
-        String versionBumperName = parentCommit.getScmMetaDataModel().getVersionBumperName();
-        log.debug("[{}] Version Bumpper Name: {}", commitDetails.getCommitId(), versionBumperName);
+        RepositoryCommitModel parentCommit = commitRepository.findByCommitIdAndRepoId(parentCommitId, commitDetails.getScmRepositoryId());
 
-
-        VersionBumper versionBumper = versionBumpers.get(versionBumperName);
+        VersionBumper versionBumper = versionBumperManager.findVersionBumper(parentCommit);
         NextVersion nextVersion = versionBumper.createNextVersion(parentCommit, commitDetails);
 
         RepositoryCommitModel nextCommit = new RepositoryCommitModel(commitDetails.getCommitId(), nextVersion.getCommitVersion());
-        ScmMetaDataModel scmMetaData = scmMetaDataRepository.findByRepoName(commitDetails.getScmRepository());
+        ScmMetaDataModel scmMetaData = scmMetaDataRepository.findByRepoName(commitDetails.getScmRepositoryId());
         nextCommit.setScmMetaDataModel(scmMetaData);
 
         if(nextVersion.getType() == NextVersion.Type.NEXT) {

@@ -1,12 +1,10 @@
-package io.ehdev.version.update.matcher
+package io.ehdev.version.manager
 import io.ehdev.version.IntegrationTestConfiguration
 import io.ehdev.version.TestDataLoader
 import io.ehdev.version.commit.RepositoryCommit
 import io.ehdev.version.commit.internal.DefaultCommitDetails
 import io.ehdev.version.repository.CommitModelRepository
 import io.ehdev.version.repository.ScmMetaDataRepository
-import io.ehdev.version.update.VersionBumper
-import io.ehdev.version.update.semver.SemverVersionBumper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.test.annotation.Rollback
@@ -29,12 +27,13 @@ public class VersionManagerTest extends Specification {
     @Autowired
     private ScmMetaDataRepository scmMetaDataRepository;
 
+    @Autowired
+    private VersionBumperManager versionBumperManager
+
     private VersionManager versionManager;
 
     def setup() {
-        HashSet<VersionBumper> bumperSet = new HashSet<>();
-        bumperSet.add(new SemverVersionBumper());
-        versionManager = new VersionManager(commitRepository, scmMetaDataRepository, bumperSet);
+        versionManager = new VersionManager(commitRepository, scmMetaDataRepository, versionBumperManager);
         testDataLoader.loadData();
     }
 
@@ -47,7 +46,7 @@ public class VersionManagerTest extends Specification {
 
         when:
         RepositoryCommit claimedVersion = versionManager.claimVersion(details);
-        RepositoryCommit parentCommit = commitRepository.findByCommitId(TestDataLoader.NO_CHILDREN_COMMIT_ID)
+        RepositoryCommit parentCommit = commitRepository.findByCommitIdAndRepoId(TestDataLoader.NO_CHILDREN_COMMIT_ID, 'no-children')
 
         then:
         claimedVersion != null
@@ -64,8 +63,8 @@ public class VersionManagerTest extends Specification {
 
         when:
         RepositoryCommit claimedVersion = versionManager.claimVersion(details);
-        RepositoryCommit parentCommit = commitRepository.findByCommitId(TestDataLoader.PARENT_COMMIT_ID)
-        RepositoryCommit nextCommit = commitRepository.findByCommitId(TestDataLoader.CHILD_COMMIT_ID)
+        RepositoryCommit parentCommit = commitRepository.findByCommitIdAndRepoId(TestDataLoader.PARENT_COMMIT_ID, 'next')
+        RepositoryCommit nextCommit = commitRepository.findByCommitIdAndRepoId(TestDataLoader.CHILD_COMMIT_ID, 'next')
 
         then:
         claimedVersion != null

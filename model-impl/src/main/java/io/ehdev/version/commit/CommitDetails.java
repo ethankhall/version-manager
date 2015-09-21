@@ -7,5 +7,5 @@ public interface CommitDetails {
     boolean messageContains(CommitMessageMatcher search);
     String getParentCommitId();
     String getCommitId();
-    String getScmRepository();
+    String getScmRepositoryId();
 }

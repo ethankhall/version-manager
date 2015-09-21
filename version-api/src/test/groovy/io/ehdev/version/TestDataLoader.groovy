@@ -16,6 +16,7 @@ public class TestDataLoader {
     public static final String NO_CHILDREN_COMMIT_ID = "noChildrenCommit";
     public static final String PARENT_COMMIT_ID = "parentCommit";
     public static final String CHILD_COMMIT_ID = "nextChildCommit";
+    public static final String BUGFIX_COMMIT_ID = "nextBugfixCommit";
 
     private final CommitModelRepository commitRepository;
     private final ScmMetaDataRepository scmMetaDataRepository;
@@ -35,35 +36,52 @@ public class TestDataLoader {
         VersionBumperModel bumper = versionBumperRepository.saveAndFlush(model1);
         noChildren(bumper);
         hasNext(bumper);
+        hasBuild(bumper);
     }
 
     private void noChildren(VersionBumperModel bumper) {
-        ScmMetaDataModel scmMetaData = new ScmMetaDataModel();
+        ScmMetaDataModel scmMetaData = createScmMetaData('no-children', bumper)
 
-        scmMetaData.setRepoName("no-children");
-        scmMetaData.setVersionBumperModel(bumper);
-        scmMetaData = scmMetaDataRepository.save(scmMetaData);
+        createCommit(scmMetaData, NO_CHILDREN_COMMIT_ID, 3)
+    }
 
-
-        RepositoryCommitModel noChildrenCommit = new RepositoryCommitModel(NO_CHILDREN_COMMIT_ID, new DefaultCommitVersion(1, 2, 3));
+    private RepositoryCommitModel createCommit(ScmMetaDataModel scmMetaData, String commitId, Integer patchVersion, Integer build = 0) {
+        def version = new DefaultCommitVersion(1, 2, patchVersion, build)
+        RepositoryCommitModel noChildrenCommit = new RepositoryCommitModel(commitId, version);
         noChildrenCommit.setScmMetaDataModel(scmMetaData);
         commitRepository.save(noChildrenCommit);
+        return noChildrenCommit
+    }
+
+    private ScmMetaDataModel createScmMetaData(String repoId, VersionBumperModel bumper) {
+        ScmMetaDataModel scmMetaData = new ScmMetaDataModel();
+
+        scmMetaData.setUuid(repoId);
+        scmMetaData.setRepoName(repoId);
+        scmMetaData.setVersionBumperModel(bumper);
+        scmMetaData = scmMetaDataRepository.save(scmMetaData);
+        return scmMetaData
     }
 
     private void hasNext(VersionBumperModel bumper) {
-        ScmMetaDataModel scmMetaData = new ScmMetaDataModel();
+        ScmMetaDataModel scmMetaData = createScmMetaData('next', bumper)
 
-        scmMetaData.setRepoName("next");
-        scmMetaData.setVersionBumperModel(bumper);
-        scmMetaData = scmMetaDataRepository.save(scmMetaData);
+        RepositoryCommitModel childCommit = createCommit(scmMetaData, CHILD_COMMIT_ID, 4)
+        RepositoryCommitModel parentCommit = createCommit(scmMetaData, PARENT_COMMIT_ID, 3)
 
-
-        RepositoryCommitModel childCommit = new RepositoryCommitModel(CHILD_COMMIT_ID, new DefaultCommitVersion(1, 2, 4));
-        RepositoryCommitModel parentCommit = new RepositoryCommitModel(PARENT_COMMIT_ID, new DefaultCommitVersion(1, 2, 3));
         parentCommit.setNextCommit(childCommit);
-        childCommit.setScmMetaDataModel(scmMetaData);
-        parentCommit.setScmMetaDataModel(scmMetaData);
-        commitRepository.save(childCommit);
+        commitRepository.save(parentCommit);
+    }
+
+    private void hasBuild(VersionBumperModel bumper) {
+        ScmMetaDataModel scmMetaData = createScmMetaData('build', bumper)
+
+        RepositoryCommitModel childCommit = createCommit(scmMetaData, CHILD_COMMIT_ID, 4)
+        RepositoryCommitModel buildCommit = createCommit(scmMetaData, BUGFIX_COMMIT_ID, 3, 1)
+        RepositoryCommitModel parentCommit = createCommit(scmMetaData, PARENT_COMMIT_ID, 3)
+
+        parentCommit.setNextCommit(childCommit);
+        parentCommit.setBugfixCommit(buildCommit)
         commitRepository.save(parentCommit);
     }
 }

@@ -2,6 +2,7 @@ package io.ehdev.version.commit.model;
 
 
 import io.ehdev.version.commit.ScmMetaData;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
@@ -12,7 +13,12 @@ public class ScmMetaDataModel implements ScmMetaData {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Column
+    @GeneratedValue(generator="system-uuid")
+    @GenericGenerator(name="system-uuid", strategy = "uuid")
+    @Column(name = "uuid", unique = true)
+    private String uuid;
+
+    @Column(unique = true)
     String repoName;
 
     @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
@@ -29,6 +35,14 @@ public class ScmMetaDataModel implements ScmMetaData {
 
     public void setVersionBumperModel(VersionBumperModel versionBumperModel) {
         this.versionBumperModel = versionBumperModel;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
 
     @Override
