@@ -1,15 +1,33 @@
 package io.ehdev.version.service.model;
 
-import java.util.List;
+import java.util.Map;
 
 public class StrategyResponse {
-    List<String> stratigies;
+    Map<String, Strategies> strategies;
 
-    public List<String> getStratigies() {
-        return stratigies;
+    public Map<String, Strategies> getStrategies() {
+        return strategies;
     }
 
-    public void setStratigies(List<String> stratigies) {
-        this.stratigies = stratigies;
+    public void setStrategies(Map<String, Strategies> strategies) {
+        this.strategies = strategies;
+    }
+
+    public static class Strategies {
+        final String name;
+        final String description;
+
+        public Strategies(String name, String description) {
+            this.name = name;
+            this.description = description;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public String getDescription() {
+            return description;
+        }
     }
 }

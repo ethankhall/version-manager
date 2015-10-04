@@ -32,7 +32,7 @@ public class TestDataLoader {
     public void loadData() {
         VersionBumperModel model1 = new VersionBumperModel();
 
-        model1.setBumperName(SemverVersionBumper.class.getSimpleName());
+        model1.setClassName(SemverVersionBumper.class.getSimpleName());
         VersionBumperModel bumper = versionBumperRepository.saveAndFlush(model1);
         noChildren(bumper);
         hasNext(bumper);

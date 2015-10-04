@@ -13,19 +13,33 @@ import javax.persistence.*;
 public class VersionBumperModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @NotBlank
     @NotEmpty
-    @Column(nullable = false, unique = true, name = "bumper_name")
+    @Column(nullable = false, unique = true, name = "class_name")
+    private String className;
+
+    @NotBlank
+    @NotEmpty
+    @Column(nullable = false, name = "description")
+    private String description;
+
+    @NotBlank
+    @NotEmpty
+    @Column(nullable = false, name = "bumper_name")
     private String bumperName;
+
+    public String getClassName() {
+        return className;
+    }
+
+    public String getDescription() {
+        return description;
+    }
 
     public String getBumperName() {
         return bumperName;
-    }
-
-    public void setBumperName(String bumperName) {
-        this.bumperName = bumperName;
     }
 }

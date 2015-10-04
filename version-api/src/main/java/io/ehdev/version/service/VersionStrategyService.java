@@ -9,8 +9,9 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.transaction.Transactional;
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @Transactional
 @RestController
@@ -23,9 +24,12 @@ public class VersionStrategyService {
     @RequestMapping(method = RequestMethod.GET)
     public StrategyResponse getAllVersionStrategies() {
         List<VersionBumperModel> all = versionBumperRepository.findAll();
-        List<String> strategyNames = all.stream().map(VersionBumperModel::getBumperName).collect(Collectors.toList());
+        Map<String, StrategyResponse.Strategies> strategiesMap = new HashMap<>();
+        all.forEach(bumper ->
+            strategiesMap.put(bumper.getBumperName(),
+                new StrategyResponse.Strategies(bumper.getBumperName(), bumper.getDescription())));
         StrategyResponse strategyResponse = new StrategyResponse();
-        strategyResponse.setStratigies(strategyNames);
+        strategyResponse.setStrategies(strategiesMap);
         return strategyResponse;
     }
 }

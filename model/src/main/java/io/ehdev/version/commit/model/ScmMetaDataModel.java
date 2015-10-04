@@ -11,7 +11,7 @@ import javax.persistence.*;
 public class ScmMetaDataModel implements ScmMetaData {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @GeneratedValue(generator="system-uuid")
@@ -19,9 +19,10 @@ public class ScmMetaDataModel implements ScmMetaData {
     @Column(name = "uuid", unique = true)
     private String uuid;
 
-    @Column(unique = true)
+    @Column(unique = true, name = "repo_name")
     String repoName;
 
+    @JoinColumn(name = "version_bumper")
     @ManyToOne(optional = false, cascade = CascadeType.PERSIST)
     VersionBumperModel versionBumperModel;
 
@@ -49,7 +50,7 @@ public class ScmMetaDataModel implements ScmMetaData {
     @Override
     @Transient
     public String getVersionBumperName() {
-        return versionBumperModel.getBumperName();
+        return versionBumperModel.getClassName();
     }
 
 }

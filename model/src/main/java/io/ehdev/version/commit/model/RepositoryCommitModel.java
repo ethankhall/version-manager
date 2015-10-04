@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 public class RepositoryCommitModel implements RepositoryCommit {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @Column(name = "commit_id", length = 40)
@@ -35,9 +35,11 @@ public class RepositoryCommitModel implements RepositoryCommit {
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     ScmMetaDataModel scmMetaDataModel;
 
+    @JoinColumn(name = "next_commit")
     @OneToOne(fetch = FetchType.LAZY)
     RepositoryCommitModel nextCommit;
 
+    @JoinColumn(name = "bugfix_commit")
     @OneToOne(fetch = FetchType.LAZY)
     RepositoryCommitModel bugfixCommit;
 

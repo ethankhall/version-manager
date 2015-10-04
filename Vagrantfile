@@ -8,7 +8,7 @@ Vagrant.configure(2) do |config|
   # using a specific IP.
   config.vm.network "private_network", ip: "172.0.1.100"
 
-  config.berkshelf.berksfile_path = "chef/Berksfile"
+  config.berkshelf.berksfile_path = "Berksfile"
   config.berkshelf.enabled = true
 
   config.vm.provision :chef_solo do |chef|
