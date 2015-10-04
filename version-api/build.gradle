@@ -28,4 +28,5 @@ dependencies {
     testCompile 'org.springframework:spring-test:4.2.1.RELEASE'
     testCompile 'org.spockframework:spock-spring:1.0-groovy-2.4'
     testCompile 'org.codehaus.groovy:groovy-all:2.4.4'
+    testCompile "com.h2database:h2"
 }
