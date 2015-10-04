@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import javax.persistence.*;
 
 @Table(
+    name = "version_bumper",
     uniqueConstraints = {@UniqueConstraint(columnNames = "bumper_name")}
 )
 @Entity

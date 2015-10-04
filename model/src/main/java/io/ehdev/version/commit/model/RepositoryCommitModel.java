@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Table(
+    name = "repository_commit",
     uniqueConstraints = @UniqueConstraint(columnNames = {"commit_id", "scm_meta_data"})
 )
 @Entity

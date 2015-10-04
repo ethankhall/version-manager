@@ -12,13 +12,17 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(":model-impl")
+    compile project(":model")
     compile 'org.springframework.data:spring-data-jpa:1.9.0.RELEASE'
     compile "org.springframework.boot:spring-boot-starter-data-jpa"
-    compile "org.springframework.boot:spring-boot-starter-web"
+    compile("org.springframework.boot:spring-boot-starter-web") {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
     compile "org.springframework.boot:spring-boot-starter-actuator"
+    compile "org.springframework.boot:spring-boot-starter-jetty"
+    compile 'com.zaxxer:HikariCP:2.4.1'
+    compile 'org.postgresql:postgresql:9.4-1203-jdbc42'
 
-    compile "com.h2database:h2"
 
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testCompile 'org.springframework:spring-test:4.2.1.RELEASE'

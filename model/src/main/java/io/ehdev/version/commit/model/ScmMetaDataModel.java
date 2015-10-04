@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 
+@Table(name = "scm_meta_data")
 @Entity
 public class ScmMetaDataModel implements ScmMetaData {
 
