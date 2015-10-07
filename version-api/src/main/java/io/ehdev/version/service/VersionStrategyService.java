@@ -1,7 +1,7 @@
 package io.ehdev.version.service;
 
-import io.ehdev.version.commit.model.VersionBumperModel;
-import io.ehdev.version.repository.VersionBumperRepository;
+import io.ehdev.version.model.commit.model.VersionBumperModel;
+import io.ehdev.version.model.repository.VersionBumperRepository;
 import io.ehdev.version.service.model.StrategyResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

@@ -1,27 +1,29 @@
 package io.ehdev.version.service;
 
-import io.ehdev.version.commit.model.ScmMetaDataModel;
-import io.ehdev.version.commit.model.VersionBumperModel;
-import io.ehdev.version.repository.ScmMetaDataRepository;
-import io.ehdev.version.repository.VersionBumperRepository;
+import io.ehdev.version.model.commit.model.ScmMetaDataModel;
+import io.ehdev.version.model.commit.model.VersionBumperModel;
+import io.ehdev.version.model.repository.ScmMetaDataRepository;
+import io.ehdev.version.model.repository.VersionBumperRepository;
 import io.ehdev.version.service.exception.RepoNameMustBeLongerThanFive;
 import io.ehdev.version.service.exception.UnableToFindRepo;
 import io.ehdev.version.service.exception.UnknownBumperException;
 import io.ehdev.version.service.model.RepoCreation;
 import io.ehdev.version.service.model.RepoResponse;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import java.util.UUID;
 
 @Transactional
 @RestController
 @RequestMapping(value="/api/repo")
 public class RepositoryService {
+
+    private final Logger log = LoggerFactory.getLogger(RepositoryService.class);
 
     @Autowired
     ScmMetaDataRepository scmMetaDataRepository;
@@ -30,7 +32,8 @@ public class RepositoryService {
     VersionBumperRepository versionBumperRepository;
 
     @RequestMapping(method = RequestMethod.POST)
-    public RepoResponse registerNewRepo(RepoCreation repoCreation) {
+    public RepoResponse registerNewRepo(@RequestBody RepoCreation repoCreation) {
+        log.info("Repo Creation is: {}", repoCreation);
         VersionBumperModel bumperName = versionBumperRepository.findByBumperName(repoCreation.getStrategyName());
         if(null == bumperName) {
             throw new UnknownBumperException();
@@ -44,6 +47,7 @@ public class RepositoryService {
         ScmMetaDataModel scmMetaDataModel = new ScmMetaDataModel();
         scmMetaDataModel.setRepoName(repoName);
         scmMetaDataModel.setVersionBumperModel(bumperName);
+        scmMetaDataModel.setUuid(UUID.randomUUID());
         scmMetaDataModel = scmMetaDataRepository.save(scmMetaDataModel);
         return RepoResponse.fromMetaData(scmMetaDataModel);
     }

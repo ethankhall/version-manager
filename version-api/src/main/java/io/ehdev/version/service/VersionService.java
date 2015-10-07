@@ -1,11 +1,12 @@
 package io.ehdev.version.service;
 
-import io.ehdev.version.commit.CommitVersion;
-import io.ehdev.version.commit.RepositoryCommit;
-import io.ehdev.version.commit.model.RepositoryCommitModel;
+import io.ehdev.version.model.commit.CommitVersion;
+import io.ehdev.version.model.commit.RepositoryCommit;
+import io.ehdev.version.model.commit.internal.DefaultCommitVersion;
+import io.ehdev.version.model.commit.model.RepositoryCommitModel;
 import io.ehdev.version.manager.VersionBumperManager;
 import io.ehdev.version.manager.VersionManager;
-import io.ehdev.version.repository.CommitModelRepository;
+import io.ehdev.version.model.repository.CommitModelRepository;
 import io.ehdev.version.service.exception.VersionNotFoundException;
 import io.ehdev.version.service.model.VersionCreation;
 import io.ehdev.version.service.model.VersionResponse;
@@ -31,6 +32,9 @@ public class VersionService {
     @RequestMapping(method = RequestMethod.GET, params = {"repoId", "parentCommit"})
     VersionResponse getVersionForRepo(@RequestParam("repoId") String repoId, @RequestParam("parentCommit") String originCommit) {
         RepositoryCommitModel parentCommit = commitModelRepository.findByCommitIdAndRepoId(originCommit, repoId);
+        if(commitModelRepository.countByRepoId(repoId) == 0) {
+            return new VersionResponse(repoId, new DefaultCommitVersion(0, 0, 1).asSnapshot());
+        }
         if(null == parentCommit) {
             throw new VersionNotFoundException();
         }

@@ -7,7 +7,7 @@ CREATE TABLE version_bumper (
 
 CREATE TABLE scm_meta_data (
   id             BIGSERIAL PRIMARY KEY,
-  uuid           TEXT                                  NOT NULL,
+  uuid           UUID                                  NOT NULL,
   repo_name      TEXT UNIQUE                           NOT NULL,
   version_bumper BIGINT REFERENCES version_bumper (id) NOT NULL
 );
@@ -24,4 +24,4 @@ CREATE TABLE repository_commit (
 );
 
 INSERT INTO version_bumper (bumper_name, class_name, description)
-VALUES ('semver', 'io.ehdev.version.update.semver.SemverVersionBumper', 'SemVer bumper');
+VALUES ('semver', 'io.ehdev.version.model.update.semver.SemverVersionBumper', 'SemVer bumper');

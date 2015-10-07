@@ -1,6 +1,6 @@
 package io.ehdev.version.service.model;
 
-import io.ehdev.version.commit.CommitVersion;
+import io.ehdev.version.model.commit.CommitVersion;
 
 public class VersionResponse {
 

@@ -1,13 +1,14 @@
 package io.ehdev.version.manager;
 
-import io.ehdev.version.commit.CommitDetails;
-import io.ehdev.version.commit.RepositoryCommit;
-import io.ehdev.version.commit.model.RepositoryCommitModel;
-import io.ehdev.version.commit.model.ScmMetaDataModel;
-import io.ehdev.version.repository.CommitModelRepository;
-import io.ehdev.version.repository.ScmMetaDataRepository;
-import io.ehdev.version.update.NextVersion;
-import io.ehdev.version.update.VersionBumper;
+import io.ehdev.version.model.commit.CommitDetails;
+import io.ehdev.version.model.commit.RepositoryCommit;
+import io.ehdev.version.model.commit.internal.DefaultCommitVersion;
+import io.ehdev.version.model.commit.model.RepositoryCommitModel;
+import io.ehdev.version.model.commit.model.ScmMetaDataModel;
+import io.ehdev.version.model.update.NextVersion;
+import io.ehdev.version.model.update.VersionBumper;
+import io.ehdev.version.model.repository.CommitModelRepository;
+import io.ehdev.version.model.repository.ScmMetaDataRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,11 @@ public class VersionManager {
         log.debug("[{}] Parent Commit ID: {}", commitDetails.getCommitId(), parentCommitId);
 
         RepositoryCommitModel parentCommit = commitRepository.findByCommitIdAndRepoId(parentCommitId, commitDetails.getScmRepositoryId());
+        if(parentCommit == null && commitRepository.countByRepoId(commitDetails.getScmRepositoryId()) == 0) {
+            parentCommit = commitRepository.save(new RepositoryCommitModel("00000000", new DefaultCommitVersion(0, 0, 0)));
+        } else if(parentCommit == null) {
+            throw new RuntimeException();
+        }
 
         VersionBumper versionBumper = versionBumperManager.findVersionBumper(parentCommit);
         NextVersion nextVersion = versionBumper.createNextVersion(parentCommit, commitDetails);

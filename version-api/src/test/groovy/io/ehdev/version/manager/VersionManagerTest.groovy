@@ -1,10 +1,10 @@
 package io.ehdev.version.manager
 import io.ehdev.version.IntegrationTestConfiguration
 import io.ehdev.version.TestDataLoader
-import io.ehdev.version.commit.RepositoryCommit
-import io.ehdev.version.commit.internal.DefaultCommitDetails
-import io.ehdev.version.repository.CommitModelRepository
-import io.ehdev.version.repository.ScmMetaDataRepository
+import io.ehdev.version.model.commit.RepositoryCommit
+import io.ehdev.version.model.commit.internal.DefaultCommitDetails
+import io.ehdev.version.model.repository.CommitModelRepository
+import io.ehdev.version.model.repository.ScmMetaDataRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.test.annotation.Rollback

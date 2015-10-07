@@ -19,4 +19,12 @@ public class RepoCreation {
     public void setStrategyName(String strategyName) {
         this.strategyName = strategyName;
     }
+
+    @Override
+    public String toString() {
+        return "RepoCreation{" +
+            "repoName='" + repoName + '\'' +
+            ", strategyName='" + strategyName + '\'' +
+            '}';
+    }
 }

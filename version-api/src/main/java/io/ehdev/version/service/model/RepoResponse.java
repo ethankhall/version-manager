@@ -1,6 +1,6 @@
 package io.ehdev.version.service.model;
 
-import io.ehdev.version.commit.model.ScmMetaDataModel;
+import io.ehdev.version.model.commit.model.ScmMetaDataModel;
 
 public class RepoResponse extends RepoCreation {
     String uuid;

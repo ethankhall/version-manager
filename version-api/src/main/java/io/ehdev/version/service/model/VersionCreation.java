@@ -1,6 +1,6 @@
 package io.ehdev.version.service.model;
 
-import io.ehdev.version.commit.internal.DefaultCommitDetails;
+import io.ehdev.version.model.commit.internal.DefaultCommitDetails;
 
 public class VersionCreation {
     String parentCommitId;

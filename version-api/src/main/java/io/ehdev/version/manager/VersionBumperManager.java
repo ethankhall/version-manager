@@ -1,7 +1,7 @@
 package io.ehdev.version.manager;
 
-import io.ehdev.version.commit.model.RepositoryCommitModel;
-import io.ehdev.version.update.VersionBumper;
+import io.ehdev.version.model.commit.model.RepositoryCommitModel;
+import io.ehdev.version.model.update.VersionBumper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
