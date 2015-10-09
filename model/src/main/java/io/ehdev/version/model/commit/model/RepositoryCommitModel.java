@@ -128,4 +128,9 @@ public class RepositoryCommitModel implements RepositoryCommit {
             .append(bugfixCommit)
             .toHashCode();
     }
+
+    @Override
+    public int compareTo(RepositoryCommit o) {
+        return getVersion().compareTo(o.getVersion());
+    }
 }

@@ -2,18 +2,24 @@ package io.ehdev.version.service;
 
 import io.ehdev.version.model.commit.CommitVersion;
 import io.ehdev.version.model.commit.RepositoryCommit;
+import io.ehdev.version.model.commit.ScmMetaData;
 import io.ehdev.version.model.commit.internal.DefaultCommitVersion;
 import io.ehdev.version.model.commit.model.RepositoryCommitModel;
 import io.ehdev.version.manager.VersionBumperManager;
 import io.ehdev.version.manager.VersionManager;
+import io.ehdev.version.model.commit.model.ScmMetaDataModel;
 import io.ehdev.version.model.repository.CommitModelRepository;
+import io.ehdev.version.model.repository.ScmMetaDataRepository;
 import io.ehdev.version.service.exception.VersionNotFoundException;
 import io.ehdev.version.service.model.VersionCreation;
 import io.ehdev.version.service.model.VersionResponse;
+import io.ehdev.version.service.model.VersionSearch;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import java.util.Collections;
+import java.util.List;
 
 @Transactional
 @RestController
@@ -29,18 +35,26 @@ public class VersionService {
     @Autowired
     VersionBumperManager versionBumperManager;
 
-    @RequestMapping(method = RequestMethod.GET, params = {"repoId", "parentCommit"})
-    VersionResponse getVersionForRepo(@RequestParam("repoId") String repoId, @RequestParam("parentCommit") String originCommit) {
-        RepositoryCommitModel parentCommit = commitModelRepository.findByCommitIdAndRepoId(originCommit, repoId);
+    @Autowired
+    ScmMetaDataRepository scmMetaDataRepository;
+
+    @RequestMapping(value = "/search", method = RequestMethod.POST)
+    VersionResponse getVersionForRepo(@RequestBody VersionSearch versionSearch) {
+        String repoId = versionSearch.getRepoId();
+        ScmMetaDataModel metaDataModel = scmMetaDataRepository.findByRepoName(repoId);
+
+        List<RepositoryCommitModel> commits = commitModelRepository.findCommits(metaDataModel, versionSearch.getCommitIds());
+        Collections.sort(commits);
+
+        RepositoryCommitModel parentCommit = !commits.isEmpty() ? commits.get(0) : null;
+        if(parentCommit != null) {
+            CommitVersion buildVersion = versionBumperManager.findVersionBumper(parentCommit).createBuildVersion(parentCommit);
+            return new VersionResponse(repoId, buildVersion);
+        }
         if(commitModelRepository.countByRepoId(repoId) == 0) {
             return new VersionResponse(repoId, new DefaultCommitVersion(0, 0, 1).asSnapshot());
         }
-        if(null == parentCommit) {
-            throw new VersionNotFoundException();
-        }
-
-        CommitVersion buildVersion = versionBumperManager.findVersionBumper(parentCommit).createBuildVersion(parentCommit);
-        return new VersionResponse(repoId, buildVersion);
+        throw new VersionNotFoundException();
     }
 
     @RequestMapping(method = RequestMethod.POST)

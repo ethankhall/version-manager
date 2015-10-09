@@ -35,11 +35,23 @@ public class VersionBumperModel {
         return className;
     }
 
+    public void setClassName(String className) {
+        this.className = className;
+    }
+
     public String getDescription() {
         return description;
     }
 
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
     public String getBumperName() {
         return bumperName;
+    }
+
+    public void setBumperName(String bumperName) {
+        this.bumperName = bumperName;
     }
 }

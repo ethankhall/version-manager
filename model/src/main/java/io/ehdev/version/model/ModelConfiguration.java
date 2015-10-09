@@ -1,6 +1,7 @@
 package io.ehdev.version.model;
 
 
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -9,8 +10,9 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 
 @Configuration
+@EnableAutoConfiguration
 @EnableTransactionManagement
-@EntityScan(basePackages = {"io.ehdev.version"})
+@EntityScan(basePackages = {"io.ehdev.version.model"})
 @ComponentScan(basePackages = {"io.ehdev.version.model"})
 @EnableJpaRepositories(basePackages = {"io.ehdev.version.model"})
 public class ModelConfiguration {

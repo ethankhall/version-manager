@@ -1,6 +1,6 @@
 package io.ehdev.version.model.commit;
 
-public interface RepositoryCommit {
+public interface RepositoryCommit extends Comparable<RepositoryCommit> {
     CommitVersion getVersion();
 
     RepositoryCommit getNextCommit();

@@ -1,7 +1,8 @@
 package io.ehdev.version.service
-import io.ehdev.version.IntegrationTestConfiguration
+import io.ehdev.version.ApiTestConfiguration
 import io.ehdev.version.TestDataLoader
 import io.ehdev.version.service.model.VersionCreation
+import io.ehdev.version.service.model.VersionSearch
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.test.annotation.Rollback
@@ -13,7 +14,7 @@ import javax.transaction.Transactional
 
 @Transactional
 @Rollback(true)
-@ContextConfiguration(classes = [IntegrationTestConfiguration.class], loader = SpringApplicationContextLoader.class)
+@ContextConfiguration(classes = [ApiTestConfiguration.class], loader = SpringApplicationContextLoader.class)
 class VersionServiceIntegrationTest extends Specification {
 
     @Autowired
@@ -28,7 +29,7 @@ class VersionServiceIntegrationTest extends Specification {
         testDataLoader.loadData()
 
         when:
-        def version = versionService.getVersionForRepo(repo, commitId)
+        def version = versionService.getVersionForRepo(new VersionSearch(repo, [commitId]))
 
         then:
         noExceptionThrown()

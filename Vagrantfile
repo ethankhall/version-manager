@@ -21,7 +21,11 @@ Vagrant.configure(2) do |config|
           version_manager: {
             username: "version",
             password: "manager"
-          }
+          },
+          version_manager_test: {
+              username: "version_manager_test",
+              password: "password"
+            }
         },
         password: {
           postgres: "iloverandompasswordsbutthiswilldo"

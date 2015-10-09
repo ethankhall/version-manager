@@ -1,5 +1,5 @@
 package io.ehdev.version.manager
-import io.ehdev.version.IntegrationTestConfiguration
+import io.ehdev.version.ApiTestConfiguration
 import io.ehdev.version.TestDataLoader
 import io.ehdev.version.model.commit.RepositoryCommit
 import io.ehdev.version.model.commit.internal.DefaultCommitDetails
@@ -15,7 +15,7 @@ import javax.transaction.Transactional
 
 @Transactional
 @Rollback(true)
-@ContextConfiguration(classes = [IntegrationTestConfiguration.class], loader = SpringApplicationContextLoader.class)
+@ContextConfiguration(classes = [ApiTestConfiguration.class], loader = SpringApplicationContextLoader.class)
 public class VersionManagerTest extends Specification {
 
     @Autowired

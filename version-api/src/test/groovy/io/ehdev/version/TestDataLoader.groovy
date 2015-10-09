@@ -58,7 +58,7 @@ public class TestDataLoader {
     private ScmMetaDataModel createScmMetaData(String repoId, VersionBumperModel bumper) {
         ScmMetaDataModel scmMetaData = new ScmMetaDataModel();
 
-        scmMetaData.setUuid(repoId);
+        scmMetaData.setUuid(UUID.randomUUID());
         scmMetaData.setRepoName(repoId);
         scmMetaData.setVersionBumperModel(bumper);
         scmMetaData = scmMetaDataRepository.save(scmMetaData);
