@@ -29,15 +29,22 @@ class SemanticVersionBumperTest extends Specification {
     @Unroll
     def 'message containing #search will give version #version'() {
         def details = commitDetails(search)
+        def nextVersion = semVerBumper.createNextVersion(commitVersion, details)
+
         expect:
-        semVerBumper.createNextVersion(commitVersion, details) == VersionFactory.parse(version)
+        nextVersion == VersionFactory.parse(version)
+        nextVersion.toString() == version
 
         where:
-        search         | version
-        '[bump patch]' | '1.2.4'
-        '[bump build]' | '1.2.3.1'
-        '[bump minor]' | '1.3.0'
-        '[bump major]' | '2.0'
+        search           | version
+        '[bump build]'   | '1.2.3.1'
+        '[bump patch]'   | '1.2.4'
+        '[bump minor]'   | '1.3.0'
+        '[bump major]'   | '2.0.0'
+        '[bump group 4]' | '1.2.3.1'
+        '[bump group 3]' | '1.2.4'
+        '[bump group 2]' | '1.3.0'
+        '[bump group 1]' | '2.0.0'
 
     }
 

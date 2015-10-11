@@ -6,11 +6,11 @@ import io.ehdev.conrad.version.commit.CommitVersionGroup;
 
 import java.util.Arrays;
 
-public class VersionCommitBumper implements CommitVersionBumper, CommitVersionGroup {
+public class DefaultVersionCommitBumper implements CommitVersionBumper, CommitVersionGroup {
 
     final int groupNumber;
 
-    public VersionCommitBumper(int groupNumber) {
+    public DefaultVersionCommitBumper(int groupNumber) {
         this.groupNumber = groupNumber;
     }
 

@@ -6,7 +6,7 @@ import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class VersionCommitBumperTest extends Specification {
+class DefaultVersionCommitBumperTest extends Specification {
 
     @Shared
     CommitVersion commitVersion = VersionFactory.parse('1.2.3')
@@ -14,7 +14,7 @@ class VersionCommitBumperTest extends Specification {
     @Unroll
     def 'version bump group can go to #depth giving #version'() {
         expect:
-        commitVersion.bump(new VersionCommitBumper(depth)).toString() == version
+        commitVersion.bump(new DefaultVersionCommitBumper(depth)).toString() == version
 
         where:
         depth || version

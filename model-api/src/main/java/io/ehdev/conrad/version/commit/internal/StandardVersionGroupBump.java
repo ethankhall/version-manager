@@ -4,25 +4,25 @@ import io.ehdev.conrad.version.commit.CommitVersionBumper;
 
 public class StandardVersionGroupBump {
 
-    private static final VersionCommitBumper majorVersion = new VersionCommitBumper(0);
-    private static final VersionCommitBumper minorVersion = new VersionCommitBumper(1);
-    private static final VersionCommitBumper patchVersion = new VersionCommitBumper(2);
-    private static final VersionCommitBumper buildVersion = new VersionCommitBumper(3);
+    private static final DefaultVersionCommitBumper majorVersion = new DefaultVersionCommitBumper(0);
+    private static final DefaultVersionCommitBumper minorVersion = new DefaultVersionCommitBumper(1);
+    private static final DefaultVersionCommitBumper patchVersion = new DefaultVersionCommitBumper(2);
+    private static final DefaultVersionCommitBumper buildVersion = new DefaultVersionCommitBumper(3);
     private static final CommitVersionBumper snapshot = new SnapshotCommitVersionBumper("SNAPSHOT");
 
-    public static VersionCommitBumper majorVersion() {
+    public static DefaultVersionCommitBumper majorVersion() {
         return majorVersion;
     }
 
-    public static VersionCommitBumper minorVersion() {
+    public static DefaultVersionCommitBumper minorVersion() {
         return minorVersion;
     }
 
-    public static VersionCommitBumper patchVersion() {
+    public static DefaultVersionCommitBumper patchVersion() {
         return patchVersion;
     }
 
-    public static VersionCommitBumper buildVersion() {
+    public static DefaultVersionCommitBumper buildVersion() {
         return buildVersion;
     }
 
