@@ -1,7 +1,7 @@
-package io.ehdev.conrad.model.version.internal;
+package io.ehdev.conrad.version.commit.internal;
 
-import io.ehdev.conrad.model.version.CommitVersion;
-import io.ehdev.conrad.model.version.CommitVersionBumper;
+import io.ehdev.conrad.version.commit.CommitVersion;
+import io.ehdev.conrad.version.commit.CommitVersionBumper;
 
 public class SnapshotCommitVersionBumper implements CommitVersionBumper {
 

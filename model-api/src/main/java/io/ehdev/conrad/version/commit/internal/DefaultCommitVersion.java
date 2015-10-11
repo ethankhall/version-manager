@@ -1,8 +1,8 @@
-package io.ehdev.conrad.model.version.internal;
+package io.ehdev.conrad.version.commit.internal;
 
-import io.ehdev.conrad.model.version.CommitVersion;
-import io.ehdev.conrad.model.version.CommitVersionBumper;
-import io.ehdev.conrad.model.version.VersionGroupCapture;
+import io.ehdev.conrad.version.commit.CommitVersion;
+import io.ehdev.conrad.version.commit.CommitVersionBumper;
+import io.ehdev.conrad.version.commit.CommitVersionGroup;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -44,7 +44,7 @@ public class DefaultCommitVersion implements CommitVersion {
     }
 
     @Override
-    public Integer getGroup(VersionGroupCapture versionGroup) {
+    public Integer getGroup(CommitVersionGroup versionGroup) {
         if (versionList.length <= versionGroup.getGroup()) {
             return 0;
         } else {

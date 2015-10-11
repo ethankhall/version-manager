@@ -1,9 +1,9 @@
-package io.ehdev.conrad.model.version.internal
+package io.ehdev.conrad.version.commit.internal
 import spock.lang.Specification
 
 class DefaultCommitVersionTest extends Specification {
 
-    def 'can bump to snapshot'() {
+    def 'can bump different fields'() {
         expect:
         new DefaultCommitVersion(1, 0, 0).bump(StandardVersionGroupBump.patchVersion()).toString() == '1.0.1'
         new DefaultCommitVersion(1, 0, 0).bump(StandardVersionGroupBump.snapshot()).toString() == '1.0.0-SNAPSHOT'

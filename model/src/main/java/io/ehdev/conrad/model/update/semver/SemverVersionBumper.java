@@ -4,7 +4,6 @@ import io.ehdev.conrad.model.commit.CommitDetails;
 import io.ehdev.conrad.model.commit.RepositoryCommit;
 import io.ehdev.conrad.model.commit.VersionGroup;
 import io.ehdev.conrad.model.update.DefaultNextVersion;
-import io.ehdev.conrad.model.update.matcher.SquareBracketMatcher;
 import io.ehdev.version.model.CommitVersion;
 import io.ehdev.conrad.model.update.NextVersion;
 import io.ehdev.version.model.update.VersionBumper;

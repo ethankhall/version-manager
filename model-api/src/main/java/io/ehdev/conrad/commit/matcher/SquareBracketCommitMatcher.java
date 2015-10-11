@@ -1,15 +1,16 @@
-package io.ehdev.conrad.model.update.matcher;
+package io.ehdev.conrad.commit.matcher;
 
-import io.ehdev.conrad.model.commit.VersionGroup;
+import io.ehdev.conrad.version.commit.CommitVersionBumper;
 import org.apache.commons.lang3.StringUtils;
 
 
-public class SquareBracketMatcher implements CommitMessageMatcher {
+public class SquareBracketCommitMatcher implements CommitMessageMatcher, CommitBumperProvider {
 
     private final String expectedString;
+    private final CommitVersionBumper bumper;
 
-    public SquareBracketMatcher(String expectedString) {
-        expectedString = StringUtils.trimToEmpty(expectedString);
+    public SquareBracketCommitMatcher(String groupName, CommitVersionBumper bumper) {
+        String expectedString = StringUtils.trimToEmpty(String.format("bump %s", groupName.toLowerCase()));
         expectedString = StringUtils.removeStart(expectedString, "[");
         expectedString = StringUtils.removeEnd(expectedString, "]");
         expectedString = StringUtils.trimToEmpty(expectedString);
@@ -19,12 +20,12 @@ public class SquareBracketMatcher implements CommitMessageMatcher {
         }
 
         this.expectedString = String.format("[%s]", expectedString);
+        this.bumper = bumper;
     }
 
-    public SquareBracketMatcher(VersionGroup versionGroup) {
-        this(String.format("bump %s", versionGroup.name().toLowerCase()));
+    public CommitVersionBumper getBumper() {
+        return bumper;
     }
-
 
     @Override
     public boolean matches(String haystack) {

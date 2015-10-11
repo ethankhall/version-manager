@@ -1,16 +1,16 @@
-package io.ehdev.conrad.model.version.internal;
+package io.ehdev.conrad.version.commit.internal;
 
-import io.ehdev.conrad.model.version.CommitVersion;
-import io.ehdev.conrad.model.version.CommitVersionBumper;
-import io.ehdev.conrad.model.version.VersionGroupCapture;
+import io.ehdev.conrad.version.commit.CommitVersion;
+import io.ehdev.conrad.version.commit.CommitVersionBumper;
+import io.ehdev.conrad.version.commit.CommitVersionGroup;
 
 import java.util.Arrays;
 
-public class VersionCommitVersionBumper implements CommitVersionBumper, VersionGroupCapture {
+public class VersionCommitBumper implements CommitVersionBumper, CommitVersionGroup {
 
     final int groupNumber;
 
-    public VersionCommitVersionBumper(int groupNumber) {
+    public VersionCommitBumper(int groupNumber) {
         this.groupNumber = groupNumber;
     }
 

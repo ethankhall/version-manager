@@ -1,8 +1,7 @@
-package io.ehdev.conrad.model
+package io.ehdev.conrad.version.commit
 
-import io.ehdev.conrad.model.version.VersionFactory
-import io.ehdev.conrad.model.version.internal.DefaultCommitVersion
-import io.ehdev.conrad.model.version.internal.StandardVersionGroupBump
+import io.ehdev.conrad.version.commit.internal.DefaultCommitVersion
+import io.ehdev.conrad.version.commit.internal.StandardVersionGroupBump
 import spock.lang.Specification
 import spock.lang.Unroll
 
