@@ -4,6 +4,7 @@ import io.ehdev.version.model.commit.CommitVersion;
 import io.ehdev.version.model.commit.RepositoryCommit;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -127,6 +128,19 @@ public class RepositoryCommitModel implements RepositoryCommit {
             .append(nextCommit)
             .append(bugfixCommit)
             .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", id)
+            .append("commitId", commitId)
+            .append("version", version)
+            .append("createdAt", createdAt)
+            .append("scmMetaDataModel", scmMetaDataModel)
+            .append("nextCommit", nextCommit)
+            .append("bugfixCommit", bugfixCommit)
+            .toString();
     }
 
     @Override

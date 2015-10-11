@@ -9,6 +9,4 @@ public interface VersionBumper {
     NextVersion createNextVersion(RepositoryCommit parent, CommitDetails commitDetails);
 
     CommitVersion createBuildVersion(RepositoryCommit repositoryCommit);
-
-    String name();
 }

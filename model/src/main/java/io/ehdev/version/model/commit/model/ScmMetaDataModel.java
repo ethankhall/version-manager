@@ -2,6 +2,9 @@ package io.ehdev.version.model.commit.model;
 
 
 import io.ehdev.version.model.commit.ScmMetaData;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.hibernate.annotations.Type;
 
 import javax.persistence.*;
@@ -43,6 +46,11 @@ public class ScmMetaDataModel implements ScmMetaData {
         return uuid.toString();
     }
 
+    @Transient
+    public UUID getUuidAsUUID() {
+        return uuid;
+    }
+
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
@@ -53,4 +61,39 @@ public class ScmMetaDataModel implements ScmMetaData {
         return versionBumperModel.getBumperName();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ScmMetaDataModel that = (ScmMetaDataModel) o;
+
+        return new EqualsBuilder()
+            .append(id, that.id)
+            .append(uuid, that.uuid)
+            .append(repoName, that.repoName)
+            .append(versionBumperModel, that.versionBumperModel)
+            .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+            .append(id)
+            .append(uuid)
+            .append(repoName)
+            .append(versionBumperModel)
+            .toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this)
+            .append("id", id)
+            .append("uuid", uuid)
+            .append("repoName", repoName)
+            .append("versionBumperModel", versionBumperModel)
+            .toString();
+    }
 }

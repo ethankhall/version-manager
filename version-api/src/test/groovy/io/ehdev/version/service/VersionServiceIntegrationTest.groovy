@@ -1,6 +1,9 @@
 package io.ehdev.version.service
 import io.ehdev.version.ApiTestConfiguration
-import io.ehdev.version.TestDataLoader
+import io.ehdev.version.TestDataUtil
+import io.ehdev.version.model.repository.CommitModelRepository
+import io.ehdev.version.model.repository.ScmMetaDataRepository
+import io.ehdev.version.model.repository.VersionBumperRepository
 import io.ehdev.version.service.model.VersionCreation
 import io.ehdev.version.service.model.VersionSearch
 import org.springframework.beans.factory.annotation.Autowired
@@ -8,7 +11,6 @@ import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
-import spock.lang.Unroll
 
 import javax.transaction.Transactional
 
@@ -18,39 +20,63 @@ import javax.transaction.Transactional
 class VersionServiceIntegrationTest extends Specification {
 
     @Autowired
-    private TestDataLoader testDataLoader;
-
-    @Autowired
     VersionService versionService
 
-    @Unroll
-    def 'can get next version, when commit is #commitId'() {
-        setup:
-        testDataLoader.loadData()
+    @Autowired
+    VersionBumperRepository versionBumperRepository
 
+    @Autowired
+    ScmMetaDataRepository scmMetaDataRepository
+
+    @Autowired
+    CommitModelRepository commitRepository
+
+    TestDataUtil testDataUtil
+
+    def setup() {
+        testDataUtil = new TestDataUtil(versionBumperRepository, scmMetaDataRepository, commitRepository)
+    }
+
+    def 'can get next version, when commit is #commitId'() {
         when:
-        def version = versionService.getVersionForRepo(new VersionSearch(repo, [commitId]))
+        def receipt = testDataUtil.createCommitWithNoChildren()
+        def version = versionService.getVersionForRepo(new VersionSearch(receipt.scmMetaDataModel.uuid, [receipt.commits[0].commitId]))
 
         then:
         noExceptionThrown()
-        version.getVersionString() == expectedVersion
+        version.getVersionString() == '1.2.4-SNAPSHOT'
 
-        where:
-        commitId                             | repo          | expectedVersion
-        TestDataLoader.NO_CHILDREN_COMMIT_ID | 'no-children' | '1.2.4-SNAPSHOT'
-        TestDataLoader.PARENT_COMMIT_ID      | 'next'        | '1.2.4-SNAPSHOT'
-        TestDataLoader.CHILD_COMMIT_ID       | 'next'        | '1.2.5-SNAPSHOT'
-        TestDataLoader.BUGFIX_COMMIT_ID      | 'build'       | '1.2.3.2-SNAPSHOT'
+        when:
+        receipt = testDataUtil.createCommitWithNext()
+        version = versionService.getVersionForRepo(new VersionSearch(receipt.scmMetaDataModel.uuid, [receipt.commits[0].commitId]))
+        def children = versionService.getVersionForRepo(new VersionSearch(receipt.scmMetaDataModel.uuid, [receipt.commits[1].commitId]))
+
+        then:
+        noExceptionThrown()
+        version.getVersionString() == '1.2.4-SNAPSHOT'
+        children.getVersionString() == '1.2.5-SNAPSHOT'
+
+        when:
+        receipt = testDataUtil.createWithNextAndBuildCommits()
+        version = versionService.getVersionForRepo(new VersionSearch(receipt.scmMetaDataModel.uuid, [receipt.commits[0].commitId]))
+        children = versionService.getVersionForRepo(new VersionSearch(receipt.scmMetaDataModel.uuid, [receipt.commits[1].commitId]))
+        def build = versionService.getVersionForRepo(new VersionSearch(receipt.scmMetaDataModel.uuid, [receipt.commits[2].commitId]))
+
+        then:
+        noExceptionThrown()
+        version.getVersionString() == '1.2.4-SNAPSHOT'
+        children.getVersionString() == '1.2.5-SNAPSHOT'
+        build.getVersionString() == '1.2.3.2-SNAPSHOT'
     }
 
     def 'will claim good versions'() {
         setup:
-        testDataLoader.loadData()
+        def receipt = testDataUtil.createCommitWithNext()
 
         when:
         def creation = new VersionCreation()
-        creation.setParentCommitId(TestDataLoader.PARENT_COMMIT_ID)
-        creation.setRepoId('next')
+        creation.setParentCommitId(receipt.commits[0].commitId)
+        creation.setRepoId(receipt.scmMetaDataModel.uuid)
         creation.setCommitMessage('normal message')
         def commits = (0..9).collect {
             String newCommitId = 'thisCommit' + it

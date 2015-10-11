@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.UUID;
 
 @Service
 @Transactional
@@ -38,9 +39,10 @@ public class VersionManager {
     public RepositoryCommit claimVersion(CommitDetails commitDetails) {
         String parentCommitId = commitDetails.getParentCommitId();
         log.debug("[{}] Parent Commit ID: {}", commitDetails.getCommitId(), parentCommitId);
+        UUID repoUuid = UUID.fromString(commitDetails.getScmRepositoryId());
 
-        RepositoryCommitModel parentCommit = commitRepository.findByCommitIdAndRepoId(parentCommitId, commitDetails.getScmRepositoryId());
-        if(parentCommit == null && commitRepository.countByRepoId(commitDetails.getScmRepositoryId()) == 0) {
+        RepositoryCommitModel parentCommit = commitRepository.findByCommitIdAndRepoId(parentCommitId, repoUuid);
+        if(parentCommit == null && commitRepository.countByRepoId(repoUuid) == 0) {
             parentCommit = commitRepository.save(new RepositoryCommitModel("00000000", new DefaultCommitVersion(0, 0, 0)));
         } else if(parentCommit == null) {
             throw new RuntimeException();
@@ -50,7 +52,7 @@ public class VersionManager {
         NextVersion nextVersion = versionBumper.createNextVersion(parentCommit, commitDetails);
 
         RepositoryCommitModel nextCommit = new RepositoryCommitModel(commitDetails.getCommitId(), nextVersion.getCommitVersion());
-        ScmMetaDataModel scmMetaData = scmMetaDataRepository.findByRepoName(commitDetails.getScmRepositoryId());
+        ScmMetaDataModel scmMetaData = scmMetaDataRepository.findByUuid(repoUuid);
         nextCommit.setScmMetaDataModel(scmMetaData);
 
         if(nextVersion.getType() == NextVersion.Type.NEXT) {

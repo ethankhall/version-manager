@@ -53,11 +53,6 @@ public class SemverVersionBumper implements VersionBumper {
         }
     }
 
-    @Override
-    public String name() {
-        return SemverVersionBumper.class.getSimpleName();
-    }
-
     VersionGroup findVersionGroupForBump(CommitDetails commitDetails) {
         for (VersionGroup versionGroup : VersionGroup.values()) {
             if(commitDetails.messageContains(new SquareBracketMatcher(versionGroup))) {

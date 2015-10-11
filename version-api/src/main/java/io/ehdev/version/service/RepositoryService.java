@@ -6,7 +6,7 @@ import io.ehdev.version.model.repository.ScmMetaDataRepository;
 import io.ehdev.version.model.repository.VersionBumperRepository;
 import io.ehdev.version.service.exception.RepoNameMustBeLongerThanFive;
 import io.ehdev.version.service.exception.UnableToFindRepo;
-import io.ehdev.version.service.exception.UnknownBumperException;
+import io.ehdev.version.manager.exception.UnknownBumperException;
 import io.ehdev.version.service.model.RepoCreation;
 import io.ehdev.version.service.model.RepoResponse;
 import org.apache.commons.lang3.StringUtils;
@@ -54,7 +54,7 @@ public class RepositoryService {
 
     @RequestMapping(method = RequestMethod.GET, value = "/{repoId}")
     public RepoResponse getByRepoId(@PathVariable("repoId") String repoId) {
-        ScmMetaDataModel metaDataModel = scmMetaDataRepository.findByUuid(repoId);
+        ScmMetaDataModel metaDataModel = scmMetaDataRepository.findByUuid(UUID.fromString(repoId));
         if(null == metaDataModel) {
             throw new UnableToFindRepo();
         }

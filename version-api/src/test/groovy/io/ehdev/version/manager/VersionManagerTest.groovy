@@ -1,10 +1,11 @@
 package io.ehdev.version.manager
 import io.ehdev.version.ApiTestConfiguration
-import io.ehdev.version.TestDataLoader
+import io.ehdev.version.TestDataUtil
 import io.ehdev.version.model.commit.RepositoryCommit
 import io.ehdev.version.model.commit.internal.DefaultCommitDetails
 import io.ehdev.version.model.repository.CommitModelRepository
 import io.ehdev.version.model.repository.ScmMetaDataRepository
+import io.ehdev.version.model.repository.VersionBumperRepository
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.test.annotation.Rollback
@@ -13,13 +14,12 @@ import spock.lang.Specification
 
 import javax.transaction.Transactional
 
+import static io.ehdev.version.TestDataUtil.createNewCommit
+
 @Transactional
 @Rollback(true)
 @ContextConfiguration(classes = [ApiTestConfiguration.class], loader = SpringApplicationContextLoader.class)
 public class VersionManagerTest extends Specification {
-
-    @Autowired
-    private TestDataLoader testDataLoader;
 
     @Autowired
     private CommitModelRepository commitRepository;
@@ -28,25 +28,28 @@ public class VersionManagerTest extends Specification {
     private ScmMetaDataRepository scmMetaDataRepository;
 
     @Autowired
+    private VersionBumperRepository versionBumperRepository;
+
+    @Autowired
     private VersionBumperManager versionBumperManager
 
     private VersionManager versionManager;
 
+    private TestDataUtil testDataUtil;
+
     def setup() {
         versionManager = new VersionManager(commitRepository, scmMetaDataRepository, versionBumperManager);
-        testDataLoader.loadData();
+        testDataUtil = new TestDataUtil(versionBumperRepository, scmMetaDataRepository, commitRepository)
     }
 
     def 'will create next commit, when no children commits are there'() {
         setup:
-        DefaultCommitDetails details = new DefaultCommitDetails("message?",
-            "child-sha",
-            TestDataLoader.NO_CHILDREN_COMMIT_ID,
-            'no-children');
+        def testDataReceipt = testDataUtil.createCommitWithNoChildren()
+        DefaultCommitDetails childCommit = createNewCommit(testDataReceipt)
 
         when:
-        RepositoryCommit claimedVersion = versionManager.claimVersion(details);
-        RepositoryCommit parentCommit = commitRepository.findByCommitIdAndRepoId(TestDataLoader.NO_CHILDREN_COMMIT_ID, 'no-children')
+        RepositoryCommit claimedVersion = versionManager.claimVersion(childCommit);
+        RepositoryCommit parentCommit = commitRepository.findByCommitIdAndRepoId(testDataReceipt.commits.first().commitId, testDataReceipt.getScmMetaDataModel().getUuidAsUUID())
 
         then:
         claimedVersion != null
@@ -56,15 +59,13 @@ public class VersionManagerTest extends Specification {
 
     def 'will create bump commit, when next child exists'() {
         setup:
-        DefaultCommitDetails details = new DefaultCommitDetails("message?",
-            "child-sha",
-            TestDataLoader.PARENT_COMMIT_ID,
-            'next');
+        def testDataReceipt = testDataUtil.createCommitWithNext()
+        DefaultCommitDetails details = createNewCommit(testDataReceipt)
 
         when:
         RepositoryCommit claimedVersion = versionManager.claimVersion(details);
-        RepositoryCommit parentCommit = commitRepository.findByCommitIdAndRepoId(TestDataLoader.PARENT_COMMIT_ID, 'next')
-        RepositoryCommit nextCommit = commitRepository.findByCommitIdAndRepoId(TestDataLoader.CHILD_COMMIT_ID, 'next')
+        RepositoryCommit parentCommit = commitRepository.findByCommitIdAndRepoId(testDataReceipt.commits.first().commitId, testDataReceipt.getScmMetaDataModel().getUuidAsUUID())
+        RepositoryCommit nextCommit = commitRepository.findByCommitIdAndRepoId(testDataReceipt.commits.last().commitId, testDataReceipt.getScmMetaDataModel().getUuidAsUUID())
 
         then:
         claimedVersion != null
