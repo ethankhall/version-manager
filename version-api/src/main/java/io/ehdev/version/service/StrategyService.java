@@ -16,7 +16,7 @@ import java.util.Map;
 @Transactional
 @RestController
 @RequestMapping("/api/strategy")
-public class VersionStrategyService {
+public class StrategyService {
 
     @Autowired
     VersionBumperRepository versionBumperRepository;

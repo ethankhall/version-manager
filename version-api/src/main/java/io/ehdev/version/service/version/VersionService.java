@@ -1,4 +1,4 @@
-package io.ehdev.version.service;
+package io.ehdev.version.service.version;
 
 import io.ehdev.version.manager.VersionBumperManager;
 import io.ehdev.version.manager.VersionManager;
@@ -14,10 +14,7 @@ import io.ehdev.version.service.model.VersionCreation;
 import io.ehdev.version.service.model.VersionResponse;
 import io.ehdev.version.service.model.VersionSearch;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
 import java.util.Collections;
@@ -41,8 +38,8 @@ public class VersionService {
     @Autowired
     ScmMetaDataRepository scmMetaDataRepository;
 
-    @RequestMapping(value = "/search", method = RequestMethod.POST)
-    VersionResponse getVersionForRepo(@RequestBody VersionSearch versionSearch) {
+    @RequestMapping(value = "{repoId}/search", method = RequestMethod.POST)
+    VersionResponse getVersionForRepo(@PathVariable("repoId") String repoId, @RequestBody VersionSearch versionSearch) {
         UUID repoId = UUID.fromString(versionSearch.getRepoId());
         ScmMetaDataModel metaDataModel = scmMetaDataRepository.findByUuid(repoId);
 

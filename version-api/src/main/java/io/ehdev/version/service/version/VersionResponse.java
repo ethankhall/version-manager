@@ -1,4 +1,4 @@
-package io.ehdev.version.service.model;
+package io.ehdev.version.service.version;
 
 import io.ehdev.version.model.commit.CommitVersion;
 
