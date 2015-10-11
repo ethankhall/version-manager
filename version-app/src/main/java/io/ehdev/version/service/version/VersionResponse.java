@@ -1,7 +1,7 @@
 package io.ehdev.version.service.version;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import io.ehdev.version.model.commit.CommitVersion;
+import io.ehdev.version.model.CommitVersion;
 
 import java.util.List;
 

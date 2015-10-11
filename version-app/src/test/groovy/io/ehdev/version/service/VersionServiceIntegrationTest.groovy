@@ -1,9 +1,9 @@
 package io.ehdev.version.service
 import io.ehdev.version.ApiTestConfiguration
 import io.ehdev.version.TestDataUtil
-import io.ehdev.version.model.repository.CommitModelRepository
-import io.ehdev.version.model.repository.ScmMetaDataRepository
-import io.ehdev.version.model.repository.VersionBumperRepository
+import io.ehdev.conrad.model.repository.CommitModelRepository
+import io.ehdev.conrad.model.repository.ScmMetaDataRepository
+import io.ehdev.conrad.model.repository.VersionBumperRepository
 import io.ehdev.version.service.model.VersionCreation
 import io.ehdev.version.service.model.VersionSearch
 import io.ehdev.version.service.version.VersionService

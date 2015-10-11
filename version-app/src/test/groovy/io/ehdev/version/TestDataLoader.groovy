@@ -1,13 +1,13 @@
 package io.ehdev.version;
 
-import io.ehdev.version.model.commit.internal.DefaultCommitVersion;
-import io.ehdev.version.model.commit.model.RepositoryCommitModel;
-import io.ehdev.version.model.commit.model.ScmMetaDataModel;
-import io.ehdev.version.model.commit.model.VersionBumperModel;
-import io.ehdev.version.model.repository.CommitModelRepository;
-import io.ehdev.version.model.repository.ScmMetaDataRepository;
-import io.ehdev.version.model.repository.VersionBumperRepository;
-import io.ehdev.version.model.update.semver.SemverVersionBumper;
+
+import io.ehdev.conrad.model.commit.model.RepositoryCommitModel;
+import io.ehdev.conrad.model.commit.model.ScmMetaDataModel;
+import io.ehdev.conrad.model.commit.model.VersionBumperModel;
+import io.ehdev.conrad.model.repository.CommitModelRepository;
+import io.ehdev.conrad.model.repository.ScmMetaDataRepository;
+import io.ehdev.conrad.model.repository.VersionBumperRepository;
+import io.ehdev.conrad.model.update.semver.SemverVersionBumper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

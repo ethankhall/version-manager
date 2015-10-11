@@ -2,8 +2,7 @@ package io.ehdev.version.service.version;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.ehdev.version.manager.VersionManager;
-import io.ehdev.version.model.commit.CommitVersion;
-import io.ehdev.version.model.commit.internal.DefaultCommitVersion;
+import io.ehdev.version.model.CommitVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

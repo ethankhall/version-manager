@@ -1,6 +1,6 @@
 package io.ehdev.version.service.model;
 
-import io.ehdev.version.model.commit.internal.DefaultCommitDetails;
+import io.ehdev.conrad.model.commit.internal.DefaultCommitDetails;
 
 public class VersionCreation extends VersionSearch {
 

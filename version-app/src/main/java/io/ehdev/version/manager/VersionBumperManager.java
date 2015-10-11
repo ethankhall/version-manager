@@ -1,9 +1,9 @@
 package io.ehdev.version.manager;
 
 import io.ehdev.version.manager.exception.UnknownBumperException;
-import io.ehdev.version.model.commit.model.RepositoryCommitModel;
-import io.ehdev.version.model.commit.model.VersionBumperModel;
-import io.ehdev.version.model.repository.VersionBumperRepository;
+import io.ehdev.conrad.model.commit.model.RepositoryCommitModel;
+import io.ehdev.conrad.model.commit.model.VersionBumperModel;
+import io.ehdev.conrad.model.repository.VersionBumperRepository;
 import io.ehdev.version.model.update.VersionBumper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

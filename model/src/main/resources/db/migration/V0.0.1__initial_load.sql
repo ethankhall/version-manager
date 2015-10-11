@@ -24,4 +24,4 @@ CREATE TABLE repository_commit (
 );
 
 INSERT INTO version_bumper (bumper_name, class_name, description)
-VALUES ('semver', 'io.ehdev.version.model.update.semver.SemverVersionBumper', 'SemVer bumper');
+VALUES ('semver', 'SemverVersionBumper', 'SemVer bumper');
