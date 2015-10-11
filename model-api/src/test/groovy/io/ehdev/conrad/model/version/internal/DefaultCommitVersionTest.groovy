@@ -1,4 +1,4 @@
-package io.ehdev.conrad.model.internal
+package io.ehdev.conrad.model.version.internal
 import spock.lang.Specification
 
 class DefaultCommitVersionTest extends Specification {

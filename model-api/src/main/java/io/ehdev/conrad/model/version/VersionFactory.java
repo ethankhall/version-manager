@@ -1,6 +1,6 @@
-package io.ehdev.conrad.model;
+package io.ehdev.conrad.model.version;
 
-import io.ehdev.conrad.model.internal.DefaultCommitVersion;
+import io.ehdev.conrad.model.version.internal.DefaultCommitVersion;
 
 import java.util.Arrays;
 

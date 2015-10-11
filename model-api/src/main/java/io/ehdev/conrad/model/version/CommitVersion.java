@@ -1,4 +1,4 @@
-package io.ehdev.conrad.model;
+package io.ehdev.conrad.model.version;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public interface CommitVersion extends Comparable<CommitVersion> {
 
     List<Integer> getVersionGroup();
 
-    Integer getGroup(VersionGroup versionGroup);
+    Integer getGroup(VersionGroupCapture versionGroup);
 
     String getPostFix();
 }
