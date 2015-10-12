@@ -1,0 +1,42 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'spring-boot'
+
+dependencies {
+    compile project(':model-api')
+
+    compile 'org.springframework.boot:spring-boot'
+    compile 'javax.el:javax.el-api:3.0.0'
+
+    // Hibernate
+    compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
+    compile 'org.hibernate:hibernate-validator:5.2.1.Final'
+    compile 'org.hibernate:hibernate-java8:5.0.1.Final'
+    compile 'org.hibernate.common:hibernate-commons-annotations:5.0.0.Final'
+    compile 'org.hibernate:hibernate-entitymanager:5.0.1.Final'
+
+    // database/jpa/other
+    compile 'javax.transaction:javax.transaction-api:1.2'
+    compile 'org.springframework.data:spring-data-jpa:1.9.0.RELEASE'
+    compile "org.springframework.boot:spring-boot-starter-data-jpa"
+
+    // database
+    compile 'com.zaxxer:HikariCP:2.4.1'
+    compile 'org.postgresql:postgresql:9.4-1203-jdbc42'
+    compile 'org.flywaydb:flyway-core:3.2.1'
+
+    testCompile 'org.codehaus.groovy:groovy-all:2.4.5'
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    testCompile 'org.spockframework:spock-spring:1.0-groovy-2.4'
+
+    testCompile 'org.springframework:spring-test:4.2.1.RELEASE'
+}
