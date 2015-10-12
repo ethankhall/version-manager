@@ -1,1 +1,5 @@
-include ':model', ':version-api', ':gradle-plugin'
+include ':version-app'
+include ':model-api'
+include ':gradle-plugin'
+include ':database'
+include ':test-utils'

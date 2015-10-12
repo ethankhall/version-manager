@@ -1,0 +1,33 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
+    }
+}
+
+apply plugin: 'spring-boot'
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+dependencies {
+    compile project(":database")
+    compile project(":model-api")
+    compile("org.springframework.boot:spring-boot-starter-web") {
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+    }
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+    compile "org.springframework.boot:spring-boot-starter-jetty"
+    compile 'com.google.code.findbugs:jsr305:3.0.1'
+
+    testCompile project(":test-utils")
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    testCompile 'org.springframework:spring-test:4.2.1.RELEASE'
+    testCompile 'org.spockframework:spock-spring:1.0-groovy-2.4'
+    testCompile 'org.codehaus.groovy:groovy-all:2.4.4'
+    testCompile 'cglib:cglib:3.1'
+    testCompile 'org.objenesis:objenesis:2.2'
+    testCompile 'com.jayway.jsonpath:json-path:2.0.0'
+    testCompile 'org.ow2.asm:asm:5.0.4'
+}

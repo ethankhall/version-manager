@@ -1,0 +1,28 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
+    }
+}
+
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'spring-boot'
+
+dependencies {
+    compile 'org.springframework:spring-context:4.2.1.RELEASE'
+
+    compile 'org.slf4j:slf4j-api:1.7.12'
+    compile 'org.apache.commons:commons-lang3:3.4'
+
+    testCompile 'org.codehaus.groovy:groovy-all:2.4.5'
+    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
+    testCompile 'org.spockframework:spock-spring:1.0-groovy-2.4'
+
+    testCompile 'org.springframework.boot:spring-boot'
+    testCompile 'org.springframework:spring-test:4.2.1.RELEASE'
+
+    testCompile 'de.sven-jacobs:loremipsum:1.0'
+}
