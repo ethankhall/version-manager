@@ -5,7 +5,7 @@ import io.ehdev.conrad.backend.commit.CommitDetails;
 import io.ehdev.conrad.backend.commit.matcher.SquareBracketCommitMatcher;
 import io.ehdev.conrad.backend.commit.matcher.WildcardSquareBracketCommitMatcher;
 import io.ehdev.conrad.backend.version.commit.CommitVersion;
-import io.ehdev.conrad.backend.version.commit.internal.StandardVersionGroupBump;
+import io.ehdev.conrad.backend.version.commit.StandardVersionGroupBump;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,6 @@
 package io.ehdev.conrad.backend.version.commit
 
 import io.ehdev.conrad.backend.version.commit.internal.DefaultCommitVersion
-import io.ehdev.conrad.backend.version.commit.internal.StandardVersionGroupBump
 import spock.lang.Specification
 import spock.lang.Unroll
 

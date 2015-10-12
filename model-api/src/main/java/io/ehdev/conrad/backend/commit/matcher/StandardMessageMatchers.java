@@ -1,6 +1,6 @@
 package io.ehdev.conrad.backend.commit.matcher;
 
-import io.ehdev.conrad.backend.version.commit.internal.StandardVersionGroupBump;
+import io.ehdev.conrad.backend.version.commit.StandardVersionGroupBump;
 
 import java.util.Arrays;
 import java.util.List;

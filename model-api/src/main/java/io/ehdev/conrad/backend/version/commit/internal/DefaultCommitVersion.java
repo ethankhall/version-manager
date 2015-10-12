@@ -3,6 +3,7 @@ package io.ehdev.conrad.backend.version.commit.internal;
 import io.ehdev.conrad.backend.version.commit.CommitVersion;
 import io.ehdev.conrad.backend.version.commit.CommitVersionBumper;
 import io.ehdev.conrad.backend.version.commit.CommitVersionGroup;
+import io.ehdev.conrad.backend.version.commit.StandardVersionGroupBump;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 

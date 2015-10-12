@@ -21,4 +21,7 @@ public interface CommitModelRepository extends JpaRepository<CommitModel, Long> 
 
     @Query("select count(rcm) from CommitModel rcm join rcm.vcsRepoModel repo where repo.uuid = :repoId ")
     long countByRepoId(@Param("repoId") UUID repoId);
+
+    @Query("select rcm from CommitModel rcm where rcm.vcsRepoModel = :vcsRepoModel")
+    List<CommitModel> findCommits(@Param("vcsRepoModel") VcsRepoModel vcsRepoModel);
 }

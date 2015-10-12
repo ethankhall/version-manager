@@ -1,4 +1,6 @@
 package io.ehdev.conrad.backend.version.commit.internal
+
+import io.ehdev.conrad.backend.version.commit.StandardVersionGroupBump
 import spock.lang.Specification
 
 class DefaultCommitVersionTest extends Specification {
