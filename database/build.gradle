@@ -40,3 +40,7 @@ dependencies {
 
     testCompile 'org.springframework:spring-test:4.2.1.RELEASE'
 }
+
+bootRepackage {
+    enabled = false
+}

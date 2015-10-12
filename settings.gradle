@@ -1,4 +1,3 @@
-include ':model'
 include ':version-app'
 include ':model-api'
 include ':gradle-plugin'
