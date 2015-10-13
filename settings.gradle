@@ -1,4 +1,4 @@
-include ':version-app'
+include ':webapp'
 include ':model-api'
 include ':gradle-plugin'
 include ':database'
