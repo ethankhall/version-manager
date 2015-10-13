@@ -9,7 +9,7 @@ import org.hibernate.annotations.Type;
 import javax.persistence.*;
 import java.util.UUID;
 
-@Table(name = "scm_meta_data")
+@Table(name = "vcs_repo_data")
 @Entity
 public class VcsRepoModel implements UniqueModel {
 
@@ -24,6 +24,9 @@ public class VcsRepoModel implements UniqueModel {
     @Column(unique = true, name = "repo_name")
     String repoName;
 
+    @Column(name = "url")
+    String url;
+
     @JoinColumn(name = "version_bumper")
     @ManyToOne(optional = false)
     VersionBumperModel versionBumperModel;
@@ -36,7 +39,6 @@ public class VcsRepoModel implements UniqueModel {
 
     public VcsRepoModel() {
     }
-
 
     @Override
     public long getId() {
@@ -71,6 +73,19 @@ public class VcsRepoModel implements UniqueModel {
     @Transient
     public String getVersionBumperName() {
         return versionBumperModel.getBumperName();
+    }
+
+    @Transient
+    public String getVersionBumpterClassName() {
+        return versionBumperModel.getClassName();
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Override

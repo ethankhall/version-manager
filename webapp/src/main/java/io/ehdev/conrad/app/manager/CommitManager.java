@@ -52,7 +52,7 @@ public class CommitManager {
         VersionBumper versionBumper = bumperManager.findVersionBumper(repoId);
 
         CommitModel commit = findCommit(repoId, versionCreateModel);
-        if(commit == null && commitModelRepository.countByRepoId(repoId) == 0) {
+        if(commit == null && commitModelRepository.countByRepoId(repoId) != 0) {
             throw new VersionNotFoundException();
         }
 

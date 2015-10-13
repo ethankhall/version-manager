@@ -30,12 +30,18 @@ public class BumperManager {
         bumperSet.forEach(bumper -> versionBumpers.put(bumper.getClass().getName(), bumper));
         this.vcsRepoRepository = vcsRepoRepository;
         this.versionBumperRepository = versionBumperRepository;
+
+        versionBumperRepository.findAll().forEach(bumper -> {
+            if (!versionBumpers.containsKey(bumper.getClassName())) {
+                throw new RuntimeException("Unable to find bumper " + bumper.getClassName());
+            }
+        });
     }
 
     @Nonnull
     public VersionBumper findVersionBumper(UUID repoId) {
         VcsRepoModel repo = vcsRepoRepository.findByUuid(repoId);
-        VersionBumper versionBumper = versionBumpers.get(repo.getVersionBumperName());
+        VersionBumper versionBumper = versionBumpers.get(repo.getVersionBumpterClassName());
         log.debug("Found {} for repo {}", versionBumper, repoId.toString());
 
         if (null == versionBumper) {
@@ -47,5 +53,9 @@ public class BumperManager {
 
     public List<VersionBumperModel> findAllVersionBumpers() {
         return versionBumperRepository.findAll();
+    }
+
+    public VersionBumperModel findByName(String bumperName) {
+        return versionBumperRepository.findByBumperName(bumperName);
     }
 }

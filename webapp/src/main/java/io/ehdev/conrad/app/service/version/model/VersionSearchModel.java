@@ -1,8 +1,10 @@
 package io.ehdev.conrad.app.service.version.model;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class VersionSearchModel {
+    @NotNull
     List<String> commits;
 
     public VersionSearchModel(List<String> commits) {

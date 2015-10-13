@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -42,7 +43,7 @@ public class VersionService {
     @JsonView(VersionView.ReleasedVersionView.class)
     @RequestMapping(value = "/{repoId}", method = RequestMethod.POST)
     VersionResponseModel claimVersion(@PathVariable("repoId") String repoId,
-                                      @RequestBody VersionCreateModel versionCreateModel) {
+                                      @Valid @RequestBody VersionCreateModel versionCreateModel) {
         UUID repoIdUuid = UUID.fromString(repoId);
         CommitModel currentCommit = commitManager.createCommit(repoIdUuid, versionCreateModel);
 
