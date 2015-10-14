@@ -26,3 +26,8 @@ dependencies {
 
     testCompile 'de.sven-jacobs:loremipsum:1.0'
 }
+
+bootRepackage {
+    enabled = false
+    mainClass = 'com.foo.Bar'
+}

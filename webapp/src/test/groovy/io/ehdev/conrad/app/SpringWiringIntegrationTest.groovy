@@ -2,12 +2,15 @@ package io.ehdev.conrad.app
 
 import io.ehdev.conrad.app.service.strategy.StrategyService
 import io.ehdev.conrad.app.service.version.VersionService
+import io.ehdev.conrad.test.IntegrationTestGroup
+import org.junit.experimental.categories.Category
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.boot.test.WebIntegrationTest
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 
+@Category(IntegrationTestGroup)
 @ContextConfiguration(classes = [MainApplication.class], loader = SpringApplicationContextLoader.class)
 @WebIntegrationTest(["server.port=0", "management.port=0"])
 class SpringWiringIntegrationTest extends Specification {

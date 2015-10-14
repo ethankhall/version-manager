@@ -4,8 +4,6 @@ import io.ehdev.conrad.app.manager.RepoManager;
 import io.ehdev.conrad.app.service.repo.model.RepoCreateModel;
 import io.ehdev.conrad.app.service.repo.model.RepoResponseModel;
 import io.ehdev.conrad.database.model.VcsRepoModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,8 +20,6 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/repo")
 public class RepoService {
 
-    private static final Logger logger = LoggerFactory.getLogger(RepoService.class);
-
     private final RepoManager repoManager;
 
     @Autowired
@@ -33,8 +29,7 @@ public class RepoService {
 
     @RequestMapping(method = RequestMethod.POST)
     public RepoResponseModel createRepo(@Valid @RequestBody RepoCreateModel repoCreateModel) {
-        logger.info("Repo Model: {}", repoCreateModel);
-        VcsRepoModel repo = repoManager.createRepo(repoCreateModel.getName(), repoCreateModel.getBumper());
+        VcsRepoModel repo = repoManager.createRepo(repoCreateModel.getName(), repoCreateModel.getBumper(), repoCreateModel.getUrl());
         return new RepoResponseModel(repo);
     }
 

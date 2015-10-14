@@ -17,4 +17,13 @@ repositories {
 dependencies {
     compile project(":database")
     compile 'org.codehaus.groovy:groovy-all:2.4.5'
+    compile 'com.jayway.jsonpath:json-path:2.0.0'
+    compile 'org.springframework:spring-test:4.2.1.RELEASE'
+    compile 'org.springframework:spring-web:4.2.1.RELEASE'
+    compile 'org.spockframework:spock-spring:1.0-groovy-2.4'
+}
+
+bootRepackage {
+    enabled = false
+    mainClass = 'com.foo.Bar'
 }

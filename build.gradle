@@ -3,6 +3,7 @@ allprojects {
 }
 
 subprojects {
+    buildDir = new File(rootProject.getProjectDir(), "build/${project.name}")
     apply plugin: 'java'
 
     repositories {
@@ -10,6 +11,28 @@ subprojects {
     }
 
     sourceCompatibility = '1.8'
+
+    if(project.name != 'test-utils') {
+        dependencies {
+            testCompile project(':test-utils')
+        }
+    }
+
+    test {
+        useJUnit {
+            excludeCategories 'io.ehdev.conrad.test.IntegrationTestGroup'
+        }
+    }
+
+    def integTest = tasks.create('integTest', Test) {
+        shouldRunAfter(tasks.test)
+        reports.html.destination = file("$buildDir/reports/intTests")
+        useJUnit {
+            includeCategories 'io.ehdev.conrad.test.IntegrationTestGroup'
+        }
+    }
+
+    tasks.check.dependsOn(integTest)
 }
 
 idea.project.ipr {
