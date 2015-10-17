@@ -1,6 +1,9 @@
 package io.ehdev.conrad.app.manager;
 
+import io.ehdev.conrad.app.exception.VersionConflictException;
 import io.ehdev.conrad.app.exception.VersionNotFoundException;
+import io.ehdev.conrad.app.service.version.model.VersionCreateModel;
+import io.ehdev.conrad.app.service.version.model.VersionSearchModel;
 import io.ehdev.conrad.backend.version.bumper.VersionBumper;
 import io.ehdev.conrad.backend.version.commit.CommitVersion;
 import io.ehdev.conrad.backend.version.commit.VersionFactory;
@@ -8,8 +11,6 @@ import io.ehdev.conrad.database.model.CommitModel;
 import io.ehdev.conrad.database.model.VcsRepoModel;
 import io.ehdev.conrad.database.repository.CommitModelRepository;
 import io.ehdev.conrad.database.repository.VcsRepoRepository;
-import io.ehdev.conrad.app.service.version.model.VersionCreateModel;
-import io.ehdev.conrad.app.service.version.model.VersionSearchModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -44,7 +45,7 @@ public class CommitManager {
 
         Collections.sort(commits);
 
-        return !commits.isEmpty() ? commits.get(0) : null;
+        return !commits.isEmpty() ? commits.get(commits.size() - 1) : null;
     }
 
     public CommitModel createCommit(UUID repoId, VersionCreateModel versionCreateModel) {
@@ -57,6 +58,10 @@ public class CommitManager {
         }
 
         CommitVersion nextVersion = findNextVersion(versionCreateModel, versionBumper, commit);
+
+        if(commitModelRepository.findByRepoIdAndVersion(vcs, nextVersion) != null) {
+            throw new VersionConflictException(nextVersion.toVersionString());
+        }
 
         return commitModelRepository.save(new CommitModel(versionCreateModel.getCommitId(), vcs, nextVersion, commit));
     }

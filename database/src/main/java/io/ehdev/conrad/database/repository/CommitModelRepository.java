@@ -1,5 +1,6 @@
 package io.ehdev.conrad.database.repository;
 
+import io.ehdev.conrad.backend.version.commit.CommitVersion;
 import io.ehdev.conrad.database.model.CommitModel;
 import io.ehdev.conrad.database.model.VcsRepoModel;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -24,4 +25,7 @@ public interface CommitModelRepository extends JpaRepository<CommitModel, Long> 
 
     @Query("select rcm from CommitModel rcm where rcm.vcsRepoModel = :vcsRepoModel")
     List<CommitModel> findCommits(@Param("vcsRepoModel") VcsRepoModel vcsRepoModel);
+
+    @Query("select rcm from CommitModel rcm where rcm.vcsRepoModel = :vcsRepoModel and rcm.version = :version")
+    CommitModel findByRepoIdAndVersion(@Param("vcsRepoModel") VcsRepoModel vcsRepoModel, @Param("version") CommitVersion version);
 }

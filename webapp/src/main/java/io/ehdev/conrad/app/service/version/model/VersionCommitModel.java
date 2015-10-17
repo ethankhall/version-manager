@@ -6,7 +6,7 @@ import io.ehdev.conrad.database.model.CommitModel;
 
 import java.util.List;
 
-public class VersionResponseModel {
+public class VersionCommitModel {
 
     @JsonView(VersionView.ReleasedVersionView.class)
     final String commit;
@@ -20,18 +20,18 @@ public class VersionResponseModel {
     @JsonView(VersionView.UnreleasedVersionView.class)
     final String postfix;
 
-    public VersionResponseModel(String commit, CommitVersion commitVersion) {
+    public VersionCommitModel(String commit, CommitVersion commitVersion) {
         this.commit = commit;
         this.version = commitVersion.toVersionString();
         this.group = commitVersion.getVersionGroup();
         this.postfix = commitVersion.getPostFix();
     }
 
-    public VersionResponseModel(CommitModel commitModel) {
+    public VersionCommitModel(CommitModel commitModel) {
         this(commitModel.getCommitId(), commitModel.getVersion());
     }
 
-    public VersionResponseModel(CommitVersion commitVersion) {
+    public VersionCommitModel(CommitVersion commitVersion) {
         this(null, commitVersion);
     }
 }

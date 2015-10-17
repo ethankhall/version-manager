@@ -7,7 +7,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Entity
 @Table(
@@ -28,8 +28,8 @@ public class CommitModel implements UniqueModel, Comparable<CommitModel> {
     CommitVersion version;
 
     @CreatedDate
-    @Column(name = "created_at")
-    LocalDateTime createdAt;
+    @Column(name = "created_at", columnDefinition= "timestamptz")
+    ZonedDateTime createdAt;
 
     @JoinColumn(name = "vcs_repo")
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
@@ -89,13 +89,13 @@ public class CommitModel implements UniqueModel, Comparable<CommitModel> {
         this.parentCommit = parentCommit;
     }
 
-    public LocalDateTime getCreatedAt() {
+    public ZonedDateTime getCreatedAt() {
         return createdAt;
     }
 
     @PrePersist
     protected void onCreate() {
-        createdAt = LocalDateTime.now();
+        createdAt = ZonedDateTime.now();
     }
 
     @Override

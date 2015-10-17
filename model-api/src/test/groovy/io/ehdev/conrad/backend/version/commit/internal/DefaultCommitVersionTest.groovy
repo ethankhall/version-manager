@@ -1,6 +1,7 @@
 package io.ehdev.conrad.backend.version.commit.internal
 
 import io.ehdev.conrad.backend.version.commit.StandardVersionGroupBump
+import io.ehdev.conrad.backend.version.commit.VersionFactory
 import spock.lang.Specification
 
 class DefaultCommitVersionTest extends Specification {
@@ -21,5 +22,9 @@ class DefaultCommitVersionTest extends Specification {
         new DefaultCommitVersion(1, 0, 1).compareTo(new DefaultCommitVersion(1, 0, 0)) > 1
         new DefaultCommitVersion(1, 0, 0).compareTo(new DefaultCommitVersion(1, 0, 1)) < -1
         new DefaultCommitVersion(0, 0, 0, "SNAPSHOT").compareTo(new DefaultCommitVersion(0, 0, 0, "ALPHA")) != 0
+        VersionFactory.parse("1.2.3") > VersionFactory.parse("0.1.2")
+        VersionFactory.parse("1.2.3") > VersionFactory.parse("1.2.2")
+        VersionFactory.parse("0.1.2") < VersionFactory.parse("1.2.3")
+        VersionFactory.parse("1.2.2") < VersionFactory.parse("1.2.3")
     }
 }
