@@ -1,5 +1,6 @@
 package io.ehdev.conrad.app.service.repo.model;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import javax.validation.constraints.NotNull;
@@ -7,11 +8,14 @@ import javax.validation.constraints.NotNull;
 public class RepoCreateModel {
 
     @NotNull
+    @JsonView(ViewPermission.Public.class)
     private String name;
 
+    @JsonView(ViewPermission.Public.class)
     private String url;
 
     @NotNull
+    @JsonView(ViewPermission.Public.class)
     private String bumper;
 
     public RepoCreateModel(String name, String url, String bumper) {

@@ -2,6 +2,7 @@ package io.ehdev.conrad.app.manager;
 
 import io.ehdev.conrad.database.model.VcsRepoModel;
 import io.ehdev.conrad.database.repository.VcsRepoRepository;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,7 @@ public class RepoManager {
         VcsRepoModel vcsRepoModel = new VcsRepoModel();
         vcsRepoModel.setUuid(UUID.randomUUID());
         vcsRepoModel.setRepoName(repoName);
+        vcsRepoModel.setToken(RandomStringUtils.randomAlphanumeric(60));
         vcsRepoModel.setUrl(repoUrl);
 
         vcsRepoModel.setVersionBumperModel(bumperManager.findByName(bumperName));

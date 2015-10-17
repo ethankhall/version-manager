@@ -9,6 +9,7 @@ CREATE TABLE vcs_repo_data (
     id             BIGSERIAL PRIMARY KEY,
     uuid           UUID                                  NOT NULL,
     repo_name      TEXT UNIQUE                           NOT NULL,
+    repo_token     VARCHAR(60)                           NOT NULL,
     url            TEXT                                  NULL,
     version_bumper BIGINT REFERENCES version_bumper (id) NOT NULL
 );

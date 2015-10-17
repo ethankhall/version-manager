@@ -13,6 +13,9 @@ public class VersionCreateModel extends VersionSearchModel {
     @NotNull
     String commitId;
 
+    @NotNull
+    String token;
+
     public VersionCreateModel() {
     }
 
@@ -40,5 +43,13 @@ public class VersionCreateModel extends VersionSearchModel {
 
     public CommitDetails toCommitDetails() {
         return new DefaultCommitDetails(commitId, message);
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 }

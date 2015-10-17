@@ -1,5 +1,6 @@
 package io.ehdev.conrad.app.manager;
 
+import io.ehdev.conrad.app.exception.UnauthorizedTokenException;
 import io.ehdev.conrad.app.exception.VersionConflictException;
 import io.ehdev.conrad.app.exception.VersionNotFoundException;
 import io.ehdev.conrad.app.service.version.model.VersionCreateModel;
@@ -11,6 +12,7 @@ import io.ehdev.conrad.database.model.CommitModel;
 import io.ehdev.conrad.database.model.VcsRepoModel;
 import io.ehdev.conrad.database.repository.CommitModelRepository;
 import io.ehdev.conrad.database.repository.VcsRepoRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +52,9 @@ public class CommitManager {
 
     public CommitModel createCommit(UUID repoId, VersionCreateModel versionCreateModel) {
         VcsRepoModel vcs = vcsRepoRepository.findByUuid(repoId);
+        if (!StringUtils.equals(vcs.getToken(), versionCreateModel.getToken())) {
+            throw new UnauthorizedTokenException();
+        }
         VersionBumper versionBumper = bumperManager.findVersionBumper(repoId);
 
         CommitModel commit = findCommit(repoId, versionCreateModel);

@@ -9,7 +9,7 @@ public class BumpLowestWithSnapshot implements CommitVersionBumper {
     @Override
     public CommitVersion bump(int[] groups, String postfix) {
         int[] ints = Arrays.copyOf(groups, groups.length);
-        ints[groups.length]++;
+        ints[groups.length - 1]++;
 
         return new DefaultCommitVersion(ints, "SNAPSHOT");
     }

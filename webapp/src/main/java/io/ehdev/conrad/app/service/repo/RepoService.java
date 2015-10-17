@@ -1,8 +1,10 @@
 package io.ehdev.conrad.app.service.repo;
 
+import com.fasterxml.jackson.annotation.JsonView;
 import io.ehdev.conrad.app.manager.RepoManager;
 import io.ehdev.conrad.app.service.repo.model.RepoCreateModel;
 import io.ehdev.conrad.app.service.repo.model.RepoResponseModel;
+import io.ehdev.conrad.app.service.repo.model.ViewPermission;
 import io.ehdev.conrad.database.model.VcsRepoModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,12 +29,14 @@ public class RepoService {
         this.repoManager = repoManager;
     }
 
+    @JsonView(ViewPermission.Private.class)
     @RequestMapping(method = RequestMethod.POST)
     public RepoResponseModel createRepo(@Valid @RequestBody RepoCreateModel repoCreateModel) {
         VcsRepoModel repo = repoManager.createRepo(repoCreateModel.getName(), repoCreateModel.getBumper(), repoCreateModel.getUrl());
         return new RepoResponseModel(repo);
     }
 
+    @JsonView(ViewPermission.Public.class)
     @RequestMapping(method = RequestMethod.GET)
     public Map<String, RepoResponseModel> getAllRepos(){
         return repoManager.getAll().stream().collect(Collectors.toMap(VcsRepoModel::getUuid, RepoResponseModel::new));

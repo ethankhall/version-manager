@@ -27,6 +27,9 @@ public class VcsRepoModel implements UniqueModel {
     @Column(name = "url")
     String url;
 
+    @Column(name = "repo_token", nullable = false, length = 60)
+    String token;
+
     @JoinColumn(name = "version_bumper")
     @ManyToOne(optional = false)
     VersionBumperModel versionBumperModel;
@@ -88,6 +91,14 @@ public class VcsRepoModel implements UniqueModel {
         this.url = url;
     }
 
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -100,6 +111,8 @@ public class VcsRepoModel implements UniqueModel {
             .append(id, that.id)
             .append(uuid, that.uuid)
             .append(repoName, that.repoName)
+            .append(url, that.url)
+            .append(token, that.token)
             .append(versionBumperModel, that.versionBumperModel)
             .isEquals();
     }
@@ -110,6 +123,8 @@ public class VcsRepoModel implements UniqueModel {
             .append(id)
             .append(uuid)
             .append(repoName)
+            .append(url)
+            .append(token)
             .append(versionBumperModel)
             .toHashCode();
     }
@@ -120,6 +135,8 @@ public class VcsRepoModel implements UniqueModel {
             .append("id", id)
             .append("uuid", uuid)
             .append("repoName", repoName)
+            .append("url", url)
+            .append("token", token)
             .append("versionBumperModel", versionBumperModel)
             .toString();
     }
