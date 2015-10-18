@@ -1,6 +1,7 @@
 package io.ehdev.conrad.database.model;
 
 
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
@@ -38,6 +39,7 @@ public class VcsRepoModel implements UniqueModel {
         this.uuid = uuid;
         this.repoName = repoName;
         this.versionBumperModel = versionBumperModel;
+        this.token = RandomStringUtils.randomAlphanumeric(60);
     }
 
     public VcsRepoModel() {

@@ -26,7 +26,6 @@ public class RepoManager {
         VcsRepoModel vcsRepoModel = new VcsRepoModel();
         vcsRepoModel.setUuid(UUID.randomUUID());
         vcsRepoModel.setRepoName(repoName);
-        vcsRepoModel.setToken(RandomStringUtils.randomAlphanumeric(60));
         vcsRepoModel.setUrl(repoUrl);
 
         vcsRepoModel.setVersionBumperModel(bumperManager.findByName(bumperName));

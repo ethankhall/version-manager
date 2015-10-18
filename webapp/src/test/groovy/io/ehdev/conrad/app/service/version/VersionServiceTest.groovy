@@ -44,11 +44,11 @@ class VersionServiceTest extends Specification {
 
         then:
         json != null
-        json.size() == 10
-        commits.each {
-            assert json[it.commitId] != null
-            assert json[it.commitId]['commit'] == it.commitId
-            assert json[it.commitId]['version'] == it.getVersion().toString()
+        json.commits.size() == 10
+        commits.reverse().eachWithIndex { it, idx ->
+            assert json.commits[idx] != null
+            assert json.commits[idx]['commit'] == it.commitId
+            assert json.commits[idx]['version'] == it.getVersion().toString()
         }
     }
 
