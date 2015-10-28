@@ -32,6 +32,16 @@ subprojects {
         }
     }
 
+    tasks.withType(Test) {
+        testLogging {
+            afterSuite { desc, result ->
+                if (!desc.parent) { // will match the outermost suite
+                    println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
+                }
+            }
+        }
+    }
+
     tasks.check.dependsOn(integTest)
 }
 
