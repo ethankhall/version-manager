@@ -12,8 +12,8 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(":database")
-    compile project(":backend")
+    compile project(":web-service:database")
+    compile project(":web-service:backend")
     compile("org.springframework.boot:spring-boot-starter-web:1.2.7.RELEASE") {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
     }

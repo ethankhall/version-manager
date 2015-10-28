@@ -12,7 +12,7 @@ apply plugin: 'groovy'
 apply plugin: 'spring-boot'
 
 dependencies {
-    compile project(':backend')
+    compile project(':web-service:backend')
 
     compile 'org.springframework.boot:spring-boot'
     compile 'javax.el:javax.el-api:3.0.0'

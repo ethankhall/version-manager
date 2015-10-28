@@ -15,7 +15,7 @@ repositories {
 }
 
 dependencies {
-    compile project(":database")
+    compile project(":web-service:database")
     compile 'org.codehaus.groovy:groovy-all:2.4.5'
     compile 'com.jayway.jsonpath:json-path:2.0.0'
     compile 'org.springframework:spring-test:4.2.1.RELEASE'

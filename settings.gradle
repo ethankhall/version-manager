@@ -1,5 +1,10 @@
-include ':webapp'
-include ':backend'
-include ':gradle-plugin'
-include ':database'
+// Web services
+include ':web-service:webapp'
+include ':web-service:backend'
+include ':web-service:database'
+
+//Clients
+include ':clients:gradle-plugin'
+
+//Tests
 include ':test-utils'
