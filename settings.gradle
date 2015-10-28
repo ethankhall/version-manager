@@ -1,5 +1,5 @@
 include ':webapp'
-include ':model-api'
+include ':backend'
 include ':gradle-plugin'
 include ':database'
 include ':test-utils'
