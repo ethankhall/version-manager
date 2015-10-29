@@ -10,6 +10,9 @@ import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 
+import javax.transaction.Transactional
+
+@Transactional
 @Rollback(true)
 @Category(IntegrationTestGroup)
 @ContextConfiguration(classes = [DatabaseConfiguration.class], loader = SpringApplicationContextLoader.class)

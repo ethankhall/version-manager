@@ -9,7 +9,10 @@ import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 
+import javax.transaction.Transactional
+
 @Rollback(true)
+@Transactional
 @Category(IntegrationTestGroup)
 @ContextConfiguration(classes = [DatabaseConfiguration.class], loader = SpringApplicationContextLoader.class)
 class VcsRepoRepositoryTest extends Specification {

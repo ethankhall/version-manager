@@ -10,6 +10,9 @@ import org.springframework.boot.test.WebIntegrationTest
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 
+import javax.transaction.Transactional
+
+@Transactional
 @Category(IntegrationTestGroup)
 @ContextConfiguration(classes = [MainApplication.class], loader = SpringApplicationContextLoader.class)
 @WebIntegrationTest(["server.port=0", "management.port=0"])

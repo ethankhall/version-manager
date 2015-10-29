@@ -12,7 +12,7 @@ import org.apache.commons.lang3.RandomStringUtils
 public class PopulateTestUtils {
 
     public static VersionBumperModel createBumper(VersionBumperRepository repository) {
-        VersionBumperModel bumper = repository.findByBumperName(SemanticVersionBumper.class.getSimpleName());
+        VersionBumperModel bumper = repository.findByBumperName('semver');
         if(bumper == null) {
             return repository.save(new VersionBumperModel(SemanticVersionBumper.class.getName(),
                 SemanticVersionBumper.class.getSimpleName(),
@@ -23,7 +23,8 @@ public class PopulateTestUtils {
     }
 
     public static VcsRepoModel repo(VcsRepoRepository vcsRepoRepository, VersionBumperRepository repository) {
-        return vcsRepoRepository.save(new VcsRepoModel(UUID.randomUUID(), RandomStringUtils.randomAlphabetic(11), createBumper(repository)));
+        def model = new VcsRepoModel(UUID.randomUUID(), RandomStringUtils.randomAlphabetic(11), createBumper(repository))
+        return vcsRepoRepository.save(model);
     }
 
     public static VersionBumperModel stubBumper() {
@@ -38,6 +39,7 @@ public class PopulateTestUtils {
 
     public static CommitModel createCommit(CommitModelRepository commitModelRepository, VcsRepoModel vcsRepoModel,
                                            CommitVersion commitVersion, CommitModel parent) {
-        return commitModelRepository.save(new CommitModel(RandomStringUtils.randomAlphanumeric(40), vcsRepoModel, commitVersion, parent));
+        def model = new CommitModel(RandomStringUtils.randomAlphanumeric(40), vcsRepoModel, commitVersion, parent)
+        return commitModelRepository.save(model);
     }
 }
