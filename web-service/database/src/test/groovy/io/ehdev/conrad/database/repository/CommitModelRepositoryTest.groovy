@@ -3,7 +3,7 @@ import io.ehdev.conrad.backend.version.commit.VersionFactory
 import io.ehdev.conrad.database.config.DatabaseConfiguration
 import io.ehdev.conrad.database.model.VcsRepoModel
 import io.ehdev.conrad.test.IntegrationTestGroup
-import io.ehdev.conrad.test.database.repository.TestUtils
+import io.ehdev.conrad.test.database.repository.PopulateTestUtils
 import org.junit.experimental.categories.Category
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
@@ -28,11 +28,11 @@ class CommitModelRepositoryTest extends Specification {
     VcsRepoModel vcsRepoModel
 
     def setup() {
-        vcsRepoModel = TestUtils.repo(vcsRepoRepository, versionBumperRepository)
+        vcsRepoModel = PopulateTestUtils.repo(vcsRepoRepository, versionBumperRepository)
     }
 
     def 'can find commit by commit id and repo id'() {
-        def commit = TestUtils.createCommit(commitModelRepository, vcsRepoModel, VersionFactory.parse('1.2.3'), null)
+        def commit = PopulateTestUtils.createCommit(commitModelRepository, vcsRepoModel, VersionFactory.parse('1.2.3'), null)
 
         expect:
         commitModelRepository.findByCommitIdAndRepoId(commit.getCommitId(), vcsRepoModel.getUuidAsUUID()) == commit

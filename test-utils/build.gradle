@@ -15,14 +15,15 @@ repositories {
 }
 
 dependencies {
-    compile project(":web-service:database")
     compile project(":web-service:webapp")
-    compile 'org.codehaus.groovy:groovy-all:2.4.5'
+    compile project(":web-service:database")
     compile 'com.jayway.jsonpath:json-path:2.0.0'
-    compile 'org.springframework:spring-test:4.2.1.RELEASE'
+    compile 'org.codehaus.groovy:groovy-all:2.4.5'
+    compile 'org.apache.httpcomponents:httpclient:4.2.2'
     compile 'org.springframework:spring-web:4.2.1.RELEASE'
-    compile 'org.springframework:spring-webmvc:4.2.1.RELEASE'
+    compile 'org.springframework:spring-test:4.2.1.RELEASE'
     compile 'org.spockframework:spock-spring:1.0-groovy-2.4'
+    compile 'org.springframework:spring-webmvc:4.2.1.RELEASE'
 }
 
 bootRepackage {

@@ -1,17 +1,14 @@
 package io.ehdev.conrad.app.service.version
-import groovy.json.JsonSlurper
+
 import io.ehdev.conrad.app.manager.CommitManager
 import io.ehdev.conrad.backend.version.commit.VersionFactory
-import io.ehdev.conrad.database.model.CommitModel
+import io.ehdev.conrad.model.version.VersionSearchModel
+import io.ehdev.conrad.test.MockMvcDefaults
 import io.ehdev.conrad.test.MvcControllerCreator
-import org.apache.commons.lang3.RandomStringUtils
-import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import static io.ehdev.conrad.test.database.repository.MockTestUtils.createCommit
 
 class VersionServiceTest extends Specification {
     MockMvc mockMvc
@@ -35,13 +32,7 @@ class VersionServiceTest extends Specification {
         commitManager.findCommitsForRepo(_) >> commits
 
         when:
-        def results = mockMvc.perform(get("/api/version/${uuid.toString()}"))
-            .andExpect(status().isOk())
-            .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
-            .andReturn()
-        def json = new JsonSlurper().parseText(results.getResponse().getContentAsString())
-
-        println json
+        def json = MockMvcDefaults.makeGetRequest(mockMvc, "/api/version/${uuid.toString()}")
 
         then:
         json != null
@@ -53,7 +44,15 @@ class VersionServiceTest extends Specification {
         }
     }
 
-    CommitModel createCommit(String version, CommitModel parent = null){
-        return new CommitModel(RandomStringUtils.randomAlphanumeric(40), null, VersionFactory.parse(version), parent)
+    def 'search for next commit'() {
+        def uuid = UUID.randomUUID()
+        commitManager.findVersion(uuid, _ as VersionSearchModel) >> VersionFactory.parse('1.3.5')
+
+        when:
+        def json = MockMvcDefaults.makePostRequest(mockMvc, "/api/version/${uuid.toString()}/search", new VersionSearchModel([]))
+
+        then:
+        json != null
+        json.version == '1.3.6-SNAPSHOT'
     }
 }

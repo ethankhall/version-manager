@@ -4,9 +4,10 @@ repositories {
     mavenCentral()
 }
 
-
 dependencies {
+    compile project(":api-model")
     compile 'org.apache.httpcomponents:httpclient:4.2.2'
+    compile 'org.apache.httpcomponents:fluent-hc:4.5.1'
 
     testCompile project(":web-service:webapp")
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'

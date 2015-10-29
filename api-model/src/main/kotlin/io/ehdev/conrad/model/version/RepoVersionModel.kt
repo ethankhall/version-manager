@@ -1,5 +1,7 @@
 package io.ehdev.conrad.model.version
 
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonView
 import javax.validation.constraints.NotNull
 
@@ -10,12 +12,11 @@ class RepoVersionModel {
     var commits: List<VersionCommitModel>
 
     @JsonView(VersionView.ReleasedVersionView::class)
-    var latest: VersionCommitModel? = null
+    var latest: VersionCommitModel
 
-    constructor(commits: List<VersionCommitModel>) {
+    @JsonCreator
+    constructor(@JsonProperty("commits") commits: List<VersionCommitModel>) {
         this.commits = commits
-        if (!commits.isEmpty()) {
-            latest = commits.last()
-        }
+        latest = commits.last()
     }
 }

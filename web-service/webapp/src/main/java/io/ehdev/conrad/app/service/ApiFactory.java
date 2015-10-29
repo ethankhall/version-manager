@@ -6,6 +6,7 @@ import io.ehdev.conrad.database.model.VcsRepoModel;
 import io.ehdev.conrad.database.model.VersionBumperModel;
 import io.ehdev.conrad.model.repo.RepoResponseModel;
 import io.ehdev.conrad.model.strategy.StrategyModel;
+import io.ehdev.conrad.model.version.UncommitedVersionModel;
 import io.ehdev.conrad.model.version.VersionCommitModel;
 
 public class ApiFactory {
@@ -24,6 +25,10 @@ public class ApiFactory {
     public static class VersionModelFactory {
         public static VersionCommitModel create(String commit, CommitVersion commitVersion) {
             return new VersionCommitModel(commit, commitVersion.toVersionString(), commitVersion.getVersionGroup(), commitVersion.getPostFix());
+        }
+
+        public static UncommitedVersionModel create(CommitVersion commitVersion) {
+            return new UncommitedVersionModel(commitVersion.toVersionString(), commitVersion.getVersionGroup(), commitVersion.getPostFix());
         }
 
         public static VersionCommitModel create(CommitModel commitModel) {

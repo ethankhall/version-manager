@@ -5,10 +5,10 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import spock.lang.Specification
 
-import static io.ehdev.conrad.test.database.repository.MockMvcDefaults.makeGetRequest
-import static io.ehdev.conrad.test.database.repository.MockMvcDefaults.makePostRequest
-import static io.ehdev.conrad.test.database.repository.TestUtils.stubBumper
-import static io.ehdev.conrad.test.database.repository.TestUtils.stubRepo
+import static io.ehdev.conrad.test.MockMvcDefaults.makeGetRequest
+import static io.ehdev.conrad.test.MockMvcDefaults.makePostRequest
+import static io.ehdev.conrad.test.database.repository.PopulateTestUtils.stubBumper
+import static io.ehdev.conrad.test.database.repository.PopulateTestUtils.stubRepo
 
 class RepoServiceTest extends Specification {
 

@@ -9,7 +9,7 @@ import io.ehdev.conrad.database.repository.VcsRepoRepository
 import io.ehdev.conrad.database.repository.VersionBumperRepository
 import org.apache.commons.lang3.RandomStringUtils
 
-public class TestUtils {
+public class PopulateTestUtils {
 
     public static VersionBumperModel createBumper(VersionBumperRepository repository) {
         VersionBumperModel bumper = repository.findByBumperName(SemanticVersionBumper.class.getSimpleName());

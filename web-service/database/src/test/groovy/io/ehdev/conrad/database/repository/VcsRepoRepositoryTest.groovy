@@ -1,7 +1,7 @@
 package io.ehdev.conrad.database.repository
 import io.ehdev.conrad.database.config.DatabaseConfiguration
 import io.ehdev.conrad.test.IntegrationTestGroup
-import io.ehdev.conrad.test.database.repository.TestUtils
+import io.ehdev.conrad.test.database.repository.PopulateTestUtils
 import org.junit.experimental.categories.Category
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
@@ -21,7 +21,7 @@ class VcsRepoRepositoryTest extends Specification {
     VersionBumperRepository versionBumperRepository
 
     def 'can be found'() {
-        def vcs = TestUtils.repo(vcsRepoRepository, versionBumperRepository)
+        def vcs = PopulateTestUtils.repo(vcsRepoRepository, versionBumperRepository)
 
         expect:
         vcsRepoRepository.findByUuid(vcs.getUuidAsUUID()) == vcs

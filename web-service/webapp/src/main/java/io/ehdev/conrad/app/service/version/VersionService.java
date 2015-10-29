@@ -32,11 +32,11 @@ public class VersionService {
 
     @JsonView(VersionView.UnreleasedVersionView.class)
     @RequestMapping(value = "/{repoId}/search", method = RequestMethod.POST)
-    VersionCommitModel createUnreleasedVersion(@PathVariable("repoId") String repoId,
-                                               @RequestBody VersionSearchModel versionSearchModel) {
+    UncommitedVersionModel createUnreleasedVersion(@PathVariable("repoId") String repoId,
+                                                   @RequestBody @Valid VersionSearchModel versionSearchModel) {
         CommitVersion version = commitManager.findVersion(UUID.fromString(repoId), versionSearchModel);
         CommitVersion buildVersion = version.bump(new BumpLowestWithSnapshot());
-        return ApiFactory.VersionModelFactory.create(null, buildVersion);
+        return ApiFactory.VersionModelFactory.create(buildVersion);
     }
 
     @JsonView(VersionView.ReleasedVersionView.class)

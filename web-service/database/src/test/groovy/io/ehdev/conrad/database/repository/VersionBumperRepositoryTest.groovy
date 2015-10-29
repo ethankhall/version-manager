@@ -2,7 +2,7 @@ package io.ehdev.conrad.database.repository
 import io.ehdev.conrad.backend.version.bumper.SemanticVersionBumper
 import io.ehdev.conrad.database.config.DatabaseConfiguration
 import io.ehdev.conrad.test.IntegrationTestGroup
-import io.ehdev.conrad.test.database.repository.TestUtils
+import io.ehdev.conrad.test.database.repository.PopulateTestUtils
 import org.junit.experimental.categories.Category
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
@@ -20,7 +20,7 @@ class VersionBumperRepositoryTest extends Specification {
 
     def 'can find bumpers by name'() {
         when:
-        def bumper = TestUtils.createBumper(versionBumperRepository)
+        def bumper = PopulateTestUtils.createBumper(versionBumperRepository)
 
         then:
         versionBumperRepository.findByBumperName(SemanticVersionBumper.getSimpleName()) == bumper
