@@ -21,8 +21,8 @@ public class MockMvcDefaults {
 
     public static Object makePostRequest(MockMvc mockMvc, String url, Object obj) {
         def jsonString = new JsonBuilder(obj).toPrettyString()
-        def results = mockMvc.perform(post(url).content(jsonString).contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk())
+        def resultsAction = mockMvc.perform(post(url).content(jsonString).contentType(MediaType.APPLICATION_JSON))
+        def results = resultsAction.andExpect(status().isOk())
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
             .andReturn()
         return new JsonSlurper().parseText(results.getResponse().getContentAsString())

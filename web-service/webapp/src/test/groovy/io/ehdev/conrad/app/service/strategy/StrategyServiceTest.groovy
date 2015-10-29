@@ -2,6 +2,7 @@ package io.ehdev.conrad.app.service.strategy
 import io.ehdev.conrad.app.manager.BumperManager
 import io.ehdev.conrad.backend.version.bumper.SemanticVersionBumper
 import io.ehdev.conrad.database.model.VersionBumperModel
+import io.ehdev.conrad.test.MvcControllerCreator
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
@@ -19,7 +20,7 @@ class StrategyServiceTest extends Specification {
     def setup() {
         bumperManager = Mock(BumperManager)
         strategyService = new StrategyService(bumperManager)
-        mockMvc = MockMvcBuilders.standaloneSetup(strategyService).build()
+        mockMvc = MvcControllerCreator.createMockMvc(strategyService)
     }
 
     def 'can get all strategies'() {

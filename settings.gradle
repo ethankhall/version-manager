@@ -5,6 +5,10 @@ include ':web-service:database'
 
 //Clients
 include ':clients:gradle-plugin'
+include ':clients:java-client'
+
+//api model
+include ':api-model'
 
 //Tests
 include ':test-utils'

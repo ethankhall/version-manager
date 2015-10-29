@@ -12,6 +12,7 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 
 dependencies {
+    compile project(":api-model")
     compile project(":web-service:database")
     compile project(":web-service:backend")
     compile("org.springframework.boot:spring-boot-starter-web:1.2.7.RELEASE") {

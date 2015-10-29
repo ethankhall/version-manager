@@ -3,8 +3,8 @@ package io.ehdev.conrad.app.manager;
 import io.ehdev.conrad.app.exception.UnauthorizedTokenException;
 import io.ehdev.conrad.app.exception.VersionConflictException;
 import io.ehdev.conrad.app.exception.VersionNotFoundException;
-import io.ehdev.conrad.app.service.version.model.VersionCreateModel;
-import io.ehdev.conrad.app.service.version.model.VersionSearchModel;
+import io.ehdev.conrad.backend.commit.CommitDetails;
+import io.ehdev.conrad.backend.commit.internal.DefaultCommitDetails;
 import io.ehdev.conrad.backend.version.bumper.VersionBumper;
 import io.ehdev.conrad.backend.version.commit.CommitVersion;
 import io.ehdev.conrad.backend.version.commit.VersionFactory;
@@ -12,6 +12,8 @@ import io.ehdev.conrad.database.model.CommitModel;
 import io.ehdev.conrad.database.model.VcsRepoModel;
 import io.ehdev.conrad.database.repository.CommitModelRepository;
 import io.ehdev.conrad.database.repository.VcsRepoRepository;
+import io.ehdev.conrad.model.version.VersionCreateModel;
+import io.ehdev.conrad.model.version.VersionSearchModel;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -75,7 +77,11 @@ public class CommitManager {
         if(commit == null) {
             return VersionFactory.parse("0.0.1");
         }
-        return versionBumper.createNextVersion(commit.getVersion(), versionCreateModel.toCommitDetails());
+        return versionBumper.createNextVersion(commit.getVersion(), toCommitDetails(versionCreateModel));
+    }
+
+    public CommitDetails toCommitDetails(VersionCreateModel versionCreateModel) {
+        return new DefaultCommitDetails(versionCreateModel.getCommitId(), versionCreateModel.getMessage());
     }
 
     public List<CommitModel> findCommitsForRepo(UUID repoId) {

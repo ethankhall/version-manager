@@ -1,8 +1,9 @@
 package io.ehdev.conrad.app.service.strategy;
 
 import io.ehdev.conrad.app.manager.BumperManager;
-import io.ehdev.conrad.app.service.strategy.model.StrategyModel;
+import io.ehdev.conrad.app.service.ApiFactory;
 import io.ehdev.conrad.database.model.VersionBumperModel;
+import io.ehdev.conrad.model.strategy.StrategyModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +28,6 @@ public class StrategyService {
     @RequestMapping(method = RequestMethod.GET)
     public Map<String, StrategyModel> getAllVersionStrategies() {
         return bumperManager.findAllVersionBumpers().stream()
-            .collect(Collectors.toMap(VersionBumperModel::getBumperName, StrategyModel::new));
+            .collect(Collectors.toMap(VersionBumperModel::getBumperName, ApiFactory.StrategyModelFactory::create));
     }
 }

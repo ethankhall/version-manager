@@ -1,13 +1,12 @@
 package io.ehdev.conrad.app.service.version
-
 import groovy.json.JsonSlurper
 import io.ehdev.conrad.app.manager.CommitManager
 import io.ehdev.conrad.backend.version.commit.VersionFactory
 import io.ehdev.conrad.database.model.CommitModel
+import io.ehdev.conrad.test.MvcControllerCreator
 import org.apache.commons.lang3.RandomStringUtils
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
-import org.springframework.test.web.servlet.setup.MockMvcBuilders
 import spock.lang.Specification
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
@@ -22,7 +21,7 @@ class VersionServiceTest extends Specification {
     def setup() {
         commitManager = Mock(CommitManager)
         versionService = new VersionService(commitManager)
-        mockMvc = MockMvcBuilders.standaloneSetup(versionService).build()
+        mockMvc = MvcControllerCreator.createMockMvc(versionService)
     }
 
     def 'list all commits for a repo'() {
@@ -41,6 +40,8 @@ class VersionServiceTest extends Specification {
             .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON))
             .andReturn()
         def json = new JsonSlurper().parseText(results.getResponse().getContentAsString())
+
+        println json
 
         then:
         json != null

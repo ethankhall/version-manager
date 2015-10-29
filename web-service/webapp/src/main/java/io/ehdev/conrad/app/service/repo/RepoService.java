@@ -2,10 +2,11 @@ package io.ehdev.conrad.app.service.repo;
 
 import com.fasterxml.jackson.annotation.JsonView;
 import io.ehdev.conrad.app.manager.RepoManager;
-import io.ehdev.conrad.app.service.repo.model.RepoCreateModel;
-import io.ehdev.conrad.app.service.repo.model.RepoResponseModel;
-import io.ehdev.conrad.app.service.repo.model.ViewPermission;
+import io.ehdev.conrad.app.service.ApiFactory;
 import io.ehdev.conrad.database.model.VcsRepoModel;
+import io.ehdev.conrad.model.repo.RepoCreateModel;
+import io.ehdev.conrad.model.repo.RepoResponseModel;
+import io.ehdev.conrad.model.repo.RepoView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.transaction.Transactional;
 import javax.validation.Valid;
 import java.util.Map;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -29,16 +31,17 @@ public class RepoService {
         this.repoManager = repoManager;
     }
 
-    @JsonView(ViewPermission.Private.class)
+    @JsonView(RepoView.Private.class)
     @RequestMapping(method = RequestMethod.POST)
     public RepoResponseModel createRepo(@Valid @RequestBody RepoCreateModel repoCreateModel) {
         VcsRepoModel repo = repoManager.createRepo(repoCreateModel.getName(), repoCreateModel.getBumper(), repoCreateModel.getUrl());
-        return new RepoResponseModel(repo);
+        return ApiFactory.RepoModelFactory.create(repo);
     }
 
-    @JsonView(ViewPermission.Public.class)
+    @JsonView(RepoView.Public.class)
     @RequestMapping(method = RequestMethod.GET)
-    public Map<String, RepoResponseModel> getAllRepos(){
-        return repoManager.getAll().stream().collect(Collectors.toMap(VcsRepoModel::getUuid, RepoResponseModel::new));
+    public Map<String, RepoResponseModel> getAllRepos() {
+        Collector<VcsRepoModel, ?, Map<String, RepoResponseModel>> collector = Collectors.toMap(VcsRepoModel::getUuid, ApiFactory.RepoModelFactory::create);
+        return repoManager.getAll().stream().collect(collector);
     }
 }
