@@ -36,6 +36,7 @@ dependencies {
     compile 'org.flywaydb:flyway-core:3.2.1'
 
     testCompile project(":test-utils")
+    testCompile 'com.h2database:h2:1.4.190'
     testCompile 'org.codehaus.groovy:groovy-all:2.4.5'
     testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testCompile 'org.spockframework:spock-spring:1.0-groovy-2.4'

@@ -18,8 +18,8 @@ public class VcsRepoModel implements UniqueModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "uuid", unique = true)
     @Type(type="pg-uuid")
+    @Column(name = "uuid", unique = true)
     private UUID uuid;
 
     @Column(unique = true, name = "repo_name")

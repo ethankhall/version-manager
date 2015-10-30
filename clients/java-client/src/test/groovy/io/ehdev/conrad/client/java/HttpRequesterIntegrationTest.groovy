@@ -13,11 +13,11 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.boot.context.embedded.EmbeddedWebApplicationContext
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.boot.test.WebIntegrationTest
-import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.context.ContextConfiguration
 import spock.lang.Specification
 
-@Rollback(true)
+@ActiveProfiles("test")
 @Category(IntegrationTestGroup)
 @ContextConfiguration(classes = [MainApplication.class], loader = SpringApplicationContextLoader.class)
 @WebIntegrationTest(["server.port=0", "management.port=0"])

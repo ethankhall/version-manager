@@ -1,4 +1,5 @@
 package io.ehdev.conrad.database.repository
+
 import io.ehdev.conrad.backend.version.bumper.SemanticVersionBumper
 import io.ehdev.conrad.database.config.DatabaseConfiguration
 import io.ehdev.conrad.test.IntegrationTestGroup
