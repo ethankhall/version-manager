@@ -7,10 +7,8 @@ public class VersionManagerPlugin implements Plugin<Project> {
 
     @Override
     public void apply(Project project) {
-        project.getExtensions().create("versionManager", VersionManagerExtension.class);
-
-        project.afterEvaluate(evaluated -> { evaluated.setVersion(new Version(""));
-
-        });
+        VersionManagerExtension versionManager = project.getExtensions().create("versionManager", VersionManagerExtension.class);
+        VersionRequester versionRequester = new VersionRequester(versionManager, project.getProjectDir());
+        project.setVersion(versionRequester);
     }
 }

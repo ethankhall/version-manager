@@ -1,31 +1,21 @@
 package io.ehdev.conrad.app.gradle;
 
-public class VersionManagerExtension {
-    String repoId;
-    String providerBaseUrl;
-    String token;
+import io.ehdev.conrad.client.java.VersionServiceConfiguration;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.DefaultHttpClient;
 
-    public String getRepoId() {
-        return repoId;
+public class VersionManagerExtension extends VersionServiceConfiguration {
+    private HttpClient client;
+
+    public VersionManagerExtension() {
+        client = new DefaultHttpClient();
     }
 
-    public void setRepoId(String repoId) {
-        this.repoId = repoId;
+    public HttpClient getClient() {
+        return client;
     }
 
-    public String getProviderBaseUrl() {
-        return providerBaseUrl;
-    }
-
-    public void setProviderBaseUrl(String providerBaseUrl) {
-        this.providerBaseUrl = providerBaseUrl;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
+    public void setClient(HttpClient client) {
+        this.client = client;
     }
 }

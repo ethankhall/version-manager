@@ -7,6 +7,7 @@ import io.ehdev.conrad.database.repository.VcsRepoRepository
 import io.ehdev.conrad.database.repository.VersionBumperRepository
 import io.ehdev.conrad.test.IntegrationTestGroup
 import io.ehdev.conrad.test.database.repository.PopulateTestUtils
+import org.apache.http.impl.client.DefaultHttpClient
 import org.junit.experimental.categories.Category
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.beans.factory.annotation.Value
@@ -49,7 +50,7 @@ class HttpRequesterIntegrationTest extends Specification {
         }
 
         def configuration = createVersionServiceConfiguration(vcsRepoModel.getUuid())
-        def requester = new HttpRequester(configuration)
+        def requester = new HttpRequester(new DefaultHttpClient(), configuration)
 
         when:
         def version = requester.getVersion(commits.collect { it.commitId })
