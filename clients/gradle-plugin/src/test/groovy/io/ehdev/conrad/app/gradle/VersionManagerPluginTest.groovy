@@ -1,14 +1,15 @@
 package io.ehdev.conrad.app.gradle
+
 import groovy.json.JsonBuilder
 import io.ehdev.conrad.app.service.ApiFactory
 import io.ehdev.conrad.backend.version.commit.VersionFactory
-import io.ehdev.conrad.model.version.UncommitedVersionModel
 import nebula.test.PluginProjectSpec
 import org.apache.commons.lang3.RandomStringUtils
 import org.apache.http.HttpVersion
 import org.apache.http.client.HttpClient
 import org.apache.http.entity.BasicHttpEntity
 import org.apache.http.message.BasicHttpResponse
+import spock.lang.Unroll
 
 class VersionManagerPluginTest extends PluginProjectSpec {
 
@@ -31,18 +32,30 @@ class VersionManagerPluginTest extends PluginProjectSpec {
         project.apply plugin: pluginName
 
         def commitModel = ApiFactory.VersionModelFactory.create(VersionFactory.parse('1.2.5-SNAPSHOT'))
-        configureProject(project.getExtensions().getByType(VersionManagerExtension), commitModel)
+        configureProject(project.getExtensions().getByType(VersionManagerExtension), new JsonBuilder(commitModel).toString())
 
         then:
         project.getVersion().toString() == '1.2.5-SNAPSHOT'
     }
 
-    public void configureProject(VersionManagerExtension configuration, UncommitedVersionModel commitModel) {
-        def string = new JsonBuilder(commitModel).toString()
+    @Unroll
+    def 'when error happens it will return with a default value with status code #statusCode'() {
+        when:
+        project.apply plugin: pluginName
 
-        def response = new BasicHttpResponse(HttpVersion.HTTP_1_1, 200, null)
+        configureProject(project.getExtensions().getByType(VersionManagerExtension), "SOME TEXT", statusCode)
+
+        then:
+        project.getVersion().toString() == '0.0.1-SNAPSHOT'
+
+        where:
+        statusCode << [201, 200]
+    }
+
+    public void configureProject(VersionManagerExtension configuration, String body, int statusCode = 200) {
+        def response = new BasicHttpResponse(HttpVersion.HTTP_1_1, statusCode, null)
         def entity = new BasicHttpEntity()
-        entity.setContent(new ByteArrayInputStream(string.bytes))
+        entity.setContent(new ByteArrayInputStream(body.bytes))
         response.setEntity(entity)
 
         def client = Mock(HttpClient)
