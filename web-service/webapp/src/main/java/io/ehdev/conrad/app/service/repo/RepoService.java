@@ -8,6 +8,7 @@ import io.ehdev.conrad.model.repo.RepoCreateModel;
 import io.ehdev.conrad.model.repo.RepoResponseModel;
 import io.ehdev.conrad.model.repo.RepoView;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -32,9 +33,12 @@ public class RepoService {
     }
 
     @JsonView(RepoView.Private.class)
-    @RequestMapping(method = RequestMethod.POST)
+    @RequestMapping(method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     public RepoResponseModel createRepo(@Valid @RequestBody RepoCreateModel repoCreateModel) {
         VcsRepoModel repo = repoManager.createRepo(repoCreateModel.getName(), repoCreateModel.getBumper(), repoCreateModel.getUrl());
+        if(repoCreateModel.getHistory() != null) {
+            repoManager.setupHistory(repo, repoCreateModel.getHistory());
+        }
         return ApiFactory.RepoModelFactory.create(repo);
     }
 

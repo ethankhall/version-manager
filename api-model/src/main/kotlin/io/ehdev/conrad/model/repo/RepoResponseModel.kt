@@ -2,7 +2,7 @@ package io.ehdev.conrad.model.repo
 
 import com.fasterxml.jackson.annotation.JsonView
 
-class RepoResponseModel : RepoCreateModel {
+class RepoResponseModel : AbstractRepoCreateModel {
 
     @JsonView(RepoView.Public::class)
     var id: String;
