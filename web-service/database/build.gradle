@@ -46,5 +46,5 @@ dependencies {
 
 bootRepackage {
     enabled = false
-    mainClass = 'com.foo.Bar'
+    mainClassName = 'com.foo.Bar'
 }
