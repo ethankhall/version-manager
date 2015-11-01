@@ -35,6 +35,9 @@ public class CommitManager {
     BumperManager bumperManager;
 
     public CommitVersion findVersion(UUID repoId, VersionSearchModel versionSearchModel) {
+        if(versionSearchModel.getCommits().isEmpty()) {
+            return null;
+        }
         CommitModel commitModel = findCommit(repoId, versionSearchModel);
         if(null == commitModel) {
             return null;

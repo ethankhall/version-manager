@@ -1,4 +1,5 @@
 apply plugin: 'groovy'
+apply plugin: 'maven-publish'
 
 repositories {
     mavenCentral()
@@ -25,4 +26,12 @@ dependencies {
     testCompile 'org.objenesis:objenesis:2.2'
     testCompile 'com.jayway.jsonpath:json-path:2.0.0'
     testCompile 'org.ow2.asm:asm:5.0.4'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
 }

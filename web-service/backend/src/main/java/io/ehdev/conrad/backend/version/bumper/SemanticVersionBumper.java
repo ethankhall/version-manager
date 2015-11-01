@@ -2,14 +2,15 @@ package io.ehdev.conrad.backend.version.bumper;
 
 
 import io.ehdev.conrad.backend.commit.CommitDetails;
-import io.ehdev.conrad.backend.commit.matcher.SquareBracketCommitMatcher;
-import io.ehdev.conrad.backend.commit.matcher.WildcardSquareBracketCommitMatcher;
+import io.ehdev.conrad.backend.commit.matcher.*;
 import io.ehdev.conrad.backend.version.commit.CommitVersion;
 import io.ehdev.conrad.backend.version.commit.StandardVersionGroupBump;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static io.ehdev.conrad.backend.commit.matcher.StandardMessageMatchers.allMatchers;
@@ -28,12 +29,16 @@ public class SemanticVersionBumper implements VersionBumper {
 
     private CommitVersion findNextVersion(CommitVersion parentVersion, CommitDetails commitDetails) {
         Optional<SquareBracketCommitMatcher> matcher = allMatchers().stream().filter(commitDetails::messageContains).findFirst();
-        WildcardSquareBracketCommitMatcher wildcardMatcher = new WildcardSquareBracketCommitMatcher();
 
         if(matcher.isPresent()) {
             return parentVersion.bump(matcher.get().getBumper());
-        } else if (commitDetails.messageContains(wildcardMatcher)) {
-            return parentVersion.bump(wildcardMatcher.getBumper());
+        }
+
+        List<GlobalCommitMatcherProvider> globalMatchers = Arrays.asList(new WildcardSquareBracketCommitMatcher(), new ForceVersionSquareBracketCommitMatcher());
+        Optional<GlobalCommitMatcherProvider> globalMatcher = globalMatchers.stream().filter(commitDetails::messageContains).findFirst();
+
+        if(globalMatcher.isPresent()) {
+            return parentVersion.bump(globalMatcher.get().getBumper());
         } else {
             return createDefaultNextVersion(parentVersion);
         }

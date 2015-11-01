@@ -14,6 +14,7 @@ import org.eclipse.jgit.api.Git;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.lib.BaseRepositoryBuilder;
 import org.eclipse.jgit.lib.Constants;
+import org.eclipse.jgit.lib.ObjectId;
 import org.eclipse.jgit.lib.Repository;
 import org.eclipse.jgit.revwalk.RevCommit;
 import org.jetbrains.annotations.NotNull;
@@ -42,11 +43,13 @@ public class HttpRequester {
     public Version getVersion(File searchDir) throws IOException, GitAPIException, URISyntaxException, UnsuccessfulRequestException {
         Repository repo = new BaseRepositoryBuilder().findGitDir(searchDir).build();
         Git git = new Git(repo);
-        Iterable<RevCommit> commits = git.log().addRange(repo.resolve(Constants.HEAD), repo.resolve("remotes/origin/master")).call();
+        ObjectId resolve = repo.resolve("remotes/origin/master");
+        Iterable<RevCommit> commits = git.log().addRange(repo.resolve(Constants.HEAD), resolve).call();
         List<String> commitIds = new LinkedList<String>();
         for (RevCommit commit : commits) {
             commitIds.add(commit.getId().getName());
         }
+        commitIds.add(resolve.getName());
 
         return getVersion(commitIds);
     }

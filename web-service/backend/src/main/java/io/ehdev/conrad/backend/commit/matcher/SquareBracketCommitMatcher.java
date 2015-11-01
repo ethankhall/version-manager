@@ -4,7 +4,7 @@ import io.ehdev.conrad.backend.version.commit.CommitVersionBumper;
 import org.apache.commons.lang3.StringUtils;
 
 
-public class SquareBracketCommitMatcher implements CommitMessageMatcher, CommitBumperProvider {
+public class SquareBracketCommitMatcher implements GlobalCommitMatcherProvider {
 
     private final String expectedString;
     private final CommitVersionBumper bumper;

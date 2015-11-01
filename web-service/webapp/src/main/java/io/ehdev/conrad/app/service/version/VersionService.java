@@ -4,9 +4,12 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.ehdev.conrad.app.manager.CommitManager;
 import io.ehdev.conrad.app.service.ApiFactory;
 import io.ehdev.conrad.backend.version.commit.CommitVersion;
+import io.ehdev.conrad.backend.version.commit.VersionFactory;
 import io.ehdev.conrad.backend.version.commit.internal.BumpLowestWithSnapshot;
 import io.ehdev.conrad.database.model.CommitModel;
 import io.ehdev.conrad.model.version.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +25,8 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/version")
 public class VersionService {
 
+    private static final Logger log = LoggerFactory.getLogger(VersionService.class);
+
     public static final Comparator<CommitModel> REVERSE_ORDER = Comparator.<CommitModel>reverseOrder();
     final CommitManager commitManager;
 
@@ -35,6 +40,10 @@ public class VersionService {
     UncommitedVersionModel createUnreleasedVersion(@PathVariable("repoId") String repoId,
                                                    @RequestBody @Valid VersionSearchModel versionSearchModel) {
         CommitVersion version = commitManager.findVersion(UUID.fromString(repoId), versionSearchModel);
+        if(version == null) {
+            log.debug("Repo {} with commits {} gave null response, defaulting...", repoId, versionSearchModel.getCommits());
+            version = VersionFactory.parse("0.0.0");
+        }
         CommitVersion buildVersion = version.bump(new BumpLowestWithSnapshot());
         return ApiFactory.VersionModelFactory.create(buildVersion);
     }

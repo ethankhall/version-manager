@@ -1,5 +1,7 @@
 allprojects {
     apply plugin: 'idea'
+    group = 'io.ehdev.conrad'
+    version = '1.0.0'
 }
 
 subprojects {

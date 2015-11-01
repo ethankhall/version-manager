@@ -6,7 +6,7 @@ import io.ehdev.conrad.backend.version.commit.internal.DefaultVersionCommitBumpe
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WildcardSquareBracketCommitMatcher implements CommitMessageMatcher, CommitBumperProvider {
+public class WildcardSquareBracketCommitMatcher implements GlobalCommitMatcherProvider {
 
     private final Pattern pattern = Pattern.compile(".*?\\[\\s*bump group (\\d+)\\s*\\].*?", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     private Integer groupNumber = null;
