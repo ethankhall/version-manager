@@ -1,6 +1,5 @@
 package io.ehdev.conrad.database.repository
 
-import io.ehdev.conrad.backend.version.bumper.SemanticVersionBumper
 import io.ehdev.conrad.database.config.DatabaseConfiguration
 import io.ehdev.conrad.test.IntegrationTestGroup
 import io.ehdev.conrad.test.database.repository.PopulateTestUtils
@@ -27,7 +26,7 @@ class VersionBumperRepositoryTest extends Specification {
         def bumper = PopulateTestUtils.createBumper(versionBumperRepository)
 
         then:
-        versionBumperRepository.findByBumperName(SemanticVersionBumper.getSimpleName()) == bumper
+        versionBumperRepository.findByBumperName("semver") == bumper
         versionBumperRepository.findOne(bumper.getId()) == bumper
     }
 }
