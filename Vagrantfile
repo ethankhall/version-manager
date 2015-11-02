@@ -17,18 +17,24 @@ Vagrant.configure(2) do |config|
     chef.add_recipe "ehdev-java"
     chef.json = {
       postgresql: {
-        databases: {
-          version_manager: {
-            username: "version",
-            password: "manager"
-          },
-          version_manager_test: {
-              username: "version_manager_test",
-              password: "password"
-            }
-        },
         password: {
           postgres: "iloverandompasswordsbutthiswilldo"
+        }
+      },
+      webapp: {
+        version_manager: {
+          database: {
+            name: 'version_manager',
+            username: 'version',
+            password: 'manager',
+          }
+        },
+        version_manager: {
+          database: {
+            name: 'version_manager_test',
+            username: 'version_manager_test',
+            password: 'password',
+          }
         }
       }
     }
