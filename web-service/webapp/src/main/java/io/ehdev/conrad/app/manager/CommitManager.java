@@ -46,6 +46,10 @@ public class CommitManager {
         }
     }
 
+    public CommitModel findCommit(UUID repoId, String commitId) {
+        return commitModelRepository.findByCommitIdAndRepoId(commitId, repoId);
+    }
+
     public CommitModel findCommit(UUID repoId, VersionSearchModel versionSearchModel) {
         VcsRepoModel vcs = vcsRepoRepository.findByUuid(repoId);
         List<CommitModel> commits = commitModelRepository.findCommits(vcs, versionSearchModel.getCommits());

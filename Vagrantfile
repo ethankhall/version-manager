@@ -29,7 +29,7 @@ Vagrant.configure(2) do |config|
             password: 'manager',
           }
         },
-        version_manager: {
+        version_manager_test: {
           database: {
             name: 'version_manager_test',
             username: 'version_manager_test',

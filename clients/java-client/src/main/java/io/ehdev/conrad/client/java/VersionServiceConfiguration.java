@@ -6,7 +6,7 @@ public class VersionServiceConfiguration {
     String repoId;
     String providerBaseUrl;
     String token;
-    int timout = (int)TimeUnit.MILLISECONDS.convert(10, TimeUnit.SECONDS);
+    int timeout = (int)TimeUnit.MILLISECONDS.convert(10, TimeUnit.SECONDS);
 
     public String getRepoId() {
         return repoId;
@@ -32,11 +32,11 @@ public class VersionServiceConfiguration {
         this.token = token;
     }
 
-    public int getTimout() {
-        return timout;
+    public int getTimeout() {
+        return timeout;
     }
 
-    public void setTimout(int timout) {
-        this.timout = timout;
+    public void setTimeout(int timout) {
+        this.timeout = timout;
     }
 }

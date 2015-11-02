@@ -12,7 +12,7 @@ import org.apache.commons.lang3.RandomStringUtils
 public class PopulateTestUtils {
 
     public static VersionBumperModel createBumper(VersionBumperRepository repository) {
-        VersionBumperModel bumper = repository.findByBumperName('semver');
+        VersionBumperModel bumper = repository.findByBumperName(SemanticVersionBumper.class.getSimpleName());
         if(bumper == null) {
             return repository.save(new VersionBumperModel(SemanticVersionBumper.class.getName(),
                 SemanticVersionBumper.class.getSimpleName(),

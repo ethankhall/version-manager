@@ -1,11 +1,12 @@
 package io.ehdev.conrad.model.version
 
 import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
 import javax.validation.constraints.NotNull
 
 class VersionCreateModel public @JsonCreator constructor(
-    commits: List<String>,
-    @NotNull val message: String,
-    @NotNull val commitId: String,
-    @NotNull val token: String
+    @JsonProperty("commits") commits: List<String>,
+    @NotNull @JsonProperty("message") val message: String,
+    @NotNull @JsonProperty("commitId") val commitId: String,
+    @NotNull @JsonProperty("token") val token: String
 ): VersionSearchModel(commits);

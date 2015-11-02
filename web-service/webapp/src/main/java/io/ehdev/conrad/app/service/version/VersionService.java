@@ -1,6 +1,7 @@
 package io.ehdev.conrad.app.service.version;
 
 import com.fasterxml.jackson.annotation.JsonView;
+import io.ehdev.conrad.app.exception.VersionNotFoundException;
 import io.ehdev.conrad.app.manager.CommitManager;
 import io.ehdev.conrad.app.service.ApiFactory;
 import io.ehdev.conrad.backend.version.commit.CommitVersion;
@@ -11,6 +12,7 @@ import io.ehdev.conrad.model.version.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.transaction.Transactional;
@@ -36,7 +38,7 @@ public class VersionService {
     }
 
     @JsonView(VersionView.UnreleasedVersionView.class)
-    @RequestMapping(value = "/{repoId}/search", method = RequestMethod.POST)
+    @RequestMapping(value = "/{repoId}/search", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     UncommitedVersionModel createUnreleasedVersion(@PathVariable("repoId") String repoId,
                                                    @RequestBody @Valid VersionSearchModel versionSearchModel) {
         CommitVersion version = commitManager.findVersion(UUID.fromString(repoId), versionSearchModel);
@@ -49,7 +51,7 @@ public class VersionService {
     }
 
     @JsonView(VersionView.ReleasedVersionView.class)
-    @RequestMapping(value = "/{repoId}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{repoId}", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
     VersionCommitModel claimVersion(@PathVariable("repoId") String repoId,
                                     @Valid @RequestBody VersionCreateModel versionCreateModel) {
         UUID repoIdUuid = UUID.fromString(repoId);
@@ -67,6 +69,16 @@ public class VersionService {
             .map(ApiFactory.VersionModelFactory::create)
             .collect(Collectors.toList());
         return new RepoVersionModel(collect);
+    }
+
+    @JsonView(VersionView.ReleasedVersionView.class)
+    @RequestMapping(value = "/{repoId}/{commitId}", method = RequestMethod.GET)
+    VersionCommitModel findVersionForRepo(@PathVariable("repoId") String repoId, @PathVariable("commitId") String commitId) {
+        CommitModel commit = commitManager.findCommit(UUID.fromString(repoId), commitId);
+        if(null == commit) {
+            throw new VersionNotFoundException();
+        }
+        return ApiFactory.VersionModelFactory.create(commit.getCommitId(), commit.getVersion());
     }
 
 }
