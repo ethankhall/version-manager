@@ -1,7 +1,28 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        maven {
+            url "http://ehdev-maven-repo.s3-website-us-west-1.amazonaws.com/maven2"
+        }
+    }
+    dependencies {
+        classpath 'io.ehdev.conrad:gradle-plugin:+'
+    }
+}
+
 allprojects {
     apply plugin: 'idea'
     group = 'io.ehdev.conrad'
-    version = '1.0.0'
+    version = '0.0.1'
+}
+
+apply from: "gradle/versions.gradle"
+apply plugin: 'version-manager'
+
+versionManager {
+    repoId = '3e79966b-a630-4efa-901b-8819c929c5e3'
+    token = '08A7jgz3PYAcBFh9yZNY8PmsrnNxpEyHU4mgeTYFsntHDno6yRPMkvk7RuOR'
+    providerBaseUrl = 'http://api.ehdev.io'
 }
 
 subprojects {

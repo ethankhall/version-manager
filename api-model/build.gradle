@@ -9,6 +9,7 @@ buildscript {
 
 apply plugin: "kotlin"
 apply plugin: 'maven-publish'
+apply from: "$rootDir/gradle/publishing.gradle"
 
 repositories {
     mavenCentral()
@@ -19,14 +20,5 @@ dependencies {
 
     compile 'javax.validation:validation-api:1.1.0.Final'
 
-    compile 'com.fasterxml.jackson.core:jackson-annotations:2.6.3'
-    compile 'com.fasterxml.jackson.core:jackson-databind:2.6.3'
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
+    compile libraries.jackson
 }

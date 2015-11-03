@@ -1,0 +1,16 @@
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "s3://ehdev-maven-repo/maven2"
+            credentials(AwsCredentials) {
+                accessKey "AKIAJ24ZRFBBIX5433ZQ"
+                secretKey "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"
+            }
+        }
+    }
+}

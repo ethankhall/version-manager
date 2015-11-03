@@ -1,14 +1,4 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.5.RELEASE")
-    }
-}
-
 apply plugin: 'groovy'
-apply plugin: 'spring-boot'
 
 repositories {
     mavenCentral()
@@ -17,16 +7,16 @@ repositories {
 dependencies {
     compile project(":web-service:webapp")
     compile project(":web-service:database")
-    compile 'com.jayway.jsonpath:json-path:2.0.0'
-    compile 'org.codehaus.groovy:groovy-all:2.4.5'
-    compile 'org.apache.httpcomponents:httpclient:4.2.2'
-    compile 'org.springframework:spring-web:4.2.1.RELEASE'
-    compile 'org.springframework:spring-test:4.2.1.RELEASE'
-    compile 'org.spockframework:spock-spring:1.0-groovy-2.4'
-    compile 'org.springframework:spring-webmvc:4.2.1.RELEASE'
-}
 
-bootRepackage {
-    enabled = false
-    mainClassName = 'com.foo.Bar'
+    compile libraries.jsonPath
+
+    compile libraries.groovy
+    compile libraries.spock
+    compile libraries.spockSpring
+
+    compile libraries.springBoot
+    compile libraries.springTest
+
+    compile libraries.httpClient
+    compile libraries.springWeb
 }

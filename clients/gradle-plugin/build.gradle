@@ -1,5 +1,6 @@
 apply plugin: 'groovy'
 apply plugin: 'maven-publish'
+apply from: "$rootDir/gradle/publishing.gradle"
 
 repositories {
     mavenCentral()
@@ -19,19 +20,9 @@ dependencies {
     }
 
     testCompile project(":web-service:webapp")
-    testCompile 'org.spockframework:spock-core:1.0-groovy-2.4'
     testCompile 'com.netflix.nebula:nebula-test:3.1.0'
-    testCompile 'org.springframework:spring-test:4.2.1.RELEASE'
-    testCompile 'cglib:cglib:3.1'
-    testCompile 'org.objenesis:objenesis:2.2'
-    testCompile 'com.jayway.jsonpath:json-path:2.0.0'
-    testCompile 'org.ow2.asm:asm:5.0.4'
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
+    testCompile libraries.spock
+    testCompile libraries.springTest
+    testCompile libraries.jsonPath
+    testCompile libraries.testing
 }
