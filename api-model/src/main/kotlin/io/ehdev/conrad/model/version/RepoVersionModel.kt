@@ -17,6 +17,6 @@ class RepoVersionModel {
     @JsonCreator
     constructor(@JsonProperty("commits") commits: List<VersionCommitModel>) {
         this.commits = commits
-        latest = commits.last()
+        latest = commits.first()
     }
 }

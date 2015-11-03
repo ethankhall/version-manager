@@ -2,7 +2,7 @@ buildscript {
     repositories {
         mavenCentral()
         maven {
-            url "http://ehdev-maven-repo.s3-website-us-west-1.amazonaws.com/maven2"
+            url "http://repo.ehdev.io/maven2"
         }
     }
     dependencies {
