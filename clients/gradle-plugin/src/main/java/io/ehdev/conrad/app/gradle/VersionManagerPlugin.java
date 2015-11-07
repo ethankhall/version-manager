@@ -1,6 +1,7 @@
 package io.ehdev.conrad.app.gradle;
 
 import org.apache.commons.lang.StringUtils;
+import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
 
@@ -13,8 +14,14 @@ public class VersionManagerPlugin implements Plugin<Project> {
         boolean isFinalVersion = ifFinalVersionBuild(project);
 
         VersionManagerExtension versionManager = project.getExtensions().create("versionManager", VersionManagerExtension.class);
-        VersionRequester versionRequester = new VersionRequester(versionManager, project.getProjectDir(), isFinalVersion);
+        final VersionRequester versionRequester = new VersionRequester(versionManager, project.getProjectDir(), isFinalVersion);
         project.setVersion(versionRequester);
+        project.allprojects(new Action<Project>() {
+            @Override
+            public void execute(Project project) {
+                project.setVersion(versionRequester);
+            }
+        });
 
         ClaimVersionTask claimVersion = project.getTasks().create("claimVersion", ClaimVersionTask.class);
         claimVersion.setDescription("Claims a version from the version-manager service.");

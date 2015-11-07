@@ -23,6 +23,7 @@ Vagrant.configure(2) do |config|
       },
       webapp: {
         version_manager: {
+          port: 8000,
           database: {
             name: 'version_manager',
             username: 'version',
@@ -30,6 +31,7 @@ Vagrant.configure(2) do |config|
           }
         },
         version_manager_test: {
+          port: 8001,
           database: {
             name: 'version_manager_test',
             username: 'version_manager_test',
