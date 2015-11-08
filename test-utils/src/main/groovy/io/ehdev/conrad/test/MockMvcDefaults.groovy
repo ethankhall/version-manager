@@ -1,4 +1,5 @@
 package io.ehdev.conrad.test
+
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import org.springframework.http.MediaType

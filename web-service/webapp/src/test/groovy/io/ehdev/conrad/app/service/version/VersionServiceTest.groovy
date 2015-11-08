@@ -1,10 +1,10 @@
 package io.ehdev.conrad.app.service.version
 
 import io.ehdev.conrad.app.manager.CommitManager
+import io.ehdev.conrad.app.test.MvcControllerCreator
 import io.ehdev.conrad.backend.version.commit.VersionFactory
 import io.ehdev.conrad.model.version.VersionSearchModel
 import io.ehdev.conrad.test.MockMvcDefaults
-import io.ehdev.conrad.test.MvcControllerCreator
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification
 
@@ -12,12 +12,12 @@ import static io.ehdev.conrad.test.database.repository.MockTestUtils.createCommi
 
 class VersionServiceTest extends Specification {
     MockMvc mockMvc
-    VersionService versionService
+    DefaultVersionService versionService
     CommitManager commitManager
 
     def setup() {
         commitManager = Mock(CommitManager)
-        versionService = new VersionService(commitManager)
+        versionService = new DefaultVersionService(commitManager)
         mockMvc = MvcControllerCreator.createMockMvc(versionService)
     }
 

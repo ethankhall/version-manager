@@ -5,7 +5,7 @@ repositories {
 }
 
 dependencies {
-    compile project(":web-service:webapp")
+//    compile project(":web-service:webapp")
     compile project(":web-service:database")
 
     compile libraries.jsonPath

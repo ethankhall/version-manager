@@ -1,9 +1,12 @@
 buildscript {
     repositories {
         mavenCentral()
+        maven {
+            url 'http://repo.spring.io/milestone'
+        }
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.2.7.RELEASE")
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.3.0.RC1")
     }
 }
 
@@ -16,9 +19,20 @@ dependencies {
     compile project(":web-service:database")
     compile project(":web-service:backend")
 
+    //Caching
+    compile libraries.springContextSupport
+    compile 'net.sf.ehcache:ehcache:2.8.3'
+
+    //Spring
     compile libraries.springBootWebapp
+
+    //Hibernate
+    compile libraries.hibernate
+
+    //Misc
     compile 'ch.qos.logback:logback-classic:1.1.3'
     compile 'com.google.code.findbugs:jsr305:3.0.1'
+    compile libraries.dropwizard
 
     testCompile project(":test-utils")
     testCompile libraries.groovy

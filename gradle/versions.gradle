@@ -3,18 +3,25 @@ ext {
     libraries = [:]
 }
 
-versions.springBoot = '1.2.7.RELEASE'
-versions.spring = '4.2.1.RELEASE'
+
+versions.springBoot = '1.3.0.RC1'
+versions.spring = '4.2.2.RELEASE'
 versions.spock = '1.0-groovy-2.4'
 versions.slf4j = '1.7.12'
 versions.hibernate = '5.0.1.Final'
 versions.jackson = '2.6.3'
+versions.metrics = '3.1.0'
 
+// Because spring boot is fucking stupid
+ext['hibernate.version'] = versions.hibernate
 
 libraries.springTest = "org.springframework:spring-test:${versions.spring}"
 libraries.springContext = "org.springframework:spring-context:${versions.spring}"
 libraries.springBoot = "org.springframework.boot:spring-boot:${versions.springBoot}"
-libraries.springJpa = ["org.springframework.data:spring-data-jpa:1.9.0.RELEASE", "org.springframework.boot:spring-boot-starter-data-jpa:${versions.springBoot}"]
+libraries.springContextSupport = "org.springframework:spring-context-support:${versions.spring}"
+libraries.springJpa = ["org.springframework.data:spring-data-jpa:1.9.0.RELEASE",
+                       "org.springframework.boot:spring-boot-starter-data-jpa:${versions.springBoot}"]
+
 libraries.springBootWebapp = [
     dependencies.create("org.springframework.boot:spring-boot-starter-web:${versions.springBoot}") {
         exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
@@ -37,7 +44,8 @@ libraries.spockSpring = "org.spockframework:spock-spring:${versions.spock}"
 libraries.commonsLang = 'org.apache.commons:commons-lang3:3.4'
 libraries.sfl4j = "org.slf4j:slf4j-api:${versions.slf4j}"
 
-libraries.hibernate = ["org.hibernate:hibernate-java8:${versions.hibernate}", "org.hibernate:hibernate-entitymanager:${versions.hibernate}"]
+libraries.hibernate = ["org.hibernate:hibernate-java8:${versions.hibernate}",
+                       "org.hibernate:hibernate-entitymanager:${versions.hibernate}"]
 
 libraries.httpClient = "org.apache.httpcomponents:httpclient:4.2.2"
 
@@ -48,8 +56,12 @@ libraries.jackson = [
     "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
 ]
 
+libraries.hibernateCache = ["org.hibernate:hibernate-ehcache:${versions.hibernate}"]
+
 libraries.testing = [
     'cglib:cglib:3.1',
     'org.objenesis:objenesis:2.2',
     'org.ow2.asm:asm:5.0.4'
 ]
+
+libraries.dropwizard = ["io.dropwizard.metrics:metrics-core:${versions.metrics}", "io.dropwizard.metrics:metrics-ehcache:${versions.metrics}"]

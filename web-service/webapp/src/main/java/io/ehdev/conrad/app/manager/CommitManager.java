@@ -93,6 +93,9 @@ public class CommitManager {
 
     public List<CommitModel> findCommitsForRepo(UUID repoId) {
         VcsRepoModel vcs = vcsRepoRepository.findByUuid(repoId);
+        if(null == vcs) {
+            throw new VersionNotFoundException();
+        }
         return commitModelRepository.findCommits(vcs);
     }
 }

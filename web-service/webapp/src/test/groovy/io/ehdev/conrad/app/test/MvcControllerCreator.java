@@ -1,4 +1,4 @@
-package io.ehdev.conrad.test;
+package io.ehdev.conrad.app.test;
 
 import io.ehdev.conrad.app.service.GlobalControllerExceptionHandler;
 import org.springframework.test.web.servlet.MockMvc;

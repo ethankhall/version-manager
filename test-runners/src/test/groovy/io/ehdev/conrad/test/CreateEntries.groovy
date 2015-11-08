@@ -11,7 +11,7 @@ import org.apache.http.impl.client.DefaultHttpClient
 @Slf4j
 class CreateEntries {
 
-    public static final int numberOfEntries = 1000
+    public static final int numberOfEntries = 10000
 
     public static void main(String[] args) {
         def configuration = new VersionServiceConfiguration()
@@ -21,7 +21,7 @@ class CreateEntries {
         (0..numberOfEntries).each {
             def numberOfCommits = random.nextInt(1000)
             def commits = (0..numberOfCommits).collect { new RepoHistory('0.0.' + it, it as String) }
-            log.info("Creating {$it}")
+            log.error("Creating {$it}")
             client.createRepository(new RepoCreateModel(RandomStringUtils.randomAlphanumeric(60), null, 'semver', commits))
         }
     }
