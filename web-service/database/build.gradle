@@ -1,6 +1,8 @@
 apply plugin: 'java'
 apply plugin: 'groovy'
 
+configurations.compile.exclude group: 'org.apache.tomcat', module: 'tomcat-jdbc'
+
 dependencies {
     compile project(':web-service:backend')
 

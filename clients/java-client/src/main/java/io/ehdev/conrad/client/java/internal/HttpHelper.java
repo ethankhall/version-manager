@@ -3,6 +3,8 @@ package io.ehdev.conrad.client.java.internal;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.ehdev.conrad.client.java.VersionServiceConfiguration;
 import io.ehdev.conrad.client.java.exception.UnsuccessfulRequestException;
+import io.ehdev.conrad.model.repo.RepoCreateModel;
+import io.ehdev.conrad.model.repo.RepoResponseModel;
 import io.ehdev.conrad.model.version.UncommitedVersionModel;
 import io.ehdev.conrad.model.version.VersionCommitModel;
 import io.ehdev.conrad.model.version.VersionCreateModel;
@@ -50,6 +52,12 @@ public class HttpHelper {
         String body = om.writeValueAsString(createModel);
         InputStream content = doPostRequest(body, createVersionClaimUrl()).getEntity().getContent();
         return om.readValue(content, VersionCommitModel.class);
+    }
+
+    public RepoResponseModel createRepo(RepoCreateModel repoCreateModel) throws IOException, UnsuccessfulRequestException {
+        String body = om.writeValueAsString(repoCreateModel);
+        InputStream content = doPostRequest(body, configuration.getProviderBaseUrl() + "/api/repo").getEntity().getContent();
+        return om.readValue(content, RepoResponseModel.class);
     }
 
     protected HttpResponse doGetRequest(String url) throws IOException, UnsuccessfulRequestException {

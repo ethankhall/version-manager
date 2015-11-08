@@ -12,3 +12,4 @@ include ':api-model'
 
 //Tests
 include ':test-utils'
+include ':test-runners'

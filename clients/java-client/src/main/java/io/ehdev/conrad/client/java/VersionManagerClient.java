@@ -1,6 +1,8 @@
 package io.ehdev.conrad.client.java;
 
 import io.ehdev.conrad.client.java.exception.UnsuccessfulRequestException;
+import io.ehdev.conrad.model.repo.RepoCreateModel;
+import io.ehdev.conrad.model.repo.RepoResponseModel;
 import org.eclipse.jgit.api.errors.GitAPIException;
 
 import java.io.File;
@@ -19,4 +21,6 @@ public interface VersionManagerClient {
     Version claimVersion(List<String> commitIds, String message, String headCommitId) throws IOException, UnsuccessfulRequestException;
 
     Version claimVersion(File rootProjectDir) throws IOException, GitAPIException, UnsuccessfulRequestException;
+
+    RepoResponseModel createRepository(RepoCreateModel repoCreateModel) throws IOException, UnsuccessfulRequestException;
 }

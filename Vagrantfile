@@ -11,6 +11,11 @@ Vagrant.configure(2) do |config|
   config.berkshelf.berksfile_path = "Berksfile"
   config.berkshelf.enabled = true
 
+  config.vm.provider "vmware_fusion" do |v|
+    v.vmx["memsize"] = "8192"
+    v.vmx["numvcpus"] = "8"
+  end
+
   config.vm.provision :chef_solo do |chef|
     chef.add_recipe "base-packages"
     chef.add_recipe "ehdev-postgresql"

@@ -1,0 +1,38 @@
+apply plugin: 'groovy'
+apply plugin: 'scala'
+
+def gatlingVersion = '2.1.7'
+
+dependencies {
+    compile 'org.scala-lang:scala-library:2.11.5'
+    compile project(":clients:java-client")
+
+    // for performance testing=
+    testCompile "io.gatling:gatling-app:${gatlingVersion}"
+    testCompile "io.gatling.highcharts:gatling-charts-highcharts:${gatlingVersion}"
+
+}
+
+task loadMoreData(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath + sourceSets.test.runtimeClasspath
+    main = 'io.ehdev.conrad.test.CreateEntries'
+}
+
+task runLoadTest(type: JavaExec) {
+    classpath = sourceSets.main.runtimeClasspath + sourceSets.test.runtimeClasspath
+
+    jvmArgs = [
+        '-Dgatling.core.directory.binaries=' + sourceSets.test.output.classesDir.absolutePath,
+    ]
+    // Gatling application
+    main = "io.gatling.app.Gatling"
+    // Specify the simulation to run
+    args = ['-s', 'BasicSimulation',
+            '--data-folder', sourceSets.test.output.resourcesDir.absolutePath,
+            '--results-folder', new File(buildDir, 'reports/gatling').absolutePath
+    ]
+
+    doFirst {
+        new File(buildDir, 'reports/gatling').mkdirs()
+    }
+}

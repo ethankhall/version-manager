@@ -4,6 +4,8 @@ import io.ehdev.conrad.client.java.Version;
 import io.ehdev.conrad.client.java.VersionManagerClient;
 import io.ehdev.conrad.client.java.VersionServiceConfiguration;
 import io.ehdev.conrad.client.java.exception.UnsuccessfulRequestException;
+import io.ehdev.conrad.model.repo.RepoCreateModel;
+import io.ehdev.conrad.model.repo.RepoResponseModel;
 import io.ehdev.conrad.model.version.UncommitedVersionModel;
 import io.ehdev.conrad.model.version.VersionCommitModel;
 import io.ehdev.conrad.model.version.VersionCreateModel;
@@ -57,5 +59,10 @@ public class DefaultVersionManagerClient implements VersionManagerClient {
         GitHelper gitHelper = new GitHelper(rootProjectDir);
         List<String> commitIds = gitHelper.findCommitsFromHead();
         return claimVersion(commitIds, gitHelper.getHeadCommitMessage(), gitHelper.getHeadCommitId().getName());
+    }
+
+    @Override
+    public RepoResponseModel createRepository(RepoCreateModel repoCreateModel) throws IOException, UnsuccessfulRequestException {
+        return httpHelper.createRepo(repoCreateModel);
     }
 }
