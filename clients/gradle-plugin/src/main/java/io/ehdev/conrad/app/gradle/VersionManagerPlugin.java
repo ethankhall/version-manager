@@ -1,6 +1,5 @@
 package io.ehdev.conrad.app.gradle;
 
-import org.apache.commons.lang.StringUtils;
 import org.gradle.api.Action;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -30,6 +29,6 @@ public class VersionManagerPlugin implements Plugin<Project> {
 
     boolean ifFinalVersionBuild(Project project) {
         return project.hasProperty(FINAL_VERSION_PROPERTY)
-            && StringUtils.equalsIgnoreCase("true", project.property(FINAL_VERSION_PROPERTY).toString());
+            && "true".equalsIgnoreCase(project.property(FINAL_VERSION_PROPERTY).toString());
     }
 }

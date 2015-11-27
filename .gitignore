@@ -1,4 +1,6 @@
 # Created by https://www.gitignore.io/api/intellij,gradle,osx
+test-runners/src/test/resources/repos.csv
+
 chef
 .vagrant/
 Berksfile.lock
