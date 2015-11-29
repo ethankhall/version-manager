@@ -28,6 +28,7 @@ public class VersionClaimer {
             VersionManagerClient versionManagerClient = new DefaultVersionManagerClient(extension.getClient(), extension);
             Version version = versionManagerClient.claimVersion(rootProjectDir);
             logger.lifecycle("Version claimed was: {}", version.getVersion());
+            versionManagerClient.tagVersion(rootProjectDir, version);
             return version;
         } catch (IOException | GitAPIException | UnsuccessfulRequestException e) {
             logger.error("Unable to claim version! Reason: {}", e.getMessage());

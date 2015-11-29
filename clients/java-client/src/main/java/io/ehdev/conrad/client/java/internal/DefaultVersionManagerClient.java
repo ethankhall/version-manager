@@ -65,4 +65,9 @@ public class DefaultVersionManagerClient implements VersionManagerClient {
     public RepoResponseModel createRepository(RepoCreateModel repoCreateModel) throws IOException, UnsuccessfulRequestException {
         return httpHelper.createRepo(repoCreateModel);
     }
+
+    @Override
+    public void tagVersion(File rootProjectDir, Version version) throws IOException, GitAPIException {
+        new GitHelper(rootProjectDir).tag(version.getVersion());
+    }
 }

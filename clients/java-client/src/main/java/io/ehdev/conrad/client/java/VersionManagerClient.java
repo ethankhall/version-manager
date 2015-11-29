@@ -23,4 +23,6 @@ public interface VersionManagerClient {
     Version claimVersion(File rootProjectDir) throws IOException, GitAPIException, UnsuccessfulRequestException;
 
     RepoResponseModel createRepository(RepoCreateModel repoCreateModel) throws IOException, UnsuccessfulRequestException;
+
+    void tagVersion(File rootProjectDir, Version version) throws IOException, GitAPIException;
 }

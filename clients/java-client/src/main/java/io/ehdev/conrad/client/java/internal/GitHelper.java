@@ -42,4 +42,8 @@ public class GitHelper {
         RevWalk walk = new RevWalk(repo);
         return walk.parseCommit(getHeadCommitId()).getFullMessage();
     }
+
+    public void tag(String version) throws GitAPIException {
+        git.tag().setName(String.format("v%s", version)).call();
+    }
 }
