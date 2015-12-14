@@ -22,13 +22,11 @@ public class GitHelper {
     }
 
     public List<String> findCommitsFromHead() throws IOException, GitAPIException {
-        ObjectId resolve = repo.resolve("remotes/origin/master~20");
-        Iterable<RevCommit> commits = git.log().addRange(resolve, repo.resolve(Constants.HEAD)).call();
+        Iterable<RevCommit> commits = git.log().setMaxCount(50).call();
         List<String> commitIds = new LinkedList<String>();
         for (RevCommit commit : commits) {
             commitIds.add(commit.getId().getName());
         }
-        commitIds.add(resolve.getName());
 
         return commitIds;
     }
