@@ -1,16 +1,26 @@
+apply plugin: 'maven-publish'
+
 publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
         }
     }
-    repositories {
-        maven {
-            url "s3://ehdev-maven-repo/maven2"
-            credentials(AwsCredentials) {
-                accessKey "AKIAJ24ZRFBBIX5433ZQ"
-                secretKey "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"
-            }
+}
+
+apply plugin: 'com.jfrog.artifactory'
+
+artifactory {
+    contextUrl = 'https://ehdev.artifactoryonline.com/ehdev'
+    publish {
+        repository {
+            repoKey = 'local-release'
+            username = 'deploy'
+            password = '8N5#T[:!TwWnwC8\'/\\Rr!'
+        }
+        defaults {
+            publications('mavenJava')
         }
     }
 }
+

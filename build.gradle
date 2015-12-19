@@ -2,12 +2,14 @@ buildscript {
     repositories {
         mavenLocal()
         mavenCentral()
+        jcenter()
         maven {
             url "http://repo.ehdev.io/maven2"
         }
     }
     dependencies {
         classpath 'io.ehdev.conrad:gradle-plugin:+'
+        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.2.0'
     }
 }
 

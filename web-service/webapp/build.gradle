@@ -13,6 +13,9 @@ buildscript {
 apply plugin: 'spring-boot'
 apply plugin: 'java'
 apply plugin: 'groovy'
+apply from: "$rootDir/gradle/publishing.gradle"
+
+artifactoryPublish.dependsOn assemble
 
 dependencies {
     compile project(":api-model")
