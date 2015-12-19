@@ -80,3 +80,9 @@ idea.project.ipr {
                 .mapping.@vcs = 'Git'
     }
 }
+
+task teamcityVersion {
+    doLast {
+        println "##teamcity[buildNumber '$version']"
+    }
+}

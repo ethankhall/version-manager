@@ -13,7 +13,7 @@ public class VersionManagerPlugin implements Plugin<Project> {
         boolean isFinalVersion = ifFinalVersionBuild(project);
 
         VersionManagerExtension versionManager = project.getExtensions().create("versionManager", VersionManagerExtension.class);
-        final VersionRequester versionRequester = new VersionRequester(versionManager, project.getProjectDir(), isFinalVersion);
+        final VersionRequester versionRequester = new VersionRequester(versionManager, ifFinalVersionBuild(project), project);
         project.setVersion(versionRequester);
         project.allprojects(new Action<Project>() {
             @Override

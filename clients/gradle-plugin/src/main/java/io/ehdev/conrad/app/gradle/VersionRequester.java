@@ -1,11 +1,12 @@
 package io.ehdev.conrad.app.gradle;
 
+import io.ehdev.conrad.client.java.Version;
+import io.ehdev.conrad.client.java.VersionManagerClient;
 import io.ehdev.conrad.client.java.exception.UnsuccessfulRequestException;
 import io.ehdev.conrad.client.java.internal.DefaultVersionManagerClient;
-import io.ehdev.conrad.client.java.VersionManagerClient;
-import io.ehdev.conrad.client.java.Version;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
+import org.gradle.api.Project;
 import org.gradle.api.UncheckedIOException;
 import org.gradle.api.logging.Logger;
 import org.gradle.api.logging.Logging;
@@ -22,14 +23,23 @@ public class VersionRequester {
     private final VersionManagerExtension extension;
     private final File rootProjectDir;
     private final File backupFile;
-    private final boolean onlyFinalVersion;
+    private boolean onlyFinalVersion;
     private Version version;
 
-    public VersionRequester(VersionManagerExtension extension, File rootProjectDir, boolean findFinalVersion) {
+    public VersionRequester(VersionManagerExtension extension, boolean finalVersion, Project rootProject) {
         this.extension = extension;
-        this.rootProjectDir = rootProjectDir;
-        this.backupFile = new File(rootProjectDir, ".gradle/version-manager.txt");
-        this.onlyFinalVersion = findFinalVersion;
+        this.rootProjectDir = rootProject.getProjectDir();
+        this.backupFile = new File(rootProject.getProjectDir(), ".gradle/version-manager.txt");
+        this.onlyFinalVersion = finalVersion;
+
+        for (String taskName : rootProject.getGradle().getStartParameter().getTaskNames()) {
+            if(taskName.matches("(:?)claimVersion$")) {
+                onlyFinalVersion = true;
+                break;
+            }
+        }
+
+
     }
 
     void evaluate() {
