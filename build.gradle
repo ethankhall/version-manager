@@ -1,11 +1,15 @@
 buildscript {
     repositories {
+        maven {
+            url 'https://ehdev.artifactoryonline.com/ehdev/local-release/'
+            credentials {
+                username 'read'
+                password 'WUKPJRpDY6AMqdGWxyce334QwCKj3KFw'
+            }
+        }
         mavenLocal()
         mavenCentral()
         jcenter()
-        maven {
-            url "http://repo.ehdev.io/maven2"
-        }
     }
     dependencies {
         classpath 'io.ehdev.conrad:gradle-plugin:+'
