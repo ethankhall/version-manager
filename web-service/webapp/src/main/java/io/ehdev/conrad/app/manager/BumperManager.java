@@ -40,7 +40,7 @@ public class BumperManager {
 
     @Nonnull
     public VersionBumper findVersionBumper(UUID repoId) {
-        VcsRepoModel repo = vcsRepoRepository.findByUuid(repoId);
+        VcsRepoModel repo = vcsRepoRepository.findOne(repoId);
         VersionBumper versionBumper = versionBumpers.get(repo.getVersionBumpterClassName());
         log.debug("Found {} for repo {}", versionBumper, repoId.toString());
 

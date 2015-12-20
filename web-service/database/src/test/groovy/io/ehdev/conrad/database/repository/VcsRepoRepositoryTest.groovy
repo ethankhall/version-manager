@@ -27,7 +27,6 @@ class VcsRepoRepositoryTest extends Specification {
         def vcs = PopulateTestUtils.repo(vcsRepoRepository, versionBumperRepository)
 
         expect:
-        vcsRepoRepository.findByUuid(vcs.getUuidAsUUID()) == vcs
         vcsRepoRepository.findOne(vcs.getId()) == vcs
     }
 }

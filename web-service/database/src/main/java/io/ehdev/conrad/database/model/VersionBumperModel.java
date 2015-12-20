@@ -3,10 +3,13 @@ package io.ehdev.conrad.database.model;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotBlank;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Table(
     name = "version_bumper",
@@ -16,8 +19,11 @@ import javax.persistence.*;
 public class VersionBumperModel implements UniqueModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @Type(type="pg-uuid")
+    @Column(name = "uuid", unique = true)
+    @GeneratedValue(generator = "uuid-gen")
+    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    private UUID id;
 
     @NotBlank
     @NotEmpty
@@ -44,8 +50,13 @@ public class VersionBumperModel implements UniqueModel {
     }
 
     @Override
-    public long getId() {
+    public UUID getId() {
         return id;
+    }
+
+    @Override
+    public void setId(UUID uuid) {
+        this.id = uuid;
     }
 
     public String getClassName() {

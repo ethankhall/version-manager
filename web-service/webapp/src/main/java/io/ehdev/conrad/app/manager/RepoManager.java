@@ -30,7 +30,6 @@ public class RepoManager {
 
     public VcsRepoModel createRepo(String repoName, String bumperName, String repoUrl) {
         VcsRepoModel vcsRepoModel = new VcsRepoModel();
-        vcsRepoModel.setUuid(UUID.randomUUID());
         vcsRepoModel.setRepoName(repoName);
         vcsRepoModel.setUrl(repoUrl);
         vcsRepoModel.setToken(RandomStringUtils.randomAlphanumeric(60));

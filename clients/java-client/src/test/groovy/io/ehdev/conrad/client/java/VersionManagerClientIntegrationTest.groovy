@@ -51,7 +51,7 @@ class VersionManagerClientIntegrationTest extends Specification {
             return temp
         }
 
-        def configuration = createVersionServiceConfiguration(vcsRepoModel.getUuid())
+        def configuration = createVersionServiceConfiguration(vcsRepoModel.getId())
         def requester = new DefaultVersionManagerClient(new DefaultHttpClient(), configuration)
 
         when:
@@ -72,7 +72,7 @@ class VersionManagerClientIntegrationTest extends Specification {
             return temp
         }
 
-        def configuration = createVersionServiceConfiguration(vcsRepoModel.getUuid(), vcsRepoModel.getToken())
+        def configuration = createVersionServiceConfiguration(vcsRepoModel.getId(), vcsRepoModel.getToken())
         def requester = new DefaultVersionManagerClient(new DefaultHttpClient(), configuration)
 
         when:
@@ -83,10 +83,10 @@ class VersionManagerClientIntegrationTest extends Specification {
         version.version == '2.0.0'
     }
 
-    VersionServiceConfiguration createVersionServiceConfiguration(String id, String token = null) {
+    VersionServiceConfiguration createVersionServiceConfiguration(UUID id, String token = null) {
         def configuration = new VersionServiceConfiguration()
         configuration.setProviderBaseUrl("http://localhost:${port}")
-        configuration.setRepoId(id)
+        configuration.setRepoId(id.toString())
         configuration.setToken(token)
         return configuration
     }

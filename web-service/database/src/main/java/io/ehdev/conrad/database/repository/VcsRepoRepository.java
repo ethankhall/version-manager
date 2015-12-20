@@ -5,7 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;
 
-public interface VcsRepoRepository extends JpaRepository<VcsRepoModel, Long> {
+public interface VcsRepoRepository extends JpaRepository<VcsRepoModel, UUID> {
 
-    VcsRepoModel findByUuid(UUID uuid);
 }

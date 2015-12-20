@@ -51,7 +51,7 @@ public class CommitManager {
     }
 
     public CommitModel findCommit(UUID repoId, VersionSearchModel versionSearchModel) {
-        VcsRepoModel vcs = vcsRepoRepository.findByUuid(repoId);
+        VcsRepoModel vcs = vcsRepoRepository.findOne(repoId);
         List<CommitModel> commits = commitModelRepository.findCommits(vcs, versionSearchModel.getCommits());
 
         Collections.sort(commits);
@@ -60,7 +60,7 @@ public class CommitManager {
     }
 
     public CommitModel createCommit(UUID repoId, VersionCreateModel versionCreateModel) {
-        VcsRepoModel vcs = vcsRepoRepository.findByUuid(repoId);
+        VcsRepoModel vcs = vcsRepoRepository.findOne(repoId);
         if (!StringUtils.equals(vcs.getToken(), versionCreateModel.getToken())) {
             throw new UnauthorizedTokenException();
         }
@@ -92,7 +92,7 @@ public class CommitManager {
     }
 
     public List<CommitModel> findCommitsForRepo(UUID repoId) {
-        VcsRepoModel vcs = vcsRepoRepository.findByUuid(repoId);
+        VcsRepoModel vcs = vcsRepoRepository.findOne(repoId);
         if(null == vcs) {
             throw new VersionNotFoundException();
         }

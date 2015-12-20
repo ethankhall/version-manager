@@ -38,6 +38,6 @@ class CommitModelRepositoryTest extends Specification {
         def commit = PopulateTestUtils.createCommit(commitModelRepository, vcsRepoModel, VersionFactory.parse('1.2.3'), null)
 
         expect:
-        commitModelRepository.findByCommitIdAndRepoId(commit.getCommitId(), vcsRepoModel.getUuidAsUUID()) == commit
+        commitModelRepository.findByCommitIdAndRepoId(commit.getCommitId(), vcsRepoModel.getId()) == commit
     }
 }

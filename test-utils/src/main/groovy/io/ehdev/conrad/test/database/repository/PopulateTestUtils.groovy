@@ -14,32 +14,40 @@ public class PopulateTestUtils {
     public static VersionBumperModel createBumper(VersionBumperRepository repository) {
         VersionBumperModel bumper = repository.findByBumperName("semver");
         if(bumper == null) {
-            return repository.save(new VersionBumperModel(SemanticVersionBumper.class.getName(),
+            def model = new VersionBumperModel(SemanticVersionBumper.class.getName(),
                 SemanticVersionBumper.class.getSimpleName(),
-                "semver"));
+                "semver")
+            model.setId(UUID.randomUUID())
+            return repository.save(model);
         } else {
             return bumper;
         }
     }
 
     public static VcsRepoModel repo(VcsRepoRepository vcsRepoRepository, VersionBumperRepository repository) {
-        def model = new VcsRepoModel(UUID.randomUUID(), RandomStringUtils.randomAlphabetic(11), createBumper(repository))
+        def model = new VcsRepoModel(RandomStringUtils.randomAlphabetic(11), createBumper(repository))
+        model.setId(UUID.randomUUID())
         return vcsRepoRepository.save(model);
     }
 
     public static VersionBumperModel stubBumper() {
-        return new VersionBumperModel(SemanticVersionBumper.class.getName(),
+        def model = new VersionBumperModel(SemanticVersionBumper.class.getName(),
             SemanticVersionBumper.class.getSimpleName(),
-            SemanticVersionBumper.class.getSimpleName());
+            SemanticVersionBumper.class.getSimpleName())
+        model.setId(UUID.randomUUID())
+        return model;
     }
 
     public static VcsRepoModel stubRepo(VersionBumperModel bumper, String name = RandomStringUtils.randomAlphabetic(11)) {
-        return new VcsRepoModel(UUID.randomUUID(), name, bumper);
+        def model = new VcsRepoModel(name, bumper)
+        model.setId(UUID.randomUUID())
+        return model;
     }
 
     public static CommitModel createCommit(CommitModelRepository commitModelRepository, VcsRepoModel vcsRepoModel,
                                            CommitVersion commitVersion, CommitModel parent) {
         def model = new CommitModel(RandomStringUtils.randomAlphanumeric(40), vcsRepoModel, commitVersion, parent)
+        model.setId(UUID.randomUUID())
         return commitModelRepository.save(model);
     }
 }

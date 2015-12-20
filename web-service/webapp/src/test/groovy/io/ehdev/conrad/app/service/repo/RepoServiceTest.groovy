@@ -35,9 +35,9 @@ class RepoServiceTest extends Specification {
 
         then:
         repos.each { repo ->
-            assert json[repo.getUuid()] != null
-            json[repo.getUuid()]['bumper'] == bumper.getBumperName()
-            json[repo.getUuid()]['id'] == repo.getUuid()
+            assert json[repo.getId().toString()] != null
+            json[repo.getId().toString()]['bumper'] == bumper.getBumperName()
+            json[repo.getId().toString()]['id'] == repo.getId().toString()
         }
     }
 

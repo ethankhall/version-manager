@@ -45,7 +45,7 @@ public class RepoService {
     @JsonView(RepoView.Public.class)
     @RequestMapping(method = RequestMethod.GET)
     public Map<String, RepoResponseModel> getAllRepos() {
-        Collector<VcsRepoModel, ?, Map<String, RepoResponseModel>> collector = Collectors.toMap(VcsRepoModel::getUuid, ApiFactory.RepoModelFactory::create);
+        Collector<VcsRepoModel, ?, Map<String, RepoResponseModel>> collector = Collectors.toMap(VcsRepoModel::getIdAsString, ApiFactory.RepoModelFactory::create);
         return repoManager.getAll().stream().collect(collector);
     }
 }

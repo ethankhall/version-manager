@@ -18,7 +18,7 @@ public class ApiFactory {
 
     public static class RepoModelFactory {
         public static RepoResponseModel create(VcsRepoModel repo) {
-            return new RepoResponseModel(repo.getRepoName(), repo.getUrl(), repo.getVersionBumperName(), repo.getUuid(), repo.getToken());
+            return new RepoResponseModel(repo.getRepoName(), repo.getUrl(), repo.getVersionBumperName(), repo.getIdAsString(), repo.getToken());
         }
     }
 

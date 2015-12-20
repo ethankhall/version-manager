@@ -4,10 +4,13 @@ import io.ehdev.conrad.backend.version.commit.CommitVersion;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(
@@ -17,8 +20,11 @@ import java.time.ZonedDateTime;
 public class CommitModel implements UniqueModel, Comparable<CommitModel> {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    @Type(type="pg-uuid")
+    @Column(name = "uuid", unique = true)
+    @GeneratedValue(generator = "uuid-gen")
+    @GenericGenerator(name = "uuid-gen", strategy = "uuid2")
+    UUID id;
 
     @Column(name = "commit_id", length = 40)
     String commitId;
@@ -53,8 +59,13 @@ public class CommitModel implements UniqueModel, Comparable<CommitModel> {
     }
 
     @Override
-    public long getId() {
+    public UUID getId() {
         return id;
+    }
+
+    @Override
+    public void setId(UUID uuid) {
+        this.id = uuid;
     }
 
     public String getCommitId() {
@@ -131,7 +142,7 @@ public class CommitModel implements UniqueModel, Comparable<CommitModel> {
     @Override
     public String toString() {
         return new ToStringBuilder(this)
-            .append("id", id)
+            .append("uuid", id)
             .append("commitId", commitId)
             .append("version", version)
             .append("createdAt", createdAt)
