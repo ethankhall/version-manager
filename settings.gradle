@@ -13,6 +13,3 @@ include ':api-model'
 //Tests
 include ':test-utils'
 include ':test-runners'
-
-//Security
-include ':web-service:security'
