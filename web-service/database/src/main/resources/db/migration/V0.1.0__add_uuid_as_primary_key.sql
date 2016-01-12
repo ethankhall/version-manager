@@ -2,8 +2,6 @@ DROP TABLE IF EXISTS temp_version_bumper;
 DROP TABLE IF EXISTS temp_repository_commit;
 DROP TABLE IF EXISTS temp_vcs_repo_data;
 
-CREATE EXTENSION "uuid-ossp";
-
 CREATE TEMPORARY TABLE temp_version_bumper (
     uuid        UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     id          BIGINT NOT NULL,
@@ -25,7 +23,7 @@ CREATE TEMPORARY TABLE temp_repository_commit (
     created_at    TIMESTAMP WITH TIME ZONE NOT NULL,
     vcs_repo      BIGINT                   NOT NULL,
     parent_commit BIGINT,
-    parent_uuid   UUID,
+    parent_commit_uuid   UUID,
     vcs_repo_uuid UUID
 );
 
@@ -44,11 +42,17 @@ CREATE TEMPORARY TABLE temp_vcs_repo_data (
 );
 
 INSERT INTO temp_vcs_repo_data (id, uuid, repo_name, repo_token, url, version_bumper)
-    SELECT id, uuid, repo_name, repo_token, url, version_bumper
+    SELECT
+        id,
+        uuid,
+        repo_name,
+        repo_token,
+        url,
+        version_bumper
     FROM vcs_repo_data;
 
 UPDATE temp_repository_commit t1
-SET parent_uuid = (SELECT t2.uuid
+SET parent_commit_uuid = (SELECT t2.uuid
                    FROM temp_repository_commit t2
                    WHERE t2.id = t1.parent_commit);
 
@@ -82,12 +86,12 @@ CREATE TABLE vcs_repo_data (
 );
 
 CREATE TABLE repository_commit (
-    uuid          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    commit_id     CHARACTER VARYING(40)                NOT NULL,
-    version       CHARACTER VARYING(120)               NOT NULL,
-    created_at    TIMESTAMP WITH TIME ZONE             NOT NULL,
-    vcs_repo_uuid UUID REFERENCES vcs_repo_data (uuid) NOT NULL,
-    parent_uuid   UUID REFERENCES repository_commit (uuid),
+    uuid               UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    commit_id          CHARACTER VARYING(40)                NOT NULL,
+    version            CHARACTER VARYING(120)               NOT NULL,
+    created_at         TIMESTAMP WITH TIME ZONE             NOT NULL,
+    vcs_repo_uuid      UUID REFERENCES vcs_repo_data (uuid) NOT NULL,
+    parent_commit_uuid UUID REFERENCES repository_commit (uuid),
     UNIQUE (commit_id, vcs_repo_uuid)
 );
 
@@ -108,14 +112,14 @@ INSERT INTO vcs_repo_data (uuid, repo_name, repo_token, url, version_bumper_uuid
         version_bumper_uuid
     FROM temp_vcs_repo_data;
 
-INSERT INTO repository_commit (uuid, commit_id, version, created_at, vcs_repo_uuid, parent_uuid)
+INSERT INTO repository_commit (uuid, commit_id, version, created_at, vcs_repo_uuid, parent_commit_uuid)
     SELECT
         uuid,
         commit_id,
         version,
         created_at,
         vcs_repo_uuid,
-        parent_uuid
+        parent_commit_uuid
     FROM temp_repository_commit;
 
 DROP TABLE temp_repository_commit;

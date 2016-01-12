@@ -15,7 +15,7 @@ import java.util.UUID;
 @Entity
 @Table(
     name = "repository_commit",
-    uniqueConstraints = @UniqueConstraint(columnNames = {"commit_id", "vcs_repo"})
+    uniqueConstraints = @UniqueConstraint(columnNames = {"commit_id", "vcs_repo_uuid"})
 )
 public class CommitModel implements UniqueModel, Comparable<CommitModel> {
 
@@ -37,11 +37,11 @@ public class CommitModel implements UniqueModel, Comparable<CommitModel> {
     @Column(name = "created_at", columnDefinition= "timestamptz")
     ZonedDateTime createdAt;
 
-    @JoinColumn(name = "vcs_repo")
+    @JoinColumn(name = "vcs_repo_uuid")
     @ManyToOne(fetch = FetchType.EAGER, optional = false)
     VcsRepoModel vcsRepoModel;
 
-    @JoinColumn(name = "parent_commit")
+    @JoinColumn(name = "parent_commit_uuid")
     @OneToOne(fetch = FetchType.LAZY)
     CommitModel parentCommit;
 
