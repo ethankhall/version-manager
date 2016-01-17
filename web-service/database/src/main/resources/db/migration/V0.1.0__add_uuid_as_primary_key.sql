@@ -43,7 +43,7 @@ CREATE TEMPORARY TABLE temp_vcs_repo_data (
 
 INSERT INTO temp_vcs_repo_data (id, uuid, repo_name, repo_token, url, version_bumper)
     SELECT
-        id,
+        uniqueId,
         uuid,
         repo_name,
         repo_token,

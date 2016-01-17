@@ -3,6 +3,13 @@ include ':web-service:webapp'
 include ':web-service:backend'
 include ':web-service:database'
 
+//security
+include ':web-service:security'
+
+//Api Containers
+include 'web-service:api-user'
+include 'web-service:api-version'
+
 //Clients
 include ':clients:gradle-plugin'
 include ':clients:java-client'

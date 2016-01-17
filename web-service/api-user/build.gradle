@@ -1,0 +1,18 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply from: "$rootDir/gradle/publishing.gradle"
+
+dependencies {
+    compile libraries.springSecurity
+    compile libraries.servletApi
+
+    testCompile project(":test-utils")
+    testCompile libraries.groovy
+    testCompile libraries.spock
+    testCompile libraries.spockSpring
+
+    testCompile libraries.springTest
+    testCompile libraries.jsonPath
+
+    testCompile libraries.testing
+}

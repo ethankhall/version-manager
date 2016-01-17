@@ -1,3 +1,24 @@
+google:
+    clientId: 428210344673-bmar2c3qa5daop98pu9731l8v0tihrt1.apps.googleusercontent.com
+    clientSecret: Y4UZtHiDP1R2o5_INu9MWykI
+
+server:
+    port: 8080
+
+management:
+    context-path: /admin
+    port: 8081
+
+jwt:
+    signing:
+        key: secret
+
+logging:
+    level:
+        io:
+            ehdev: DEBUG
+---
+
 # Connect to the DB
 spring:
     profiles: test
@@ -8,7 +29,8 @@ spring:
     jpa:
         show-sql: true
         hibernate:
-            ddl-auto: create-drop
+            ddl-auto: create
+
 flyway:
     enabled: false
 
@@ -20,29 +42,3 @@ spring:
         url: jdbc:postgresql://172.0.1.100/version_manager
         username: version
         password: manager
-
----
-
-spring:
-    jpa:
-        show-sql: false
-        hibernate:
-            ddl-auto: validate
-    oauth2:
-        client:
-          clientId: bd1c0a783ccdd1c9b9e4
-          clientSecret: 1a9030fbca47a5b2c28e92f19050bb77824b5ad1
-          accessTokenUri: https://github.com/login/oauth/access_token
-          userAuthorizationUri: https://github.com/login/oauth/authorize
-          clientAuthenticationScheme: form
-        resource:
-          userInfoUri: https://api.github.com/user
-          preferTokenInfo: false
-
-
-server:
-    port: 8080
-
-management:
-    context-path: /admin
-    port: 8081

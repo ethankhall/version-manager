@@ -13,6 +13,7 @@ versions.slf4j = '1.7.12'
 versions.hibernate = '5.0.5.Final'
 versions.jackson = '2.6.3'
 versions.metrics = '3.1.0'
+versions.springSocial = '1.1.4.RELEASE'
 
 // Because spring boot is fucking stupid
 ext['hibernate.version'] = versions.hibernate
@@ -21,7 +22,8 @@ libraries.springTest = "org.springframework:spring-test:${versions.spring}"
 libraries.springContext = "org.springframework:spring-context:${versions.spring}"
 libraries.springBoot = [
     "org.springframework.boot:spring-boot:${versions.springBoot}",
-    "org.springframework.boot:spring-boot-autoconfigure:${versions.springBoot}"
+    "org.springframework.boot:spring-boot-autoconfigure:${versions.springBoot}",
+    "org.springframework.boot:spring-boot-starter-thymeleaf:${versions.springBoot}"
 ]
 
 libraries.springContextSupport = "org.springframework:spring-context-support:${versions.spring}"
@@ -40,11 +42,17 @@ libraries.springWeb = [
     "org.springframework:spring-webmvc:${versions.spring}"
 ]
 
+libraries.springSocial = [
+    "org.springframework.social:spring-social-security:${versions.springSocial}",
+    "org.springframework.social:spring-social-web:${versions.springSocial}",
+    "org.springframework.social:spring-social-config:${versions.springSocial}",
+    "org.springframework.social:spring-social-google:1.0.0.RELEASE"
+]
+
 libraries.springSecurity = [
     "org.springframework.security:spring-security-acl:${versions.springSecurity}",
     "org.springframework.security:spring-security-web:${versions.springSecurity}",
     "org.springframework.security:spring-security-config:${versions.springSecurity}",
-    "org.springframework.security.oauth:spring-security-oauth2:${versions.springSecutityOAuth}",
 ]
 
 libraries.springTx = "org.springframework:spring-tx:${versions.spring}"
@@ -55,6 +63,7 @@ libraries.spock = "org.spockframework:spock-core:${versions.spock}"
 libraries.spockSpring = "org.spockframework:spock-spring:${versions.spock}"
 
 libraries.commonsLang = 'org.apache.commons:commons-lang3:3.4'
+libraries.commonsIO = 'commons-io:commons-io:2.4'
 libraries.sfl4j = "org.slf4j:slf4j-api:${versions.slf4j}"
 
 libraries.servletApi = 'javax.servlet:javax.servlet-api:3.1.0'

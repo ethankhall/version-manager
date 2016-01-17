@@ -24,6 +24,7 @@ dependencies {
     compile project(":api-model")
     compile project(":web-service:database")
     compile project(":web-service:backend")
+    compile project(":web-service:api-user")
     compile project(":web-service:security")
 
     //Caching

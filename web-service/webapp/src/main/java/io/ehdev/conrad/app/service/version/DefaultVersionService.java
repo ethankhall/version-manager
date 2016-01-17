@@ -75,9 +75,21 @@ public class DefaultVersionService implements VersionService {
         return new RepoVersionModel(collect);
     }
 
+//    @JsonView(VersionView.ReleasedVersionView.class)
+//    @RequestMapping(value = "/{repoId}/version/{version}", method = RequestMethod.GET)
+//    public VersionCommitModel findVersionForRepo(@PathVariable("repoId") String repoId,
+//                                                 @PathVariable("version") String commitId) {
+//        CommitModel commit = commitManager.findVersion(UUID.fromString(repoId), commitId);
+//        if(null == commit) {
+//            throw new VersionNotFoundException();
+//        }
+//        return ApiFactory.VersionModelFactory.create(commit.getCommitId(), commit.getVersion());
+//    }
+
     @JsonView(VersionView.ReleasedVersionView.class)
-    @RequestMapping(value = "/{repoId}/{commitId}", method = RequestMethod.GET)
-    public VersionCommitModel findVersionForRepo(@PathVariable("repoId") String repoId, @PathVariable("commitId") String commitId) {
+    @RequestMapping(value = "/{repoId}/commit/{commitId}", method = RequestMethod.GET)
+    public VersionCommitModel findCommitForRepo(@PathVariable("repoId") String repoId,
+                                                @PathVariable("commitId") String commitId) {
         CommitModel commit = commitManager.findCommit(UUID.fromString(repoId), commitId);
         if(null == commit) {
             throw new VersionNotFoundException();
