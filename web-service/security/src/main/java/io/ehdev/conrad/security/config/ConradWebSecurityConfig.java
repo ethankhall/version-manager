@@ -2,18 +2,20 @@ package io.ehdev.conrad.security.config;
 
 import io.ehdev.conrad.security.filter.StatelessAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
 
-@Order(102)
+@Order(50)
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class ConradWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -24,34 +26,25 @@ public class ConradWebSecurityConfig extends WebSecurityConfigurerAdapter {
         auth.inMemoryAuthentication();
     }
 
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         //@formatter:off
         http
+            .addFilterBefore(statelessAuthenticationFilter, AnonymousAuthenticationFilter.class)
             .formLogin()
                 .loginPage("/signin")
                 .loginProcessingUrl("/signin/authenticate")
                 .failureUrl("/signin?param.error=bad_credentials")
                 .and()
             .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.NEVER)
-                .and()
-            .addFilterBefore(statelessAuthenticationFilter, AbstractPreAuthenticatedProcessingFilter.class);
+                .sessionCreationPolicy(SessionCreationPolicy.NEVER);
         //@formatter:on
-//        final SpringSocialConfigurer socialConfigurer = new SpringSocialConfigurer();
-//        socialConfigurer.addObjectPostProcessor(new ObjectPostProcessor<SocialAuthenticationFilter>() {
-//            @Override
-//            public <O extends SocialAuthenticationFilter> O postProcess(O socialAuthenticationFilter) {
-//                socialAuthenticationFilter.setAuthenticationSuccessHandler(socialAuthenticationSuccessHandler);
-//                return socialAuthenticationFilter;
-//            }
-//        });
-//
-//        http// add custom authentication filter for complete stateless JWT based authentication
-//            .addFilterBefore(statelessAuthenticationFilter, AbstractPreAuthenticatedProcessingFilter.class)
-//
-//            // apply the configuration from the socialConfigurer (adds the SocialAuthenticationFilter)
-//            .apply(socialConfigurer.userIdSource(userIdSource));
     }
 
 }

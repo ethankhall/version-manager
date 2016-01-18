@@ -17,6 +17,9 @@ logging:
     level:
         io:
             ehdev: DEBUG
+        org:
+            springframework:
+                security: DEBUG
 ---
 
 # Connect to the DB
