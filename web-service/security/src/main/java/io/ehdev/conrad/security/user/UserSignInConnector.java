@@ -1,8 +1,6 @@
 package io.ehdev.conrad.security.user;
 
-import io.ehdev.conrad.security.database.model.UserConnectionModel;
 import io.ehdev.conrad.security.database.model.UserModel;
-import io.ehdev.conrad.security.database.repositories.UserConnectionModelRepository;
 import io.ehdev.conrad.security.database.repositories.UserModelRepository;
 import io.ehdev.conrad.security.jwt.JwtManager;
 import org.slf4j.Logger;
@@ -27,17 +25,14 @@ public class UserSignInConnector implements ConnectionSignUp, SignInAdapter {
     private static final Logger logger = LoggerFactory.getLogger(UserSignInConnector.class);
 
     private final UserModelRepository userRepository;
-    private final UserConnectionModelRepository connectionRepository;
     private final UserCookieManger userCookieManger;
     private final JwtManager jwtManager;
 
     @Autowired
     public UserSignInConnector(UserModelRepository userRepository,
-                               UserConnectionModelRepository connectionRepository,
                                UserCookieManger userCookieManger,
                                JwtManager jwtManager) {
         this.userRepository = userRepository;
-        this.connectionRepository = connectionRepository;
         this.userCookieManger = userCookieManger;
         this.jwtManager = jwtManager;
     }
@@ -45,10 +40,7 @@ public class UserSignInConnector implements ConnectionSignUp, SignInAdapter {
     @Override
     public String execute(Connection<?> connection) {
         UserProfile userProfile = connection.fetchUserProfile();
-
         UserModel userModel = userRepository.save(createUserModel(userProfile));
-        connectionRepository.save(createConnectionModel(userModel, userProfile, connection));
-
         return userModel.getId().toString();
     }
 
@@ -57,23 +49,13 @@ public class UserSignInConnector implements ConnectionSignUp, SignInAdapter {
         logger.info("Signed In: {} {}", userId, connection.getKey());
         UserModel user = userRepository.findOne(UUID.fromString(userId));
         String userToken = jwtManager.createUserToken(user, LocalDateTime.now().plusDays(30));
-
         userCookieManger.addCookie(userToken, request.getNativeResponse(HttpServletResponse.class));
 
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(user, null, null);
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
+            new UserPrincipal(user), null, null);
+
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return null;
-    }
-
-    private UserConnectionModel createConnectionModel(UserModel userModel, UserProfile userProfile, Connection<?> connection) {
-        UserConnectionModel userConnectionModel = new UserConnectionModel();
-        userConnectionModel.setUserModel(userModel);
-        userConnectionModel.setConnectionKey(connection.getKey().toString());
-        userConnectionModel.setEmailAddress(userProfile.getEmail());
-        userConnectionModel.setImageUrl(connection.getImageUrl());
-        userConnectionModel.setProfileUrl(connection.getProfileUrl());
-        userConnectionModel.setName(connection.getDisplayName());
-        return userConnectionModel;
     }
 
     private UserModel createUserModel(UserProfile userProfile) {

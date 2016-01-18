@@ -1,7 +1,6 @@
 package io.ehdev.conrad.security.database.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -32,7 +31,7 @@ public class UserTokenModel {
     private boolean valid = true;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "tokenType", nullable = false)
+    @Column(name = "token_type", nullable = false)
     private TokenType tokenType;
 
     @JsonIgnore

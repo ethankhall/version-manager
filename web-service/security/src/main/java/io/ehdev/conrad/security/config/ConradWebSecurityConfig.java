@@ -12,10 +12,11 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.AnonymousAuthenticationFilter;
+import org.springframework.social.security.SpringSocialConfigurer;
 
 @Order(50)
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity
 public class ConradWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -43,7 +44,9 @@ public class ConradWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .failureUrl("/signin?param.error=bad_credentials")
                 .and()
             .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.NEVER);
+                .sessionCreationPolicy(SessionCreationPolicy.NEVER)
+            .and()
+                .apply(new SpringSocialConfigurer());
         //@formatter:on
     }
 

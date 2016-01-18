@@ -13,18 +13,21 @@ jwt:
     signing:
         key: secret
 
+security:
+    text:
+        password: password
+        salt: 0123456789ABCDEF
+
 logging:
     level:
         io:
             ehdev: DEBUG
-        org:
-            springframework:
-                security: DEBUG
----
 
-# Connect to the DB
+flyway:
+    out-of-order: true
+    locations: classpath:db/security/migration, classpath:db/version/migration
+
 spring:
-    profiles: test
     datasource:
         url: jdbc:postgresql://172.0.1.100/version_manager_test
         username: version_manager_test
@@ -32,16 +35,4 @@ spring:
     jpa:
         show-sql: true
         hibernate:
-            ddl-auto: create
-
-flyway:
-    enabled: false
-
----
-
-spring:
-    profiles: dev
-    datasource:
-        url: jdbc:postgresql://172.0.1.100/version_manager
-        username: version
-        password: manager
+            ddl-auto: verify

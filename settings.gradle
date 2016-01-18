@@ -7,8 +7,11 @@ include ':web-service:database'
 include ':web-service:security'
 
 //Api Containers
-include 'web-service:api-user'
-include 'web-service:api-version'
+include ':web-service:api-user'
+include ':web-service:api-version'
+
+//Views
+include ':web-service:api-views'
 
 //Clients
 include ':clients:gradle-plugin'

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import java.security.Principal;
 
 @Controller
-public class SignInController {
+public class UserLoginController {
 
     @RequestMapping(value = "/signin", method = RequestMethod.GET)
     public String getSignInPage() {

@@ -42,6 +42,10 @@ subprojects {
         }
     }
 
+    configurations.all {
+        exclude group: 'org.apache.tomcat', module: 'tomcat-jdbc'
+    }
+
     sourceCompatibility = '1.8'
 
     if(project.name != 'test-utils') {

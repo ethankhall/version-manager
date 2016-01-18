@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:social="http://spring.io/springsocial"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorator="layout">
+<head>
+    <title>Spring Social Showcase</title>
+</head>
+<body>
+<div id="content" layout:fragment="content">
+    <h3>Connect to Google</h3>
+
+    <form th:action="@{/connect/google}" method="POST">
+        <input type="hidden" name="_csrf" th:value="${_csrf.token}" />
+        <input type="hidden" name="scope" value="https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo#email" />
+        <div class="formInfo">
+            <p>You aren't connected to Facebook yet. Click the button to connect Spring Social Showcase with your Facebook account.</p>
+        </div>
+        <p><button type="submit"><img th:src="@{/resources/social/facebook/connect_light_medium_short.gif}"/></button></p>
+    </form>
+</div>
+</body>
+</html>

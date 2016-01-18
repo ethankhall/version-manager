@@ -13,17 +13,11 @@ public class UserModel {
     @Column(updatable = false, unique = true, name = "uuid")
     private UUID id;
 
-    @Column(name = "user_name")
-    public String userName;
-
     @Column(name = "first_name")
     private String firstName;
 
     @Column(name = "email_address")
     private String emailAddress;
-
-    @OneToMany(mappedBy = "userModel")
-    private Collection<UserConnectionModel> connectionModels;
 
     @OneToMany(mappedBy = "userModel")
     private Collection<UserTokenModel> tokenModels;
@@ -52,27 +46,11 @@ public class UserModel {
         this.emailAddress = emailAddress;
     }
 
-    public Collection<UserConnectionModel> getConnectionModels() {
-        return connectionModels;
-    }
-
-    public void setConnectionModels(Collection<UserConnectionModel> connectionModels) {
-        this.connectionModels = connectionModels;
-    }
-
     public Collection<UserTokenModel> getTokenModels() {
         return tokenModels;
     }
 
     public void setTokenModels(Collection<UserTokenModel> tokenModels) {
         this.tokenModels = tokenModels;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 }

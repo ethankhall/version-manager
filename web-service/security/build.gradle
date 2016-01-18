@@ -2,6 +2,9 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 
 dependencies {
+
+    compile project(":web-service:api-views")
+
     //Web App
     compile libraries.servletApi
     compile libraries.springBoot

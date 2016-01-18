@@ -89,4 +89,7 @@ libraries.testing = [
     'org.ow2.asm:asm:5.0.4'
 ]
 
-libraries.dropwizard = ["io.dropwizard.metrics:metrics-core:${versions.metrics}", "io.dropwizard.metrics:metrics-ehcache:${versions.metrics}"]
+libraries.dropwizard = [
+    "io.dropwizard.metrics:metrics-core:${versions.metrics}",
+    "io.dropwizard.metrics:metrics-ehcache:${versions.metrics}"
+]
