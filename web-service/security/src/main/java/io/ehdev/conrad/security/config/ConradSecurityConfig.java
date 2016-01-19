@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @ComponentScan("io.ehdev.conrad.security")
-@Import({SecurityDatabaseConfig.class, ConradWebSecurityConfig.class, ConradSocialConfig.class})
+@Import({ConradSecurityDatabaseConfig.class, ConradExternalAuth.class, ConradWebSecurityConfig.class})
 public class ConradSecurityConfig {
 
 }

@@ -1,19 +1,16 @@
-package io.ehdev.conrad.security.filter;
+package io.ehdev.conrad.security.user.filter;
 
 import io.ehdev.conrad.security.database.model.UserModel;
 import io.ehdev.conrad.security.database.repositories.UserModelRepository;
 import io.ehdev.conrad.security.jwt.JwtManager;
 import io.ehdev.conrad.security.jwt.UserToken;
-import io.ehdev.conrad.security.user.UserCookieManger;
+import io.ehdev.conrad.security.user.auth.UserCookieManger;
 import io.ehdev.conrad.security.user.UserPrincipal;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,8 +20,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.UUID;
 
 @Component
@@ -67,9 +62,7 @@ public class StatelessAuthenticationFilter extends OncePerRequestFilter {
         }
 
         logger.debug("Logging in {}", user.getId());
-        UserPrincipal userPrincipal = new UserPrincipal(user);
-        Collection<GrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
-        return new UsernamePasswordAuthenticationToken(userPrincipal, null, authorities);
+        return FilterUtilities.createAuthentication(new UserPrincipal(user));
     }
 
     @Override

@@ -72,6 +72,13 @@ libraries.jwt = 'io.jsonwebtoken:jjwt:0.6.0'
 libraries.hibernate = ["org.hibernate:hibernate-java8:${versions.hibernate}",
                        "org.hibernate:hibernate-entitymanager:${versions.hibernate}"]
 
+libraries.pac4j = [
+    'org.pac4j:pac4j-oauth:1.8.4',
+    'org.pac4j:spring-webmvc-pac4j:1.0.2',
+    'org.pac4j:spring-security-pac4j:1.4.1',
+    'org.pac4j:pac4j-http:1.8.4',
+    'org.pac4j:pac4j-jwt:1.8.4'
+]
 libraries.httpClient = "org.apache.httpcomponents:httpclient:4.2.2"
 
 libraries.jsonPath = 'com.jayway.jsonpath:json-path:2.0.0'

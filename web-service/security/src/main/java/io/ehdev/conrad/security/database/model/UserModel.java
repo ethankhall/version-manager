@@ -13,14 +13,25 @@ public class UserModel {
     @Column(updatable = false, unique = true, name = "uuid")
     private UUID id;
 
-    @Column(name = "first_name")
-    private String firstName;
+    @Column(name = "name")
+    private String name;
 
     @Column(name = "email_address")
     private String emailAddress;
 
     @OneToMany(mappedBy = "userModel")
+    private Collection<ClientUserProfileModel> clientUserProfileModels;
+
+    @OneToMany(mappedBy = "userModel")
     private Collection<UserTokenModel> tokenModels;
+
+    public UserModel() {
+    }
+
+    public UserModel(String name, String emailAddress) {
+        this.name = name;
+        this.emailAddress = emailAddress;
+    }
 
     public UUID getId() {
         return id;
@@ -30,12 +41,12 @@ public class UserModel {
         this.id = id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public String getName() {
+        return name;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getEmailAddress() {
@@ -52,5 +63,13 @@ public class UserModel {
 
     public void setTokenModels(Collection<UserTokenModel> tokenModels) {
         this.tokenModels = tokenModels;
+    }
+
+    public Collection<ClientUserProfileModel> getClientUserProfileModels() {
+        return clientUserProfileModels;
+    }
+
+    public void setClientUserProfileModels(Collection<ClientUserProfileModel> clientUserProfileModels) {
+        this.clientUserProfileModels = clientUserProfileModels;
     }
 }

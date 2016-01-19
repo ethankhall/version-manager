@@ -5,6 +5,7 @@ dependencies {
 
     compile project(":web-service:api-views")
 
+
     //Web App
     compile libraries.servletApi
     compile libraries.springBoot
@@ -13,6 +14,7 @@ dependencies {
     compile libraries.springSecurity
     compile libraries.springSocial
     compile libraries.jwt
+    compile libraries.pac4j
 
     // Hibernate
     compile libraries.hibernate

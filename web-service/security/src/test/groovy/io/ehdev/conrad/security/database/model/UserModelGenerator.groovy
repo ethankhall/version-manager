@@ -6,7 +6,7 @@ class UserModelGenerator {
         def model = new UserModel()
         model.id = UUID.randomUUID()
         model.emailAddress = 'email@domain.com'
-        model.firstName = 'bob'
+        model.name = 'bob'
         return model
     }
 }

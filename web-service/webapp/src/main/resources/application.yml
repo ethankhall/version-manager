@@ -22,6 +22,8 @@ logging:
     level:
         io:
             ehdev: DEBUG
+        org:
+            pac4j: DEBUG
 
 flyway:
     out-of-order: true

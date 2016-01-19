@@ -1,8 +1,9 @@
-package io.ehdev.conrad.security.filter
+package io.ehdev.conrad.security.login
 
 import io.ehdev.conrad.security.database.repositories.UserModelRepository
 import io.ehdev.conrad.security.jwt.JwtManager
-import io.ehdev.conrad.security.user.UserCookieManger
+import io.ehdev.conrad.security.user.auth.UserCookieMangerImpl
+import io.ehdev.conrad.security.user.filter.StatelessAuthenticationFilter
 import org.springframework.mock.web.MockHttpServletRequest
 import spock.lang.Specification
 
@@ -11,7 +12,7 @@ import javax.servlet.http.Cookie
 class StatelessAuthenticationFilterTest extends Specification {
 
     UserModelRepository userModelRepository
-    UserCookieManger userCookieManger = new UserCookieManger()
+    UserCookieMangerImpl userCookieManger = new UserCookieMangerImpl()
     JwtManager jwtManager
     StatelessAuthenticationFilter filter
 
@@ -33,7 +34,7 @@ class StatelessAuthenticationFilterTest extends Specification {
     def 'test filter getting cookie'() {
         when:
         MockHttpServletRequest request = new MockHttpServletRequest();
-        request.setCookies(new Cookie(UserCookieManger.COOKIE_NAME, "cookie"))
+        request.setCookies(new Cookie(UserCookieMangerImpl.COOKIE_NAME, "cookie"))
 
         then:
         filter.findTokenString(request) == 'cookie'

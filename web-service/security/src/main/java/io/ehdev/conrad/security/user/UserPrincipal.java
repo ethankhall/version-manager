@@ -5,20 +5,20 @@ import io.ehdev.conrad.security.database.model.UserModel;
 import io.ehdev.conrad.views.UserPublicView;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.social.security.SocialUserDetails;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.UUID;
 
-public class UserPrincipal implements SocialUserDetails {
+public class UserPrincipal implements UserDetails {
 
     private UUID id;
     private String firstName;
     private String emailAddress;
 
     public UserPrincipal(UserModel userModel) {
-        this(userModel.getId(), userModel.getFirstName(), userModel.getEmailAddress());
+        this(userModel.getId(), userModel.getName(), userModel.getEmailAddress());
     }
 
     public UserPrincipal(UUID id, String firstName, String emailAddress) {
@@ -40,11 +40,6 @@ public class UserPrincipal implements SocialUserDetails {
     @JsonView(UserPublicView.class)
     public String getEmailAddress() {
         return emailAddress;
-    }
-
-    @Override
-    public String getUserId() {
-        return getId().toString();
     }
 
     @Override
