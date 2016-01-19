@@ -1,6 +1,6 @@
 package io.ehdev.conrad.security.config;
 
-import io.ehdev.conrad.security.database.repositories.UserModelRepository;
+import io.ehdev.conrad.security.database.repositories.SecurityUserModelRepository;
 import io.ehdev.conrad.security.user.auth.ConradAuthenticationProvider;
 import io.ehdev.conrad.security.user.filter.StatelessAuthenticationFilter;
 import io.ehdev.conrad.security.user.create.CreateNewUserSessionStrategy;
@@ -40,7 +40,7 @@ public class ConradWebSecurityConfig extends WebSecurityConfigurerAdapter {
     StatelessAuthenticationFilter statelessAuthenticationFilter;
 
     @Autowired
-    UserModelRepository userModelRepository;
+    SecurityUserModelRepository userModelRepository;
 
     @Autowired
     public void registerAuthentication(AuthenticationManagerBuilder auth, AuthenticationProvider authenticationProvider) throws Exception {

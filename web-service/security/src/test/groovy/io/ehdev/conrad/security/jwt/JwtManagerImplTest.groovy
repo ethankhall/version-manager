@@ -1,10 +1,10 @@
 package io.ehdev.conrad.security.jwt
 
 import io.ehdev.conrad.security.database.model.TokenType
-import io.ehdev.conrad.security.database.model.UserModel
+import io.ehdev.conrad.security.database.model.SecurityUserModel
 import io.ehdev.conrad.security.database.model.UserModelGenerator
-import io.ehdev.conrad.security.database.model.UserTokenModel
-import io.ehdev.conrad.security.database.repositories.UserTokenModelRepository
+import io.ehdev.conrad.security.database.model.SecurityUserTokenModel
+import io.ehdev.conrad.security.database.repositories.SecurityUserTokenModelRepository
 import org.springframework.mock.env.MockEnvironment
 import spock.lang.Specification
 
@@ -13,24 +13,24 @@ import java.time.LocalDateTime
 class JwtManagerImplTest extends Specification {
 
     JwtManagerImpl jwtManager
-    UserTokenModelRepository tokenModelRepository
+    SecurityUserTokenModelRepository tokenModelRepository
 
     def setup() {
         def environment = new MockEnvironment()
         environment.withProperty('jwt.signing.key', 'secret')
-        tokenModelRepository = Mock(UserTokenModelRepository)
+        tokenModelRepository = Mock(SecurityUserTokenModelRepository)
         jwtManager = new JwtManagerImpl(environment, tokenModelRepository)
     }
 
     def 'can create token'() {
-        UserModel model = UserModelGenerator.createUserModel()
-        UserTokenModel tokenModel;
+        SecurityUserModel model = UserModelGenerator.createUserModel()
+        SecurityUserTokenModel tokenModel;
 
         when:
         def token = jwtManager.createUserToken(model, LocalDateTime.now().plusDays(1))
 
         then:
-        1 * tokenModelRepository.save(_) >> { UserTokenModel it ->
+        1 * tokenModelRepository.save(_) >> { SecurityUserTokenModel it ->
             it.id = UUID.randomUUID()
             tokenModel = it
             return it;

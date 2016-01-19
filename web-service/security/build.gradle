@@ -4,6 +4,7 @@ apply plugin: 'groovy'
 dependencies {
 
     compile project(":web-service:api-views")
+    compile project(":api-model")
 
 
     //Web App

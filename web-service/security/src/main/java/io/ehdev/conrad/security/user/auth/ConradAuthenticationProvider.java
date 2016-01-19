@@ -1,9 +1,8 @@
 package io.ehdev.conrad.security.user.auth;
 
-import io.ehdev.conrad.security.database.model.UserModel;
-import io.ehdev.conrad.security.database.repositories.UserModelRepository;
+import io.ehdev.conrad.security.database.model.SecurityUserModel;
+import io.ehdev.conrad.security.database.repositories.SecurityUserModelRepository;
 import io.ehdev.conrad.security.user.filter.FilterUtilities;
-import io.ehdev.conrad.security.user.UserPrincipal;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.springframework.security.authentication.ClientAuthenticationProvider;
 import org.pac4j.springframework.security.authentication.ClientAuthenticationToken;
@@ -14,10 +13,10 @@ import org.springframework.security.core.AuthenticationException;
 public class ConradAuthenticationProvider implements AuthenticationProvider {
 
     private final ClientAuthenticationProvider clientAuthenticationProvider;
-    private final UserModelRepository userModelRepository;
+    private final SecurityUserModelRepository userModelRepository;
 
     public ConradAuthenticationProvider(ClientAuthenticationProvider clientAuthenticationProvider,
-                                        UserModelRepository userModelRepository) {
+                                        SecurityUserModelRepository userModelRepository) {
         this.clientAuthenticationProvider = clientAuthenticationProvider;
         this.userModelRepository = userModelRepository;
     }
@@ -28,8 +27,8 @@ public class ConradAuthenticationProvider implements AuthenticationProvider {
         if(null != authenticate && authenticate instanceof ClientAuthenticationToken) {
             ClientAuthenticationToken authenticationToken = (ClientAuthenticationToken) authenticate;
             UserProfile userProfile = authenticationToken.getUserProfile();
-            UserModel user = userModelRepository.findOneByClientUserProfile(userProfile.getClass().getSimpleName(), userProfile.getId());
-            FilterUtilities.createAuthentication(new UserPrincipal(user));
+            SecurityUserModel user = userModelRepository.findOneByClientUserProfile(userProfile.getClass().getSimpleName(), userProfile.getId());
+            FilterUtilities.createAuthentication(user.toUserModel());
         }
         return null;
     }

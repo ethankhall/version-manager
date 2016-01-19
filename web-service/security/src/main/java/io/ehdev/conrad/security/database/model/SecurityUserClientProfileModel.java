@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "security_user_client_profile")
-public class ClientUserProfileModel {
+public class SecurityUserClientProfileModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -17,7 +17,7 @@ public class ClientUserProfileModel {
     @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_uuid")
-    private UserModel userModel;
+    private SecurityUserModel userModel;
 
     @Column(name = "provider_type")
     private String providerType;
@@ -25,21 +25,21 @@ public class ClientUserProfileModel {
     @Column(name = "provider_user_id")
     private String providerUserId;
 
-    public ClientUserProfileModel() {
+    public SecurityUserClientProfileModel() {
 
     }
 
-    public ClientUserProfileModel(UserModel userModel, String providerType, String providerUserId) {
+    public SecurityUserClientProfileModel(SecurityUserModel userModel, String providerType, String providerUserId) {
         this.userModel = userModel;
         this.providerType = providerType;
         this.providerUserId = providerUserId;
     }
 
-    public UserModel getUserModel() {
+    public SecurityUserModel getUserModel() {
         return userModel;
     }
 
-    public void setUserModel(UserModel userModel) {
+    public void setUserModel(SecurityUserModel userModel) {
         this.userModel = userModel;
     }
 

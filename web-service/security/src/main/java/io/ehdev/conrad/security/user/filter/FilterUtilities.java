@@ -1,6 +1,6 @@
 package io.ehdev.conrad.security.user.filter;
 
-import io.ehdev.conrad.security.user.UserPrincipal;
+import io.ehdev.conrad.model.user.UserModel;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -11,7 +11,7 @@ import java.util.Collections;
 
 public class FilterUtilities {
 
-    public static Authentication createAuthentication(UserPrincipal userPrincipal) {
+    public static Authentication createAuthentication(UserModel userPrincipal) {
         Collection<GrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
         return new UsernamePasswordAuthenticationToken(userPrincipal, null, authorities);
     }

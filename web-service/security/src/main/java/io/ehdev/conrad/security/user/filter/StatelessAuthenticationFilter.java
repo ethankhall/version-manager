@@ -1,11 +1,10 @@
 package io.ehdev.conrad.security.user.filter;
 
-import io.ehdev.conrad.security.database.model.UserModel;
-import io.ehdev.conrad.security.database.repositories.UserModelRepository;
+import io.ehdev.conrad.security.database.model.SecurityUserModel;
+import io.ehdev.conrad.security.database.repositories.SecurityUserModelRepository;
 import io.ehdev.conrad.security.jwt.JwtManager;
 import io.ehdev.conrad.security.jwt.UserToken;
 import io.ehdev.conrad.security.user.auth.UserCookieManger;
-import io.ehdev.conrad.security.user.UserPrincipal;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,12 +28,12 @@ public class StatelessAuthenticationFilter extends OncePerRequestFilter {
 
     static final String HEADER_NAME = "X-AUTH-TOKEN";
 
-    private final UserModelRepository userModelRepository;
+    private final SecurityUserModelRepository userModelRepository;
     private final UserCookieManger userCookieManger;
     private final JwtManager jwtManager;
 
     @Autowired
-    public StatelessAuthenticationFilter(UserModelRepository userModelRepository,
+    public StatelessAuthenticationFilter(SecurityUserModelRepository userModelRepository,
                                          UserCookieManger userCookieManger,
                                          JwtManager jwtManager) {
         this.userModelRepository = userModelRepository;
@@ -55,14 +54,14 @@ public class StatelessAuthenticationFilter extends OncePerRequestFilter {
             return null;
         }
 
-        UserModel user = userModelRepository.findOne(UUID.fromString(userToken.getUserId()));
+        SecurityUserModel user = userModelRepository.findOne(UUID.fromString(userToken.getUserId()));
 
         if(user == null) {
             return null;
         }
 
         logger.debug("Logging in {}", user.getId());
-        return FilterUtilities.createAuthentication(new UserPrincipal(user));
+        return FilterUtilities.createAuthentication(user.toUserModel());
     }
 
     @Override

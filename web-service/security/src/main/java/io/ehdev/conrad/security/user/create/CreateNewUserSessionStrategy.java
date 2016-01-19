@@ -1,9 +1,9 @@
 package io.ehdev.conrad.security.user.create;
 
-import io.ehdev.conrad.security.database.model.ClientUserProfileModel;
-import io.ehdev.conrad.security.database.model.UserModel;
-import io.ehdev.conrad.security.database.repositories.ClientUserProfileModelRepository;
-import io.ehdev.conrad.security.database.repositories.UserModelRepository;
+import io.ehdev.conrad.security.database.model.SecurityUserClientProfileModel;
+import io.ehdev.conrad.security.database.model.SecurityUserModel;
+import io.ehdev.conrad.security.database.repositories.SecurityUserClientProfileModelRepository;
+import io.ehdev.conrad.security.database.repositories.SecurityUserModelRepository;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.profile.github.GitHubProfile;
 import org.pac4j.oauth.profile.google2.Google2Profile;
@@ -20,11 +20,11 @@ import javax.servlet.http.HttpServletResponse;
 @Service
 public class CreateNewUserSessionStrategy implements SessionAuthenticationStrategy {
 
-    private final UserModelRepository userModelRepository;
-    private final ClientUserProfileModelRepository clientUserProfileModelRepository;
+    private final SecurityUserModelRepository userModelRepository;
+    private final SecurityUserClientProfileModelRepository clientUserProfileModelRepository;
 
     @Autowired
-    public CreateNewUserSessionStrategy(UserModelRepository userModelRepository, ClientUserProfileModelRepository clientUserProfileModelRepository) {
+    public CreateNewUserSessionStrategy(SecurityUserModelRepository userModelRepository, SecurityUserClientProfileModelRepository clientUserProfileModelRepository) {
         this.userModelRepository = userModelRepository;
         this.clientUserProfileModelRepository = clientUserProfileModelRepository;
     }
@@ -39,18 +39,18 @@ public class CreateNewUserSessionStrategy implements SessionAuthenticationStrate
 
     private void checkAuthentication(ClientAuthenticationToken authentication) {
         UserProfile userProfile = authentication.getUserProfile();
-        UserModel userModel = userModelRepository.findOneByClientUserProfile(
+        SecurityUserModel userModel = userModelRepository.findOneByClientUserProfile(
             userProfile.getClass().getSimpleName(), userProfile.getId());
 
         if (userModel == null) {
             userModel = userModelRepository.save(createNewUserModel(userProfile));
 
-            ClientUserProfileModel clientProfile = new ClientUserProfileModel(userModel, userProfile.getClass().getSimpleName(), userProfile.getId());
+            SecurityUserClientProfileModel clientProfile = new SecurityUserClientProfileModel(userModel, userProfile.getClass().getSimpleName(), userProfile.getId());
             clientUserProfileModelRepository.save(clientProfile);
         }
     }
 
-    UserModel createNewUserModel(UserProfile profile) {
+    SecurityUserModel createNewUserModel(UserProfile profile) {
         if(profile instanceof GitHubProfile) {
             return createUserModel((GitHubProfile) profile);
         } else if(profile instanceof Google2Profile) {
@@ -60,11 +60,11 @@ public class CreateNewUserSessionStrategy implements SessionAuthenticationStrate
         }
     }
 
-    UserModel createUserModel(GitHubProfile gitHubProfile) {
-        return new UserModel(gitHubProfile.getDisplayName(), gitHubProfile.getEmail());
+    SecurityUserModel createUserModel(GitHubProfile gitHubProfile) {
+        return new SecurityUserModel(gitHubProfile.getDisplayName(), gitHubProfile.getEmail());
     }
 
-    UserModel createUserModel(Google2Profile google2Profile) {
-        return new UserModel(google2Profile.getDisplayName(), google2Profile.getEmail());
+    SecurityUserModel createUserModel(Google2Profile google2Profile) {
+        return new SecurityUserModel(google2Profile.getDisplayName(), google2Profile.getEmail());
     }
 }

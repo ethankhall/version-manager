@@ -1,12 +1,14 @@
 package io.ehdev.conrad.security.database.model;
 
+import io.ehdev.conrad.model.user.UserModel;
+
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.UUID;
 
 @Entity
 @Table(name = "security_user")
-public class UserModel {
+public class SecurityUserModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,15 +22,15 @@ public class UserModel {
     private String emailAddress;
 
     @OneToMany(mappedBy = "userModel")
-    private Collection<ClientUserProfileModel> clientUserProfileModels;
+    private Collection<SecurityUserClientProfileModel> clientUserProfileModels;
 
     @OneToMany(mappedBy = "userModel")
-    private Collection<UserTokenModel> tokenModels;
+    private Collection<SecurityUserTokenModel> tokenModels;
 
-    public UserModel() {
+    public SecurityUserModel() {
     }
 
-    public UserModel(String name, String emailAddress) {
+    public SecurityUserModel(String name, String emailAddress) {
         this.name = name;
         this.emailAddress = emailAddress;
     }
@@ -57,19 +59,23 @@ public class UserModel {
         this.emailAddress = emailAddress;
     }
 
-    public Collection<UserTokenModel> getTokenModels() {
+    public Collection<SecurityUserTokenModel> getTokenModels() {
         return tokenModels;
     }
 
-    public void setTokenModels(Collection<UserTokenModel> tokenModels) {
+    public void setTokenModels(Collection<SecurityUserTokenModel> tokenModels) {
         this.tokenModels = tokenModels;
     }
 
-    public Collection<ClientUserProfileModel> getClientUserProfileModels() {
+    public Collection<SecurityUserClientProfileModel> getClientUserProfileModels() {
         return clientUserProfileModels;
     }
 
-    public void setClientUserProfileModels(Collection<ClientUserProfileModel> clientUserProfileModels) {
+    public void setClientUserProfileModels(Collection<SecurityUserClientProfileModel> clientUserProfileModels) {
         this.clientUserProfileModels = clientUserProfileModels;
+    }
+
+    public UserModel toUserModel() {
+        return new UserModel(id, name, emailAddress);
     }
 }

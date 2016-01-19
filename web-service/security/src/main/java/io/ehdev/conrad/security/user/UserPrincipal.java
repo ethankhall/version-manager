@@ -1,7 +1,7 @@
 package io.ehdev.conrad.security.user;
 
 import com.fasterxml.jackson.annotation.JsonView;
-import io.ehdev.conrad.security.database.model.UserModel;
+import io.ehdev.conrad.security.database.model.SecurityUserModel;
 import io.ehdev.conrad.views.UserPublicView;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -17,7 +17,7 @@ public class UserPrincipal implements UserDetails {
     private String firstName;
     private String emailAddress;
 
-    public UserPrincipal(UserModel userModel) {
+    public UserPrincipal(SecurityUserModel userModel) {
         this(userModel.getId(), userModel.getName(), userModel.getEmailAddress());
     }
 

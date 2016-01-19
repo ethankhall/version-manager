@@ -1,6 +1,6 @@
 package io.ehdev.conrad.security.login
 
-import io.ehdev.conrad.security.database.repositories.UserModelRepository
+import io.ehdev.conrad.security.database.repositories.SecurityUserModelRepository
 import io.ehdev.conrad.security.jwt.JwtManager
 import io.ehdev.conrad.security.user.auth.UserCookieMangerImpl
 import io.ehdev.conrad.security.user.filter.StatelessAuthenticationFilter
@@ -11,13 +11,13 @@ import javax.servlet.http.Cookie
 
 class StatelessAuthenticationFilterTest extends Specification {
 
-    UserModelRepository userModelRepository
+    SecurityUserModelRepository userModelRepository
     UserCookieMangerImpl userCookieManger = new UserCookieMangerImpl()
     JwtManager jwtManager
     StatelessAuthenticationFilter filter
 
     def setup() {
-        userModelRepository = Mock(UserModelRepository)
+        userModelRepository = Mock(SecurityUserModelRepository)
         jwtManager = Mock(JwtManager)
         filter = new StatelessAuthenticationFilter(userModelRepository, userCookieManger, jwtManager)
     }

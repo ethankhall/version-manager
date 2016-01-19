@@ -10,7 +10,7 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "security_user_token")
-public class UserTokenModel {
+public class SecurityUserTokenModel {
 
     private static final ZoneId ZONE_UTC = ZoneId.of("UTC");
 
@@ -37,13 +37,13 @@ public class UserTokenModel {
     @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_uuid")
-    private UserModel userModel;
+    private SecurityUserModel userModel;
 
-    UserTokenModel() {
+    SecurityUserTokenModel() {
         //Empty
     }
 
-    public UserTokenModel(UserModel userModel, TokenType type, LocalDateTime expiresAt) {
+    public SecurityUserTokenModel(SecurityUserModel userModel, TokenType type, LocalDateTime expiresAt) {
         this.tokenType = type;
         this.userModel = userModel;
         this.createdAt = LocalDateTime.now(ZONE_UTC);
@@ -74,11 +74,11 @@ public class UserTokenModel {
         this.valid = valid;
     }
 
-    public UserModel getUserModel() {
+    public SecurityUserModel getUserModel() {
         return userModel;
     }
 
-    public void setUserModel(UserModel userModel) {
+    public void setUserModel(SecurityUserModel userModel) {
         this.userModel = userModel;
     }
 
