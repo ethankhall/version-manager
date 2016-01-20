@@ -2,15 +2,12 @@ package io.ehdev.conrad.api.user.config;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.context.annotation.Import;
 
 @Configuration
 @ComponentScan("io.ehdev.conrad.api.user")
-public class ApiUserConfiguration extends WebSecurityConfigurerAdapter {
+@Import({ApiUserWebSecurityConfigurerAdapter.class, ApiUserWebMvcConfigurerAdapter.class})
+public class ApiUserConfiguration {
 
-    public void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests().antMatchers("/api/v1/user/**").authenticated();
-    }
 
 }

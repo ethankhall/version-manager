@@ -1,11 +1,11 @@
 package io.ehdev.conrad.security.config;
 
-import io.ehdev.conrad.security.database.repositories.SecurityUserModelRepository;
+import io.ehdev.conrad.api.user.database.BaseUserRepository;
+import io.ehdev.conrad.security.database.repositories.SecurityUserClientProfileModelRepository;
+import io.ehdev.conrad.security.database.repositories.SecurityUserTokenModelRepository;
 import io.ehdev.conrad.security.user.auth.ConradAuthenticationProvider;
-import io.ehdev.conrad.security.user.filter.StatelessAuthenticationFilter;
-import io.ehdev.conrad.security.user.create.CreateNewUserSessionStrategy;
-import io.ehdev.conrad.security.user.auth.DelegatingSessionAuthenticationStrategy;
 import io.ehdev.conrad.security.user.auth.RememberMeServicesImpl;
+import io.ehdev.conrad.security.user.filter.StatelessAuthenticationFilter;
 import org.pac4j.core.client.Clients;
 import org.pac4j.springframework.security.authentication.ClientAuthenticationProvider;
 import org.pac4j.springframework.security.web.ClientAuthenticationFilter;
@@ -31,16 +31,13 @@ public class ConradWebSecurityConfig extends WebSecurityConfigurerAdapter {
     Clients clients;
 
     @Autowired
-    CreateNewUserSessionStrategy createNewUserSessionStrategy;
-
-    @Autowired
     RememberMeServicesImpl rememberMeServices;
 
     @Autowired
     StatelessAuthenticationFilter statelessAuthenticationFilter;
 
     @Autowired
-    SecurityUserModelRepository userModelRepository;
+    SecurityUserTokenModelRepository tokenModelRepository;
 
     @Autowired
     public void registerAuthentication(AuthenticationManagerBuilder auth, AuthenticationProvider authenticationProvider) throws Exception {
@@ -55,13 +52,9 @@ public class ConradWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     ClientAuthenticationFilter clientAuthenticationFilter() throws Exception {
-        DelegatingSessionAuthenticationStrategy strategy = new DelegatingSessionAuthenticationStrategy(
-            createNewUserSessionStrategy,
-            new SessionFixationProtectionStrategy());
-
         ClientAuthenticationFilter filter = new ClientAuthenticationFilter("/callback");
         filter.setAuthenticationManager(authenticationManagerBean());
-        filter.setSessionAuthenticationStrategy(strategy);
+        filter.setSessionAuthenticationStrategy(new SessionFixationProtectionStrategy());
         filter.setClients(clients);
         filter.setRememberMeServices(rememberMeServices);
         return filter;
@@ -79,10 +72,12 @@ public class ConradWebSecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    AuthenticationProvider authenticationProvider() {
+    AuthenticationProvider authenticationProvider(BaseUserRepository userModelRepository,
+                                                  SecurityUserTokenModelRepository tokenModelRepository,
+                                                  SecurityUserClientProfileModelRepository clientUserProfileModelRepository) {
         ClientAuthenticationProvider clientAuthenticationProvider = new ClientAuthenticationProvider();
         clientAuthenticationProvider.setClients(clients);
 
-        return new ConradAuthenticationProvider(clientAuthenticationProvider, userModelRepository);
+        return new ConradAuthenticationProvider(userModelRepository, clientAuthenticationProvider, tokenModelRepository, clientUserProfileModelRepository);
     }
 }

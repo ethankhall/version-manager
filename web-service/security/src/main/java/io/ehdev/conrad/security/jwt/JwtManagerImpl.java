@@ -1,8 +1,8 @@
 package io.ehdev.conrad.security.jwt;
 
-import io.ehdev.conrad.security.database.model.TokenType;
-import io.ehdev.conrad.security.database.model.SecurityUserModel;
+import io.ehdev.conrad.api.user.database.BaseUserModel;
 import io.ehdev.conrad.security.database.model.SecurityUserTokenModel;
+import io.ehdev.conrad.security.database.model.TokenType;
 import io.ehdev.conrad.security.database.repositories.SecurityUserTokenModelRepository;
 import io.jsonwebtoken.*;
 import org.slf4j.Logger;
@@ -33,12 +33,12 @@ public class JwtManagerImpl implements JwtManager {
     }
 
     @Override
-    public String createUserToken(SecurityUserModel user, LocalDateTime expiration) {
+    public String createUserToken(BaseUserModel user, LocalDateTime expiration) {
         return createToken(user, TokenType.USER, expiration);
     }
 
     @Override
-    public String createToken(SecurityUserModel user, TokenType type, LocalDateTime expiration) {
+    public String createToken(BaseUserModel user, TokenType type, LocalDateTime expiration) {
         SecurityUserTokenModel userTokenModel = new SecurityUserTokenModel(user, type, expiration);
         userTokenModel = tokenRepository.save(userTokenModel);
 

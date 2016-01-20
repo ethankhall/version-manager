@@ -1,6 +1,7 @@
 package io.ehdev.conrad.security.database.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.ehdev.conrad.api.user.database.BaseUserModel;
 
 import javax.persistence.*;
 import java.util.UUID;
@@ -17,7 +18,7 @@ public class SecurityUserClientProfileModel {
     @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_uuid")
-    private SecurityUserModel userModel;
+    private BaseUserModel userModel;
 
     @Column(name = "provider_type")
     private String providerType;
@@ -29,17 +30,17 @@ public class SecurityUserClientProfileModel {
 
     }
 
-    public SecurityUserClientProfileModel(SecurityUserModel userModel, String providerType, String providerUserId) {
+    public SecurityUserClientProfileModel(BaseUserModel userModel, String providerType, String providerUserId) {
         this.userModel = userModel;
         this.providerType = providerType;
         this.providerUserId = providerUserId;
     }
 
-    public SecurityUserModel getUserModel() {
+    public BaseUserModel getUserModel() {
         return userModel;
     }
 
-    public void setUserModel(SecurityUserModel userModel) {
+    public void setUserModel(BaseUserModel userModel) {
         this.userModel = userModel;
     }
 

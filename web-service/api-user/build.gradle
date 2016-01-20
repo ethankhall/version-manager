@@ -3,12 +3,16 @@ apply plugin: 'groovy'
 apply from: "$rootDir/gradle/publishing.gradle"
 
 dependencies {
+    compile project(":api-model")
     compile project(":web-service:api-views")
 
     compile libraries.springSecurity
     compile libraries.servletApi
 
     compile libraries.jackson
+    compile libraries.hibernate
+    compile libraries.springJpa
+    compile libraries.springWeb
 
     testCompile project(":test-utils")
     testCompile libraries.groovy

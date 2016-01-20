@@ -1,7 +1,7 @@
 package io.ehdev.conrad.security.user.filter;
 
-import io.ehdev.conrad.security.database.model.SecurityUserModel;
-import io.ehdev.conrad.security.database.repositories.SecurityUserModelRepository;
+import io.ehdev.conrad.api.user.database.BaseUserModel;
+import io.ehdev.conrad.api.user.database.BaseUserRepository;
 import io.ehdev.conrad.security.jwt.JwtManager;
 import io.ehdev.conrad.security.jwt.UserToken;
 import io.ehdev.conrad.security.user.auth.UserCookieManger;
@@ -28,15 +28,15 @@ public class StatelessAuthenticationFilter extends OncePerRequestFilter {
 
     static final String HEADER_NAME = "X-AUTH-TOKEN";
 
-    private final SecurityUserModelRepository userModelRepository;
+    private final BaseUserRepository userRepository;
     private final UserCookieManger userCookieManger;
     private final JwtManager jwtManager;
 
     @Autowired
-    public StatelessAuthenticationFilter(SecurityUserModelRepository userModelRepository,
+    public StatelessAuthenticationFilter(BaseUserRepository userRepository,
                                          UserCookieManger userCookieManger,
                                          JwtManager jwtManager) {
-        this.userModelRepository = userModelRepository;
+        this.userRepository = userRepository;
         this.userCookieManger = userCookieManger;
         this.jwtManager = jwtManager;
     }
@@ -54,7 +54,7 @@ public class StatelessAuthenticationFilter extends OncePerRequestFilter {
             return null;
         }
 
-        SecurityUserModel user = userModelRepository.findOne(UUID.fromString(userToken.getUserId()));
+        BaseUserModel user = userRepository.findOne(UUID.fromString(userToken.getUserId()));
 
         if(user == null) {
             return null;

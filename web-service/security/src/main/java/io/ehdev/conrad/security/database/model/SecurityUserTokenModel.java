@@ -1,6 +1,7 @@
 package io.ehdev.conrad.security.database.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.ehdev.conrad.api.user.database.BaseUserModel;
 import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
@@ -37,13 +38,13 @@ public class SecurityUserTokenModel {
     @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name = "user_uuid")
-    private SecurityUserModel userModel;
+    private BaseUserModel userModel;
 
     SecurityUserTokenModel() {
         //Empty
     }
 
-    public SecurityUserTokenModel(SecurityUserModel userModel, TokenType type, LocalDateTime expiresAt) {
+    public SecurityUserTokenModel(BaseUserModel userModel, TokenType type, LocalDateTime expiresAt) {
         this.tokenType = type;
         this.userModel = userModel;
         this.createdAt = LocalDateTime.now(ZONE_UTC);
@@ -74,11 +75,11 @@ public class SecurityUserTokenModel {
         this.valid = valid;
     }
 
-    public SecurityUserModel getUserModel() {
+    public BaseUserModel getUserModel() {
         return userModel;
     }
 
-    public void setUserModel(SecurityUserModel userModel) {
+    public void setUserModel(BaseUserModel userModel) {
         this.userModel = userModel;
     }
 

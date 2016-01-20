@@ -5,6 +5,7 @@ dependencies {
 
     compile project(":web-service:api-views")
     compile project(":api-model")
+    compile project(":web-service:api-user")
 
 
     //Web App
