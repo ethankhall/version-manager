@@ -1,0 +1,24 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+dependencies {
+    compile project(":api-model")
+    compile project(":database:api")
+    compile 'org.glassfish.web:javax.el:2.2.6'
+
+    // commons
+    compile libraries.commonsIO
+    compile libraries.commonsLang
+
+    // database
+    compile libraries.hibernate
+    compile libraries.springJpa
+
+    // Tests
+    testCompile libraries.groovy
+    testCompile libraries.spock
+    testCompile libraries.spockSpring
+
+    testCompile libraries.springTest
+    testCompile libraries.h2
+}

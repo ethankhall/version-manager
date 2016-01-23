@@ -1,15 +1,15 @@
 package io.ehdev.conrad.authentication.jwt;
 
-import io.ehdev.conrad.authentication.database.model.TokenType;
+import io.ehdev.conrad.model.user.ConradTokenType;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
 public class UserToken {
 
     private final String userId;
     private final String uniqueId;
-    private final TokenType type;
+    private final ConradTokenType type;
 
-    public UserToken(String userId, String uniqueId, TokenType type) {
+    public UserToken(String userId, String uniqueId, ConradTokenType type) {
         this.userId = userId;
         this.uniqueId = uniqueId;
         this.type = type;
@@ -23,7 +23,7 @@ public class UserToken {
         return uniqueId;
     }
 
-    public TokenType getType() {
+    public ConradTokenType getType() {
         return type;
     }
 

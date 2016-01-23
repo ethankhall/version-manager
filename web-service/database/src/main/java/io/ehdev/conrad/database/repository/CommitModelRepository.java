@@ -1,8 +1,8 @@
 package io.ehdev.conrad.database.repository;
 
 import io.ehdev.conrad.backend.version.commit.CommitVersion;
-import io.ehdev.conrad.database.model.CommitModel;
-import io.ehdev.conrad.database.model.VcsRepoModel;
+import io.ehdev.conrad.database.internal.CommitModel;
+import io.ehdev.conrad.database.internal.VcsRepoModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -70,7 +70,10 @@ libraries.servletApi = 'javax.servlet:javax.servlet-api:3.1.0'
 libraries.jwt = 'io.jsonwebtoken:jjwt:0.6.0'
 
 libraries.hibernate = ["org.hibernate:hibernate-java8:${versions.hibernate}",
-                       "org.hibernate:hibernate-entitymanager:${versions.hibernate}"]
+                       "org.hibernate:hibernate-entitymanager:${versions.hibernate}",
+                       'org.hibernate:hibernate-validator:5.2.1.Final',
+                       'org.hibernate.common:hibernate-commons-annotations:5.0.0.Final',
+                       'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final']
 
 libraries.pac4j = [
     'org.pac4j:pac4j-oauth:1.8.4',
@@ -95,6 +98,8 @@ libraries.testing = [
     'org.objenesis:objenesis:2.2',
     'org.ow2.asm:asm:5.0.4'
 ]
+
+libraries.h2 = 'com.h2database:h2:1.4.191'
 
 libraries.dropwizard = [
     "io.dropwizard.metrics:metrics-core:${versions.metrics}",

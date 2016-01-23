@@ -14,6 +14,7 @@ buildscript {
     dependencies {
         classpath 'io.ehdev.conrad:gradle-plugin:+'
         classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.2.0'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.0-beta-4589'
     }
 }
 
@@ -42,30 +43,32 @@ subprojects {
         }
     }
 
-    configurations.all {
-        exclude group: 'org.apache.tomcat', module: 'tomcat-jdbc'
-    }
-
     sourceCompatibility = '1.8'
 
-    if(project.name != 'test-utils') {
-        dependencies {
-            testCompile project(':test-utils')
+    sourceSets {
+        integTest {
+            java {
+                compileClasspath += main.output + test.output
+                runtimeClasspath += main.output + test.output
+                srcDir file('src/integTest/java')
+            }
+            resources.srcDir file('src/integTest/resources')
         }
     }
 
-    test {
-        useJUnit {
-            excludeCategories 'io.ehdev.conrad.test.IntegrationTestGroup'
+    configurations {
+        integTestCompile.extendsFrom testCompile
+        integTestRuntime.extendsFrom testRuntime
+        all {
+            exclude group: 'org.apache.tomcat', module: 'tomcat-jdbc'
         }
     }
 
     def integTest = tasks.create('integTest', Test) {
         shouldRunAfter(tasks.test)
-        reports.html.destination = file("$buildDir/reports/intTests")
-        useJUnit {
-            includeCategories 'io.ehdev.conrad.test.IntegrationTestGroup'
-        }
+        testClassesDir = sourceSets.integTest.output.classesDir
+        classpath = sourceSets.integTest.runtimeClasspath
+        reports.html.destination = file("$buildDir/reports/integration-test")
     }
 
     tasks.withType(Test) {

@@ -3,7 +3,7 @@ package io.ehdev.conrad.app.service.repo;
 import com.fasterxml.jackson.annotation.JsonView;
 import io.ehdev.conrad.app.manager.RepoManager;
 import io.ehdev.conrad.app.service.ApiFactory;
-import io.ehdev.conrad.database.model.VcsRepoModel;
+import io.ehdev.conrad.database.internal.VcsRepoModel;
 import io.ehdev.conrad.model.repo.RepoCreateModel;
 import io.ehdev.conrad.model.repo.RepoResponseModel;
 import io.ehdev.conrad.model.repo.RepoView;

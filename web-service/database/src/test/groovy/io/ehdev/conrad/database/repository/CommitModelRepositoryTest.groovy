@@ -1,7 +1,7 @@
 package io.ehdev.conrad.database.repository
 import io.ehdev.conrad.backend.version.commit.VersionFactory
 import io.ehdev.conrad.database.config.DatabaseConfiguration
-import io.ehdev.conrad.database.model.VcsRepoModel
+import io.ehdev.conrad.database.internal.VcsRepoModel
 import io.ehdev.conrad.test.IntegrationTestGroup
 import io.ehdev.conrad.test.database.repository.PopulateTestUtils
 import org.junit.experimental.categories.Category

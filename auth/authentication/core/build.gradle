@@ -1,0 +1,8 @@
+dependencies {
+    compile project(':auth:authentication:jwt')
+
+    compile libraries.servletApi
+
+    compile libraries.springSecurity
+    compile libraries.pac4j
+}

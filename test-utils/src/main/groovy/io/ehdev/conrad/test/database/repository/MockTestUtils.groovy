@@ -1,7 +1,7 @@
 package io.ehdev.conrad.test.database.repository;
 
 import io.ehdev.conrad.backend.version.commit.VersionFactory;
-import io.ehdev.conrad.database.model.CommitModel;
+import io.ehdev.conrad.database.internal.CommitModel;
 import org.apache.commons.lang3.RandomStringUtils;
 
 public class MockTestUtils {

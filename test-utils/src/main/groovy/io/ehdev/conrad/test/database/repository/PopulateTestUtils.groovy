@@ -1,9 +1,9 @@
 package io.ehdev.conrad.test.database.repository
 import io.ehdev.conrad.backend.version.bumper.SemanticVersionBumper
 import io.ehdev.conrad.backend.version.commit.CommitVersion
-import io.ehdev.conrad.database.model.CommitModel
-import io.ehdev.conrad.database.model.VcsRepoModel
-import io.ehdev.conrad.database.model.VersionBumperModel
+import io.ehdev.conrad.database.internal.CommitModel
+import io.ehdev.conrad.database.internal.VcsRepoModel
+import io.ehdev.conrad.database.internal.VersionBumperModel
 import io.ehdev.conrad.database.repository.CommitModelRepository
 import io.ehdev.conrad.database.repository.VcsRepoRepository
 import io.ehdev.conrad.database.repository.VersionBumperRepository

@@ -1,9 +1,9 @@
 package io.ehdev.conrad.app.service;
 
 import io.ehdev.conrad.backend.version.commit.CommitVersion;
-import io.ehdev.conrad.database.model.CommitModel;
-import io.ehdev.conrad.database.model.VcsRepoModel;
-import io.ehdev.conrad.database.model.VersionBumperModel;
+import io.ehdev.conrad.database.internal.CommitModel;
+import io.ehdev.conrad.database.internal.VcsRepoModel;
+import io.ehdev.conrad.database.internal.VersionBumperModel;
 import io.ehdev.conrad.model.repo.RepoResponseModel;
 import io.ehdev.conrad.model.strategy.StrategyModel;
 import io.ehdev.conrad.model.version.UncommitedVersionModel;
