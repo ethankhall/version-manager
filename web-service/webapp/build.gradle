@@ -25,7 +25,7 @@ dependencies {
     compile project(":web-service:database")
     compile project(":web-service:backend")
     compile project(":web-service:api-user")
-    compile project(":web-service:security")
+    compile project(":auth:default-authentication")
 
     //Caching
     compile libraries.springContextSupport

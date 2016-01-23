@@ -4,7 +4,7 @@ include ':web-service:backend'
 include ':web-service:database'
 
 //security
-include ':web-service:security'
+include ':auth:default-authentication'
 
 //Api Containers
 include ':web-service:api-user'

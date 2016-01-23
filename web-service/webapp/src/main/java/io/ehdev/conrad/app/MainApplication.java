@@ -6,7 +6,7 @@ import io.ehdev.conrad.api.user.config.ApiUserConfiguration;
 import io.ehdev.conrad.app.config.MetricsConfiguration;
 import io.ehdev.conrad.backend.config.BackendConfiguration;
 import io.ehdev.conrad.database.config.DatabaseConfiguration;
-import io.ehdev.conrad.security.config.ConradSecurityConfig;
+import io.ehdev.conrad.authentication.config.ConradSecurityConfig;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.config.CacheConfiguration;
 import org.springframework.boot.SpringApplication;
