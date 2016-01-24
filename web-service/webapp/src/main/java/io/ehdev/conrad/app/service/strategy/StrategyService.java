@@ -2,7 +2,7 @@ package io.ehdev.conrad.app.service.strategy;
 
 import io.ehdev.conrad.app.manager.BumperManager;
 import io.ehdev.conrad.app.service.ApiFactory;
-import io.ehdev.conrad.database.impl.VersionBumperModel;
+import io.ehdev.conrad.database.impl.bumper.VersionBumperModel;
 import io.ehdev.conrad.model.strategy.StrategyModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;

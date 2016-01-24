@@ -22,10 +22,11 @@ artifactoryPublish.dependsOn assemble
 
 dependencies {
     compile project(":api-model")
-    compile project(":web-service:database")
+    compile project(":database:database-api")
+    compile project(":database:database-impl")
     compile project(":web-service:backend")
     compile project(":auth:user")
-    compile project(":auth:authentication:default-authentication")
+    compile project(":auth:authentication:default")
     compile project(":auth:authentication:core")
 
     //Caching

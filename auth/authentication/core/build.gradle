@@ -1,6 +1,6 @@
 dependencies {
     compile project(':auth:authentication:jwt')
-    compile project(':database:impl')
+    compile project(':database:database-impl')
     compile project(':api-model')
 
     compile libraries.servletApi

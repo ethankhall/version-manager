@@ -1,18 +1,17 @@
 // Web services
 include ':web-service:webapp'
 include ':web-service:backend'
-include ':web-service:database'
 
 //database
-include ':database:api'
-include ':database:impl'
+include ':database:database-api'
+include ':database:database-impl'
+include ':database:database-test'
 
 //security
 include ':auth:user'
-include ':auth:authentication:default-authentication'
+include ':auth:authentication:default'
 include ':auth:authentication:jwt'
 include ':auth:authentication:core'
-include ':auth:authentication:base'
 
 //Api Containers
 include ':web-service:api-version'

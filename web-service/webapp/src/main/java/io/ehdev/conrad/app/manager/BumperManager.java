@@ -3,7 +3,7 @@ package io.ehdev.conrad.app.manager;
 import io.ehdev.conrad.app.exception.UnknownBumperException;
 import io.ehdev.conrad.backend.version.bumper.VersionBumper;
 import io.ehdev.conrad.database.impl.VcsRepoModel;
-import io.ehdev.conrad.database.impl.VersionBumperModel;
+import io.ehdev.conrad.database.impl.bumper.VersionBumperModel;
 import io.ehdev.conrad.database.repository.VcsRepoRepository;
 import io.ehdev.conrad.database.repository.VersionBumperRepository;
 import org.slf4j.Logger;

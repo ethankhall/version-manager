@@ -27,7 +27,7 @@ logging:
 
 flyway:
     out-of-order: true
-    locations: classpath:db/security/migration, classpath:db/version/migration, classpath:db/user/migration
+    locations: classpath:db/security/migration, classpath:db/migration
 
 spring:
     datasource:
