@@ -1,6 +1,6 @@
 package io.ehdev.conrad.database.repository;
 
-import io.ehdev.conrad.database.internal.VersionBumperModel;
+import io.ehdev.conrad.database.impl.VersionBumperModel;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

@@ -2,7 +2,7 @@ package io.ehdev.conrad.database.api.internal
 import io.ehdev.conrad.database.api.TokenManagementApi
 import io.ehdev.conrad.database.api.UserManagementApi
 import io.ehdev.conrad.database.config.TestConradDatabaseConfig
-import io.ehdev.conrad.database.internal.token.UserTokenModelRepository
+import io.ehdev.conrad.database.impl.token.UserTokenModelRepository
 import io.ehdev.conrad.model.user.ConradTokenType
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader

@@ -1,14 +1,14 @@
 package io.ehdev.conrad.database.api.internal;
 
-import io.ehdev.conrad.database.api.UserManagementApi;
-import io.ehdev.conrad.database.internal.user.BaseUserModel;
-import io.ehdev.conrad.database.internal.user.BaseUserRepository;
+import io.ehdev.conrad.database.impl.ModelConversionUtility;
+import io.ehdev.conrad.database.impl.user.BaseUserModel;
+import io.ehdev.conrad.database.impl.user.BaseUserRepository;
 import io.ehdev.conrad.model.user.ConradUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class DefaultUserManagementApi implements UserManagementApi {
+public class DefaultUserManagementApi implements UserManagementApiInternal {
 
     final private BaseUserRepository baseUserRepository;
 
@@ -18,8 +18,13 @@ public class DefaultUserManagementApi implements UserManagementApi {
     }
 
     @Override
+    public BaseUserModel createInternalUser(String name, String email) {
+        return baseUserRepository.save(new BaseUserModel(name, email));
+    }
+
+    @Override
     public ConradUser createUser(String name, String email) {
-        BaseUserModel user = baseUserRepository.save(new BaseUserModel(name, email));
+        BaseUserModel user = createInternalUser(name, email);
         return ModelConversionUtility.toApiModel(user);
     }
 }

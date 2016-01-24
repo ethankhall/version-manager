@@ -3,7 +3,7 @@ package io.ehdev.conrad.app.service.strategy
 import io.ehdev.conrad.app.manager.BumperManager
 import io.ehdev.conrad.app.test.MvcControllerCreator
 import io.ehdev.conrad.backend.version.bumper.SemanticVersionBumper
-import io.ehdev.conrad.database.internal.VersionBumperModel
+import io.ehdev.conrad.database.impl.VersionBumperModel
 import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import spock.lang.Specification

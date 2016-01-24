@@ -42,13 +42,6 @@ libraries.springWeb = [
     "org.springframework:spring-webmvc:${versions.spring}"
 ]
 
-libraries.springSocial = [
-    "org.springframework.social:spring-social-security:${versions.springSocial}",
-    "org.springframework.social:spring-social-web:${versions.springSocial}",
-    "org.springframework.social:spring-social-config:${versions.springSocial}",
-    "org.springframework.social:spring-social-google:1.0.0.RELEASE"
-]
-
 libraries.springSecurity = [
     "org.springframework.security:spring-security-acl:${versions.springSecurity}",
     "org.springframework.security:spring-security-web:${versions.springSecurity}",
@@ -66,6 +59,7 @@ libraries.commonsLang = 'org.apache.commons:commons-lang3:3.4'
 libraries.commonsIO = 'commons-io:commons-io:2.4'
 libraries.sfl4j = "org.slf4j:slf4j-api:${versions.slf4j}"
 
+libraries.el = 'org.glassfish.web:javax.el:2.2.6'
 libraries.servletApi = 'javax.servlet:javax.servlet-api:3.1.0'
 libraries.jwt = 'io.jsonwebtoken:jjwt:0.6.0'
 

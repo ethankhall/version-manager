@@ -7,7 +7,7 @@ import io.ehdev.conrad.app.service.ApiFactory;
 import io.ehdev.conrad.backend.version.commit.CommitVersion;
 import io.ehdev.conrad.backend.version.commit.VersionFactory;
 import io.ehdev.conrad.backend.version.commit.internal.BumpLowestWithSnapshot;
-import io.ehdev.conrad.database.internal.CommitModel;
+import io.ehdev.conrad.database.impl.CommitModel;
 import io.ehdev.conrad.model.version.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

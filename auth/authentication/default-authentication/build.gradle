@@ -1,0 +1,50 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+dependencies {
+
+    compile project(":web-service:api-views")
+    compile project(":api-model")
+    compile project(":auth:user")
+
+
+    //Web App
+    compile libraries.servletApi
+    compile libraries.springBoot
+
+    //Security
+    compile libraries.springSecurity
+    compile libraries.jwt
+    compile libraries.pac4j
+
+    // Hibernate
+    compile libraries.hibernate
+    compile 'org.hibernate:hibernate-validator:5.2.1.Final'
+    compile 'org.hibernate.common:hibernate-commons-annotations:5.0.0.Final'
+    compile 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
+
+    // database/jpa/other
+    compile libraries.springTx
+    compile libraries.springJpa
+    compile 'javax.transaction:javax.transaction-api:1.2'
+
+    // database
+    compile 'com.zaxxer:HikariCP:2.4.1'
+    compile 'org.postgresql:postgresql:9.4-1203-jdbc42'
+    compile 'org.flywaydb:flyway-core:3.2.1'
+
+    //Utils
+    compile libraries.commonsIO
+    compile libraries.commonsLang
+    compile 'org.bouncycastle:bcprov-jdk15on:1.54'
+
+    //Testing
+    testCompile libraries.groovy
+    testCompile libraries.spock
+    testCompile libraries.spockSpring
+
+    testCompile libraries.springTest
+    testCompile libraries.jsonPath
+
+    testCompile libraries.testing
+}

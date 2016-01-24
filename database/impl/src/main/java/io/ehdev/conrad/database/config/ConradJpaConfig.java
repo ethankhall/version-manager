@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
 @EntityScan("io.ehdev.conrad.database.internal")
-@EnableJpaRepositories({"io.ehdev.conrad.database.internal"})
+@EnableJpaRepositories({"io.ehdev.conrad.database.impl"})
 public class ConradJpaConfig {
 }

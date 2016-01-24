@@ -4,7 +4,8 @@ apply plugin: 'groovy'
 dependencies {
     compile project(":api-model")
     compile project(":database:api")
-    compile 'org.glassfish.web:javax.el:2.2.6'
+
+    compile libraries.el
 
     // commons
     compile libraries.commonsIO

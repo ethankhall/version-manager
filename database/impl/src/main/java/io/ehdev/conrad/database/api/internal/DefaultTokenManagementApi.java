@@ -2,10 +2,11 @@ package io.ehdev.conrad.database.api.internal;
 
 import io.ehdev.conrad.database.api.TokenManagementApi;
 import io.ehdev.conrad.database.api.exception.UserTokenNotFound;
-import io.ehdev.conrad.database.internal.token.UserTokenModel;
-import io.ehdev.conrad.database.internal.token.UserTokenModelRepository;
-import io.ehdev.conrad.database.internal.user.BaseUserModel;
-import io.ehdev.conrad.database.internal.user.BaseUserRepository;
+import io.ehdev.conrad.database.impl.ModelConversionUtility;
+import io.ehdev.conrad.database.impl.token.UserTokenModel;
+import io.ehdev.conrad.database.impl.token.UserTokenModelRepository;
+import io.ehdev.conrad.database.impl.user.BaseUserModel;
+import io.ehdev.conrad.database.impl.user.BaseUserRepository;
 import io.ehdev.conrad.model.user.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

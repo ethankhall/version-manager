@@ -8,11 +8,11 @@ include ':database:api'
 include ':database:impl'
 
 //security
-include ':auth:default-authentication'
 include ':auth:user'
+include ':auth:authentication:default-authentication'
 include ':auth:authentication:jwt'
 include ':auth:authentication:core'
-include ':auth:authentication:oauth'
+include ':auth:authentication:base'
 
 //Api Containers
 include ':web-service:api-version'
