@@ -1,3 +1,7 @@
+//web service - api's
+include ':web-service:api-project'
+include ':web-service:api-version'
+
 // Web services
 include ':web-service:webapp'
 include ':web-service:backend'
@@ -12,12 +16,6 @@ include ':auth:user'
 include ':auth:authentication:default'
 include ':auth:authentication:jwt'
 include ':auth:authentication:core'
-
-//Api Containers
-include ':web-service:api-version'
-
-//Views
-include ':web-service:api-views'
 
 //Clients
 include ':clients:gradle-plugin'

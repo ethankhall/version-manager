@@ -1,12 +1,13 @@
 package io.ehdev.conrad.database.api.internal;
 
 import io.ehdev.conrad.database.api.ProjectManagementApi;
+import io.ehdev.conrad.database.api.exception.ProjectAlreadyExistsException;
 import io.ehdev.conrad.database.impl.ModelConversionUtility;
 import io.ehdev.conrad.database.impl.bumper.VersionBumperModelRepository;
 import io.ehdev.conrad.database.impl.project.ProjectModel;
 import io.ehdev.conrad.database.impl.project.ProjectModelRepository;
-import io.ehdev.conrad.model.internal.ApiProject;
 import io.ehdev.conrad.model.internal.ApiVersionBumper;
+import io.ehdev.conrad.model.project.ApiProject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,10 @@ public class DefaultProjectManagementApi implements ProjectManagementApi {
     }
 
     @Override
-    public ApiProject createProject(String projectName) {
+    public ApiProject createProject(String projectName) throws ProjectAlreadyExistsException {
+        if(projectModelRepository.findByProjectName(projectName) != null) {
+            throw new ProjectAlreadyExistsException(projectName);
+        }
         return ModelConversionUtility.toApiModel(projectModelRepository.save(new ProjectModel(projectName)));
     }
 

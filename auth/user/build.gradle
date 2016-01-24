@@ -4,7 +4,6 @@ apply from: "$rootDir/gradle/publishing.gradle"
 
 dependencies {
     compile project(":api-model")
-    compile project(":web-service:api-views")
 
     compile libraries.springSecurity
     compile libraries.servletApi

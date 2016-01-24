@@ -8,7 +8,7 @@ import io.ehdev.conrad.database.impl.token.TokenType;
 import io.ehdev.conrad.database.impl.token.UserTokenModel;
 import io.ehdev.conrad.database.impl.user.BaseUserModel;
 import io.ehdev.conrad.model.internal.ApiCommit;
-import io.ehdev.conrad.model.internal.ApiProject;
+import io.ehdev.conrad.model.project.ApiProject;
 import io.ehdev.conrad.model.internal.ApiRepo;
 import io.ehdev.conrad.model.internal.ApiVersionBumper;
 import io.ehdev.conrad.model.user.ConradGeneratedToken;
@@ -70,7 +70,7 @@ public class ModelConversionUtility {
         if(repoModels != null) {
             repos.addAll(repoModels.stream().map(ModelConversionUtility::toApiModel).collect(Collectors.toList()));
         }
-        return new ApiProject(model.getId(), model.getProjectName(), repos);
+        return new ApiProject(model.getProjectName(), repos);
     }
 
     public static ApiCommit toApiModel(CommitModel commitModel) {

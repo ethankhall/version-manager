@@ -1,0 +1,69 @@
+apply plugin: 'groovy'
+apply plugin: 'org.asciidoctor.gradle.asciidoctor'
+
+sourceSets {
+    apiTest {
+        groovy {
+            compileClasspath += main.output + test.output
+            runtimeClasspath += main.output + test.output
+            srcDir file('src/apiTest/groovy')
+        }
+        resources.srcDir file('src/apiTest/resources')
+    }
+}
+
+ext {
+    snippetsDir = file("$buildDir/generated-snippets")
+}
+
+tasks.create('apiTest', Test) {
+    shouldRunAfter(tasks.test)
+    testClassesDir = sourceSets.apiTest.output.classesDir
+    classpath = sourceSets.apiTest.runtimeClasspath
+    outputs.dir snippetsDir
+    environment 'snippitDir', snippetsDir.absolutePath
+    doFirst {
+        snippetsDir.mkdirs()
+    }
+}
+
+configurations {
+    apiTestCompile.extendsFrom testCompile
+    apiTestRuntime.extendsFrom testRuntime
+}
+
+dependencies {
+    compile project(':api-model')
+    compile project(':auth:user')
+    compile project(':database:database-api')
+
+    compile libraries.springSecurity
+    compile libraries.springWeb
+
+    testCompile project(':database:database-test')
+
+    testCompile libraries.groovy
+    testCompile libraries.spock
+    testCompile libraries.spockSpring
+
+    testCompile libraries.springTest
+    testCompile libraries.jsonPath
+
+    testCompile libraries.testing
+
+    apiTestCompile 'org.springframework.restdocs:spring-restdocs-mockmvc:1.0.1.RELEASE'
+}
+
+idea {
+    module {
+        testSourceDirs += sourceSets.apiTest.allSource.srcDirs + sourceSets.test.allSource.srcDirs
+        scopes.TEST.plus += [ configurations.apiTestRuntime ]
+
+    }
+}
+
+asciidoctor {
+    attributes 'snippets': snippetsDir
+    inputs.dir snippetsDir
+    dependsOn apiTest
+}
