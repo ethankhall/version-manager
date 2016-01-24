@@ -13,7 +13,7 @@ import javax.transaction.Transactional
 
 @Transactional
 @ContextConfiguration(classes = [TestConradDatabaseConfig], loader = SpringApplicationContextLoader)
-class DefaultRepoManagementApiTest extends Specification {
+class DefaultRepoManagementApiIntegrationTest extends Specification {
 
     @Autowired
     DefaultRepoManagementApi repoManagementApi
@@ -59,5 +59,21 @@ class DefaultRepoManagementApiTest extends Specification {
 
         then:
         commits.size() == 1
+
+        when:
+        repoManagementApi.createCommit('project', 'newRepo', new ApiCommit('2'), [new ApiCommit('1')])
+        def allCommits = repoManagementApi.findAllCommits('project', 'newRepo')
+
+        then:
+        allCommits.size() == 2
+        allCommits[0].commitId == '2'
+        allCommits[1].commitId == '1'
+
+        when:
+        allCommits = repoManagementApi.findLatestCommit('project', 'newRepo', [new ApiCommit('2'), new ApiCommit('1')])
+
+        then:
+        allCommits.isPresent()
+        allCommits.get().commitId == '2'
     }
 }

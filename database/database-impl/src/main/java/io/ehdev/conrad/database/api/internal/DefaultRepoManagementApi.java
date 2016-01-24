@@ -17,6 +17,7 @@ import io.ehdev.conrad.model.internal.ApiRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,6 +30,8 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
     private final ProjectModelRepository projectModelRepository;
     private final RepoModelRepository repoModelRepository;
     private final CommitModelRepository commitModelRepository;
+
+    public static final Comparator<CommitModel> REVERSE_ORDER = Comparator.<CommitModel>reverseOrder();
 
     @Autowired
     public DefaultRepoManagementApi(VersionBumperModelRepository bumperModelRepository,
@@ -67,7 +70,7 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
     private Stream<CommitModel> findCommitModelInternal(String projectName, String repoName, List<ApiCommit> history) {
         RepoModel repo = repoModelRepository.findByProjectNameAndRepoName(projectName, repoName);
         List<CommitModel> models = commitModelRepository.findMatchingCommits(repo, history.stream().map(ApiCommit::getCommitId).collect(Collectors.toList()));
-        return models.stream().sorted();
+        return models.stream().sorted(REVERSE_ORDER);
     }
 
     public void createCommit(String projectName, String repoName, ApiCommit nextVersion, List<ApiCommit> history) {
@@ -89,6 +92,7 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
         return commitModelRepository
             .findAllByProjectNameAndRepoName(projectName, repoName)
             .stream()
+            .sorted(REVERSE_ORDER)
             .map(ModelConversionUtility::toApiModel)
             .collect(Collectors.toList());
     }

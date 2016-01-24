@@ -39,9 +39,14 @@ public class VersionBumperModel {
     private String bumperName;
 
     public VersionBumperModel(String className, String description, String bumperName) {
+        this(className, null, description, bumperName);
+    }
+
+    public VersionBumperModel(String className, ProjectModel model, String description, String bumperName) {
         this.className = className;
         this.description = description;
         this.bumperName = bumperName;
+        this.projectModel = model;
     }
 
     public VersionBumperModel() {
