@@ -15,9 +15,9 @@ public class ModelConversionUtility {
 
     public static TokenType toDatabaseModel(ConradTokenType type) {
         switch (type) {
-            case ConradTokenType.USER:
+            case USER:
                 return TokenType.USER;
-            case ConradTokenType.API:
+            case API:
                 return TokenType.API;
             default:
                 throw new IllegalArgumentException("Unknown type " + type.getType());
