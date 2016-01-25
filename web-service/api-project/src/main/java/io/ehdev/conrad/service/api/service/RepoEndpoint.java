@@ -103,7 +103,7 @@ public class RepoEndpoint {
         DefaultCommitDetails commitDetails = new DefaultCommitDetails(versionModel.getCommitId(), versionModel.getMessage());
         CommitVersion nextVersion = versionBumper.createNextVersion(VersionFactory.parse(latestCommit.getVersion()), commitDetails);
 
-        repoManagementApi.createCommit(projectName, repoName, new ApiFullCommitModel(nextVersion.getPostFix()));
+        repoManagementApi.createCommit(projectName, repoName, new ApiFullCommitModel(versionModel.getCommitId(), nextVersion.toVersionString()), latestCommit);
         return null;
     }
 
