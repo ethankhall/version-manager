@@ -1,13 +1,16 @@
 package io.ehdev.conrad.database.api;
 
-import io.ehdev.conrad.model.user.*;
+import io.ehdev.conrad.database.model.user.ApiGeneratedUserToken;
+import io.ehdev.conrad.database.model.user.ApiToken;
+import io.ehdev.conrad.database.model.user.ApiTokenType;
+import io.ehdev.conrad.database.model.user.ApiUser;
 
 public interface TokenManagementApi {
-    ConradGeneratedToken createToken(ConradUser user, ConradTokenType type);
+    ApiGeneratedUserToken createToken(ApiUser user, ApiTokenType type);
 
-    boolean isTokenValid(ConradToken token);
+    boolean isTokenValid(ApiToken token);
 
-    void invalidateTokenValid(ConradToken token);
+    void invalidateTokenValid(ApiToken token);
 
-    ConradUser findUser(ConradToken token);
+    ApiUser findUser(ApiToken token);
 }

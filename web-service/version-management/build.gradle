@@ -1,0 +1,21 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+
+dependencies {
+    compile libraries.springContext
+
+    compile libraries.sfl4j
+    compile libraries.commonsLang
+
+    testCompile libraries.groovy
+    testCompile libraries.spock
+    testCompile libraries.spockSpring
+
+    testCompile libraries.springBoot
+    testCompile libraries.springTest
+
+    testCompile 'de.sven-jacobs:loremipsum:1.0'
+
+    integTestCompile libraries.springTest
+    integTestCompile libraries.springTx
+}

@@ -1,4 +1,0 @@
-dependencies {
-    compile libraries.springSecurity
-    compile libraries.springWeb
-}

@@ -1,7 +1,7 @@
 package io.ehdev.conrad.app.service.repo
 
 import io.ehdev.conrad.app.manager.RepoManager
-import io.ehdev.conrad.backend.version.bumper.SemanticVersionBumper
+import io.ehdev.conrad.version.bumper.SemanticVersionBumper
 import io.ehdev.conrad.model.repo.RepoHistory
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders

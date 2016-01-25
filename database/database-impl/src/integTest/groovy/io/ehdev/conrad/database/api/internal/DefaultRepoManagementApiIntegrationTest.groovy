@@ -1,9 +1,8 @@
 package io.ehdev.conrad.database.api.internal
-
 import io.ehdev.conrad.database.config.TestConradDatabaseConfig
 import io.ehdev.conrad.database.impl.bumper.VersionBumperModel
 import io.ehdev.conrad.database.impl.bumper.VersionBumperModelRepository
-import io.ehdev.conrad.model.internal.ApiCommit
+import io.ehdev.conrad.database.model.project.commit.ApiFullCommitModel
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.test.context.ContextConfiguration
@@ -37,15 +36,15 @@ class DefaultRepoManagementApiIntegrationTest extends Specification {
         repo != null
 
         when:
-        repoManagementApi.createCommit('project', 'newRepo', new ApiCommit('1'), null)
-        def foundCommit = repoManagementApi.findLatestCommit('project', 'newRepo', [new ApiCommit('1')])
+        repoManagementApi.createCommit('project', 'newRepo', new ApiFullCommitModel('1'), null)
+        def foundCommit = repoManagementApi.findLatestCommit('project', 'newRepo', [new ApiFullCommitModel('1')])
 
         then:
         foundCommit.isPresent()
         foundCommit.get().commitId == '1'
 
         when:
-        foundCommit = repoManagementApi.findCommit('project', 'newRepo', new ApiCommit('1'))
+        foundCommit = repoManagementApi.findCommit('project', 'newRepo', new ApiFullCommitModel('1'))
 
         then:
         foundCommit.isPresent()
@@ -61,7 +60,7 @@ class DefaultRepoManagementApiIntegrationTest extends Specification {
         commits.size() == 1
 
         when:
-        repoManagementApi.createCommit('project', 'newRepo', new ApiCommit('2'), [new ApiCommit('1')])
+        repoManagementApi.createCommit('project', 'newRepo', new ApiFullCommitModel('2'), [new ApiFullCommitModel('1')])
         def allCommits = repoManagementApi.findAllCommits('project', 'newRepo')
 
         then:
@@ -70,7 +69,7 @@ class DefaultRepoManagementApiIntegrationTest extends Specification {
         allCommits[1].commitId == '1'
 
         when:
-        allCommits = repoManagementApi.findLatestCommit('project', 'newRepo', [new ApiCommit('2'), new ApiCommit('1')])
+        allCommits = repoManagementApi.findLatestCommit('project', 'newRepo', [new ApiFullCommitModel('2'), new ApiFullCommitModel('1')])
 
         then:
         allCommits.isPresent()

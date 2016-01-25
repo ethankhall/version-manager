@@ -1,5 +1,6 @@
 package io.ehdev.conrad.service.api.project
 import io.ehdev.conrad.database.api.ProjectManagementApi
+import io.ehdev.conrad.service.api.service.ProjectEndpoint
 import org.springframework.mock.web.MockHttpServletRequest
 import spock.lang.Specification
 

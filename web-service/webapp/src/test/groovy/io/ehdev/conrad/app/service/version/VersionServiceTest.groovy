@@ -2,7 +2,7 @@ package io.ehdev.conrad.app.service.version
 
 import io.ehdev.conrad.app.manager.CommitManager
 import io.ehdev.conrad.app.test.MvcControllerCreator
-import io.ehdev.conrad.backend.version.commit.VersionFactory
+import io.ehdev.conrad.version.commit.VersionFactory
 import io.ehdev.conrad.model.version.VersionSearchModel
 import io.ehdev.conrad.test.MockMvcDefaults
 import org.springframework.test.web.servlet.MockMvc

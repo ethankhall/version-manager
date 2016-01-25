@@ -1,15 +1,15 @@
 //web service - api's
 include ':web-service:api-project'
-include ':web-service:api-version'
 
 // Web services
 include ':web-service:webapp'
-include ':web-service:backend'
+include ':web-service:version-management'
 
 //database
 include ':database:database-api'
 include ':database:database-impl'
 include ':database:database-test'
+include ':database:database-api-model'
 
 //security
 include ':auth:user'
@@ -22,7 +22,7 @@ include ':clients:gradle-plugin'
 include ':clients:java-client'
 
 //api model
-include ':api-model'
+include ':api:rest-model'
 
 //Tests
 include ':test-utils'

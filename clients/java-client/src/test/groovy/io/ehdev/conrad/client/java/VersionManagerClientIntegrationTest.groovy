@@ -1,6 +1,6 @@
 package io.ehdev.conrad.client.java
 import io.ehdev.conrad.app.MainApplication
-import io.ehdev.conrad.backend.version.commit.VersionFactory
+import io.ehdev.conrad.version.commit.VersionFactory
 import io.ehdev.conrad.client.java.internal.DefaultVersionManagerClient
 import io.ehdev.conrad.database.repository.CommitModelRepository
 import io.ehdev.conrad.database.repository.VcsRepoRepository

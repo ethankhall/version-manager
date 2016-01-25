@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(":api-model")
+    compile project(":api:rest-model")
     compile project(":auth:user")
 
 

@@ -3,7 +3,7 @@ apply plugin: 'groovy'
 apply from: "$rootDir/gradle/publishing.gradle"
 
 dependencies {
-    compile project(":api-model")
+    compile project(":api:rest-model")
 
     compile libraries.springSecurity
     compile libraries.servletApi

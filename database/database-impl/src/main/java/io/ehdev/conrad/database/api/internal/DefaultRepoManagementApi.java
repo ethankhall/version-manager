@@ -2,6 +2,7 @@ package io.ehdev.conrad.database.api.internal;
 
 import io.ehdev.conrad.database.api.RepoManagementApi;
 import io.ehdev.conrad.database.api.exception.BumperNotFoundException;
+import io.ehdev.conrad.database.api.exception.CommitNotFoundException;
 import io.ehdev.conrad.database.api.exception.ProjectNotFoundException;
 import io.ehdev.conrad.database.impl.ModelConversionUtility;
 import io.ehdev.conrad.database.impl.bumper.VersionBumperModel;
@@ -12,8 +13,10 @@ import io.ehdev.conrad.database.impl.project.ProjectModel;
 import io.ehdev.conrad.database.impl.project.ProjectModelRepository;
 import io.ehdev.conrad.database.impl.repo.RepoModel;
 import io.ehdev.conrad.database.impl.repo.RepoModelRepository;
-import io.ehdev.conrad.model.internal.ApiCommit;
-import io.ehdev.conrad.model.internal.ApiRepo;
+import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
+import io.ehdev.conrad.database.model.project.ApiRepoModel;
+import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
+import io.ehdev.conrad.database.model.project.commit.ApiFullCommitModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +48,7 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
     }
 
     @Override
-    public ApiRepo createRepo(String projectName, String repoName, String bumperName, String repoUrl) {
+    public ApiRepoModel createRepo(String projectName, String repoName, String bumperName, String repoUrl) {
         VersionBumperModel bumper = bumperModelRepository.findByBumperName(bumperName);
         if(bumper == null) {
             throw new BumperNotFoundException(bumperName);
@@ -59,42 +62,74 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
         return ModelConversionUtility.toApiModel(save);
     }
 
-    public Optional<ApiCommit> findCommit(String projectName, String repoName, ApiCommit commit) {
-        return Optional.ofNullable(commitModelRepository.findByCommitId(projectName, repoName, commit.getCommitId())).map(ModelConversionUtility::toApiModel);
+    @Override
+    public Optional<ApiFullCommitModel> findCommit(String projectName, String repoName, ApiFullCommitModel apiCommit) {
+        CommitModel commitModel = commitModelRepository.findByCommitId(projectName, repoName, apiCommit.getCommitId());
+        return Optional.ofNullable(commitModel).map(ModelConversionUtility::toApiModel);
     }
 
-    public Optional<ApiCommit> findLatestCommit(String projectName, String repoName, List<ApiCommit> history) {
+    @Override
+    public Optional<ApiFullCommitModel> findLatestCommit(String projectName, String repoName, List<ApiCommitModel> history) {
         return findCommitModelInternal(projectName, repoName, history).findFirst().map(ModelConversionUtility::toApiModel);
     }
 
-    private Stream<CommitModel> findCommitModelInternal(String projectName, String repoName, List<ApiCommit> history) {
+    private Stream<CommitModel> findCommitModelInternal(String projectName, String repoName, List<ApiCommitModel> history) {
         RepoModel repo = repoModelRepository.findByProjectNameAndRepoName(projectName, repoName);
-        List<CommitModel> models = commitModelRepository.findMatchingCommits(repo, history.stream().map(ApiCommit::getCommitId).collect(Collectors.toList()));
+        List<CommitModel> models = commitModelRepository
+            .findMatchingCommits(repo,
+                history.stream()
+                    .map(ApiCommitModel::getCommitId)
+                    .collect(Collectors.toList()));
+
         return models.stream().sorted(REVERSE_ORDER);
     }
 
-    public void createCommit(String projectName, String repoName, ApiCommit nextVersion, List<ApiCommit> history) {
+    @Override
+    public void createCommit(String projectName, String repoName, ApiFullCommitModel nextVersion, ApiCommitModel history) {
         CommitModel parentModel = null;
-        if(history != null && !history.isEmpty()) {
-            parentModel = findCommitModelInternal(projectName, repoName, history).findFirst().orElse(null);
+        if(history != null) {
+            parentModel = commitModelRepository.findByCommitId(projectName, repoName, history.getCommitId());
+            if(parentModel == null) {
+                throw new CommitNotFoundException(history.getCommitId());
+            }
         }
         RepoModel repo = repoModelRepository.findByProjectNameAndRepoName(projectName, repoName);
         commitModelRepository.save(new CommitModel(nextVersion.getCommitId(), repo, nextVersion.getVersion(), parentModel));
     }
 
     @Override
-    public List<ApiRepo> getAll() {
-        return repoModelRepository.findAll().stream().map(ModelConversionUtility::toApiModel).collect(Collectors.toList());
+    public List<ApiRepoModel> getAll() {
+        return repoModelRepository
+            .findAll()
+            .stream()
+            .map(ModelConversionUtility::toApiModel)
+            .collect(Collectors.toList());
     }
 
     @Override
-    public List<ApiCommit> findAllCommits(String projectName, String repoName) {
+    public List<ApiFullCommitModel> findAllCommits(String projectName, String repoName) {
         return commitModelRepository
             .findAllByProjectNameAndRepoName(projectName, repoName)
             .stream()
             .sorted(REVERSE_ORDER)
             .map(ModelConversionUtility::toApiModel)
             .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<ApiRepoDetailsModel> getDetails(String projectName, String repoName) {
+        RepoModel repo = repoModelRepository.findByProjectNameAndRepoName(projectName, repoName);
+        return Optional
+            .ofNullable(repo)
+            .map(it -> new ApiRepoDetailsModel(
+                ModelConversionUtility.toApiModel(it),
+                ModelConversionUtility.toApiModel(it.getVersionBumperModel())
+            ));
+    }
+
+    @Override
+    public boolean doesRepoExist(String projectName, String repoName) {
+        return repoModelRepository.doesRepoExist(projectName, repoName);
     }
 
 }

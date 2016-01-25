@@ -1,6 +1,6 @@
 package io.ehdev.conrad.app.service;
 
-import io.ehdev.conrad.backend.version.commit.CommitVersion;
+import io.ehdev.conrad.version.commit.CommitVersion;
 import io.ehdev.conrad.database.impl.CommitModel;
 import io.ehdev.conrad.database.impl.VcsRepoModel;
 import io.ehdev.conrad.database.impl.bumper.VersionBumperModel;

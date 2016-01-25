@@ -1,7 +1,7 @@
 package io.ehdev.conrad.client.java
 import groovy.json.JsonBuilder
 import io.ehdev.conrad.app.service.ApiFactory
-import io.ehdev.conrad.backend.version.commit.VersionFactory
+import io.ehdev.conrad.version.commit.VersionFactory
 import io.ehdev.conrad.client.java.internal.DefaultVersionManagerClient
 import io.ehdev.conrad.model.version.VersionCommitModel
 import org.apache.commons.lang3.RandomStringUtils

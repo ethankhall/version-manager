@@ -6,12 +6,13 @@ import io.ehdev.conrad.database.impl.ModelConversionUtility;
 import io.ehdev.conrad.database.impl.bumper.VersionBumperModelRepository;
 import io.ehdev.conrad.database.impl.project.ProjectModel;
 import io.ehdev.conrad.database.impl.project.ProjectModelRepository;
-import io.ehdev.conrad.model.internal.ApiVersionBumper;
-import io.ehdev.conrad.model.project.ApiProject;
+import io.ehdev.conrad.database.model.project.ApiProjectModel;
+import io.ehdev.conrad.database.model.project.ApiVersionBumperModel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DefaultProjectManagementApi implements ProjectManagementApi {
@@ -27,14 +28,18 @@ public class DefaultProjectManagementApi implements ProjectManagementApi {
     }
 
     @Override
-    public ApiProject createProject(String projectName) throws ProjectAlreadyExistsException {
+    public ApiProjectModel createProject(String projectName) throws ProjectAlreadyExistsException {
         if(projectModelRepository.findByProjectName(projectName) != null) {
             throw new ProjectAlreadyExistsException(projectName);
         }
         return ModelConversionUtility.toApiModel(projectModelRepository.save(new ProjectModel(projectName)));
     }
 
-    public List<ApiVersionBumper> findAllVersionBumpers(String projectName) {
-        return versionBumperModelRepository.findAvailableBumpers(projectName);
+    public List<ApiVersionBumperModel> findAllVersionBumpers(String projectName) {
+        return versionBumperModelRepository
+            .findAvailableBumpers(projectName)
+            .stream()
+            .map(ModelConversionUtility::toApiModel)
+            .collect(Collectors.toList());
     }
 }

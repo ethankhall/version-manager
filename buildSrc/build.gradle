@@ -1,0 +1,12 @@
+apply plugin: 'groovy'
+
+repositories {
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile localGroovy()
+    compile gradleApi()
+    compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.2'
+}

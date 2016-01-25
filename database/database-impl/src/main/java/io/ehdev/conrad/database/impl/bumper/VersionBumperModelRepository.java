@@ -1,6 +1,5 @@
 package io.ehdev.conrad.database.impl.bumper;
 
-import io.ehdev.conrad.model.internal.ApiVersionBumper;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -12,5 +11,5 @@ public interface VersionBumperModelRepository extends JpaRepository<VersionBumpe
     VersionBumperModel findByBumperName(String name);
 
     @Query("select b from VersionBumperModel b where b.projectModel.projectName = :projectName or b.projectModel IS NULL")
-    List<ApiVersionBumper> findAvailableBumpers(@Param("projectName") String projectName);
+    List<VersionBumperModel> findAvailableBumpers(@Param("projectName") String projectName);
 }

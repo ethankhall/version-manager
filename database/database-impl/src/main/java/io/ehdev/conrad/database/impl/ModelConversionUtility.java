@@ -7,13 +7,13 @@ import io.ehdev.conrad.database.impl.repo.RepoModel;
 import io.ehdev.conrad.database.impl.token.TokenType;
 import io.ehdev.conrad.database.impl.token.UserTokenModel;
 import io.ehdev.conrad.database.impl.user.BaseUserModel;
-import io.ehdev.conrad.model.internal.ApiCommit;
-import io.ehdev.conrad.model.project.ApiProject;
-import io.ehdev.conrad.model.internal.ApiRepo;
-import io.ehdev.conrad.model.internal.ApiVersionBumper;
-import io.ehdev.conrad.model.user.ConradGeneratedToken;
-import io.ehdev.conrad.model.user.ConradTokenType;
-import io.ehdev.conrad.model.user.ConradUser;
+import io.ehdev.conrad.database.model.project.commit.ApiFullCommitModel;
+import io.ehdev.conrad.database.model.project.ApiProjectModel;
+import io.ehdev.conrad.database.model.project.ApiRepoModel;
+import io.ehdev.conrad.database.model.project.ApiVersionBumperModel;
+import io.ehdev.conrad.database.model.user.ApiGeneratedUserToken;
+import io.ehdev.conrad.database.model.user.ApiTokenType;
+import io.ehdev.conrad.database.model.user.ApiUser;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +21,11 @@ import java.util.stream.Collectors;
 
 public class ModelConversionUtility {
 
-    public static ConradUser toApiModel(BaseUserModel user) {
-        return new ConradUser(user.getId(), user.getName(), user.getEmailAddress());
+    public static ApiUser toApiModel(BaseUserModel user) {
+        return new ApiUser(user.getId(), user.getName(), user.getEmailAddress());
     }
 
-    public static TokenType toDatabaseModel(ConradTokenType type) {
+    public static TokenType toDatabaseModel(ApiTokenType type) {
         switch (type) {
             case USER:
                 return TokenType.USER;
@@ -36,27 +36,33 @@ public class ModelConversionUtility {
         }
     }
 
-    public static ConradTokenType toDatabaseModel(TokenType type) {
+    public static ApiTokenType toDatabaseModel(TokenType type) {
         switch (type) {
             case USER:
-                return ConradTokenType.USER;
+                return ApiTokenType.USER;
             case API:
-                return ConradTokenType.API;
+                return ApiTokenType.API;
             default:
                 throw new IllegalArgumentException("Unknown type " + type.getName());
         }
     }
 
-    public static ConradGeneratedToken toApiModel(UserTokenModel token) {
-        return new ConradGeneratedToken(token.getId(), toDatabaseModel(token.getTokenType()), token.getCreatedAt(), token.getExpiresAt());
+    public static ApiGeneratedUserToken toApiModel(UserTokenModel token) {
+        return new ApiGeneratedUserToken(
+            token.getId(),
+            toDatabaseModel(token.getTokenType()), token.getCreatedAt(), token.getExpiresAt());
     }
 
-    public static ApiVersionBumper toApiModel(VersionBumperModel bumper) {
-        return new ApiVersionBumper(bumper.getId(), bumper.getClassName(), bumper.getDescription(), bumper.getBumperName());
+    public static ApiVersionBumperModel toApiModel(VersionBumperModel bumper) {
+        return new ApiVersionBumperModel(
+            bumper.getId(),
+            bumper.getClassName(),
+            bumper.getDescription(),
+            bumper.getBumperName());
     }
 
-    public static ApiRepo toApiModel(RepoModel repo) {
-        return new ApiRepo(
+    public static ApiRepoModel toApiModel(RepoModel repo) {
+        return new ApiRepoModel(
             repo.getId(),
             repo.getRepoName(),
             repo.getUrl(),
@@ -64,17 +70,16 @@ public class ModelConversionUtility {
             repo.getProjectModel().getProjectName());
     }
 
-    public static ApiProject toApiModel(ProjectModel model) {
+    public static ApiProjectModel toApiModel(ProjectModel model) {
         List<RepoModel> repoModels = model.getRepoModels();
-        ArrayList<ApiRepo> repos = new ArrayList<>();
-        if(repoModels != null) {
+        ArrayList<ApiRepoModel> repos = new ArrayList<>();
+        if (repoModels != null) {
             repos.addAll(repoModels.stream().map(ModelConversionUtility::toApiModel).collect(Collectors.toList()));
         }
-        return new ApiProject(model.getProjectName(), repos);
+        return new ApiProjectModel(model.getProjectName(), repos);
     }
 
-    public static ApiCommit toApiModel(CommitModel commitModel) {
-        CommitModel parentCommit = commitModel.getParentCommit();
-        return new ApiCommit(commitModel.getCommitId(), commitModel.getVersion(), parentCommit == null ? null : parentCommit.getCommitId());
+    public static ApiFullCommitModel toApiModel(CommitModel commitModel) {
+        return new ApiFullCommitModel(commitModel.getCommitId(), commitModel.getVersion());
     }
 }

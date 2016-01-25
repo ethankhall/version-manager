@@ -4,9 +4,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import io.ehdev.conrad.app.exception.VersionNotFoundException;
 import io.ehdev.conrad.app.manager.CommitManager;
 import io.ehdev.conrad.app.service.ApiFactory;
-import io.ehdev.conrad.backend.version.commit.CommitVersion;
-import io.ehdev.conrad.backend.version.commit.VersionFactory;
-import io.ehdev.conrad.backend.version.commit.internal.BumpLowestWithSnapshot;
+import io.ehdev.conrad.version.commit.CommitVersion;
+import io.ehdev.conrad.version.commit.VersionFactory;
+import io.ehdev.conrad.version.commit.internal.BumpLowestWithSnapshot;
 import io.ehdev.conrad.database.impl.CommitModel;
 import io.ehdev.conrad.model.version.*;
 import org.slf4j.Logger;
@@ -66,13 +66,13 @@ public class DefaultVersionService implements VersionService {
     @JsonView(VersionView.ReleasedVersionView.class)
     @Cacheable(value = "versionsForRepo", key = "#repoId")
     @RequestMapping(value = "/{repoId}", method = RequestMethod.GET)
-    public RepoVersionModel findVersionsForRepo(@PathVariable("repoId") String repoId) {
+    public RepoVersionCollectionModel findVersionsForRepo(@PathVariable("repoId") String repoId) {
         List<CommitModel> commitsForRepo = commitManager.findCommitsForRepo(UUID.fromString(repoId));
         List<VersionCommitModel> collect = commitsForRepo
             .stream().sorted(REVERSE_ORDER)
             .map(ApiFactory.VersionModelFactory::create)
             .collect(Collectors.toList());
-        return new RepoVersionModel(collect);
+        return new RepoVersionCollectionModel(collect);
     }
 
 //    @JsonView(VersionView.ReleasedVersionView.class)

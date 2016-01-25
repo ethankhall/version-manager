@@ -4,7 +4,7 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ehcache.InstrumentedEhcache;
 import io.ehdev.conrad.api.user.config.ApiUserConfiguration;
 import io.ehdev.conrad.app.config.MetricsConfiguration;
-import io.ehdev.conrad.backend.config.BackendConfiguration;
+import io.ehdev.conrad.version.config.ConradVersionConfiguration;
 import io.ehdev.conrad.database.config.DatabaseConfiguration;
 import io.ehdev.conrad.authentication.config.ConradSecurityConfig;
 import net.sf.ehcache.Cache;
@@ -23,7 +23,7 @@ import org.springframework.context.annotation.Import;
 @Configuration
 @EnableAutoConfiguration
 @Import({
-    BackendConfiguration.class, DatabaseConfiguration.class, MetricsConfiguration.class,
+    ConradVersionConfiguration.class, DatabaseConfiguration.class, MetricsConfiguration.class,
     ConradSecurityConfig.class, ApiUserConfiguration.class})
 @ComponentScan("io.ehdev.conrad.app")
 public class MainApplication {

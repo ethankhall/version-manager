@@ -21,10 +21,10 @@ apply from: "$rootDir/gradle/publishing.gradle"
 artifactoryPublish.dependsOn assemble
 
 dependencies {
-    compile project(":api-model")
+    compile project(":api:rest-model")
     compile project(":database:database-api")
     compile project(":database:database-impl")
-    compile project(":web-service:backend")
+    compile project(":web-service:version-management")
     compile project(":auth:user")
     compile project(":auth:authentication:default")
     compile project(":auth:authentication:core")
