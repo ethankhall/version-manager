@@ -13,6 +13,7 @@ import io.ehdev.conrad.database.impl.project.ProjectModel;
 import io.ehdev.conrad.database.impl.project.ProjectModelRepository;
 import io.ehdev.conrad.database.impl.repo.RepoModel;
 import io.ehdev.conrad.database.impl.repo.RepoModelRepository;
+import io.ehdev.conrad.database.model.project.ApiQualifiedRepoModel;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
 import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
@@ -48,29 +49,36 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
     }
 
     @Override
-    public ApiRepoModel createRepo(String projectName, String repoName, String bumperName, String repoUrl) {
+    public ApiRepoModel createRepo(ApiQualifiedRepoModel qualifiedRepo, String bumperName, String repoUrl) {
         VersionBumperModel bumper = bumperModelRepository.findByBumperName(bumperName);
         if(bumper == null) {
             throw new BumperNotFoundException(bumperName);
         }
 
-        ProjectModel project = projectModelRepository.findByProjectName(projectName);
+        ProjectModel project = projectModelRepository.findByProjectName(qualifiedRepo.getProjectName());
         if(project == null) {
-            throw new ProjectNotFoundException(projectName);
+            throw new ProjectNotFoundException(qualifiedRepo.getProjectName());
         }
-        RepoModel save = repoModelRepository.save(new RepoModel(repoName, repoUrl, bumper, project));
+        RepoModel save = repoModelRepository.save(new RepoModel(qualifiedRepo.getRepoName(), repoUrl, bumper, project));
         return ModelConversionUtility.toApiModel(save);
     }
 
     @Override
-    public Optional<ApiFullCommitModel> findCommit(String projectName, String repoName, ApiFullCommitModel apiCommit) {
-        CommitModel commitModel = commitModelRepository.findByCommitId(projectName, repoName, apiCommit.getCommitId());
+    public Optional<ApiFullCommitModel> findCommit(ApiQualifiedRepoModel repo, ApiFullCommitModel apiCommit) {
+        CommitModel commitModel = commitModelRepository.findByCommitId(
+            repo.getProjectName(),
+            repo.getRepoName(),
+            apiCommit.getCommitId());
+
         return Optional.ofNullable(commitModel).map(ModelConversionUtility::toApiModel);
     }
 
     @Override
-    public Optional<ApiFullCommitModel> findLatestCommit(String projectName, String repoName, List<ApiCommitModel> history) {
-        return findCommitModelInternal(projectName, repoName, history).findFirst().map(ModelConversionUtility::toApiModel);
+    public Optional<ApiFullCommitModel> findLatestCommit(ApiQualifiedRepoModel repo, List<ApiCommitModel> history) {
+        return findCommitModelInternal(repo.getProjectName(),
+            repo.getRepoName(),
+            history
+        ).findFirst().map(ModelConversionUtility::toApiModel);
     }
 
     private Stream<CommitModel> findCommitModelInternal(String projectName, String repoName, List<ApiCommitModel> history) {
@@ -85,15 +93,18 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
     }
 
     @Override
-    public void createCommit(String projectName, String repoName, ApiFullCommitModel nextVersion, ApiCommitModel history) {
+    public void createCommit(ApiQualifiedRepoModel apiRepo, ApiFullCommitModel nextVersion, ApiCommitModel history) {
         CommitModel parentModel = null;
         if(history != null) {
-            parentModel = commitModelRepository.findByCommitId(projectName, repoName, history.getCommitId());
+            parentModel = commitModelRepository.findByCommitId(
+                apiRepo.getProjectName(),
+                apiRepo.getRepoName(),
+                history.getCommitId());
             if(parentModel == null) {
                 throw new CommitNotFoundException(history.getCommitId());
             }
         }
-        RepoModel repo = repoModelRepository.findByProjectNameAndRepoName(projectName, repoName);
+        RepoModel repo = repoModelRepository.findByProjectNameAndRepoName(apiRepo.getProjectName(), apiRepo.getRepoName());
         commitModelRepository.save(new CommitModel(nextVersion.getCommitId(), repo, nextVersion.getVersion(), parentModel));
     }
 
@@ -107,9 +118,9 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
     }
 
     @Override
-    public List<ApiFullCommitModel> findAllCommits(String projectName, String repoName) {
+    public List<ApiFullCommitModel> findAllCommits(ApiQualifiedRepoModel repo) {
         return commitModelRepository
-            .findAllByProjectNameAndRepoName(projectName, repoName)
+            .findAllByProjectNameAndRepoName(repo.getProjectName(), repo.getRepoName())
             .stream()
             .sorted(REVERSE_ORDER)
             .map(ModelConversionUtility::toApiModel)
@@ -117,8 +128,8 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
     }
 
     @Override
-    public Optional<ApiRepoDetailsModel> getDetails(String projectName, String repoName) {
-        RepoModel repo = repoModelRepository.findByProjectNameAndRepoName(projectName, repoName);
+    public Optional<ApiRepoDetailsModel> getDetails(ApiQualifiedRepoModel repoModel) {
+        RepoModel repo = repoModelRepository.findByProjectNameAndRepoName(repoModel.getProjectName(), repoModel.getRepoName());
         return Optional
             .ofNullable(repo)
             .map(it -> new ApiRepoDetailsModel(
@@ -128,8 +139,8 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
     }
 
     @Override
-    public boolean doesRepoExist(String projectName, String repoName) {
-        return repoModelRepository.doesRepoExist(projectName, repoName);
+    public boolean doesRepoExist(ApiQualifiedRepoModel repo) {
+        return repoModelRepository.doesRepoExist(repo.getProjectName(), repo.getRepoName());
     }
 
 }
