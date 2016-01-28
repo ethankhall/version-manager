@@ -17,12 +17,12 @@ public class BaseUserModelResolver implements HandlerMethodArgumentResolver {
 
     @Override
     public ConradUser resolveArgument(MethodParameter parameter,
-                                  ModelAndViewContainer mavContainer,
-                                  NativeWebRequest webRequest,
-                                  WebDataBinderFactory binderFactory) throws Exception {
-        if(webRequest.getUserPrincipal() instanceof Authentication) {
+                                      ModelAndViewContainer mavContainer,
+                                      NativeWebRequest webRequest,
+                                      WebDataBinderFactory binderFactory) throws Exception {
+        if (webRequest.getUserPrincipal() instanceof Authentication) {
             Object principal = ((Authentication) webRequest.getUserPrincipal()).getPrincipal();
-            if(principal instanceof ConradUser) {
+            if (principal instanceof ConradUser) {
                 return (ConradUser) principal;
             }
         }

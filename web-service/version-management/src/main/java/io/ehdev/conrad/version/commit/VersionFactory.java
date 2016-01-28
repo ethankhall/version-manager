@@ -11,9 +11,9 @@ public class VersionFactory {
 
     public static CommitVersion parse(ApiFullCommitModel version) {
         if(null == version) {
-            parse("0.0.0");
+            return parse("0.0.0");
         } else {
-            parse(version.getVersion());
+            return parse(version.getVersion());
         }
     }
 

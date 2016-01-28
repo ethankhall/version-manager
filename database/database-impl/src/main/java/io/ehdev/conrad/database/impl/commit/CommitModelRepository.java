@@ -14,8 +14,8 @@ public interface CommitModelRepository extends JpaRepository<CommitModel, UUID> 
     @Query("select c from CommitModel c where c.commitId in (:commitIds) and c.repoModel = :repoModel")
     List<CommitModel> findMatchingCommits(@Param("repoModel") RepoModel repoModel, @Param("commitIds") List<String> commits);
 
-    @Query("select c from CommitModel c where c.commitId = :commitId and c.repoModel.repoName = :repoName and c.repoModel.projectModel.projectName = :projectName")
-    CommitModel findByCommitId(@Param("projectName") String projectName, @Param("repoName") String repoName, @Param("commitId") String commitId);
+    @Query("select c from CommitModel c where (c.commitId = :commit or c.version = :commit) and c.repoModel.repoName = :repoName and c.repoModel.projectModel.projectName = :projectName")
+    CommitModel findByCommitId(@Param("projectName") String projectName, @Param("repoName") String repoName, @Param("commit") String commit);
 
     @Query("select c from CommitModel c where c.repoModel.repoName = :repoName and c.repoModel.projectModel.projectName = :projectName")
     List<CommitModel> findAllByProjectNameAndRepoName(@Param("projectName") String projectName, @Param("repoName") String repoName);

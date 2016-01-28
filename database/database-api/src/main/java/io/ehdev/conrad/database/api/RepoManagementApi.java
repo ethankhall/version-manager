@@ -17,7 +17,7 @@ public interface RepoManagementApi {
 
     void createCommit(ApiQualifiedRepoModel qualifiedRepo, ApiFullCommitModel nextVersion, ApiCommitModel parent);
 
-    Optional<ApiFullCommitModel> findCommit(ApiQualifiedRepoModel qualifiedRepo, ApiFullCommitModel commit);
+    Optional<ApiFullCommitModel> findCommit(ApiQualifiedRepoModel qualifiedRepo, String apiCommit);
 
     List<ApiRepoModel> getAll();
 

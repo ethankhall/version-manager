@@ -25,6 +25,7 @@ dependencies {
     compile project(":database:database-api")
     compile project(":database:database-impl")
     compile project(":web-service:version-management")
+    compile project(":web-service:api-project")
     compile project(":auth:user")
     compile project(":auth:authentication:default")
     compile project(":auth:authentication:core")

@@ -1,7 +1,7 @@
 package io.ehdev.conrad.database.api;
 
-import io.ehdev.conrad.model.internal.ApiVersionBumper;
-import io.ehdev.conrad.model.project.ApiProject;
+import io.ehdev.conrad.database.model.project.ApiProjectModel;
+import io.ehdev.conrad.database.model.project.ApiVersionBumperModel;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -10,20 +10,16 @@ import java.util.Map;
 
 public class TestDoubleProjectManagementApi implements ProjectManagementApi {
 
-    private final Map<String, ApiProject> projects = new HashMap<>();
-
-    public Map<String, ApiProject> getProjects() {
-        return projects;
-    }
+    private final Map<String, ApiProjectModel> projects = new HashMap<>();
 
     @Override
-    public ApiProject createProject(String projectName) {
-        projects.put(projectName, new ApiProject(projectName, new ArrayList<>()));
+    public ApiProjectModel createProject(String projectName) {
+        projects.put(projectName, new ApiProjectModel("foo", new ArrayList<>()));
         return projects.get(projectName);
     }
 
     @Override
-    public List<ApiVersionBumper> findAllVersionBumpers(String projectName) {
+    public List<ApiVersionBumperModel> findAllVersionBumpers(String projectName) {
         return null;
     }
 }

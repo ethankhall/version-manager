@@ -19,6 +19,8 @@ import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.database.model.project.commit.ApiFullCommitModel;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
@@ -64,11 +66,19 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
     }
 
     @Override
-    public Optional<ApiFullCommitModel> findCommit(ApiQualifiedRepoModel repo, ApiFullCommitModel apiCommit) {
+    public Optional<ApiFullCommitModel> findCommit(ApiQualifiedRepoModel repo, String apiCommit) {
+        if("latest".equalsIgnoreCase(apiCommit)) {
+            List<CommitModel> content = commitModelRepository.findAll(new PageRequest(0, 1, Sort.Direction.DESC)).getContent();
+            if(content.isEmpty()){
+                return Optional.empty();
+            } else {
+                return Optional.ofNullable(content.get(0)).map(ModelConversionUtility::toApiModel);
+            }
+        }
         CommitModel commitModel = commitModelRepository.findByCommitId(
             repo.getProjectName(),
             repo.getRepoName(),
-            apiCommit.getCommitId());
+            apiCommit);
 
         return Optional.ofNullable(commitModel).map(ModelConversionUtility::toApiModel);
     }

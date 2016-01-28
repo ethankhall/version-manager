@@ -1,6 +1,5 @@
 package io.ehdev.conrad.app.service;
 
-import io.ehdev.conrad.app.service.repo.RepoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -12,7 +11,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ControllerAdvice
 public class GlobalControllerExceptionHandler {
 
-    private static final Logger logger = LoggerFactory.getLogger(RepoService.class);
+    private static final Logger logger = LoggerFactory.getLogger(GlobalControllerExceptionHandler.class);
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)

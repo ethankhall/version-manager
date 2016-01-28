@@ -1,4 +1,5 @@
 apply plugin: "kotlin"
+apply plugin: "groovy"
 apply plugin: 'maven-publish'
 apply from: "$rootDir/gradle/publishing.gradle"
 
@@ -12,4 +13,7 @@ dependencies {
     compile 'javax.validation:validation-api:1.1.0.Final'
 
     compile libraries.jackson
+
+    testCompile libraries.groovy
+    testCompile libraries.spock
 }
