@@ -12,6 +12,6 @@ public interface RepoModelRepository extends JpaRepository<RepoModel, UUID> {
     RepoModel findByProjectNameAndRepoName(@Param("projectName") String projectName, @Param("repoName") String repoName);
 
     @Query("select CASE WHEN COUNT(r) > 0 THEN true ELSE false END from RepoModel r where r.repoName = :repoName and r.projectModel.projectName = :projectName")
-    boolean doesRepoExist(String projectName, String repoName);
+    boolean doesRepoExist(@Param("projectName") String projectName, @Param("repoName") String repoName);
 
 }

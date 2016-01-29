@@ -57,7 +57,7 @@ class SpringRestDocPlugin implements Plugin<Project> {
                 attributes('snippets': snippetsDir)
                 inputs.dir snippetsDir
                 dependsOn apiTest
-                sourceDir 'src/main/asciidoc'
+                sourceDir 'src/apiTest/asciidoc'
             }
 
         }
