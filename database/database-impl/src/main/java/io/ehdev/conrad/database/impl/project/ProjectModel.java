@@ -21,6 +21,10 @@ public class ProjectModel {
     @OneToMany(mappedBy = "projectModel")
     private List<RepoModel> repoModels;
 
+    ProjectModel() {
+        //Ignored
+    }
+
     public ProjectModel(String projectName) {
         this.projectName = projectName;
     }
