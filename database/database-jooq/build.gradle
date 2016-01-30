@@ -1,0 +1,68 @@
+apply plugin: 'java'
+apply plugin: 'org.flywaydb.flyway'
+
+configurations {
+    codegen
+}
+
+dependencies {
+    codegen 'org.postgresql:postgresql:9.4.1207.jre7'
+    codegen 'org.jooq:jooq:3.7.2'
+    codegen 'org.jooq:jooq-meta:3.7.2'
+    codegen 'org.jooq:jooq-codegen:3.7.2'
+
+    compile 'org.postgresql:postgresql:9.4.1207.jre7'
+    compile 'org.jooq:jooq:3.7.2'
+    compile 'org.jooq:jooq-meta:3.7.2'
+}
+
+flyway {
+    driver = 'org.postgresql.Driver'
+    url = 'jdbc:postgresql://172.0.1.100/version_manager_test'
+    outOfOrder = true
+    user = 'version_manager_test'
+    password = 'password'
+}
+
+def createLibraryXml = task createLibraryXml {
+    dependsOn 'flywayMigrate'
+    ext.libraryFile = file("$buildDir/library.xml")
+    doLast {
+        def writer = new StringWriter()
+        def xml = new groovy.xml.MarkupBuilder(writer)
+            .configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.7.0.xsd') {
+            jdbc() {
+                driver(flyway.driver)
+                url(flyway.url)
+                user(flyway.user)
+                password(flyway.password)
+            }
+            generator() {
+                database() {
+                    name('org.jooq.util.postgres.PostgresDatabase')
+                    excludes('schema_version')
+                    inputSchema('public')
+                }
+                generate([:]) {
+                    pojos true
+                    daos true
+                    jpaAnnotations true
+                    validationAnnotations true
+                }
+                target() {
+                    packageName('io.ehdev.conrad.db')
+                    directory(file('src/main/java').absolutePath)
+                }
+            }
+        }
+
+        ext.libraryFile.text = writer.toString()
+    }
+}
+
+task generateDataModel(type: JavaExec, dependsOn: ['createLibraryXml']) {
+    setMain('org.jooq.util.GenerationTool')
+    args(createLibraryXml.libraryFile.absolutePath)
+    classpath configurations.codegen
+}
+

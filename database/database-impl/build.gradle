@@ -15,6 +15,10 @@ dependencies {
     compile libraries.hibernate
     compile libraries.springJpa
 
+    compile 'org.jooq:jooq:3.7.2'
+    compile 'org.jooq:jooq-meta:3.7.2'
+    compile 'org.jooq:jooq-codegen:3.7.2'
+
     // Tests
     testCompile libraries.groovy
     testCompile libraries.spock
