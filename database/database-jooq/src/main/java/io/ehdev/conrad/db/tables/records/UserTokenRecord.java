@@ -4,6 +4,7 @@
 package io.ehdev.conrad.db.tables.records;
 
 
+import io.ehdev.conrad.db.enums.TokenType;
 import io.ehdev.conrad.db.tables.UserToken;
 
 import java.sql.Timestamp;
@@ -15,7 +16,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 import org.jooq.Field;
 import org.jooq.Record1;
@@ -37,9 +37,9 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
 @Table(name = "user_token", schema = "public")
-public class UserTokenRecord extends UpdatableRecordImpl<UserTokenRecord> implements Record6<UUID, UUID, Timestamp, Timestamp, Boolean, String> {
+public class UserTokenRecord extends UpdatableRecordImpl<UserTokenRecord> implements Record6<UUID, UUID, Timestamp, Timestamp, Boolean, TokenType> {
 
-	private static final long serialVersionUID = 603850750;
+	private static final long serialVersionUID = -889087879;
 
 	/**
 	 * Setter for <code>public.user_token.uuid</code>.
@@ -123,18 +123,17 @@ public class UserTokenRecord extends UpdatableRecordImpl<UserTokenRecord> implem
 	/**
 	 * Setter for <code>public.user_token.token_type</code>.
 	 */
-	public void setTokenType(String value) {
+	public void setTokenType(TokenType value) {
 		setValue(5, value);
 	}
 
 	/**
 	 * Getter for <code>public.user_token.token_type</code>.
 	 */
-	@Column(name = "token_type", nullable = false, length = 5)
+	@Column(name = "token_type", nullable = false)
 	@NotNull
-	@Size(max = 5)
-	public String getTokenType() {
-		return (String) getValue(5);
+	public TokenType getTokenType() {
+		return (TokenType) getValue(5);
 	}
 
 	// -------------------------------------------------------------------------
@@ -157,7 +156,7 @@ public class UserTokenRecord extends UpdatableRecordImpl<UserTokenRecord> implem
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Row6<UUID, UUID, Timestamp, Timestamp, Boolean, String> fieldsRow() {
+	public Row6<UUID, UUID, Timestamp, Timestamp, Boolean, TokenType> fieldsRow() {
 		return (Row6) super.fieldsRow();
 	}
 
@@ -165,7 +164,7 @@ public class UserTokenRecord extends UpdatableRecordImpl<UserTokenRecord> implem
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Row6<UUID, UUID, Timestamp, Timestamp, Boolean, String> valuesRow() {
+	public Row6<UUID, UUID, Timestamp, Timestamp, Boolean, TokenType> valuesRow() {
 		return (Row6) super.valuesRow();
 	}
 
@@ -213,7 +212,7 @@ public class UserTokenRecord extends UpdatableRecordImpl<UserTokenRecord> implem
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Field<String> field6() {
+	public Field<TokenType> field6() {
 		return UserToken.USER_TOKEN.TOKEN_TYPE;
 	}
 
@@ -261,7 +260,7 @@ public class UserTokenRecord extends UpdatableRecordImpl<UserTokenRecord> implem
 	 * {@inheritDoc}
 	 */
 	@Override
-	public String value6() {
+	public TokenType value6() {
 		return getTokenType();
 	}
 
@@ -314,7 +313,7 @@ public class UserTokenRecord extends UpdatableRecordImpl<UserTokenRecord> implem
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserTokenRecord value6(String value) {
+	public UserTokenRecord value6(TokenType value) {
 		setTokenType(value);
 		return this;
 	}
@@ -323,7 +322,7 @@ public class UserTokenRecord extends UpdatableRecordImpl<UserTokenRecord> implem
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserTokenRecord values(UUID value1, UUID value2, Timestamp value3, Timestamp value4, Boolean value5, String value6) {
+	public UserTokenRecord values(UUID value1, UUID value2, Timestamp value3, Timestamp value4, Boolean value5, TokenType value6) {
 		value1(value1);
 		value2(value2);
 		value3(value3);
@@ -347,7 +346,7 @@ public class UserTokenRecord extends UpdatableRecordImpl<UserTokenRecord> implem
 	/**
 	 * Create a detached, initialised UserTokenRecord
 	 */
-	public UserTokenRecord(UUID uuid, UUID userUuid, Timestamp createdAt, Timestamp expiresAt, Boolean valid, String tokenType) {
+	public UserTokenRecord(UUID uuid, UUID userUuid, Timestamp createdAt, Timestamp expiresAt, Boolean valid, TokenType tokenType) {
 		super(UserToken.USER_TOKEN);
 
 		setValue(0, uuid);

@@ -14,6 +14,8 @@ dependencies {
     compile 'org.postgresql:postgresql:9.4.1207.jre7'
     compile 'org.jooq:jooq:3.7.2'
     compile 'org.jooq:jooq-meta:3.7.2'
+    compile 'javax.validation:validation-api:1.1.0.Final'
+    compile 'javax.persistence:persistence-api:1.0.2'
 }
 
 flyway {

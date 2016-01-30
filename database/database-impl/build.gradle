@@ -4,6 +4,7 @@ apply plugin: 'groovy'
 dependencies {
     compile project(":api:rest-model")
     compile project(":database:database-api")
+    compile project(":database:database-jooq")
 
     compile libraries.el
 

@@ -6,6 +6,7 @@ package io.ehdev.conrad.db.tables;
 
 import io.ehdev.conrad.db.Keys;
 import io.ehdev.conrad.db.Public;
+import io.ehdev.conrad.db.enums.TokenType;
 import io.ehdev.conrad.db.tables.records.UserTokenRecord;
 
 import java.sql.Timestamp;
@@ -36,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserToken extends TableImpl<UserTokenRecord> {
 
-	private static final long serialVersionUID = 1841548952;
+	private static final long serialVersionUID = 518515209;
 
 	/**
 	 * The reference instance of <code>public.user_token</code>
@@ -79,7 +80,7 @@ public class UserToken extends TableImpl<UserTokenRecord> {
 	/**
 	 * The column <code>public.user_token.token_type</code>.
 	 */
-	public final TableField<UserTokenRecord, String> TOKEN_TYPE = createField("token_type", org.jooq.impl.SQLDataType.VARCHAR.length(5).nullable(false), this, "");
+	public final TableField<UserTokenRecord, TokenType> TOKEN_TYPE = createField("token_type", org.jooq.util.postgres.PostgresDataType.VARCHAR.asEnumDataType(io.ehdev.conrad.db.enums.TokenType.class), this, "");
 
 	/**
 	 * Create a <code>public.user_token</code> table reference

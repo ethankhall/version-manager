@@ -4,13 +4,15 @@ CREATE TABLE user_details (
     email_address VARCHAR(256) NOT NULL
 );
 
+CREATE TYPE token_type AS ENUM ('user', 'api');
+
 CREATE TABLE user_token (
     uuid       UUID PRIMARY KEY                                DEFAULT uuid_generate_v4(),
     user_uuid  UUID REFERENCES user_details (uuid) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE            NOT NULL    DEFAULT current_timestamp,
     expires_at TIMESTAMP WITH TIME ZONE                        DEFAULT NULL,
     valid      BOOLEAN                                         DEFAULT TRUE,
-    token_type VARCHAR(5)                          NOT NULL
+    token_type token_type                          NOT NULL
 );
 
 CREATE TABLE project_details (

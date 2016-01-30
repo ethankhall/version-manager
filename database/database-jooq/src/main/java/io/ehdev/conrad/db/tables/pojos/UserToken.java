@@ -4,6 +4,8 @@
 package io.ehdev.conrad.db.tables.pojos;
 
 
+import io.ehdev.conrad.db.enums.TokenType;
+
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.UUID;
@@ -14,7 +16,6 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 
 /**
@@ -32,14 +33,14 @@ import javax.validation.constraints.Size;
 @Table(name = "user_token", schema = "public")
 public class UserToken implements Serializable {
 
-	private static final long serialVersionUID = -998153808;
+	private static final long serialVersionUID = -1501018239;
 
 	private UUID      uuid;
 	private UUID      userUuid;
 	private Timestamp createdAt;
 	private Timestamp expiresAt;
 	private Boolean   valid;
-	private String    tokenType;
+	private TokenType tokenType;
 
 	public UserToken() {}
 
@@ -58,7 +59,7 @@ public class UserToken implements Serializable {
 		Timestamp createdAt,
 		Timestamp expiresAt,
 		Boolean   valid,
-		String    tokenType
+		TokenType tokenType
 	) {
 		this.uuid = uuid;
 		this.userUuid = userUuid;
@@ -117,14 +118,13 @@ public class UserToken implements Serializable {
 		this.valid = valid;
 	}
 
-	@Column(name = "token_type", nullable = false, length = 5)
+	@Column(name = "token_type", nullable = false)
 	@NotNull
-	@Size(max = 5)
-	public String getTokenType() {
+	public TokenType getTokenType() {
 		return this.tokenType;
 	}
 
-	public void setTokenType(String tokenType) {
+	public void setTokenType(TokenType tokenType) {
 		this.tokenType = tokenType;
 	}
 

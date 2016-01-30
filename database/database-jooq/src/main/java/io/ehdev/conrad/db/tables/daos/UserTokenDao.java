@@ -4,6 +4,7 @@
 package io.ehdev.conrad.db.tables.daos;
 
 
+import io.ehdev.conrad.db.enums.TokenType;
 import io.ehdev.conrad.db.tables.UserToken;
 import io.ehdev.conrad.db.tables.records.UserTokenRecord;
 
@@ -97,7 +98,7 @@ public class UserTokenDao extends DAOImpl<UserTokenRecord, io.ehdev.conrad.db.ta
 	/**
 	 * Fetch records that have <code>token_type IN (values)</code>
 	 */
-	public List<io.ehdev.conrad.db.tables.pojos.UserToken> fetchByTokenType(String... values) {
+	public List<io.ehdev.conrad.db.tables.pojos.UserToken> fetchByTokenType(TokenType... values) {
 		return fetch(UserToken.USER_TOKEN.TOKEN_TYPE, values);
 	}
 }
