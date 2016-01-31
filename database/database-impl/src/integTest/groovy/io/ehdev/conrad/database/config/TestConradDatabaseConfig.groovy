@@ -1,20 +1,22 @@
 package io.ehdev.conrad.database.config
-
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration
+import com.zaxxer.hikari.HikariConfig
+import com.zaxxer.hikari.HikariDataSource
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType
+
+import javax.sql.DataSource
 
 @Configuration
-@EnableAutoConfiguration
 @Import([ConradDatabaseConfig])
 class TestConradDatabaseConfig {
 
-    @Bean(destroyMethod = "shutdown")
-    EmbeddedDatabase embeddedDatabase() {
-        return new EmbeddedDatabaseBuilder().setType(EmbeddedDatabaseType.H2).build()
+    @Bean(destroyMethod = "close")
+    DataSource dataSource() {
+        def config = new HikariConfig()
+        config.setJdbcUrl("jdbc:postgresql://172.0.1.100/version_manager_test")
+        config.setUsername("version_manager_test")
+        config.setPassword("password")
+        return new HikariDataSource(config)
     }
 }

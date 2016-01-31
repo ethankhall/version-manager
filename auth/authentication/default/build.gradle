@@ -27,7 +27,7 @@ dependencies {
     compile 'javax.transaction:javax.transaction-api:1.2'
 
     // database
-    compile 'com.zaxxer:HikariCP:2.4.1'
+    compile libraries.hikari
     compile 'org.postgresql:postgresql:9.4-1203-jdbc42'
     compile 'org.flywaydb:flyway-core:3.2.1'
 

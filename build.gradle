@@ -25,6 +25,7 @@ allprojects {
 }
 
 apply from: "gradle/versions.gradle"
+apply from: "gradle/database.gradle"
 apply plugin: 'version-manager'
 
 versionManager {

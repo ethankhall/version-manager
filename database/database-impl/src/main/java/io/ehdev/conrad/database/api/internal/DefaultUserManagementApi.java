@@ -2,29 +2,32 @@ package io.ehdev.conrad.database.api.internal;
 
 import io.ehdev.conrad.database.api.UserManagementApi;
 import io.ehdev.conrad.database.impl.ModelConversionUtility;
-import io.ehdev.conrad.database.impl.user.BaseUserModel;
-import io.ehdev.conrad.database.impl.user.BaseUserRepository;
 import io.ehdev.conrad.database.model.user.ApiUser;
+import io.ehdev.conrad.db.Tables;
+import io.ehdev.conrad.db.tables.pojos.UserDetails;
+import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class DefaultUserManagementApi implements UserManagementApi {
 
-    final private BaseUserRepository baseUserRepository;
+    private final DSLContext dslContext;
 
     @Autowired
-    public DefaultUserManagementApi(BaseUserRepository baseUserRepository) {
-        this.baseUserRepository = baseUserRepository;
-    }
-
-    public BaseUserModel createInternalUser(String name, String email) {
-        return baseUserRepository.save(new BaseUserModel(name, email));
+    public DefaultUserManagementApi(DSLContext dslContext) {
+        this.dslContext = dslContext;
     }
 
     @Override
     public ApiUser createUser(String name, String email) {
-        BaseUserModel user = createInternalUser(name, email);
-        return ModelConversionUtility.toApiModel(user);
+        UserDetails userDetails = dslContext
+            .insertInto(Tables.USER_DETAILS, Tables.USER_DETAILS.NAME, Tables.USER_DETAILS.EMAIL_ADDRESS)
+            .values(name, email)
+            .returning(Tables.USER_DETAILS.fields())
+            .fetchOne()
+            .into(UserDetails.class);
+
+        return ModelConversionUtility.toApiModel(userDetails);
     }
 }

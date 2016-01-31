@@ -1,11 +1,9 @@
 package io.ehdev.conrad.service.api.service;
 
 import io.ehdev.conrad.database.api.RepoManagementApi;
-import io.ehdev.conrad.database.model.project.ApiQualifiedRepoModel;
+import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
 import io.ehdev.conrad.database.model.project.ApiRepoModel;
-import io.ehdev.conrad.database.model.project.commit.ApiCommitIdModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
-import io.ehdev.conrad.database.model.project.commit.ApiFullCommitModel;
 import io.ehdev.conrad.model.rest.RestCommitModel;
 import io.ehdev.conrad.model.rest.RestRepoCreateModel;
 import io.ehdev.conrad.model.rest.RestRepoDetailsModel;
@@ -48,26 +46,26 @@ public class RepoEndpoint {
     }
 
     @RequestMapping(value = "/{repoName}", method = RequestMethod.POST)
-    public ResponseEntity<ApiRepoModel> createRepo(@PathVariable("projectName") String projectName,
-                                                   @PathVariable("repoName") String repoName,
-                                                   @RequestBody RestRepoCreateModel createModel,
-                                                   @Valid @NotNull ConradUser user) {
-        ApiQualifiedRepoModel qualifiedRepo = new ApiQualifiedRepoModel(projectName, repoName);
-        if(repoManagementApi.doesRepoExist(qualifiedRepo)) {
+    public ResponseEntity<RestRepoDetailsModel> createRepo(@PathVariable("projectName") String projectName,
+                                                           @PathVariable("repoName") String repoName,
+                                                           @RequestBody RestRepoCreateModel createModel,
+                                                           @Valid @NotNull ConradUser user) {
+        ApiRepoModel qualifiedRepo = new ApiRepoModel(projectName, repoName);
+        if (repoManagementApi.doesRepoExist(qualifiedRepo)) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
-        ApiRepoModel repo = repoManagementApi.createRepo(qualifiedRepo, createModel.getBumperName(), createModel.getRepoUrl());
-        return new ResponseEntity<>(repo, HttpStatus.CREATED);
+        ApiRepoDetailsModel repo = repoManagementApi.createRepo(qualifiedRepo, createModel.getBumperName(), createModel.getRepoUrl());
+        return new ResponseEntity<>(toRestModel(repo), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{repoName}/details", method = RequestMethod.GET)
-    public ResponseEntity<RestRepoDetailsModel> getRepoDetails(ApiQualifiedRepoModel repoModel,
+    public ResponseEntity<RestRepoDetailsModel> getRepoDetails(ApiRepoModel repoModel,
                                                                @Valid @NotNull ConradUser user) {
         return ResponseEntity.ok(toRestModel(repoManagementApi.getDetails(repoModel).get()));
     }
 
     @RequestMapping(value = "/{repoName}/versions", method = RequestMethod.GET)
-    public ResponseEntity<RestVersionCollectionModel> getAllVersions(ApiQualifiedRepoModel repoModel,
+    public ResponseEntity<RestVersionCollectionModel> getAllVersions(ApiRepoModel repoModel,
                                                                      @Valid @NotNull ConradUser user) {
         Stream<RestCommitModel> restCommitStream = repoManagementApi
             .findAllCommits(repoModel)
@@ -79,16 +77,16 @@ public class RepoEndpoint {
     }
 
     @RequestMapping(value = "/{repoName}/version", method = RequestMethod.POST)
-    public ResponseEntity<RestCommitModel> createNewVersion(ApiQualifiedRepoModel repoModel,
+    public ResponseEntity<RestCommitModel> createNewVersion(ApiRepoModel repoModel,
                                                             @RequestBody VersionCreateModel versionModel,
                                                             HttpServletRequest request,
                                                             @Valid @NotNull ConradUser user) {
         List<ApiCommitModel> commits = versionModel.getCommits()
             .stream()
-            .map(ApiCommitIdModel::new)
+            .map(ApiCommitModel::new)
             .collect(Collectors.toList());
 
-        ApiFullCommitModel latestCommit = versionBumperService.findLatestCommitVersion(repoModel, commits);
+        ApiCommitModel latestCommit = versionBumperService.findLatestCommitVersion(repoModel, commits);
 
         CommitVersion nextVersion = versionBumperService.findNextVersion(
             repoModel,
@@ -96,7 +94,7 @@ public class RepoEndpoint {
             versionModel.getMessage(),
             VersionFactory.parse(latestCommit));
 
-        ApiFullCommitModel nextCommit = new ApiFullCommitModel(versionModel.getCommitId(), nextVersion.toVersionString());
+        ApiCommitModel nextCommit = new ApiCommitModel(versionModel.getCommitId(), nextVersion.toVersionString());
         repoManagementApi.createCommit(repoModel, nextCommit, latestCommit);
 
         URI uri = URI.create(request.getRequestURL().toString() + "/" + nextCommit.getVersion());
@@ -104,15 +102,15 @@ public class RepoEndpoint {
     }
 
     @RequestMapping(value = "/{repoName}/search/version", method = RequestMethod.POST)
-    public ResponseEntity<RestCommitModel> searchForVersionInHistory(ApiQualifiedRepoModel repoModel,
+    public ResponseEntity<RestCommitModel> searchForVersionInHistory(ApiRepoModel repoModel,
                                                                      @RequestBody VersionCreateModel versionModel,
                                                                      @Valid @NotNull ConradUser user) {
         List<ApiCommitModel> commits = versionModel.getCommits()
             .stream()
-            .map(ApiCommitIdModel::new)
+            .map(ApiCommitModel::new)
             .collect(Collectors.toList());
 
-        ApiFullCommitModel latest = versionBumperService.findLatestCommitVersion(repoModel, commits);
+        ApiCommitModel latest = versionBumperService.findLatestCommitVersion(repoModel, commits);
         if (null == latest) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
@@ -121,10 +119,10 @@ public class RepoEndpoint {
     }
 
     @RequestMapping(value = "/{repoName}/version/{versionArg}", method = RequestMethod.GET)
-    public ResponseEntity<RestCommitModel> findVersion(ApiQualifiedRepoModel repoModel,
+    public ResponseEntity<RestCommitModel> findVersion(ApiRepoModel repoModel,
                                                        @RequestParam("versionArg") String versionArg,
                                                        @Valid @NotNull ConradUser user) {
-        Optional<ApiFullCommitModel> commit = repoManagementApi.findCommit(repoModel, versionArg);
+        Optional<ApiCommitModel> commit = repoManagementApi.findCommit(repoModel, versionArg);
         if (commit.isPresent()) {
             return ResponseEntity.ok(toRestModel(commit.get()));
         } else {

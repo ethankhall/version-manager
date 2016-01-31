@@ -3,11 +3,12 @@ package io.ehdev.conrad.database.api.internal
 import io.ehdev.conrad.database.config.TestConradDatabaseConfig
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 
-import javax.transaction.Transactional
-
+@Rollback
 @Transactional
 @ContextConfiguration(classes = [TestConradDatabaseConfig], loader = SpringApplicationContextLoader)
 class DefaultUserManagementApiTest extends Specification {

@@ -2,155 +2,233 @@ package io.ehdev.conrad.database.api.internal;
 
 import io.ehdev.conrad.database.api.RepoManagementApi;
 import io.ehdev.conrad.database.api.exception.BumperNotFoundException;
-import io.ehdev.conrad.database.api.exception.CommitNotFoundException;
 import io.ehdev.conrad.database.api.exception.ProjectNotFoundException;
+import io.ehdev.conrad.database.api.exception.RepoAlreadyExistsException;
+import io.ehdev.conrad.database.api.exception.RepoDoesNotExistsException;
 import io.ehdev.conrad.database.impl.ModelConversionUtility;
-import io.ehdev.conrad.database.impl.bumper.VersionBumperModel;
-import io.ehdev.conrad.database.impl.bumper.VersionBumperModelRepository;
-import io.ehdev.conrad.database.impl.commit.CommitModel;
-import io.ehdev.conrad.database.impl.commit.CommitModelRepository;
-import io.ehdev.conrad.database.impl.project.ProjectModel;
-import io.ehdev.conrad.database.impl.project.ProjectModelRepository;
-import io.ehdev.conrad.database.impl.repo.RepoModel;
-import io.ehdev.conrad.database.impl.repo.RepoModelRepository;
-import io.ehdev.conrad.database.model.project.ApiQualifiedRepoModel;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
 import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
-import io.ehdev.conrad.database.model.project.commit.ApiFullCommitModel;
+import io.ehdev.conrad.db.Tables;
+import io.ehdev.conrad.db.tables.CommitDetailsTable;
+import io.ehdev.conrad.db.tables.RepoDetailsTable;
+import io.ehdev.conrad.db.tables.daos.CommitDetailsDao;
+import io.ehdev.conrad.db.tables.daos.ProjectDetailsDao;
+import io.ehdev.conrad.db.tables.daos.RepoDetailsDao;
+import io.ehdev.conrad.db.tables.daos.VersionBumpersDao;
+import io.ehdev.conrad.db.tables.pojos.CommitDetails;
+import io.ehdev.conrad.db.tables.pojos.ProjectDetails;
+import io.ehdev.conrad.db.tables.pojos.RepoDetails;
+import io.ehdev.conrad.db.tables.pojos.VersionBumpers;
+import org.jooq.DSLContext;
+import org.jooq.Record;
+import org.jooq.SelectConditionStep;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import javax.validation.constraints.NotNull;
+import java.time.Instant;
+import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import static io.ehdev.conrad.database.impl.ModelConversionUtility.toApiModel;
 
 @Service
 public class DefaultRepoManagementApi implements RepoManagementApi {
 
-    private final VersionBumperModelRepository bumperModelRepository;
-    private final ProjectModelRepository projectModelRepository;
-    private final RepoModelRepository repoModelRepository;
-    private final CommitModelRepository commitModelRepository;
-
-    public static final Comparator<CommitModel> REVERSE_ORDER = Comparator.<CommitModel>reverseOrder();
+    private final DSLContext dslContext;
+    private final RepoDetailsDao repoDetailsDao;
+    private final ProjectDetailsDao projectDetailsDao;
+    private final VersionBumpersDao versionBumpersDao;
+    private final CommitDetailsDao commitDetailsDao;
 
     @Autowired
-    public DefaultRepoManagementApi(VersionBumperModelRepository bumperModelRepository,
-                                    ProjectModelRepository projectModelRepository,
-                                    RepoModelRepository repoModelRepository,
-                                    CommitModelRepository commitModelRepository) {
-        this.bumperModelRepository = bumperModelRepository;
-        this.projectModelRepository = projectModelRepository;
-        this.repoModelRepository = repoModelRepository;
-        this.commitModelRepository = commitModelRepository;
+    public DefaultRepoManagementApi(DSLContext dslContext,
+                                    RepoDetailsDao repoDetailsDao,
+                                    ProjectDetailsDao projectDetailsDao,
+                                    VersionBumpersDao versionBumpersDao,
+                                    CommitDetailsDao commitDetailsDao) {
+        this.dslContext = dslContext;
+        this.repoDetailsDao = repoDetailsDao;
+        this.projectDetailsDao = projectDetailsDao;
+        this.versionBumpersDao = versionBumpersDao;
+        this.commitDetailsDao = commitDetailsDao;
     }
 
     @Override
-    public ApiRepoModel createRepo(ApiQualifiedRepoModel qualifiedRepo, String bumperName, String repoUrl) {
-        VersionBumperModel bumper = bumperModelRepository.findByBumperName(bumperName);
-        if(bumper == null) {
+    public ApiRepoDetailsModel createRepo(ApiRepoModel qualifiedRepo, String bumperName, String repoUrl) {
+        Optional<RepoDetails> exists = findRepository(qualifiedRepo);
+        if (exists.isPresent()) {
+            throw new RepoAlreadyExistsException(qualifiedRepo);
+        }
+
+        VersionBumpers versionBumpers = versionBumpersDao.fetchOneByBumperName(bumperName);
+        if (versionBumpers == null) {
             throw new BumperNotFoundException(bumperName);
         }
 
-        ProjectModel project = projectModelRepository.findByProjectName(qualifiedRepo.getProjectName());
-        if(project == null) {
+        ProjectDetails projectDetails = projectDetailsDao.fetchOneByProjectName(qualifiedRepo.getProjectName());
+        if (projectDetails == null) {
             throw new ProjectNotFoundException(qualifiedRepo.getProjectName());
         }
-        RepoModel save = repoModelRepository.save(new RepoModel(qualifiedRepo.getRepoName(), repoUrl, bumper, project));
-        return ModelConversionUtility.toApiModel(save);
+
+        RepoDetails repoDetails = new RepoDetails(null,
+            qualifiedRepo.getProjectName(),
+            qualifiedRepo.getRepoName(),
+            projectDetails.getUuid(),
+            versionBumpers.getUuid(),
+            repoUrl,
+            "");
+
+        repoDetailsDao.insert(repoDetails);
+
+        return new ApiRepoDetailsModel(toApiModel(repoDetails), toApiModel(versionBumpers));
+    }
+
+    private Optional<RepoDetails> findRepository(ApiRepoModel qualifiedRepo) {
+        //@formatter:off
+        return Optional.ofNullable(
+            dslContext
+                    .select()
+                    .from(Tables.REPO_DETAILS)
+                    .where(Tables.REPO_DETAILS.PROJECT_NAME.equal(qualifiedRepo.getProjectName()))
+                        .and(Tables.REPO_DETAILS.REPO_NAME.equal(qualifiedRepo.getRepoName()))
+                    .fetchOne()
+        ).map(it -> it.into(RepoDetails.class));
+        //@formatter:on
     }
 
     @Override
-    public Optional<ApiFullCommitModel> findCommit(ApiQualifiedRepoModel repo, String apiCommit) {
-        if("latest".equalsIgnoreCase(apiCommit)) {
-            List<CommitModel> content = commitModelRepository.findAll(new PageRequest(0, 1, Sort.Direction.DESC)).getContent();
-            if(content.isEmpty()){
-                return Optional.empty();
-            } else {
-                return Optional.ofNullable(content.get(0)).map(ModelConversionUtility::toApiModel);
-            }
+    public Optional<ApiCommitModel> findCommit(ApiRepoModel repo, String apiCommit) {
+        return findCommitInternal(repo, apiCommit).map(ModelConversionUtility::toApiModel);
+    }
+
+    @Override
+    public Optional<ApiCommitModel> findLatestCommit(ApiRepoModel repo, List<ApiCommitModel> history) {
+        List<String> commitIds = history.stream().map(ApiCommitModel::getCommitId).collect(Collectors.toList());
+
+        CommitDetailsTable cd = Tables.COMMIT_DETAILS.as("cd");
+        RepoDetailsTable rd = Tables.REPO_DETAILS.as("rd");
+        //@formatter:off
+        CommitDetails commitDetails = createQueryForCommitsForRepo(repo, cd, rd)
+                .and(cd.COMMIT_ID.in(commitIds))
+            .orderBy(cd.CREATED_AT.desc())
+            .limit(1)
+            .fetchOne()
+            .into(CommitDetails.class);
+        //@formatter:on
+
+        return Optional.ofNullable(commitDetails).map(ModelConversionUtility::toApiModel);
+    }
+
+    @Override
+    public void createCommit(ApiRepoModel apiRepo, @NotNull ApiCommitModel nextVersion, ApiCommitModel history) {
+        Optional<RepoDetails> repository = findRepository(apiRepo);
+        if(!repository.isPresent()) {
+            throw new RepoDoesNotExistsException(apiRepo);
         }
-        CommitModel commitModel = commitModelRepository.findByCommitId(
-            repo.getProjectName(),
-            repo.getRepoName(),
-            apiCommit);
+        RepoDetails repoDetails = repository.get();
 
-        return Optional.ofNullable(commitModel).map(ModelConversionUtility::toApiModel);
+        Optional<CommitDetails> parentCommit = findCommitInternal(apiRepo, getHistoryOrNull(history));
+        UUID parentUuid = parentCommit.isPresent() ? parentCommit.get().getUuid() : null;
+
+        CommitDetails commitDetails = new CommitDetails(null,
+            repoDetails.getUuid(),
+            parentUuid,
+            nextVersion.getCommitId(),
+            nextVersion.getVersion(),
+            Instant.now());
+
+        commitDetailsDao.insert(commitDetails);
     }
 
-    @Override
-    public Optional<ApiFullCommitModel> findLatestCommit(ApiQualifiedRepoModel repo, List<ApiCommitModel> history) {
-        return findCommitModelInternal(repo.getProjectName(),
-            repo.getRepoName(),
-            history
-        ).findFirst().map(ModelConversionUtility::toApiModel);
-    }
-
-    private Stream<CommitModel> findCommitModelInternal(String projectName, String repoName, List<ApiCommitModel> history) {
-        RepoModel repo = repoModelRepository.findByProjectNameAndRepoName(projectName, repoName);
-        List<CommitModel> models = commitModelRepository
-            .findMatchingCommits(repo,
-                history.stream()
-                    .map(ApiCommitModel::getCommitId)
-                    .collect(Collectors.toList()));
-
-        return models.stream().sorted(REVERSE_ORDER);
-    }
-
-    @Override
-    public void createCommit(ApiQualifiedRepoModel apiRepo, ApiFullCommitModel nextVersion, ApiCommitModel history) {
-        CommitModel parentModel = null;
-        if(history != null) {
-            parentModel = commitModelRepository.findByCommitId(
-                apiRepo.getProjectName(),
-                apiRepo.getRepoName(),
-                history.getCommitId());
-            if(parentModel == null) {
-                throw new CommitNotFoundException(history.getCommitId());
-            }
+    private String getHistoryOrNull(ApiCommitModel history) {
+        if(history == null) {
+            return null;
+        } else {
+            return history.getCommitId();
         }
-        RepoModel repo = repoModelRepository.findByProjectNameAndRepoName(apiRepo.getProjectName(), apiRepo.getRepoName());
-        commitModelRepository.save(new CommitModel(nextVersion.getCommitId(), repo, nextVersion.getVersion(), parentModel));
+    }
+
+    private Optional<CommitDetails> findCommitInternal(ApiRepoModel repo, String commitId) {
+        CommitDetailsTable cd = Tables.COMMIT_DETAILS.as("cd");
+        RepoDetailsTable rd = Tables.REPO_DETAILS.as("rd");
+        SelectConditionStep<Record> query = createQueryForCommitsForRepo(repo, cd, rd);
+
+        Record record;
+
+        if ("latest".equalsIgnoreCase(commitId)) {
+            record = query.orderBy(cd.CREATED_AT.desc())
+                .limit(1)
+                .fetchOne();
+        } else {
+            record = query
+                .and(cd.COMMIT_ID.eq(commitId))
+                .fetchOne();
+        }
+        return Optional.ofNullable(record).map(it -> it.into(CommitDetails.class));
+    }
+
+    private SelectConditionStep<Record> createQueryForCommitsForRepo(ApiRepoModel repo,
+                                                                     CommitDetailsTable cd,
+                                                                     RepoDetailsTable rd) {
+        //@formatter:on
+        return dslContext
+            .select(cd.fields())
+            .from(cd)
+            .join(rd)
+                .on(cd.REPO_DETAILS_UUID.equal(rd.UUID))
+            .where(rd.PROJECT_NAME.equal(repo.getProjectName()))
+                .and(rd.REPO_NAME.equal(repo.getRepoName()));
+        //@formatter:off
     }
 
     @Override
-    public List<ApiRepoModel> getAll() {
-        return repoModelRepository
+    public Map<String, ApiRepoDetailsModel> getAllRepos() {
+        Map<UUID, VersionBumpers> bumpers = versionBumpersDao
             .findAll()
             .stream()
-            .map(ModelConversionUtility::toApiModel)
-            .collect(Collectors.toList());
-    }
+            .collect(Collectors.toMap(VersionBumpers::getUuid, Function.identity()));
 
-    @Override
-    public List<ApiFullCommitModel> findAllCommits(ApiQualifiedRepoModel repo) {
-        return commitModelRepository
-            .findAllByProjectNameAndRepoName(repo.getProjectName(), repo.getRepoName())
+        return repoDetailsDao
+            .findAll()
             .stream()
-            .sorted(REVERSE_ORDER)
+            .map(it -> new ApiRepoDetailsModel(toApiModel(it), toApiModel(bumpers.get(it.getVersionBumperUuid()))))
+            .collect(Collectors.toMap(ApiRepoDetailsModel::getMergedName, Function.identity()));
+    }
+
+    @Override
+    public List<ApiCommitModel> findAllCommits(ApiRepoModel repo) {
+        CommitDetailsTable cd = Tables.COMMIT_DETAILS.as("cd");
+        RepoDetailsTable rd = Tables.REPO_DETAILS.as("rd");
+
+        SelectConditionStep<Record> query = createQueryForCommitsForRepo(repo, cd, rd);
+        List<CommitDetails> commits = query.fetch().into(CommitDetails.class);
+
+        return commits
+            .stream()
             .map(ModelConversionUtility::toApiModel)
+            .sorted(new ReverseApiCommitComparator())
             .collect(Collectors.toList());
     }
 
     @Override
-    public Optional<ApiRepoDetailsModel> getDetails(ApiQualifiedRepoModel repoModel) {
-        RepoModel repo = repoModelRepository.findByProjectNameAndRepoName(repoModel.getProjectName(), repoModel.getRepoName());
-        return Optional
-            .ofNullable(repo)
-            .map(it -> new ApiRepoDetailsModel(
-                ModelConversionUtility.toApiModel(it),
-                ModelConversionUtility.toApiModel(it.getVersionBumperModel())
-            ));
+    public Optional<ApiRepoDetailsModel> getDetails(ApiRepoModel repoModel) {
+        Optional<RepoDetails> details = findRepository(repoModel);
+        if(details.isPresent()) {
+            RepoDetails repoDetails = details.get();
+            VersionBumpers versionBumpers = versionBumpersDao.fetchOneByUuid(repoDetails.getVersionBumperUuid());
+
+            return Optional.of(new ApiRepoDetailsModel(toApiModel(repoDetails), toApiModel(versionBumpers)));
+        } else {
+            return Optional.empty();
+        }
     }
 
     @Override
-    public boolean doesRepoExist(ApiQualifiedRepoModel repo) {
-        return repoModelRepository.doesRepoExist(repo.getProjectName(), repo.getRepoName());
+    public boolean doesRepoExist(ApiRepoModel repo) {
+        return findRepository(repo).isPresent();
     }
 
 }

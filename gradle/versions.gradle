@@ -48,7 +48,10 @@ libraries.springSecurity = [
     "org.springframework.security:spring-security-config:${versions.springSecurity}",
 ]
 
+libraries.hikari = 'com.zaxxer:HikariCP:2.4.1'
+
 libraries.springTx = "org.springframework:spring-tx:${versions.spring}"
+libraries.springJdbc = "org.springframework:spring-jdbc:${versions.spring}"
 
 libraries.groovy = "org.codehaus.groovy:groovy-all:2.4.5"
 

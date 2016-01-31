@@ -6,7 +6,10 @@ import kotlin.collections.toArrayList
 import kotlin.collections.toIntArray
 import kotlin.text.*
 
-class RestCommitModel(@JsonProperty("commitId") val commitId: String, @JsonProperty("version") val version: String) {
+class RestCommitModel(
+    @JsonProperty("commitId") val commitId: String,
+    @JsonProperty("version") val version: String) {
+
     @JsonProperty("versionParts")
     public val versionParts: IntArray = findVersionParts()
 

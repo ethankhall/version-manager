@@ -1,85 +1,61 @@
 package io.ehdev.conrad.database.impl;
 
-import io.ehdev.conrad.database.impl.bumper.VersionBumperModel;
-import io.ehdev.conrad.database.impl.commit.CommitModel;
-import io.ehdev.conrad.database.impl.project.ProjectModel;
-import io.ehdev.conrad.database.impl.repo.RepoModel;
-import io.ehdev.conrad.database.impl.token.TokenType;
-import io.ehdev.conrad.database.impl.token.UserTokenModel;
-import io.ehdev.conrad.database.impl.user.BaseUserModel;
-import io.ehdev.conrad.database.model.project.commit.ApiFullCommitModel;
 import io.ehdev.conrad.database.model.project.ApiProjectModel;
 import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.ApiVersionBumperModel;
+import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.database.model.user.ApiGeneratedUserToken;
 import io.ehdev.conrad.database.model.user.ApiTokenType;
 import io.ehdev.conrad.database.model.user.ApiUser;
+import io.ehdev.conrad.db.enums.TokenType;
+import io.ehdev.conrad.db.tables.pojos.*;
 
-import java.util.ArrayList;
+import java.time.ZoneOffset;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ModelConversionUtility {
 
-    public static ApiUser toApiModel(BaseUserModel user) {
-        return new ApiUser(user.getId(), user.getName(), user.getEmailAddress());
+    public static ApiRepoModel toApiModel(RepoDetails repo) {
+        return new ApiRepoModel(
+            repo.getProjectName(),
+            repo.getRepoName(),
+            repo.getUrl());
     }
 
-    public static TokenType toDatabaseModel(ApiTokenType type) {
-        switch (type) {
-            case USER:
-                return TokenType.USER;
-            case API:
-                return TokenType.API;
-            default:
-                throw new IllegalArgumentException("Unknown type " + type.getType());
-        }
+    public static ApiProjectModel toApiModel(ProjectDetails model, List<ApiRepoModel> repoDetails) {
+        return new ApiProjectModel(model.getProjectName(), repoDetails);
     }
 
-    public static ApiTokenType toDatabaseModel(TokenType type) {
-        switch (type) {
+    public static ApiVersionBumperModel toApiModel(VersionBumpers versionBumpers) {
+        return new ApiVersionBumperModel(versionBumpers.getClassName(),
+            versionBumpers.getDescription(),
+            versionBumpers.getBumperName());
+    }
+
+    public static ApiCommitModel toApiModel(CommitDetails commitDetails) {
+        return new ApiCommitModel(commitDetails.getCommitId(), commitDetails.getVersion());
+    }
+
+    public static ApiGeneratedUserToken toApiModel(UserTokens userToken) {
+        return new ApiGeneratedUserToken(
+            userToken.getUuid(),
+            toApiModel(userToken.getTokenType()),
+            userToken.getCreatedAt().atZone(ZoneOffset.UTC),
+            userToken.getExpiresAt().atZone(ZoneOffset.UTC));
+    }
+
+    private static ApiTokenType toApiModel(TokenType tokenType) {
+        switch (tokenType) {
             case USER:
                 return ApiTokenType.USER;
             case API:
                 return ApiTokenType.API;
             default:
-                throw new IllegalArgumentException("Unknown type " + type.getName());
+                throw new RuntimeException("Unknown type " + tokenType.getName());
         }
     }
 
-    public static ApiGeneratedUserToken toApiModel(UserTokenModel token) {
-        return new ApiGeneratedUserToken(
-            token.getId(),
-            toDatabaseModel(token.getTokenType()), token.getCreatedAt(), token.getExpiresAt());
-    }
-
-    public static ApiVersionBumperModel toApiModel(VersionBumperModel bumper) {
-        return new ApiVersionBumperModel(
-            bumper.getId(),
-            bumper.getClassName(),
-            bumper.getDescription(),
-            bumper.getBumperName());
-    }
-
-    public static ApiRepoModel toApiModel(RepoModel repo) {
-        return new ApiRepoModel(
-            repo.getId(),
-            repo.getRepoName(),
-            repo.getUrl(),
-            repo.getVersionBumperModel().getBumperName(),
-            repo.getProjectModel().getProjectName());
-    }
-
-    public static ApiProjectModel toApiModel(ProjectModel model) {
-        List<RepoModel> repoModels = model.getRepoModels();
-        ArrayList<ApiRepoModel> repos = new ArrayList<>();
-        if (repoModels != null) {
-            repos.addAll(repoModels.stream().map(ModelConversionUtility::toApiModel).collect(Collectors.toList()));
-        }
-        return new ApiProjectModel(model.getProjectName(), repos);
-    }
-
-    public static ApiFullCommitModel toApiModel(CommitModel commitModel) {
-        return new ApiFullCommitModel(commitModel.getCommitId(), commitModel.getVersion());
+    public static ApiUser toApiModel(UserDetails userDetails) {
+        return new ApiUser(userDetails.getUuid(), userDetails.getName(), userDetails.getEmailAddress());
     }
 }

@@ -1,6 +1,6 @@
 package io.ehdev.conrad.version.commit;
 
-import io.ehdev.conrad.database.model.project.commit.ApiFullCommitModel;
+import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.version.commit.internal.DefaultCommitVersion;
 
 import java.util.Arrays;
@@ -9,7 +9,7 @@ public class VersionFactory {
 
     private final static int[] EMPTY_INT_ARRAY = new int[] {};
 
-    public static CommitVersion parse(ApiFullCommitModel version) {
+    public static CommitVersion parse(ApiCommitModel version) {
         if(null == version) {
             return parse("0.0.0");
         } else {

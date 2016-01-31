@@ -1,0 +1,8 @@
+ext {
+    database = [:]
+}
+
+database.driver = 'org.postgresql.Driver'
+database.url = 'jdbc:postgresql://172.0.1.100/version_manager_test'
+database.user = 'version_manager_test'
+database.password = 'password'

@@ -2,10 +2,9 @@ package io.ehdev.conrad.version.bumper.api;
 
 import io.ehdev.conrad.database.api.RepoManagementApi;
 import io.ehdev.conrad.database.api.exception.CommitNotFoundException;
-import io.ehdev.conrad.database.model.project.ApiQualifiedRepoModel;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
+import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
-import io.ehdev.conrad.database.model.project.commit.ApiFullCommitModel;
 import io.ehdev.conrad.version.bumper.VersionBumper;
 import io.ehdev.conrad.version.commit.CommitVersion;
 import io.ehdev.conrad.version.commit.internal.DefaultCommitDetails;
@@ -35,7 +34,7 @@ public class DefaultVersionBumperService implements VersionBumperService {
     }
 
     @Override
-    public CommitVersion findNextVersion(ApiQualifiedRepoModel repoModel,
+    public CommitVersion findNextVersion(ApiRepoModel repoModel,
                                          String commitId,
                                          String message,
                                          CommitVersion lastCommit) {
@@ -48,9 +47,9 @@ public class DefaultVersionBumperService implements VersionBumperService {
     }
 
     @Override
-    public ApiFullCommitModel findLatestCommitVersion(ApiQualifiedRepoModel repoModel, List<ApiCommitModel> history) {
+    public ApiCommitModel findLatestCommitVersion(ApiRepoModel repoModel, List<ApiCommitModel> history) {
         if(!history.isEmpty()) {
-            Optional<ApiFullCommitModel> latestCommit = repoManagementApi.findLatestCommit(repoModel, history);
+            Optional<ApiCommitModel> latestCommit = repoManagementApi.findLatestCommit(repoModel, history);
             if(!latestCommit.isPresent()) {
                 String joinedCommit = history.stream().map(ApiCommitModel::getCommitId).reduce((t, u) -> t + "," + u).get();
                 throw new CommitNotFoundException(joinedCommit);

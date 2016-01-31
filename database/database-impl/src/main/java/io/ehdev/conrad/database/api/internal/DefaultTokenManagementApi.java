@@ -3,70 +3,94 @@ package io.ehdev.conrad.database.api.internal;
 import io.ehdev.conrad.database.api.TokenManagementApi;
 import io.ehdev.conrad.database.api.exception.UserTokenNotFoundException;
 import io.ehdev.conrad.database.impl.ModelConversionUtility;
-import io.ehdev.conrad.database.impl.token.UserTokenModel;
-import io.ehdev.conrad.database.impl.token.UserTokenModelRepository;
-import io.ehdev.conrad.database.impl.user.BaseUserModel;
-import io.ehdev.conrad.database.impl.user.BaseUserRepository;
 import io.ehdev.conrad.database.model.user.ApiGeneratedUserToken;
 import io.ehdev.conrad.database.model.user.ApiToken;
 import io.ehdev.conrad.database.model.user.ApiTokenType;
 import io.ehdev.conrad.database.model.user.ApiUser;
+import io.ehdev.conrad.db.Tables;
+import io.ehdev.conrad.db.enums.TokenType;
+import io.ehdev.conrad.db.tables.UserDetailsTable;
+import io.ehdev.conrad.db.tables.UserTokensTable;
+import io.ehdev.conrad.db.tables.daos.UserTokensDao;
+import io.ehdev.conrad.db.tables.pojos.UserDetails;
+import io.ehdev.conrad.db.tables.pojos.UserTokens;
+import io.ehdev.conrad.db.tables.records.UserTokensRecord;
+import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-
-import static io.ehdev.conrad.database.impl.ModelConversionUtility.toDatabaseModel;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.Optional;
 
 @Service
 public class DefaultTokenManagementApi implements TokenManagementApi {
 
-    final private BaseUserRepository baseUserRepository;
-    final private UserTokenModelRepository userTokenModelRepository;
+    private final DSLContext dslContext;
+    private final UserTokensDao userTokensDao;
 
     @Autowired
-    public DefaultTokenManagementApi(BaseUserRepository baseUserRepository,
-                                     UserTokenModelRepository userTokenModelRepository) {
-        this.baseUserRepository = baseUserRepository;
-        this.userTokenModelRepository = userTokenModelRepository;
+    public DefaultTokenManagementApi(DSLContext dslContext,
+                                     UserTokensDao userTokensDao) {
+        this.dslContext = dslContext;
+        this.userTokensDao = userTokensDao;
     }
 
     @Override
     public ApiGeneratedUserToken createToken(ApiUser user, ApiTokenType type) {
-        BaseUserModel baseUser = baseUserRepository.getOne(user.getUuid());
-        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneOffset.UTC).plusDays(30);
-        UserTokenModel token = userTokenModelRepository.save(new UserTokenModel(baseUser, toDatabaseModel(type), zonedDateTime));
-        return ModelConversionUtility.toApiModel(token);
+        Instant now = Instant.now();
+        UserTokensTable userTokens = Tables.USER_TOKENS;
+        UserTokensRecord userTokensRecord = dslContext.insertInto(
+            userTokens, userTokens.USER_UUID, userTokens.CREATED_AT, userTokens.EXPIRES_AT, userTokens.VALID, userTokens.TOKEN_TYPE)
+            .values(user.getUuid(), now, now.plus(30, ChronoUnit.DAYS), true, TokenType.USER)
+            .returning(userTokens.fields())
+            .fetchOne();
+
+        UserTokens into = userTokensRecord.into(UserTokens.class);
+        return ModelConversionUtility.toApiModel(into);
     }
 
     @Override
     public boolean isTokenValid(ApiToken token) {
-        UserTokenModel userToken = userTokenModelRepository.findOne(token.getUuid());
+        UserTokens userToken = userTokensDao.fetchOneByUuid(token.getUuid());
         return isValid(userToken);
     }
 
-    private boolean isValid(UserTokenModel userToken) {
+    private boolean isValid(UserTokens userToken) {
         return userToken != null
-            && userToken.isValid()
-            && ZonedDateTime.now(ZoneOffset.UTC).isBefore(userToken.getExpiresAt());
+            && userToken.getValid()
+            && Instant.now().isBefore(userToken.getExpiresAt());
     }
 
     @Override
     public void invalidateTokenValid(ApiToken token) {
-        UserTokenModel userToken = userTokenModelRepository.findOne(token.getUuid());
-        if(userToken == null) {
+        UserTokens userToken = userTokensDao.fetchOneByUuid(token.getUuid());
+        if (userToken == null) {
             throw new UserTokenNotFoundException(token);
         }
         userToken.setValid(false);
-        userTokenModelRepository.save(userToken);
+        userTokensDao.update(userToken);
     }
 
     @Override
     public ApiUser findUser(ApiToken token) {
-        BaseUserModel user = userTokenModelRepository.findUserByToken(token.getUuid());
-        if(isTokenValid(token)) {
-            return ModelConversionUtility.toApiModel(user);
+        UserDetailsTable ud = Tables.USER_DETAILS.as("ud");
+        UserTokensTable ut = Tables.USER_TOKENS.as("ut");
+        //@formatter:off
+        Optional<UserDetails> userDetails = Optional.ofNullable(dslContext
+            .select(ud.fields())
+            .from(ud)
+            .join(ut)
+                .on(ut.USER_UUID.eq(ud.UUID))
+            .where(ut.UUID.eq(token.getUuid()))
+                .and(ut.VALID.eq(true))
+                .and(ut.EXPIRES_AT.greaterOrEqual(Instant.now()))
+            .fetchOne())
+            .map(it -> it.into(UserDetails.class));
+        //@formatter:on
+
+        if(userDetails.isPresent()) {
+            return ModelConversionUtility.toApiModel(userDetails.get());
         } else {
             return null;
         }

@@ -10,6 +10,7 @@ include ':database:database-api'
 include ':database:database-impl'
 include ':database:database-test'
 include ':database:database-jooq'
+include ':database:database-migration'
 include ':database:database-api-model'
 
 //security

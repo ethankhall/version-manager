@@ -1,16 +1,17 @@
 package io.ehdev.conrad.database.api.internal
 import io.ehdev.conrad.database.config.TestConradDatabaseConfig
-import io.ehdev.conrad.database.impl.token.UserTokenModelRepository
 import io.ehdev.conrad.database.model.user.ApiTokenType
+import io.ehdev.conrad.db.tables.daos.UserTokensDao
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 
-import javax.transaction.Transactional
-import java.time.ZoneOffset
-import java.time.ZonedDateTime
+import java.time.Instant
 
+@Rollback
 @Transactional
 @ContextConfiguration(classes = [TestConradDatabaseConfig], loader = SpringApplicationContextLoader)
 class DefaultTokenManagementApiTest extends Specification {
@@ -19,7 +20,7 @@ class DefaultTokenManagementApiTest extends Specification {
     DefaultTokenManagementApi tokenManagementApi
 
     @Autowired
-    UserTokenModelRepository tokenModelRepository
+    UserTokensDao userTokensDao;
 
     @Autowired
     DefaultUserManagementApi userManagementApi
@@ -39,9 +40,9 @@ class DefaultTokenManagementApiTest extends Specification {
         when:
         def user = userManagementApi.createUser('name', 'email')
         def token = tokenManagementApi.createToken(user, ApiTokenType.USER)
-        def model = tokenModelRepository.getOne(token.uuid)
-        model.expiresAt = ZonedDateTime.now(ZoneOffset.UTC).minusSeconds(1)
-        tokenModelRepository.save(model)
+        def model = userTokensDao.fetchOneByUuid(token.uuid)
+        model.setExpiresAt(Instant.now().minusSeconds(1))
+        userTokensDao.update(model)
 
         then:
         !tokenManagementApi.isTokenValid(token)
