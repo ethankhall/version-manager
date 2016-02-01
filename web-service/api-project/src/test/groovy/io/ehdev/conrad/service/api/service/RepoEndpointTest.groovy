@@ -1,7 +1,10 @@
 package io.ehdev.conrad.service.api.service
+
 import io.ehdev.conrad.database.api.RepoManagementApi
-import io.ehdev.conrad.database.model.project.ApiQualifiedRepoModel
-import io.ehdev.conrad.database.model.project.commit.ApiFullCommitModel
+import io.ehdev.conrad.database.model.project.ApiRepoModel
+import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
+import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection
+import io.ehdev.conrad.model.rest.commit.RestCommitIdModel
 import io.ehdev.conrad.model.version.VersionCreateModel
 import io.ehdev.conrad.version.bumper.api.VersionBumperService
 import io.ehdev.conrad.version.commit.CommitVersion
@@ -28,7 +31,7 @@ class RepoEndpointTest extends Specification {
         def versions = repoEndpoint.getAllVersions(createTestingRepoModel(), null)
 
         then:
-        1 * repoManagementApi.findAllCommits(_) >> [ new ApiFullCommitModel('abcd1234', '1.2.3')]
+        1 * repoManagementApi.findAllCommits(_) >> [ new ApiCommitModel('abcd1234', '1.2.3')]
         versions.getStatusCode() == HttpStatus.OK
         versions.body.commits.size() == 1
         versions.body.commits[0].commitId == 'abcd1234'
@@ -50,7 +53,7 @@ class RepoEndpointTest extends Specification {
 
     def 'can create version'() {
         def versionIds = ['a', 'b', 'c']
-        def lastCommit = new ApiFullCommitModel('a', '1.2.3')
+        def lastCommit = new ApiCommitModel('a', '1.2.3')
 
         when:
         def model = new VersionCreateModel(versionIds, "Some Message", "f")
@@ -60,7 +63,7 @@ class RepoEndpointTest extends Specification {
         then:
         1 * versionBumperService.findLatestCommitVersion(_, _) >> lastCommit
 
-        1 * versionBumperService.findNextVersion(_ as ApiQualifiedRepoModel,
+        1 * versionBumperService.findNextVersion(_ as ApiRepoModel,
             'f', 'Some Message', _ as CommitVersion) >> VersionFactory.parse("1.4.5")
         version.statusCode == HttpStatus.CREATED
         version.body.commitId == 'f'
@@ -72,7 +75,7 @@ class RepoEndpointTest extends Specification {
         def versionIds = ['a', 'b', 'c']
 
         when:
-        def model = new VersionCreateModel(versionIds, "Some Message", "f")
+        def model = new RestCommitIdCollection(versionIds.collect { new RestCommitIdModel(it) })
         def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model, null)
 
         then:
@@ -84,17 +87,17 @@ class RepoEndpointTest extends Specification {
         def versionIds = ['a', 'b', 'c']
 
         when:
-        def model = new VersionCreateModel(versionIds, "Some Message", "f")
+        def model = new RestCommitIdCollection(versionIds.collect { new RestCommitIdModel(it) })
         def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model, null)
 
         then:
-        1 * versionBumperService.findLatestCommitVersion(_, _) >> new ApiFullCommitModel('commit', '2.3.4')
+        1 * versionBumperService.findLatestCommitVersion(_, _) >> new ApiCommitModel('commit', '2.3.4')
         history.statusCode == HttpStatus.OK
         history.body.commitId == 'commit'
         history.body.version == '2.3.4'
     }
 
-    ApiQualifiedRepoModel createTestingRepoModel() {
-        return new ApiQualifiedRepoModel("projectName", "repoName")
+    ApiRepoModel createTestingRepoModel() {
+        return new ApiRepoModel("projectName", "repoName")
     }
 }

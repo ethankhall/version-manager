@@ -2,6 +2,7 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 
 dependencies {
+    compile project(":api:rest-model")
     compile project(":database:database-api")
 
     compile libraries.commonsLang

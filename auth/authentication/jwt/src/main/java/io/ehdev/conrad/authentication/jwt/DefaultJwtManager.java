@@ -1,7 +1,7 @@
 package io.ehdev.conrad.authentication.jwt;
 
 import io.ehdev.conrad.database.api.TokenManagementApi;
-import io.ehdev.conrad.model.user.*;
+import io.ehdev.conrad.database.model.user.*;
 import io.jsonwebtoken.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -34,13 +34,13 @@ public class DefaultJwtManager implements JwtManager {
     }
 
     @Override
-    public String createUserToken(ConradUser user) {
-        return createToken(user, ConradTokenType.USER);
+    public String createUserToken(ApiUser user) {
+        return createToken(user, ApiTokenType.USER);
     }
 
     @Override
-    public String createToken(ConradUser user, ConradTokenType type) {
-        ConradGeneratedToken token = tokenManagementApi.createToken(user, type);
+    public String createToken(ApiUser user, ApiTokenType type) {
+        ApiGeneratedUserToken token = tokenManagementApi.createToken(user, type);
         Claims claims = Jwts.claims()
             .setSubject(user.getUuid().toString())
             .setExpiration(Date.from(token.getExpiresAt().toInstant()))
@@ -55,7 +55,7 @@ public class DefaultJwtManager implements JwtManager {
     }
 
     @Override
-    public Optional<Pair<ConradUser, ConradToken>> parseToken(String token) {
+    public Optional<Pair<ApiUser, ApiToken>> parseToken(String token) {
         if(StringUtils.isBlank(token)) {
             return Optional.empty();
         }
@@ -65,8 +65,8 @@ public class DefaultJwtManager implements JwtManager {
                 .parseClaimsJws(token);
             Claims parsed = claimsJws.getBody();
 
-            DefaultConradToken conradToken = new DefaultConradToken(UUID.fromString(parsed.getId()));
-            ConradUser user = tokenManagementApi.findUser(conradToken);
+            ApiProvidedToken conradToken = new ApiProvidedToken(UUID.fromString(parsed.getId()));
+            ApiUser user = tokenManagementApi.findUser(conradToken);
             if(user == null) {
                 return Optional.empty();
             }

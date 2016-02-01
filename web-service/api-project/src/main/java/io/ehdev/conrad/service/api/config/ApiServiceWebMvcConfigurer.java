@@ -9,6 +9,7 @@ import java.util.List;
 
 @Configuration
 public class ApiServiceWebMvcConfigurer extends WebMvcConfigurerAdapter {
+
     @Autowired
     ApiQualifiedRepoModelResolver apiQualifiedRepoModelResolver;
 

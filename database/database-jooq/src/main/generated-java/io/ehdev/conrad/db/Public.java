@@ -9,6 +9,7 @@ import io.ehdev.conrad.db.tables.CommitMetadataTable;
 import io.ehdev.conrad.db.tables.ProjectDetailsTable;
 import io.ehdev.conrad.db.tables.RepoDetailsTable;
 import io.ehdev.conrad.db.tables.UserDetailsTable;
+import io.ehdev.conrad.db.tables.UserSecurityClientProfileTable;
 import io.ehdev.conrad.db.tables.UserTokensTable;
 import io.ehdev.conrad.db.tables.VersionBumpersTable;
 
@@ -35,7 +36,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-	private static final long serialVersionUID = 478424763;
+	private static final long serialVersionUID = 31930380;
 
 	/**
 	 * The reference instance of <code>public</code>
@@ -63,6 +64,7 @@ public class Public extends SchemaImpl {
 			ProjectDetailsTable.PROJECT_DETAILS,
 			RepoDetailsTable.REPO_DETAILS,
 			UserDetailsTable.USER_DETAILS,
+			UserSecurityClientProfileTable.USER_SECURITY_CLIENT_PROFILE,
 			UserTokensTable.USER_TOKENS,
 			VersionBumpersTable.VERSION_BUMPERS);
 	}

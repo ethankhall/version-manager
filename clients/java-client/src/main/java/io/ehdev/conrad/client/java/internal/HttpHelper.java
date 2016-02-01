@@ -5,7 +5,7 @@ import io.ehdev.conrad.client.java.VersionServiceConfiguration;
 import io.ehdev.conrad.client.java.exception.UnsuccessfulRequestException;
 import io.ehdev.conrad.model.repo.RepoCreateModel;
 import io.ehdev.conrad.model.repo.RepoResponseModel;
-import io.ehdev.conrad.model.version.UncommitedVersionModel;
+import io.ehdev.conrad.model.rest.RestCommitModel;
 import io.ehdev.conrad.model.version.VersionCommitModel;
 import io.ehdev.conrad.model.version.VersionCreateModel;
 import io.ehdev.conrad.model.version.VersionSearchModel;
@@ -37,10 +37,10 @@ public class HttpHelper {
         this.configuration = configuration;
     }
 
-    public UncommitedVersionModel findVersion(VersionSearchModel searchModel) throws IOException, UnsuccessfulRequestException {
+    public RestCommitModel findVersion(VersionSearchModel searchModel) throws IOException, UnsuccessfulRequestException {
         String body = om.writeValueAsString(searchModel);
         InputStream content = doPostRequest(body, createVersionSearchUrl()).getEntity().getContent();
-        return om.readValue(content, UncommitedVersionModel.class);
+        return om.readValue(content, RestCommitModel.class);
     }
 
     public VersionCommitModel findFinalVersion(String commitId) throws IOException, UnsuccessfulRequestException {
@@ -48,10 +48,10 @@ public class HttpHelper {
         return om.readValue(content, VersionCommitModel.class);
     }
 
-    public VersionCommitModel claimVersion(VersionCreateModel createModel) throws IOException, UnsuccessfulRequestException {
+    public RestCommitModel claimVersion(VersionCreateModel createModel) throws IOException, UnsuccessfulRequestException {
         String body = om.writeValueAsString(createModel);
         InputStream content = doPostRequest(body, createVersionClaimUrl()).getEntity().getContent();
-        return om.readValue(content, VersionCommitModel.class);
+        return om.readValue(content, RestCommitModel.class);
     }
 
     public RepoResponseModel createRepo(RepoCreateModel repoCreateModel) throws IOException, UnsuccessfulRequestException {

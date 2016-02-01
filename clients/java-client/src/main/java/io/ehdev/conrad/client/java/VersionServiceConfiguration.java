@@ -5,7 +5,6 @@ import java.util.concurrent.TimeUnit;
 public class VersionServiceConfiguration {
     String repoId;
     String providerBaseUrl;
-    String token;
     int timeout = (int)TimeUnit.MILLISECONDS.convert(10, TimeUnit.SECONDS);
 
     public String getRepoId() {
@@ -22,14 +21,6 @@ public class VersionServiceConfiguration {
 
     public void setProviderBaseUrl(String providerBaseUrl) {
         this.providerBaseUrl = providerBaseUrl;
-    }
-
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
     }
 
     public int getTimeout() {

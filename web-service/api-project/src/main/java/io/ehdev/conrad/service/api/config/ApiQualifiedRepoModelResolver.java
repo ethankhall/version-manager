@@ -1,7 +1,7 @@
 package io.ehdev.conrad.service.api.config;
 
 import io.ehdev.conrad.database.api.RepoManagementApi;
-import io.ehdev.conrad.database.model.project.ApiQualifiedRepoModel;
+import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.service.api.exception.RepositoryNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
@@ -27,7 +27,7 @@ public class ApiQualifiedRepoModelResolver implements HandlerMethodArgumentResol
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.getParameterType().equals(ApiQualifiedRepoModel.class);
+        return parameter.getParameterType().equals(ApiRepoModel.class);
     }
 
     @Override
@@ -41,7 +41,7 @@ public class ApiQualifiedRepoModelResolver implements HandlerMethodArgumentResol
         if(args.containsKey("repoName") && args.containsKey("projectName")) {
             String projectName = args.get("projectName");
             String repoName = args.get("repoName");
-            ApiQualifiedRepoModel apiQualifiedRepoModel = new ApiQualifiedRepoModel(projectName, repoName);
+            ApiRepoModel apiQualifiedRepoModel = new ApiRepoModel(projectName, repoName);
             if(repoManagementApi.doesRepoExist(apiQualifiedRepoModel)) {
                 return apiQualifiedRepoModel;
             } else {

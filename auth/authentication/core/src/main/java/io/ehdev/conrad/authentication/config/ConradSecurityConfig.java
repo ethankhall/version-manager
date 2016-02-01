@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 @Configuration
 @ComponentScan({"io.ehdev.conrad.authentication", "org.pac4j.springframework.web"})
-@Import({ConradSecurityDatabaseConfig.class, ConradWebSecurityConfig.class})
+@Import({ConradWebSecurityConfig.class})
 public class ConradSecurityConfig extends WebMvcConfigurerAdapter {
 
 }

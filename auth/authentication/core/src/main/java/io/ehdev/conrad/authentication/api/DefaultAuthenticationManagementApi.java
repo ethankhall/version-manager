@@ -1,13 +1,14 @@
 package io.ehdev.conrad.authentication.api;
 
 
-import io.ehdev.conrad.authentication.database.model.SecurityUserClientProfileModel;
-import io.ehdev.conrad.authentication.database.repositories.SecurityUserClientProfileModelRepository;
 import io.ehdev.conrad.authentication.util.FilterUtilities;
-import io.ehdev.conrad.database.api.internal.UserManagementApiInternal;
 import io.ehdev.conrad.database.impl.ModelConversionUtility;
-import io.ehdev.conrad.database.impl.user.BaseUserModel;
-import io.ehdev.conrad.model.user.ConradUser;
+import io.ehdev.conrad.database.model.user.ApiUser;
+import io.ehdev.conrad.db.Tables;
+import io.ehdev.conrad.db.tables.UserDetailsTable;
+import io.ehdev.conrad.db.tables.UserSecurityClientProfileTable;
+import io.ehdev.conrad.db.tables.pojos.UserDetails;
+import org.jooq.DSLContext;
 import org.pac4j.core.profile.UserProfile;
 import org.pac4j.oauth.profile.github.GitHubProfile;
 import org.pac4j.oauth.profile.google2.Google2Profile;
@@ -16,46 +17,75 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
 public class DefaultAuthenticationManagementApi implements AuthenticationManagementApi {
 
-    private final SecurityUserClientProfileModelRepository modelRepository;
-    private final UserManagementApiInternal userManagementApi;
+    private final DSLContext dslContext;
 
     @Autowired
-    public DefaultAuthenticationManagementApi(SecurityUserClientProfileModelRepository modelRepository,
-                                              UserManagementApiInternal userManagementApi) {
-        this.modelRepository = modelRepository;
-        this.userManagementApi = userManagementApi;
+    public DefaultAuthenticationManagementApi(DSLContext dslContext) {
+        this.dslContext = dslContext;
     }
 
     @Override
     public Authentication findAuthentication(ClientAuthenticationToken authenticationToken) {
         createNewUserIfNeeded(authenticationToken);
         UserProfile userProfile = authenticationToken.getUserProfile();
-        BaseUserModel user = modelRepository.findOneByClientUserProfile(userProfile.getClass().getSimpleName(), userProfile.getId());
-        ConradUser conradUser = ModelConversionUtility.toApiModel(user);
-        return FilterUtilities.createAuthentication(conradUser);
+
+        UserDetailsTable ud = Tables.USER_DETAILS.as("ud");
+        UserSecurityClientProfileTable uscp = Tables.USER_SECURITY_CLIENT_PROFILE.as("uscp");
+        Optional<ApiUser> record = findUserDetails(userProfile, ud, uscp).map(ModelConversionUtility::toApiModel);
+
+        if (record.isPresent()) {
+            return FilterUtilities.createAuthentication(record.get());
+        } else {
+            return null;
+        }
+    }
+
+    private Optional<UserDetails> findUserDetails(UserProfile userProfile,
+                                                  UserDetailsTable ud,
+                                                  UserSecurityClientProfileTable uscp) {
+        return Optional.ofNullable(
+            dslContext
+                .select(ud.fields())
+                .from(ud)
+                .join(uscp).on(uscp.USER_UUID.eq(ud.UUID))
+                .where(uscp.PROVIDER_TYPE.eq(userProfile.getClass().getSimpleName()))
+                .and(uscp.PROVIDER_USER_ID.eq(userProfile.getId()))
+                .fetchOne())
+            .map(it -> it.into(UserDetails.class));
     }
 
     private void createNewUserIfNeeded(ClientAuthenticationToken authentication) {
         UserProfile userProfile = authentication.getUserProfile();
-        BaseUserModel userModel = modelRepository.findOneByClientUserProfile(
-            userProfile.getClass().getSimpleName(), userProfile.getId());
 
-        if (userModel == null) {
+        UserDetailsTable ud = Tables.USER_DETAILS.as("ud");
+        UserSecurityClientProfileTable uscp = Tables.USER_SECURITY_CLIENT_PROFILE.as("uscp");
+
+        Optional<UserDetails> userDetails = findUserDetails(userProfile, ud, uscp);
+
+        if (!userDetails.isPresent()) {
             UserView newUserModel = createNewUserModel(userProfile);
-            userModel = userManagementApi.createInternalUser(newUserModel.name, newUserModel.email);
+            UserDetails details = dslContext
+                .insertInto(ud, ud.NAME, ud.EMAIL_ADDRESS)
+                .values(newUserModel.name, newUserModel.email)
+                .returning(ud.fields())
+                .fetchOne()
+                .into(UserDetails.class);
 
-            SecurityUserClientProfileModel clientProfile = new SecurityUserClientProfileModel(userModel, userProfile.getClass().getSimpleName(), userProfile.getId());
-            modelRepository.save(clientProfile);
+            dslContext
+                .insertInto(uscp, uscp.USER_UUID, uscp.PROVIDER_TYPE, uscp.PROVIDER_USER_ID)
+                .values(details.getUuid(), userProfile.getClass().getSimpleName(), userProfile.getId());
         }
     }
 
     UserView createNewUserModel(UserProfile profile) {
-        if(profile instanceof GitHubProfile) {
+        if (profile instanceof GitHubProfile) {
             return createUserModel((GitHubProfile) profile);
-        } else if(profile instanceof Google2Profile) {
+        } else if (profile instanceof Google2Profile) {
             return createUserModel((Google2Profile) profile);
         } else {
             throw new RuntimeException("Unsupported profile type: " + profile.getClass().getSimpleName());

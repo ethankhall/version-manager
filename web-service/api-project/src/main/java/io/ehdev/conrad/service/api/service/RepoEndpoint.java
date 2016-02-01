@@ -8,6 +8,7 @@ import io.ehdev.conrad.model.rest.RestCommitModel;
 import io.ehdev.conrad.model.rest.RestRepoCreateModel;
 import io.ehdev.conrad.model.rest.RestRepoDetailsModel;
 import io.ehdev.conrad.model.rest.RestVersionCollectionModel;
+import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection;
 import io.ehdev.conrad.model.user.ConradUser;
 import io.ehdev.conrad.model.version.VersionCreateModel;
 import io.ehdev.conrad.service.api.util.ConversionUtility;
@@ -103,11 +104,11 @@ public class RepoEndpoint {
 
     @RequestMapping(value = "/{repoName}/search/version", method = RequestMethod.POST)
     public ResponseEntity<RestCommitModel> searchForVersionInHistory(ApiRepoModel repoModel,
-                                                                     @RequestBody VersionCreateModel versionModel,
+                                                                     @RequestBody RestCommitIdCollection versionModel,
                                                                      @Valid @NotNull ConradUser user) {
         List<ApiCommitModel> commits = versionModel.getCommits()
             .stream()
-            .map(ApiCommitModel::new)
+            .map(it -> new ApiCommitModel(it.getCommitId()))
             .collect(Collectors.toList());
 
         ApiCommitModel latest = versionBumperService.findLatestCommitVersion(repoModel, commits);

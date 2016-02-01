@@ -41,4 +41,9 @@ public class ConradDoaConfig {
     VersionBumpersDao versionBumperDao(org.jooq.Configuration configuration) {
         return new VersionBumpersDao(configuration);
     }
+
+    @Bean
+    UserSecurityClientProfileDao userSecurityClientProfileDao(org.jooq.Configuration configuration) {
+        return new UserSecurityClientProfileDao(configuration);
+    }
 }

@@ -3,9 +3,9 @@ package io.ehdev.conrad.authentication.remember;
 import io.ehdev.conrad.authentication.cookie.UserCookieManger;
 import io.ehdev.conrad.authentication.jwt.JwtManager;
 import io.ehdev.conrad.database.api.TokenManagementApi;
-import io.ehdev.conrad.model.user.ConradToken;
-import io.ehdev.conrad.model.user.ConradTokenType;
-import io.ehdev.conrad.model.user.ConradUser;
+import io.ehdev.conrad.database.model.user.ApiToken;
+import io.ehdev.conrad.database.model.user.ApiTokenType;
+import io.ehdev.conrad.database.model.user.ApiUser;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,10 +44,10 @@ public class RememberMeServicesImpl implements RememberMeServices {
 
     @Override
     public Authentication autoLogin(HttpServletRequest request, HttpServletResponse response) {
-        Optional<Pair<ConradUser, ConradToken>> pair = jwtManager.parseToken(userCookieManger.readCookieValue(request));
+        Optional<Pair<ApiUser, ApiToken>> pair = jwtManager.parseToken(userCookieManger.readCookieValue(request));
 
         if (pair.isPresent()) {
-            ConradUser conradUser = pair.get().getKey();
+            ApiUser conradUser = pair.get().getKey();
             return new RememberMeAuthenticationToken(conradUser.getUuid().toString(), conradUser, ROLE_USER);
         }
         return null;
@@ -55,7 +55,7 @@ public class RememberMeServicesImpl implements RememberMeServices {
 
     @Override
     public void loginFail(HttpServletRequest request, HttpServletResponse response) {
-        Optional<Pair<ConradUser, ConradToken>> pair = jwtManager.parseToken(userCookieManger.readCookieValue(request));
+        Optional<Pair<ApiUser, ApiToken>> pair = jwtManager.parseToken(userCookieManger.readCookieValue(request));
         if(pair.isPresent()) {
             tokenManagementApi.invalidateTokenValid(pair.get().getRight());
         }
@@ -65,13 +65,13 @@ public class RememberMeServicesImpl implements RememberMeServices {
     @Override
     public void loginSuccess(HttpServletRequest request, HttpServletResponse response, Authentication auth) {
         logger.info("Login Success: {}", auth);
-        if (auth.getPrincipal() instanceof ConradUser) {
-            addLogin((ConradUser) auth.getPrincipal(), response);
+        if (auth.getPrincipal() instanceof ApiUser) {
+            addLogin((ApiUser) auth.getPrincipal(), response);
         }
     }
 
-    private void addLogin(ConradUser user, HttpServletResponse response) {
-        String token = jwtManager.createToken(user, ConradTokenType.USER);
+    private void addLogin(ApiUser user, HttpServletResponse response) {
+        String token = jwtManager.createToken(user, ApiTokenType.USER);
         userCookieManger.addCookie(token, response);
     }
 }

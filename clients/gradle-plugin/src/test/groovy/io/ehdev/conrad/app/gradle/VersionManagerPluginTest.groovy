@@ -1,10 +1,7 @@
 package io.ehdev.conrad.app.gradle
-
 import groovy.json.JsonBuilder
-import io.ehdev.conrad.app.service.ApiFactory
-import io.ehdev.conrad.version.commit.VersionFactory
+import io.ehdev.conrad.model.rest.RestCommitModel
 import nebula.test.PluginProjectSpec
-import org.apache.commons.lang3.RandomStringUtils
 import org.apache.http.HttpVersion
 import org.apache.http.client.HttpClient
 import org.apache.http.entity.BasicHttpEntity
@@ -31,7 +28,7 @@ class VersionManagerPluginTest extends PluginProjectSpec {
         when:
         project.apply plugin: pluginName
 
-        def commitModel = ApiFactory.VersionModelFactory.create(VersionFactory.parse('1.2.5-SNAPSHOT'))
+        def commitModel = new RestCommitModel('1', '1.2.5-SNAPSHOT')
         configureProject(project.getExtensions().getByType(VersionManagerExtension), new JsonBuilder(commitModel).toString())
 
         then:
@@ -68,7 +65,6 @@ class VersionManagerPluginTest extends PluginProjectSpec {
     private static void configure(VersionManagerExtension configuration) {
         configuration.setProviderBaseUrl('http://example.com')
         configuration.setRepoId(UUID.randomUUID().toString())
-        configuration.setToken(RandomStringUtils.randomAlphanumeric(30))
     }
 
 }

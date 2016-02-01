@@ -1,8 +1,8 @@
 package io.ehdev.conrad.authentication.jwt;
 
-import io.ehdev.conrad.model.user.ConradToken;
-import io.ehdev.conrad.model.user.ConradTokenType;
-import io.ehdev.conrad.model.user.ConradUser;
+import io.ehdev.conrad.database.model.user.ApiToken;
+import io.ehdev.conrad.database.model.user.ApiTokenType;
+import io.ehdev.conrad.database.model.user.ApiUser;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.validation.constraints.NotNull;
@@ -10,10 +10,10 @@ import java.util.Optional;
 
 public interface JwtManager {
 
-    String createUserToken(ConradUser user);
+    String createUserToken(ApiUser user);
 
-    String createToken(ConradUser user, ConradTokenType type);
+    String createToken(ApiUser user, ApiTokenType type);
 
     @NotNull
-    Optional<Pair<ConradUser, ConradToken>> parseToken(String token);
+    Optional<Pair<ApiUser, ApiToken>> parseToken(String token);
 }

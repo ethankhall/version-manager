@@ -6,8 +6,7 @@ import io.ehdev.conrad.client.java.VersionServiceConfiguration;
 import io.ehdev.conrad.client.java.exception.UnsuccessfulRequestException;
 import io.ehdev.conrad.model.repo.RepoCreateModel;
 import io.ehdev.conrad.model.repo.RepoResponseModel;
-import io.ehdev.conrad.model.version.UncommitedVersionModel;
-import io.ehdev.conrad.model.version.VersionCommitModel;
+import io.ehdev.conrad.model.rest.RestCommitModel;
 import io.ehdev.conrad.model.version.VersionCreateModel;
 import io.ehdev.conrad.model.version.VersionSearchModel;
 import org.apache.http.client.HttpClient;
@@ -43,14 +42,14 @@ public class DefaultVersionManagerClient implements VersionManagerClient {
     @Override
     public Version findVersion(List<String> commitIds) throws URISyntaxException, IOException, UnsuccessfulRequestException {
         VersionSearchModel searchModel = new VersionSearchModel(commitIds);
-        UncommitedVersionModel version = httpHelper.findVersion(searchModel);
+        RestCommitModel version = httpHelper.findVersion(searchModel);
         return new Version(version.getVersion());
     }
 
     @Override
     public Version claimVersion(List<String> commitIds, String message, String headCommitId) throws IOException, UnsuccessfulRequestException {
-        VersionCreateModel versionCreateModel = new VersionCreateModel(commitIds, message, headCommitId, configuration.getToken());
-        VersionCommitModel commitedVersionModel = httpHelper.claimVersion(versionCreateModel);
+        VersionCreateModel versionCreateModel = new VersionCreateModel(commitIds, message, headCommitId);
+        RestCommitModel commitedVersionModel = httpHelper.claimVersion(versionCreateModel);
         return new Version(commitedVersionModel.getVersion());
     }
 

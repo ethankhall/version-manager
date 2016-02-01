@@ -27,12 +27,14 @@ dependencies {
 def createLibraryXml = task createLibraryXml {
     dependsOn ':database:database-migration:flywayMigrate'
     ext.libraryFile = file("$buildDir/library.xml")
+    ext.outputDir = file('src/main/generated-java')
     doFirst {
         (ext.libraryFile as File).parentFile.mkdirs()
     }
     doLast {
         def xml = new groovy.xml.StreamingMarkupBuilder().bind { bnd ->
             configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.7.0.xsd') {
+                mkp.comment("Generated at ${new Date()}")
                 jdbc() {
                     driver(database.driver)
                     url(database.url)
@@ -78,7 +80,7 @@ def createLibraryXml = task createLibraryXml {
                     }
                     target() {
                         packageName('io.ehdev.conrad.db')
-                        directory(file('src/main/generated-java').absolutePath)
+                        directory(ext.outputDir.absolutePath)
                     }
                 }
             }
@@ -89,6 +91,9 @@ def createLibraryXml = task createLibraryXml {
 }
 
 task generateDataModel(type: JavaExec, dependsOn: ['createLibraryXml']) {
+    inputs.files(configurations.codegen)
+    inputs.file(createLibraryXml.libraryFile.absolutePath)
+    outputs.dir(createLibraryXml.outputDir.absolutePath)
     setMain('org.jooq.util.GenerationTool')
     args(createLibraryXml.libraryFile.absolutePath)
     classpath configurations.codegen

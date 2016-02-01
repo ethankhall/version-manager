@@ -1,9 +1,7 @@
-package io.ehdev.conrad.service.api.config
+package io.ehdev.conrad.app
 
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
-import io.ehdev.conrad.database.config.ConradDatabaseConfig
-import io.ehdev.conrad.version.config.ConradVersionConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -11,9 +9,8 @@ import org.springframework.context.annotation.Import
 import javax.sql.DataSource
 
 @Configuration
-@Import([ConradDatabaseConfig, ConradProjectApiConfiguration, ConradVersionConfiguration])
-class TestConradProjectApiConfiguration {
-
+@Import(MainApplication)
+class TestWebAppConfiguration {
     @Bean(destroyMethod = "close")
     DataSource dataSource() {
         def config = new HikariConfig()

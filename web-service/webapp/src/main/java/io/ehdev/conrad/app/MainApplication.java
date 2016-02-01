@@ -4,13 +4,12 @@ import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ehcache.InstrumentedEhcache;
 import io.ehdev.conrad.api.user.config.ApiUserConfiguration;
 import io.ehdev.conrad.app.config.MetricsConfiguration;
-import io.ehdev.conrad.version.config.ConradVersionConfiguration;
-import io.ehdev.conrad.database.config.DatabaseConfiguration;
 import io.ehdev.conrad.authentication.config.ConradSecurityConfig;
+import io.ehdev.conrad.database.config.ConradDatabaseConfig;
+import io.ehdev.conrad.version.config.ConradVersionConfiguration;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.config.CacheConfiguration;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
@@ -21,9 +20,8 @@ import org.springframework.context.annotation.Import;
 
 @EnableCaching
 @Configuration
-@EnableAutoConfiguration
 @Import({
-    ConradVersionConfiguration.class, DatabaseConfiguration.class, MetricsConfiguration.class,
+    ConradVersionConfiguration.class, ConradDatabaseConfig.class, MetricsConfiguration.class,
     ConradSecurityConfig.class, ApiUserConfiguration.class})
 @ComponentScan("io.ehdev.conrad.app")
 public class MainApplication {

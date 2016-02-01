@@ -37,6 +37,7 @@ versionManager {
 subprojects {
     buildDir = new File(rootProject.getProjectDir(), "build/${project.name}")
     apply plugin: 'java'
+    apply plugin: 'idea'
 
     repositories {
         mavenCentral()
@@ -84,6 +85,12 @@ subprojects {
     }
 
     tasks.check.dependsOn(integTest)
+
+    idea {
+        module {
+            scopes.TEST.plus += [ configurations.integTestRuntime ]
+        }
+    }
 }
 
 idea.project.ipr {

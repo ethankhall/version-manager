@@ -15,9 +15,11 @@ dependencies {
     }
     compile libraries.httpClient
 
-    testCompile project(":web-service:webapp")
     testCompile libraries.spock
     testCompile libraries.springTest
     testCompile libraries.jsonPath
     testCompile libraries.testing
+
+    integTestCompile 'com.github.tomjankes:wiremock-groovy:0.2.0'
+    integTestCompile 'com.github.tomakehurst:wiremock:1.58'
 }

@@ -38,8 +38,6 @@ public class VersionRequester {
                 break;
             }
         }
-
-
     }
 
     void evaluate() {

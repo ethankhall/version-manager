@@ -3,8 +3,8 @@ package io.ehdev.conrad.authentication.filter;
 import io.ehdev.conrad.authentication.cookie.UserCookieManger;
 import io.ehdev.conrad.authentication.jwt.JwtManager;
 import io.ehdev.conrad.authentication.util.FilterUtilities;
-import io.ehdev.conrad.model.user.ConradToken;
-import io.ehdev.conrad.model.user.ConradUser;
+import io.ehdev.conrad.database.model.user.ApiToken;
+import io.ehdev.conrad.database.model.user.ApiUser;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,10 +52,10 @@ public class StatelessAuthenticationFilter extends OncePerRequestFilter {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         logger.debug("Authentication: {}", authentication);
         if (authentication == null || !authentication.isAuthenticated()) {
-            Optional<Pair<ConradUser, ConradToken>> pair = jwtManager.parseToken(getToken(request));
+            Optional<Pair<ApiUser, ApiToken>> pair = jwtManager.parseToken(getToken(request));
 
             if(pair.isPresent()) {
-                ConradUser user = pair.get().getLeft();
+                ApiUser user = pair.get().getLeft();
                 logger.debug("User token from cookie: {}", user);
                 SecurityContextHolder.getContext().setAuthentication(FilterUtilities.createAuthentication(user));
             }
