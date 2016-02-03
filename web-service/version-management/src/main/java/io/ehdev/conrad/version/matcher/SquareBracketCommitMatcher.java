@@ -15,7 +15,7 @@ public class SquareBracketCommitMatcher implements GlobalCommitMatcherProvider {
         expectedString = StringUtils.removeEnd(expectedString, "]");
         expectedString = StringUtils.trimToEmpty(expectedString);
 
-        if(expectedString.isEmpty()) {
+        if(groupName.isEmpty()) {
             throw new InvalidSearchStringException();
         }
 

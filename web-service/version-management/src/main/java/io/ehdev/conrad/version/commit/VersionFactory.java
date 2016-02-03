@@ -9,7 +9,7 @@ public class VersionFactory {
 
     private final static int[] EMPTY_INT_ARRAY = new int[] {};
 
-    public static CommitVersion parse(ApiCommitModel version) {
+    public static CommitVersion parseApiModel(ApiCommitModel version) {
         if(null == version) {
             return parse("0.0.0");
         } else {

@@ -27,4 +27,19 @@ class DefaultCommitVersionTest extends Specification {
         VersionFactory.parse("0.1.2") < VersionFactory.parse("1.2.3")
         VersionFactory.parse("1.2.2") < VersionFactory.parse("1.2.3")
     }
+
+    def 'version groups work'() {
+        expect:
+        VersionFactory.parse("1.2.3.4.5.6.7.8.9.0").getVersionGroup() == [1, 2, 3, 4, 5, 6, 7, 8, 9, 0]
+    }
+
+    def 'test equal'() {
+        def version = new DefaultCommitVersion(1, 0, 0)
+
+        expect:
+        new DefaultCommitVersion(1, 0, 0).equals(new DefaultCommitVersion(1, 0, 0))
+        version.equals(version)
+        !version.equals(null)
+        !version.equals('')
+    }
 }

@@ -93,7 +93,7 @@ public class RepoEndpoint {
             repoModel,
             versionModel.getCommitId(),
             versionModel.getMessage(),
-            VersionFactory.parse(latestCommit));
+            VersionFactory.parseApiModel(latestCommit));
 
         ApiCommitModel nextCommit = new ApiCommitModel(versionModel.getCommitId(), nextVersion.toVersionString());
         repoManagementApi.createCommit(repoModel, nextCommit, latestCommit);

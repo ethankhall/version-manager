@@ -7,4 +7,12 @@ class SquareBracketCommitMatcherTest extends Specification {
         new SquareBracketCommitMatcher('123', null).matches('asdfasdf[bump 123]asdfasd')
         !new SquareBracketCommitMatcher('123', null).matches('asdfasdf[bump 124]asdfasd')
     }
+
+    def 'will throw exception when empty string'() {
+        when:
+        new SquareBracketCommitMatcher('', null)
+
+        then:
+        thrown(SquareBracketCommitMatcher.InvalidSearchStringException)
+    }
 }

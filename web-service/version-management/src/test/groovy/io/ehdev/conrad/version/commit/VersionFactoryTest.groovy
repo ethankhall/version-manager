@@ -1,5 +1,5 @@
 package io.ehdev.conrad.version.commit
-
+import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.version.commit.internal.DefaultCommitVersion
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -32,5 +32,11 @@ class VersionFactoryTest extends Specification {
         version.getGroup(StandardVersionGroupBump.buildVersion()) == 0
         version.getPostFix() == 'BETA'
         version.toString() == '1.2.3-BETA'
+    }
+
+    def 'can parse commit model'() {
+        expect:
+        VersionFactory.parseApiModel(new ApiCommitModel('commitId', '1.2.3.4.5.6.7.8.9.0')).toVersionString() == '1.2.3.4.5.6.7.8.9.0'
+        VersionFactory.parseApiModel(null as ApiCommitModel)
     }
 }
