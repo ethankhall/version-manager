@@ -24,15 +24,15 @@ logging:
             ehdev: DEBUG
         org:
             pac4j: DEBUG
+            jooq: DEBUG
 
 flyway:
     out-of-order: true
-    locations: classpath:db/security/migration, classpath:db/migration
 
 spring:
     datasource:
-        url: jdbc:postgresql://172.0.1.100/version_manager_test
-        username: version_manager_test
+        url: jdbc:postgresql://172.0.1.100/version_manager
+        username: version
         password: password
     jpa:
         show-sql: true

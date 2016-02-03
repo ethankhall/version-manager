@@ -6,10 +6,12 @@ import io.ehdev.conrad.api.user.config.ApiUserConfiguration;
 import io.ehdev.conrad.app.config.MetricsConfiguration;
 import io.ehdev.conrad.authentication.config.ConradSecurityConfig;
 import io.ehdev.conrad.database.config.ConradDatabaseConfig;
+import io.ehdev.conrad.service.api.config.ConradProjectApiConfiguration;
 import io.ehdev.conrad.version.config.ConradVersionConfiguration;
 import net.sf.ehcache.Cache;
 import net.sf.ehcache.config.CacheConfiguration;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
@@ -21,9 +23,10 @@ import org.springframework.context.annotation.Import;
 @EnableCaching
 @Configuration
 @Import({
-    ConradVersionConfiguration.class, ConradDatabaseConfig.class, MetricsConfiguration.class,
-    ConradSecurityConfig.class, ApiUserConfiguration.class})
+    ConradDatabaseConfig.class, ConradVersionConfiguration.class, MetricsConfiguration.class,
+    ConradSecurityConfig.class, ApiUserConfiguration.class, ConradProjectApiConfiguration.class})
 @ComponentScan("io.ehdev.conrad.app")
+@EnableAutoConfiguration
 public class MainApplication {
 
     public static void main(String[] args) throws Exception {

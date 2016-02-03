@@ -4,6 +4,7 @@ import io.ehdev.conrad.database.model.user.ApiTokenType
 import io.ehdev.conrad.db.tables.daos.UserTokensDao
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.context.annotation.Profile
 import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.transaction.annotation.Transactional

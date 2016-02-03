@@ -27,6 +27,7 @@ allprojects {
 apply from: "gradle/versions.gradle"
 apply from: "gradle/database.gradle"
 apply plugin: 'version-manager'
+apply plugin: 'base'
 
 versionManager {
     repoId = '3e79966b-a630-4efa-901b-8819c929c5e3'
@@ -100,6 +101,13 @@ idea.project.ipr {
                 .mapping.@vcs = 'Git'
     }
 }
+
+task testReport(type: TestReport) {
+    destinationDir = file("$buildDir/reports/allTests")
+    reportOn subprojects.collect { it.tasks.withType(Test) }.flatten()
+}
+
+check.dependsOn testReport
 
 task teamcityVersion {
     doLast {

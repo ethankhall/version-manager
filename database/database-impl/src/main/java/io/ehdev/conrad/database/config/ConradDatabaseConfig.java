@@ -1,15 +1,15 @@
 package io.ehdev.conrad.database.config;
 
+import com.zaxxer.hikari.HikariConfig;
+import com.zaxxer.hikari.HikariDataSource;
 import org.jooq.ConnectionProvider;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
+import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -22,21 +22,25 @@ import javax.sql.DataSource;
 public class ConradDatabaseConfig {
 
     @Autowired
-    DataSource dataSource;
+    Environment environment;
 
     @Bean
-    PlatformTransactionManager transactionManager() {
-        return new DataSourceTransactionManager(dataSource);
+    DataSource dataSource() {
+        HikariConfig config = new HikariConfig();
+        config.setJdbcUrl(environment.getRequiredProperty("spring.datasource.url"));
+        config.setUsername(environment.getRequiredProperty("spring.datasource.username"));
+        config.setPassword(environment.getRequiredProperty("spring.datasource.password"));
+        return new TransactionAwareDataSourceProxy(new HikariDataSource(config));
     }
 
     @Bean
-    public TransactionAwareDataSourceProxy transactionAwareDataSource() {
-        return new TransactionAwareDataSourceProxy(dataSource);
+    PlatformTransactionManager transactionManager() {
+        return new DataSourceTransactionManager(dataSource());
     }
 
     @Bean
     public ConnectionProvider connectionProvider() {
-        return new DataSourceConnectionProvider(transactionAwareDataSource());
+        return new DataSourceConnectionProvider(dataSource());
     }
 
     @Bean

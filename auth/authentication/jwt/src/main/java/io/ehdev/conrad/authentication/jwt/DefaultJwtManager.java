@@ -30,7 +30,7 @@ public class DefaultJwtManager implements JwtManager {
     public DefaultJwtManager(Environment environment,
                              TokenManagementApi tokenManagementApi) {
         this.tokenManagementApi = tokenManagementApi;
-        this.key = environment.getProperty("jwt.signing.key").getBytes();
+        this.key = environment.getRequiredProperty("jwt.signing.key").getBytes();
     }
 
     @Override

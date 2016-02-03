@@ -22,7 +22,7 @@ import org.springframework.security.web.authentication.session.SessionFixationPr
 
 @Order(50)
 @Configuration
-@EnableWebSecurity
+@EnableWebSecurity(debug = true)
 public class ConradWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired

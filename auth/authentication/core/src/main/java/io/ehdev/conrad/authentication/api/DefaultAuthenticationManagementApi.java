@@ -62,8 +62,8 @@ public class DefaultAuthenticationManagementApi implements AuthenticationManagem
     private void createNewUserIfNeeded(ClientAuthenticationToken authentication) {
         UserProfile userProfile = authentication.getUserProfile();
 
-        UserDetailsTable ud = Tables.USER_DETAILS.as("ud");
-        UserSecurityClientProfileTable uscp = Tables.USER_SECURITY_CLIENT_PROFILE.as("uscp");
+        UserDetailsTable ud = Tables.USER_DETAILS;
+        UserSecurityClientProfileTable uscp = Tables.USER_SECURITY_CLIENT_PROFILE;
 
         Optional<UserDetails> userDetails = findUserDetails(userProfile, ud, uscp);
 
@@ -78,7 +78,8 @@ public class DefaultAuthenticationManagementApi implements AuthenticationManagem
 
             dslContext
                 .insertInto(uscp, uscp.USER_UUID, uscp.PROVIDER_TYPE, uscp.PROVIDER_USER_ID)
-                .values(details.getUuid(), userProfile.getClass().getSimpleName(), userProfile.getId());
+                .values(details.getUuid(), userProfile.getClass().getSimpleName(), userProfile.getId())
+                .execute();
         }
     }
 
