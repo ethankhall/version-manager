@@ -1,4 +1,4 @@
-
+apply plugin: 'local-dev'
 
 dependencies {
     compile project(':database:database-api')

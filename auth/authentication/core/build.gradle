@@ -1,3 +1,5 @@
+apply plugin: 'local-dev'
+
 dependencies {
     compile project(':auth:authentication:jwt')
     compile project(':database:database-impl')

@@ -1,4 +1,5 @@
 apply plugin: 'groovy'
+apply plugin: 'local-dev'
 apply plugin: 'maven-publish'
 apply from: "$rootDir/gradle/publishing.gradle"
 

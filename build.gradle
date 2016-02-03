@@ -22,23 +22,6 @@ buildscript {
 allprojects {
     apply plugin: 'idea'
     group = 'io.ehdev.conrad'
-}
-
-apply from: "gradle/versions.gradle"
-apply from: "gradle/database.gradle"
-apply plugin: 'version-manager'
-apply plugin: 'base'
-
-versionManager {
-    repoId = '3e79966b-a630-4efa-901b-8819c929c5e3'
-    token = '08A7jgz3PYAcBFh9yZNY8PmsrnNxpEyHU4mgeTYFsntHDno6yRPMkvk7RuOR'
-    providerBaseUrl = 'http://api.ehdev.io'
-}
-
-subprojects {
-    buildDir = new File(rootProject.getProjectDir(), "build/${project.name}")
-    apply plugin: 'java'
-    apply plugin: 'idea'
 
     repositories {
         mavenCentral()
@@ -46,52 +29,23 @@ subprojects {
             url 'http://repo.spring.io/milestone'
         }
     }
+}
 
-    sourceCompatibility = '1.8'
+apply from: "gradle/versions.gradle"
+apply from: "gradle/database.gradle"
+apply plugin: 'version-manager'
+apply plugin: 'base'
+apply plugin: 'jacoco'
 
-    sourceSets {
-        integTest {
-            java {
-                compileClasspath += main.output + test.output
-                runtimeClasspath += main.output + test.output
-                srcDir file('src/integTest/java')
-            }
-            resources.srcDir file('src/integTest/resources')
-        }
-    }
+versionManager {
+    repoId = '3e79966b-a630-4efa-901b-8819c929c5e3'
+    token = '08A7jgz3PYAcBFh9yZNY8PmsrnNxpEyHU4mgeTYFsntHDno6yRPMkvk7RuOR'
+    providerBaseUrl = 'http://api.ehdev.io'
+}
 
-    configurations {
-        integTestCompile.extendsFrom testCompile
-        integTestRuntime.extendsFrom testRuntime
-        all {
-            exclude group: 'org.apache.tomcat', module: 'tomcat-jdbc'
-        }
-    }
 
-    def integTest = tasks.create('integTest', Test) {
-        shouldRunAfter(tasks.test)
-        testClassesDir = sourceSets.integTest.output.classesDir
-        classpath = sourceSets.integTest.runtimeClasspath
-        reports.html.destination = file("$buildDir/reports/integration-test")
-    }
-
-    tasks.withType(Test) {
-        testLogging {
-            afterSuite { desc, result ->
-                if (!desc.parent) { // will match the outermost suite
-                    println "Results: ${result.resultType} (${result.testCount} tests, ${result.successfulTestCount} successes, ${result.failedTestCount} failures, ${result.skippedTestCount} skipped)"
-                }
-            }
-        }
-    }
-
-    tasks.check.dependsOn(integTest)
-
-    idea {
-        module {
-            scopes.TEST.plus += [ configurations.integTestRuntime ]
-        }
-    }
+subprojects {
+    buildDir = new File(rootProject.getProjectDir(), "build/${project.name}")
 }
 
 idea.project.ipr {
@@ -99,6 +53,20 @@ idea.project.ipr {
         provider.node.component
                 .find { it.@name == 'VcsDirectoryMappings' }
                 .mapping.@vcs = 'Git'
+    }
+}
+
+task testCoverage(type: JacocoMerge) {
+    dependsOn { subprojects.collect { it.tasks.withType(Test) }.flatten() }
+}
+check.dependsOn testCoverage
+
+gradle.taskGraph.afterTask { Task task, TaskState state ->
+    if(task.extensions.findByType(JacocoTaskExtension)) {
+        if(task.extensions.getByType(JacocoTaskExtension).destinationFile.exists()) {
+            println "adding $task.name to testCoverage"
+            testCoverage.executionData task
+        }
     }
 }
 

@@ -1,4 +1,5 @@
 apply plugin: 'groovy'
+apply plugin: 'local-dev'
 apply plugin: io.ehdev.conrad.gradle.SpringRestDocPlugin
 
 dependencies {

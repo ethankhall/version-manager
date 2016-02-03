@@ -1,5 +1,6 @@
 apply plugin: 'groovy'
 apply plugin: 'scala'
+apply plugin: 'local-dev'
 
 def gatlingVersion = '2.1.7'
 
