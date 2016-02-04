@@ -11,6 +11,4 @@ public interface VersionBumperService {
     VersionBumper findVersionBumper(String className);
 
     CommitVersion findNextVersion(ApiRepoModel repoModel, String commitId, String message, CommitVersion lastCommit);
-
-    ApiCommitModel findLatestCommitVersion(ApiRepoModel repoModel, List<ApiCommitModel> history);
 }

@@ -1,6 +1,7 @@
 package io.ehdev.conrad.service.api.service;
 
 import io.ehdev.conrad.database.api.RepoManagementApi;
+import io.ehdev.conrad.database.api.exception.CommitNotFoundException;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
 import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
@@ -87,16 +88,21 @@ public class RepoEndpoint {
             .map(ApiCommitModel::new)
             .collect(Collectors.toList());
 
-        ApiCommitModel latestCommit = versionBumperService.findLatestCommitVersion(repoModel, commits);
+        Optional<ApiCommitModel> latestCommit = repoManagementApi.findLatestCommit(repoModel, commits);
+
+        if(!commits.isEmpty() && !latestCommit.isPresent()) {
+            String joinedCommit = commits.stream().map(ApiCommitModel::getCommitId).reduce((t, u) -> t + "," + u).get();
+            throw new CommitNotFoundException(joinedCommit);
+        }
 
         CommitVersion nextVersion = versionBumperService.findNextVersion(
             repoModel,
             versionModel.getCommitId(),
             versionModel.getMessage(),
-            VersionFactory.parseApiModel(latestCommit));
+            VersionFactory.parseApiModel(latestCommit.orElse(null)));
 
         ApiCommitModel nextCommit = new ApiCommitModel(versionModel.getCommitId(), nextVersion.toVersionString());
-        repoManagementApi.createCommit(repoModel, nextCommit, latestCommit);
+        repoManagementApi.createCommit(repoModel, nextCommit, latestCommit.orElse(null));
 
         URI uri = URI.create(request.getRequestURL().toString() + "/" + nextCommit.getVersion());
         return ResponseEntity.created(uri).body(toRestModel(nextCommit));
@@ -111,11 +117,12 @@ public class RepoEndpoint {
             .map(it -> new ApiCommitModel(it.getCommitId()))
             .collect(Collectors.toList());
 
-        ApiCommitModel latest = versionBumperService.findLatestCommitVersion(repoModel, commits);
-        if (null == latest) {
+        Optional<ApiCommitModel> latest = repoManagementApi.findLatestCommit(repoModel, commits);
+
+        if (!latest.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            return ResponseEntity.ok(toRestModel(latest));
+            return ResponseEntity.ok(toRestModel(latest.get()));
         }
     }
 

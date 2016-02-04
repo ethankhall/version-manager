@@ -1,3 +1,8 @@
 package io.ehdev.conrad.model.rest
 
-class RestRepoCreateModel(val bumperName: String, val repoUrl: String)
+import com.fasterxml.jackson.annotation.JsonCreator
+import com.fasterxml.jackson.annotation.JsonProperty
+
+class RestRepoCreateModel @JsonCreator constructor(
+    @JsonProperty("bumperName") val bumperName: String,
+    @JsonProperty("repoUrl") val repoUrl: String)

@@ -6,4 +6,8 @@ class ApiRepoModel(
     val url: String?
 ) {
     constructor(projectName: String, repoName: String) : this(projectName, repoName, null)
+
+    fun getMergedName(): String {
+        return projectName + "/" + repoName
+    }
 }

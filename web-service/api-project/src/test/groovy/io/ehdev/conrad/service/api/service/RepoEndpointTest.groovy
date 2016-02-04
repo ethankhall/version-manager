@@ -61,8 +61,7 @@ class RepoEndpointTest extends Specification {
         def version = repoEndpoint.createNewVersion(createTestingRepoModel(), model, request, null)
 
         then:
-        1 * versionBumperService.findLatestCommitVersion(_, _) >> lastCommit
-
+        1 * repoManagementApi.findLatestCommit(_, _) >> Optional.of(lastCommit)
         1 * versionBumperService.findNextVersion(_ as ApiRepoModel,
             'f', 'Some Message', _ as CommitVersion) >> VersionFactory.parse("1.4.5")
         version.statusCode == HttpStatus.CREATED
@@ -79,7 +78,7 @@ class RepoEndpointTest extends Specification {
         def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model, null)
 
         then:
-        1 * versionBumperService.findLatestCommitVersion(_, _) >> null
+        1 * repoManagementApi.findLatestCommit(_, _) >> Optional.empty()
         history.statusCode == HttpStatus.NOT_FOUND
     }
 
@@ -91,7 +90,8 @@ class RepoEndpointTest extends Specification {
         def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model, null)
 
         then:
-        1 * versionBumperService.findLatestCommitVersion(_, _) >> new ApiCommitModel('commit', '2.3.4')
+        1 * repoManagementApi.findLatestCommit(_, _) >> Optional.of(new ApiCommitModel('commit', '2.3.4'))
+
         history.statusCode == HttpStatus.OK
         history.body.commitId == 'commit'
         history.body.version == '2.3.4'
