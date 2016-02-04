@@ -77,6 +77,17 @@ task testReport(type: TestReport) {
 
 check.dependsOn testReport
 
+task generateDocumentation(type: Copy) {
+    from {
+        subprojects.collect {
+            it.tasks.withType(org.asciidoctor.gradle.AsciidoctorTask).collect { task -> task.outputDir }
+        }.flatten()
+    }
+    into "$buildDir/documentation"
+}
+
+build.dependsOn generateDocumentation
+
 task teamcityVersion {
     doLast {
         println "##teamcity[buildNumber '$version']"

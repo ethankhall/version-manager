@@ -14,7 +14,7 @@ public class TestDoubleProjectManagementApi implements ProjectManagementApi {
 
     @Override
     public ApiProjectModel createProject(String projectName) {
-        projects.put(projectName, new ApiProjectModel("foo", new ArrayList<>()));
+        projects.put(projectName, new ApiProjectModel(projectName, new ArrayList<>()));
         return projects.get(projectName);
     }
 

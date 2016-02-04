@@ -36,7 +36,8 @@ class ProjectEndpointApiTest extends Specification {
         document = document("{method-name}", preprocessResponse(prettyPrint()));
         projectManagementApi = new TestDoubleProjectManagementApi()
         projectEndpoint = new ProjectEndpoint(projectManagementApi)
-        this.mockMvc = MockMvcBuilders.standaloneSetup(projectEndpoint)
+
+        mockMvc = MockMvcBuilders.standaloneSetup(projectEndpoint)
             .setCustomArgumentResolvers(new BaseUserModelResolver())
             .apply(documentationConfiguration(this.restDocumentation))
             .alwaysDo(document)

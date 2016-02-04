@@ -1,4 +1,5 @@
 package io.ehdev.conrad.gradle
+
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.testing.Test
@@ -8,7 +9,7 @@ class SpringRestDocPlugin implements Plugin<Project> {
     void apply(Project project) {
         project.with {
             apply plugin: 'idea'
-            apply plugin: 'org.asciidoctor.gradle.asciidoctor'
+            apply plugin: 'groovy'
 
             sourceSets {
                 apiTest {
@@ -21,11 +22,10 @@ class SpringRestDocPlugin implements Plugin<Project> {
                 }
             }
 
-            ext {
-                snippetsDir = file("$buildDir/generated-snippets")
-            }
-
             tasks.create('apiTest', Test) {
+                ext {
+                    snippetsDir = file("$buildDir/generated-snippets")
+                }
                 shouldRunAfter(tasks.test)
                 testClassesDir = sourceSets.apiTest.output.classesDir
                 classpath = sourceSets.apiTest.runtimeClasspath
@@ -52,14 +52,6 @@ class SpringRestDocPlugin implements Plugin<Project> {
             dependencies {
                 apiTestCompile 'org.springframework.restdocs:spring-restdocs-mockmvc:1.0.1.RELEASE'
             }
-
-            asciidoctor {
-                attributes('snippets': snippetsDir)
-                inputs.dir snippetsDir
-                dependsOn apiTest
-                sourceDir 'src/apiTest/asciidoc'
-            }
-
         }
     }
 }
