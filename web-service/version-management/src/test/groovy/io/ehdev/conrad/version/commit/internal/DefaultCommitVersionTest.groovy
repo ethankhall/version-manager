@@ -41,5 +41,10 @@ class DefaultCommitVersionTest extends Specification {
         version.equals(version)
         !version.equals(null)
         !version.equals('')
+
+        !new DefaultCommitVersion(1, 2, 3).equals(new DefaultCommitVersion(1, 2, 3, "SNAPSHOT"))
+        !new DefaultCommitVersion(1, 2, 3).equals(new DefaultCommitVersion(1, 3, 3, "SNAPSHOT"))
+
+        version.hashCode() == version.hashCode()
     }
 }

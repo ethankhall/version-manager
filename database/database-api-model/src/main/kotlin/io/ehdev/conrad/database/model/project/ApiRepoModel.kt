@@ -5,5 +5,5 @@ class ApiRepoModel(
     val repoName: String,
     val url: String?
 ) {
-    constructor(repoName: String, projectName: String) : this(repoName, projectName, null)
+    constructor(projectName: String, repoName: String) : this(projectName, repoName, null)
 }

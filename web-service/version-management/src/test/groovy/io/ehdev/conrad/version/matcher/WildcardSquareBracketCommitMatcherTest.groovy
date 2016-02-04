@@ -1,6 +1,7 @@
 package io.ehdev.conrad.version.matcher
-import io.ehdev.conrad.version.commit.details.CommitDetailsFactory
+
 import io.ehdev.conrad.version.commit.VersionFactory
+import io.ehdev.conrad.version.commit.details.CommitDetailsFactory
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -28,5 +29,13 @@ class WildcardSquareBracketCommitMatcherTest extends Specification {
         4           || '1.2.3.1'
         5           || '1.2.3.0.1'
         6           || '1.2.3.0.0.1'
+    }
+
+    def 'throws exception'() {
+        when:
+        new WildcardSquareBracketCommitMatcher().getBumper()
+
+        then:
+        thrown(WildcardSquareBracketCommitMatcher.GroupNotFoundException)
     }
 }
