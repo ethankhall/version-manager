@@ -4,7 +4,7 @@ Jane Doe;
 :icons: font
 :source-highlighter: highlightjs
 :toc: left
-:toclevels: 4
+:toclevels: 3
 :sectlinks:
 
 [introduction]
