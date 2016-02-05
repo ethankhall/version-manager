@@ -1,0 +1,19 @@
+[[resource-repository-get-details]]
+=== Get Version Details
+A `GET` request lists all of the service's people.
+
+==== Example request
+
+===== Path Parameters
+include::{snippets}/get-repo-details/path-parameters.adoc[]
+
+===== Curl Request
+include::{snippets}/get-repo-details/curl-request.adoc[]
+
+==== Example response
+
+===== Response Fields
+include::{snippets}/get-repo-details/response-fields.adoc[]
+
+===== Response Body
+include::{snippets}/get-repo-details/http-response.adoc[]

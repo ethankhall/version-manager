@@ -1,0 +1,19 @@
+[[resource-project-create]]
+=== Create new Project
+A `POST` request lists all of the service's people.
+
+==== Example request
+
+===== Path Parameters
+include::{snippets}/create-project/path-parameters.adoc[]
+
+===== Curl Request
+include::{snippets}/create-project/curl-request.adoc[]
+
+==== Example response
+
+===== Response Fields
+include::{snippets}/create-project/response-fields.adoc[]
+
+===== Response Body
+include::{snippets}/create-project/http-response.adoc[]

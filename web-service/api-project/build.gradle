@@ -23,4 +23,6 @@ dependencies {
 
     integTestCompile project(':database:database-impl')
     integTestCompile libraries.h2
+
+    apiTestCompile project(':test-utils')
 }

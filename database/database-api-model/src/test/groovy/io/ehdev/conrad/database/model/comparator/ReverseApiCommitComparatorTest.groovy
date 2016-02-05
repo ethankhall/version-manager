@@ -1,4 +1,4 @@
-package io.ehdev.conrad.database.api.internal
+package io.ehdev.conrad.database.model.comparator
 
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import spock.lang.Specification

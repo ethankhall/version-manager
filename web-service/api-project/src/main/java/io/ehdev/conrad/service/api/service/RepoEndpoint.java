@@ -2,6 +2,7 @@ package io.ehdev.conrad.service.api.service;
 
 import io.ehdev.conrad.database.api.RepoManagementApi;
 import io.ehdev.conrad.database.api.exception.CommitNotFoundException;
+import io.ehdev.conrad.database.model.comparator.ReverseApiCommitComparator;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
 import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
@@ -72,6 +73,7 @@ public class RepoEndpoint {
         Stream<RestCommitModel> restCommitStream = repoManagementApi
             .findAllCommits(repoModel)
             .stream()
+            .sorted(new ReverseApiCommitComparator())
             .map(ConversionUtility::toRestModel);
 
         List<RestCommitModel> commits = restCommitStream.collect(Collectors.toList());
@@ -90,10 +92,7 @@ public class RepoEndpoint {
 
         Optional<ApiCommitModel> latestCommit = repoManagementApi.findLatestCommit(repoModel, commits);
 
-        if(!commits.isEmpty() && !latestCommit.isPresent()) {
-            String joinedCommit = commits.stream().map(ApiCommitModel::getCommitId).reduce((t, u) -> t + "," + u).get();
-            throw new CommitNotFoundException(joinedCommit);
-        }
+        assertHistoryIsNotMissing(commits, latestCommit);
 
         CommitVersion nextVersion = versionBumperService.findNextVersion(
             repoModel,
@@ -108,6 +107,13 @@ public class RepoEndpoint {
         return ResponseEntity.created(uri).body(toRestModel(nextCommit));
     }
 
+    private void assertHistoryIsNotMissing(List<ApiCommitModel> commits, Optional<ApiCommitModel> latestCommit) {
+        if(!commits.isEmpty() && !latestCommit.isPresent()) {
+            String joinedCommit = commits.stream().map(ApiCommitModel::getCommitId).reduce((t, u) -> t + "," + u).get();
+            throw new CommitNotFoundException(joinedCommit);
+        }
+    }
+
     @RequestMapping(value = "/{repoName}/search/version", method = RequestMethod.POST)
     public ResponseEntity<RestCommitModel> searchForVersionInHistory(ApiRepoModel repoModel,
                                                                      @RequestBody RestCommitIdCollection versionModel,
@@ -118,7 +124,6 @@ public class RepoEndpoint {
             .collect(Collectors.toList());
 
         Optional<ApiCommitModel> latest = repoManagementApi.findLatestCommit(repoModel, commits);
-
         if (!latest.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {

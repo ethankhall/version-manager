@@ -209,7 +209,6 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
         return commits
             .stream()
             .map(ModelConversionUtility::toApiModel)
-            .sorted(new ReverseApiCommitComparator())
             .collect(Collectors.toList());
     }
 

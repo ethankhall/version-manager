@@ -6,15 +6,6 @@ repositories {
 }
 
 dependencies {
-    compile libraries.jsonPath
-
     compile libraries.groovy
-    compile libraries.spock
-    compile libraries.spockSpring
-
-    compile libraries.springBoot
-    compile libraries.springTest
-
-    compile libraries.httpClient
-    compile libraries.springWeb
+    compile 'org.springframework.restdocs:spring-restdocs-core:1.0.1.RELEASE'
 }
