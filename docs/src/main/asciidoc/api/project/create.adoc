@@ -1,10 +1,9 @@
 [[project-create]]
 === Create new Project
-This request requires that you be logged in with the service. More details related to authentication can be found link::../authentication/index.html[here].
 
-A `POST` request is used to create a project.
+This request requires that you be logged in with the service. If you are not logged in, your request will be rejected.
 
-==== Example request
+==== Example Successful Request
 
 ===== Path Parameters
 include::{snippets}/create-project/path-parameters.adoc[]

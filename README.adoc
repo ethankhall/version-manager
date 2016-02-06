@@ -1,0 +1,1 @@
+The documentation for this project is contained at link:docs/src/main/asciidoc/index.adoc[here]
