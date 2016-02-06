@@ -14,6 +14,6 @@ Every version belongs to a link:../index.html[Repository].
 
 == Requests
 include::_include/create-version.adoc[]
-include::_include/get-version.adoc[]
+include::_include/get-versions.adoc[]
 include::_include/search.adoc[]
 include::_include/search-not-found.adoc[]
