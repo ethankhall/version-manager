@@ -36,6 +36,7 @@ public class ObjectDocumentationSnippet extends TemplatedSnippet {
     private Map<String, Object> objectDefinition(DocObjectDefinition definition) {
         HashMap<String, Object> fields = new HashMap<>();
         fields.put("className", definition.getClassName());
+        fields.put("exampleObject", definition.getJson());
         fields.put("fields", fieldDefinitions(definition.getDefinitions()));
         return fields;
     }

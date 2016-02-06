@@ -1,13 +1,23 @@
 package io.ehdev.conrad.service.api.project;
 
-import io.ehdev.conrad.database.api.RepoManagementApi;
+import io.ehdev.conrad.database.model.project.ApiRepoModel;
+import io.ehdev.conrad.version.bumper.SemanticVersionBumper;
 import io.ehdev.conrad.version.bumper.VersionBumper;
-import io.ehdev.conrad.version.bumper.api.DefaultVersionBumperService;
+import io.ehdev.conrad.version.bumper.api.VersionBumperService;
+import io.ehdev.conrad.version.commit.CommitVersion;
+import io.ehdev.conrad.version.commit.internal.DefaultCommitDetails;
 
-import java.util.Set;
+public class TestDoubleVersionBumperService implements VersionBumperService {
 
-public class TestDoubleVersionBumperService extends DefaultVersionBumperService {
-    public TestDoubleVersionBumperService(Set<VersionBumper> bumperSet, RepoManagementApi repoManagementApi) {
-        super(bumperSet, repoManagementApi);
+    @Override
+    public VersionBumper findVersionBumper(String className) {
+        return new SemanticVersionBumper();
+    }
+
+    @Override
+    public CommitVersion findNextVersion(ApiRepoModel repoModel, String commitId, String message, CommitVersion lastCommit) {
+        VersionBumper versionBumper = findVersionBumper(null);
+        DefaultCommitDetails commitDetails = new DefaultCommitDetails(commitId, message);
+        return versionBumper.createNextVersion(lastCommit, commitDetails);
     }
 }

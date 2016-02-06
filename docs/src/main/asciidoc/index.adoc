@@ -31,4 +31,5 @@ The Repository resource is used to create, modify and list repositories.
 include::rest-api-docs/resource-repo-create.adoc[]
 include::rest-api-docs/resource-repo-get-details.adoc[]
 include::rest-api-docs/resource-repo-get-versions.adoc[]
+include::rest-api-docs/resource-repo-post-version.adoc[]
 

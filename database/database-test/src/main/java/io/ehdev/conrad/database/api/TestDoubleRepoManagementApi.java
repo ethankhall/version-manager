@@ -9,12 +9,16 @@ import java.util.*;
 
 public class TestDoubleRepoManagementApi implements RepoManagementApi {
 
+    private final ApiVersionBumperModel bumperModel;
     private Map<String, ApiRepoDetailsModel> storage = new HashMap<>();
     private Map<String, List<ApiCommitModel>> commits = new HashMap<>();
 
+    public TestDoubleRepoManagementApi(ApiVersionBumperModel bumperModel) {
+        this.bumperModel = bumperModel;
+    }
+
     @Override
     public ApiRepoDetailsModel createRepo(ApiRepoModel qualifiedRepo, String bumperName, String repoUrl) {
-        ApiVersionBumperModel bumperModel = new ApiVersionBumperModel(Object.class.getName(), " ", "semver");
         storage.put(qualifiedRepo.getMergedName(), new ApiRepoDetailsModel(qualifiedRepo, bumperModel));
         commits.put(qualifiedRepo.getMergedName(), new ArrayList<>());
         return storage.get(qualifiedRepo.getMergedName());
@@ -23,7 +27,7 @@ public class TestDoubleRepoManagementApi implements RepoManagementApi {
     @Override
     public Optional<ApiCommitModel> findLatestCommit(ApiRepoModel qualifiedRepo, List<ApiCommitModel> history) {
         int size = commits.get(qualifiedRepo.getMergedName()).size();
-        return Optional.ofNullable(commits.get(qualifiedRepo.getMergedName()).get(size));
+        return Optional.ofNullable(commits.get(qualifiedRepo.getMergedName()).get(size - 1));
     }
 
     @Override

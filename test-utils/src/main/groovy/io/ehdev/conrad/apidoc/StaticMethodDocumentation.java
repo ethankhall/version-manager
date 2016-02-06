@@ -5,8 +5,8 @@ public class StaticMethodDocumentation {
         return new ObjectDocumentationSnippet("rest-object-model", definitions);
     }
 
-    public static DocObjectDefinition documentObject(Class type, DocFieldDefinition... fields) {
-        return new DocObjectDefinition(type, fields);
+    public static DocObjectDefinition documentObject(Object example, DocFieldDefinition... fields) {
+        return new DocObjectDefinition(example, fields);
     }
 
     public static DocFieldDefinition fieldDocumentation(String path) {

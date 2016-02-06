@@ -69,8 +69,8 @@ class DefaultRepoManagementApiIntegrationTest extends Specification {
 
         then:
         allCommits.size() == 2
-        allCommits[0].commitId == '2'
-        allCommits[1].commitId == '1'
+        allCommits[0].commitId == '1'
+        allCommits[1].commitId == '2'
 
         when:
         allCommits = repoManagementApi.findLatestCommit(repoModel, [new ApiCommitModel('2'), new ApiCommitModel('1')])

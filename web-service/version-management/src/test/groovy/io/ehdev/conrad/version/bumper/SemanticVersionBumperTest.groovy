@@ -36,15 +36,19 @@ class SemanticVersionBumperTest extends Specification {
         nextVersion.toString() == version
 
         where:
-        search           | version
-        '[bump build]'   | '1.2.3.1'
-        '[bump patch]'   | '1.2.4'
-        '[bump minor]'   | '1.3.0'
-        '[bump major]'   | '2.0.0'
-        '[bump group 4]' | '1.2.3.1'
-        '[bump group 3]' | '1.2.4'
-        '[bump group 2]' | '1.3.0'
-        '[bump group 1]' | '2.0.0'
+        search                 | version
+        '[bump build]'         | '1.2.3.1'
+        '[bump build version]' | '1.2.3.1'
+        '[bump patch]'         | '1.2.4'
+        '[bump patch version]' | '1.2.4'
+        '[bump minor]'         | '1.3.0'
+        '[bump minor version]' | '1.3.0'
+        '[bump major]'         | '2.0.0'
+        '[bump major version]' | '2.0.0'
+        '[bump group 4]'       | '1.2.3.1'
+        '[bump group 3]'       | '1.2.4'
+        '[bump group 2]'       | '1.3.0'
+        '[bump group 1]'       | '2.0.0'
 
     }
 

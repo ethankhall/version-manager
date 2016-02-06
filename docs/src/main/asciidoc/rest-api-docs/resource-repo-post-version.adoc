@@ -1,0 +1,19 @@
+[[resource-repository-get-post-version]]
+=== Get Versions for a Repo
+A `GET` request lists all of the service's people.
+
+==== Example request
+
+===== Path Parameters
+include::{snippets}/post-repo-version/path-parameters.adoc[]
+
+===== Curl Request
+include::{snippets}/post-repo-version/curl-request.adoc[]
+
+==== Example response
+
+===== Response Fields
+include::{snippets}/post-repo-version/response-fields.adoc[]
+
+===== Response Body
+include::{snippets}/post-repo-version/http-response.adoc[]

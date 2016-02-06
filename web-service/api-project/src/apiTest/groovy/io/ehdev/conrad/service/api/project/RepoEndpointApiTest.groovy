@@ -5,11 +5,14 @@ import io.ehdev.conrad.apidoc.ObjectDocumentationSnippet
 import io.ehdev.conrad.database.api.RepoManagementApi
 import io.ehdev.conrad.database.api.TestDoubleRepoManagementApi
 import io.ehdev.conrad.database.model.project.ApiRepoModel
+import io.ehdev.conrad.database.model.project.ApiVersionBumperModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.model.rest.RestCommitModel
 import io.ehdev.conrad.model.rest.RestRepoCreateModel
+import io.ehdev.conrad.model.version.VersionCreateModel
 import io.ehdev.conrad.service.api.config.ApiQualifiedRepoModelResolver
 import io.ehdev.conrad.service.api.service.RepoEndpoint
+import io.ehdev.conrad.version.bumper.SemanticVersionBumper
 import io.ehdev.conrad.version.bumper.api.VersionBumperService
 import org.junit.Rule
 import org.springframework.http.MediaType
@@ -29,6 +32,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
+import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields
 import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters
@@ -45,8 +49,9 @@ class RepoEndpointApiTest extends Specification {
 
     private MockMvc mockMvc
     private RepoEndpoint repoEndpoint
-    private RepoManagementApi repoManagementApi = new TestDoubleRepoManagementApi()
-    private VersionBumperService versionBumperService
+    private def bumper = new ApiVersionBumperModel(SemanticVersionBumper.getSimpleName(), ' ', 'semver');
+    private RepoManagementApi repoManagementApi = new TestDoubleRepoManagementApi(bumper)
+    private VersionBumperService versionBumperService = new TestDoubleVersionBumperService()
     private RestDocumentationResultHandler document
 
     def setup() {
@@ -120,13 +125,46 @@ class RepoEndpointApiTest extends Specification {
 
         mockMvc.perform(
             get("/api/v1/project/{projectName}/repo/{repoName}/versions", 'bigFizzyDice', 'smallDice')
-                .contentType(MediaType.APPLICATION_JSON))
-            .andExpect(status().isOk());
+                .contentType(MediaType.APPLICATION_JSON)
+        ).andExpect(status().isOk());
+    }
+
+    def 'post-repo-version'() {
+        expect:
+        createRepo()
+        document.snippets(
+            responseFields(
+                fieldWithPath('commitId').description('Commit id for commit').type(JsonFieldType.STRING),
+                fieldWithPath('version').description('Version string for commit').type(JsonFieldType.STRING),
+                fieldWithPath('versionParts')
+                    .description('Array of integers representing the version parts')
+                    .type('int[]'),
+                fieldWithPath('postfix')
+                    .description('Postfix for the commit version. Nullable')
+                    .type(JsonFieldType.STRING),
+            ),
+            requestFields(
+                fieldWithPath('commitId').description('The commitId fo the next version').type(JsonFieldType.STRING),
+                fieldWithPath('message').description('Message to be used to calculate the next version.').type(JsonFieldType.STRING),
+                fieldWithPath('commits')
+                    .description('Array of commitId\'s in the history. Best practice is to include about 50 commits.')
+                    .type(JsonFieldType.ARRAY),
+            ),
+            pathParameters(defaultParameters()),
+        )
+
+        mockMvc.perform(
+            post("/api/v1/project/{projectName}/repo/{repoName}/version", 'bigFizzyDice', 'smallDice')
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(toJson(new VersionCreateModel(['1', '2'], '[bump major version]', '3')))
+        )
+            .andExpect(status().isCreated());
     }
 
     ObjectDocumentationSnippet createCommitDocumentationSnippet() {
         return objectSnippits(
-            documentObject(RestCommitModel,
+            documentObject(new RestCommitModel("abc123", "2.4.5-BETA5"),
                 fieldDocumentation('commitId').description('Commit id for commit').withType(JsonFieldType.STRING),
                 fieldDocumentation('version').description('Version string for commit').withType(JsonFieldType.STRING),
                 fieldDocumentation('versionParts')

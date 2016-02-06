@@ -9,10 +9,10 @@ public class StandardMessageMatchers {
 
     public static class SquareBracket {
 
-        private static final SquareBracketCommitMatcher major = new SquareBracketCommitMatcher("major", StandardVersionGroupBump.majorVersion());
-        private static final SquareBracketCommitMatcher minor = new SquareBracketCommitMatcher("minor", StandardVersionGroupBump.minorVersion());
-        private static final SquareBracketCommitMatcher patch = new SquareBracketCommitMatcher("patch", StandardVersionGroupBump.patchVersion());
-        private static final SquareBracketCommitMatcher build = new SquareBracketCommitMatcher("build", StandardVersionGroupBump.buildVersion());
+        private static final SquareBracketCommitMatcher major = new SquareBracketCommitMatcher("major( version)?", StandardVersionGroupBump.majorVersion());
+        private static final SquareBracketCommitMatcher minor = new SquareBracketCommitMatcher("minor( version)?", StandardVersionGroupBump.minorVersion());
+        private static final SquareBracketCommitMatcher patch = new SquareBracketCommitMatcher("patch( version)?", StandardVersionGroupBump.patchVersion());
+        private static final SquareBracketCommitMatcher build = new SquareBracketCommitMatcher("build( version)?", StandardVersionGroupBump.buildVersion());
 
         public static SquareBracketCommitMatcher minor() {
             return minor;
