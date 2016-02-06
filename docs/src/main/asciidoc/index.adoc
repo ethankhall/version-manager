@@ -1,5 +1,5 @@
 = Conrad User Guide
-Ethan hall;
+Ethan Hall;
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -120,12 +120,9 @@ The project is the root element that every repository. Check out the API docs li
 
 [[resources-repository]]
 == Repository
-The Repository resource is used to create, modify and list repositories.
 
-include::rest-api-docs/resource-repo-create.adoc[]
-include::rest-api-docs/resource-repo-get-details.adoc[]
-include::rest-api-docs/resource-repo-get-versions.adoc[]
-include::rest-api-docs/resource-repo-post-version.adoc[]
-include::rest-api-docs/resource-repo-post-search.adoc[]
-include::rest-api-docs/resource-repo-post-search-not-found.adoc[]
+A repository contains versions and details about the repository. The API docs are located link:api/repository/index.html[here]
 
+[[resources-repository-versions]]
+=== Versions
+Given a repository, a sub-resource are versions. For details about the version sub-resource, in the link:api/repository/version/index.html[Version API docs].

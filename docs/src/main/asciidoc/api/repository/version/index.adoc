@@ -1,14 +1,19 @@
-= Project API Documentation
+= Version API Documentation
 
 This API uses the standard REST verbs and response codes, but for more details about these check out link:../header.html[here].
 
 Some requests require link:../authentication/index.html[authentication]. Each describe the required authentication and what the result of a request will be when not authenticated.
 
+Every version belongs to a link:../index.html[Repository].
+
 [shared-objects]
 == Shared Objects
 
-include::../model/RestProjectModel.adoc[]
-include::../model/RestRepoModel.adoc[]
+
+*TBD*
 
 == Requests
-include::_include/create.adoc[]
+include::_include/create-version.adoc[]
+include::_include/get-version.adoc[]
+include::_include/search.adoc[]
+include::_include/search-not-found.adoc[]
