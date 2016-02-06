@@ -1,6 +1,8 @@
-[[resource-project-create]]
+[[project-create]]
 === Create new Project
-A `POST` request lists all of the service's people.
+This request requires that you be logged in with the service. More details related to authentication can be found link::../authentication/index.html[here].
+
+A `POST` request is used to create a project.
 
 ==== Example request
 
@@ -13,7 +15,7 @@ include::{snippets}/create-project/curl-request.adoc[]
 ==== Example response
 
 ===== Response Fields
-include::{snippets}/create-project/response-fields.adoc[]
+This request returns a <<model-rest-project-model,RestProjectModel>>.
 
 ===== Response Body
 include::{snippets}/create-project/http-response.adoc[]

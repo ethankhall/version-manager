@@ -1,0 +1,12 @@
+= Project API Documentation
+
+This API uses the standard REST verbs and response codes, but for more details about these check out link:../header.html[here].
+
+[shared-objects]
+== Shared Objects
+
+include::../model/RestProjectModel.adoc[]
+include::../model/RestRepoModel.adoc[]
+
+== Requests
+include::create.adoc[]

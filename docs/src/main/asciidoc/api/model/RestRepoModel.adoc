@@ -1,0 +1,37 @@
+
+[[model-rest-repo-model]]
+.RestRepoModel Description
+[cols="1s,2,2", options="header"]
+|===
+| Field
+| Type
+| Description
+
+| projectName
+| String
+| Name of the project containing this repository.
+
+| repoName
+| String
+| The name of this repository.
+
+| scmUrl
+| String
+| URL to the SCM, nullable
+
+| url
+| String
+| URL to access the repository
+|===
+
+
+[source,json]
+.RestRepoModel Example
+----
+{
+  "projectName" : "bigFuzzyDice",
+  "repoName" : "largeDice",
+  "scmUrl" : null,
+  "url": "http://foo/bar/api/v1/bigFuzzyDice/repository/largeDice"
+}
+----

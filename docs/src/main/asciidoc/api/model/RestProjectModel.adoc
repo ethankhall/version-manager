@@ -1,0 +1,40 @@
+
+[[model-rest-project-model]]
+.RestProjectModel Description
+[cols="1s,2,2", options="header"]
+|===
+| Field Name
+| Type
+| Description
+
+| name
+| String
+| Name of the project
+
+| repos
+a| <<model-rest-repo-model,RestRepoModel>>[]
+| A list of repo's contained by the project.
+
+|===
+
+[source,json]
+.RestProjectModel Example
+----
+{
+  "name" : "bigFuzzyDice",
+  "repos" : [
+    {
+      "projectName" : "bigFuzzyDice",
+      "repoName" : "smallDice",
+      "scmUrl" : null,
+      "url": "http://foo/bar/api/v1/bigFuzzyDice/repository/largeDice"
+    },
+    {
+      "projectName" : "bigFuzzyDice",
+      "repoName" : "largeDice",
+      "scmUrl" : null,
+      "url": "http://foo/bar/api/v1/bigFuzzyDice/repository/largeDice"
+    }
+  ]
+}
+----
