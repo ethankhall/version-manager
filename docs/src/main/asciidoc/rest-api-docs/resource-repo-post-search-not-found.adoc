@@ -1,0 +1,19 @@
+[[resource-repository-post-repo-search-not-found]]
+=== Get Versions for a Repo
+A `GET` request lists all of the service's people.
+
+==== Example request
+
+===== Path Parameters
+include::{snippets}/post-repo-search-not-found/path-parameters.adoc[]
+
+===== Curl Request
+include::{snippets}/post-repo-search-not-found/curl-request.adoc[]
+
+==== Example response
+
+===== Response Fields
+include::{snippets}/post-repo-search-not-found/response-fields.adoc[]
+
+===== Response Body
+include::{snippets}/post-repo-search-not-found/http-response.adoc[]

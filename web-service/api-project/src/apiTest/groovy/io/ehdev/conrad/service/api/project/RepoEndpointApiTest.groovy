@@ -1,4 +1,5 @@
 package io.ehdev.conrad.service.api.project
+
 import groovy.json.JsonBuilder
 import io.ehdev.conrad.api.user.config.BaseUserModelResolver
 import io.ehdev.conrad.apidoc.ObjectDocumentationSnippet
@@ -9,6 +10,8 @@ import io.ehdev.conrad.database.model.project.ApiVersionBumperModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.model.rest.RestCommitModel
 import io.ehdev.conrad.model.rest.RestRepoCreateModel
+import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection
+import io.ehdev.conrad.model.rest.commit.RestCommitIdModel
 import io.ehdev.conrad.model.version.VersionCreateModel
 import io.ehdev.conrad.service.api.config.ApiQualifiedRepoModelResolver
 import io.ehdev.conrad.service.api.service.RepoEndpoint
@@ -18,6 +21,7 @@ import org.junit.Rule
 import org.springframework.http.MediaType
 import org.springframework.restdocs.RestDocumentation
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler
+import org.springframework.restdocs.payload.FieldDescriptor
 import org.springframework.restdocs.payload.JsonFieldType
 import org.springframework.restdocs.request.ParameterDescriptor
 import org.springframework.test.web.servlet.MockMvc
@@ -31,9 +35,7 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.preprocessResponse
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint
-import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath
-import static org.springframework.restdocs.payload.PayloadDocumentation.requestFields
-import static org.springframework.restdocs.payload.PayloadDocumentation.responseFields
+import static org.springframework.restdocs.payload.PayloadDocumentation.*
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName
 import static org.springframework.restdocs.request.RequestDocumentation.pathParameters
 import static org.springframework.restdocs.snippet.Attributes.key
@@ -133,16 +135,7 @@ class RepoEndpointApiTest extends Specification {
         expect:
         createRepo()
         document.snippets(
-            responseFields(
-                fieldWithPath('commitId').description('Commit id for commit').type(JsonFieldType.STRING),
-                fieldWithPath('version').description('Version string for commit').type(JsonFieldType.STRING),
-                fieldWithPath('versionParts')
-                    .description('Array of integers representing the version parts')
-                    .type('int[]'),
-                fieldWithPath('postfix')
-                    .description('Postfix for the commit version. Nullable')
-                    .type(JsonFieldType.STRING),
-            ),
+            responseFields(defaultVersionResponse()),
             requestFields(
                 fieldWithPath('commitId').description('The commitId fo the next version').type(JsonFieldType.STRING),
                 fieldWithPath('message').description('Message to be used to calculate the next version.').type(JsonFieldType.STRING),
@@ -160,6 +153,47 @@ class RepoEndpointApiTest extends Specification {
                 .content(toJson(new VersionCreateModel(['1', '2'], '[bump major version]', '3')))
         )
             .andExpect(status().isCreated());
+    }
+
+    def 'post-repo-search'() {
+        expect:
+        createRepo()
+        document.snippets(
+            responseFields(defaultVersionResponse()),
+            requestFields(
+                fieldWithPath("commits[]").description("Array of commitId's to search"),
+                fieldWithPath("commits[].commitId").description("CommitId to include in the search"),
+
+            ),
+            pathParameters(defaultParameters()),
+        )
+
+        mockMvc.perform(
+            post("/api/v1/project/{projectName}/repo/{repoName}/search/version", 'bigFizzyDice', 'smallDice')
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(toJson(new RestCommitIdCollection([new RestCommitIdModel('1'), new RestCommitIdModel('2')])))
+        ).andExpect(status().isOk());
+    }
+
+    def 'post-repo-search-not-found'() {
+        expect:
+        createRepo()
+        document.snippets(
+            requestFields(
+                fieldWithPath("commits[]").description("Array of commitId's to search"),
+                fieldWithPath("commits[].commitId").description("CommitId to include in the search"),
+
+            ),
+            pathParameters(defaultParameters()),
+        )
+
+        mockMvc.perform(
+            post("/api/v1/project/{projectName}/repo/{repoName}/search/version", 'bigFizzyDice', 'smallDice')
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .content(toJson(new RestCommitIdCollection([new RestCommitIdModel('10')])))
+        ).andExpect(status().isNotFound());
     }
 
     ObjectDocumentationSnippet createCommitDocumentationSnippet() {
@@ -192,6 +226,19 @@ class RepoEndpointApiTest extends Specification {
                 .description("Name of the repository to create.")
                 .attributes(key("constraints").value("Must not be null. Must be at least 5 characters long."))
         ].toArray(new ParameterDescriptor[0])
+    }
+
+    FieldDescriptor[] defaultVersionResponse() {
+        return [
+            fieldWithPath('commitId').description('Commit id for commit').type(JsonFieldType.STRING),
+            fieldWithPath('version').description('Version string for commit').type(JsonFieldType.STRING),
+            fieldWithPath('versionParts')
+                .description('Array of integers representing the version parts')
+                .type('int[]'),
+            fieldWithPath('postfix')
+                .description('Postfix for the commit version. Nullable')
+                .type(JsonFieldType.STRING)
+        ] as FieldDescriptor[]
     }
 
     String toJson(Object o) {

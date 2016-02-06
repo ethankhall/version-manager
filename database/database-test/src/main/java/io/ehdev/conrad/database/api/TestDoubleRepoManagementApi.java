@@ -6,6 +6,8 @@ import io.ehdev.conrad.database.model.project.ApiVersionBumperModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public class TestDoubleRepoManagementApi implements RepoManagementApi {
 
@@ -26,8 +28,15 @@ public class TestDoubleRepoManagementApi implements RepoManagementApi {
 
     @Override
     public Optional<ApiCommitModel> findLatestCommit(ApiRepoModel qualifiedRepo, List<ApiCommitModel> history) {
-        int size = commits.get(qualifiedRepo.getMergedName()).size();
-        return Optional.ofNullable(commits.get(qualifiedRepo.getMergedName()).get(size - 1));
+        List<ApiCommitModel> size = commits.get(qualifiedRepo.getMergedName());
+        Map<String, ApiCommitModel> versions = size.stream().collect(Collectors.toMap(ApiCommitModel::getCommitId, Function.identity()));
+        for(int i = history.size() - 1; i >= 0; i--) {
+            ApiCommitModel apiCommitModel = history.get(i);
+            if(versions.containsKey(apiCommitModel.getCommitId())) {
+                return Optional.of(versions.get(apiCommitModel.getCommitId()));
+            }
+        }
+        return Optional.empty();
     }
 
     @Override

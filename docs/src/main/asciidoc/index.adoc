@@ -32,4 +32,6 @@ include::rest-api-docs/resource-repo-create.adoc[]
 include::rest-api-docs/resource-repo-get-details.adoc[]
 include::rest-api-docs/resource-repo-get-versions.adoc[]
 include::rest-api-docs/resource-repo-post-version.adoc[]
+include::rest-api-docs/resource-repo-post-search.adoc[]
+include::rest-api-docs/resource-repo-post-search-not-found.adoc[]
 
