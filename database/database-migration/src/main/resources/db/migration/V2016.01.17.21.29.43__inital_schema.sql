@@ -1,5 +1,6 @@
 CREATE TABLE user_details (
     uuid          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id       VARCHAR(128) NOT NULL UNIQUE,
     name          VARCHAR(255) NOT NULL,
     email_address VARCHAR(256) NOT NULL
 );
@@ -13,6 +14,14 @@ CREATE TABLE user_tokens (
     expires_at TIMESTAMP WITH TIME ZONE                        DEFAULT NULL,
     valid      BOOLEAN                                         DEFAULT TRUE,
     token_type token_type                          NOT NULL
+);
+
+CREATE TABLE user_security_client_profile (
+    uuid             UUID PRIMARY KEY                              DEFAULT uuid_generate_v4(),
+    user_uuid        UUID REFERENCES user_details (uuid) NOT NULL,
+    provider_type    VARCHAR(64)                         NOT NULL,
+    provider_user_id VARCHAR(128)                        NOT NULL,
+    UNIQUE (provider_type, provider_user_id)
 );
 
 CREATE TABLE project_details (
@@ -63,10 +72,14 @@ CREATE TABLE commit_metadata (
     UNIQUE (name, commit_uuid)
 );
 
-CREATE TABLE user_security_client_profile (
-    uuid             UUID PRIMARY KEY                              DEFAULT uuid_generate_v4(),
-    user_uuid        UUID REFERENCES user_details (uuid) NOT NULL,
-    provider_type    VARCHAR(64)                         NOT NULL,
-    provider_user_id VARCHAR(128)                        NOT NULL,
-    UNIQUE (provider_type, provider_user_id)
+CREATE TABLE user_permissions (
+    uuid              UUID PRIMARY KEY                              DEFAULT uuid_generate_v4(),
+    project_name      CHARACTER VARYING(255)                 NOT NULL,
+    repo_name         CHARACTER VARYING(255)                 NOT NULL,
+    project_uuid      UUID REFERENCES project_details (uuid) NOT NULL,
+    repo_details_uuid UUID REFERENCES repo_details (uuid),
+    user_uuid         UUID REFERENCES user_details (uuid)    NOT NULL,
+    permissions       INTEGER                                NOT NULL,
+    UNIQUE (project_uuid, repo_details_uuid, user_uuid),
+    UNIQUE (project_name, repo_name)
 );

@@ -9,6 +9,7 @@ import io.ehdev.conrad.db.tables.CommitMetadataTable;
 import io.ehdev.conrad.db.tables.ProjectDetailsTable;
 import io.ehdev.conrad.db.tables.RepoDetailsTable;
 import io.ehdev.conrad.db.tables.UserDetailsTable;
+import io.ehdev.conrad.db.tables.UserPermissionsTable;
 import io.ehdev.conrad.db.tables.UserSecurityClientProfileTable;
 import io.ehdev.conrad.db.tables.UserTokensTable;
 import io.ehdev.conrad.db.tables.VersionBumpersTable;
@@ -17,6 +18,7 @@ import io.ehdev.conrad.db.tables.records.CommitMetadataRecord;
 import io.ehdev.conrad.db.tables.records.ProjectDetailsRecord;
 import io.ehdev.conrad.db.tables.records.RepoDetailsRecord;
 import io.ehdev.conrad.db.tables.records.UserDetailsRecord;
+import io.ehdev.conrad.db.tables.records.UserPermissionsRecord;
 import io.ehdev.conrad.db.tables.records.UserSecurityClientProfileRecord;
 import io.ehdev.conrad.db.tables.records.UserTokensRecord;
 import io.ehdev.conrad.db.tables.records.VersionBumpersRecord;
@@ -61,6 +63,10 @@ public class Keys {
 	public static final UniqueKey<RepoDetailsRecord> REPO_DETAILS_PKEY = UniqueKeys0.REPO_DETAILS_PKEY;
 	public static final UniqueKey<RepoDetailsRecord> REPO_DETAILS_PROJECT_NAME_REPO_NAME_KEY = UniqueKeys0.REPO_DETAILS_PROJECT_NAME_REPO_NAME_KEY;
 	public static final UniqueKey<UserDetailsRecord> USER_DETAILS_PKEY = UniqueKeys0.USER_DETAILS_PKEY;
+	public static final UniqueKey<UserDetailsRecord> USER_DETAILS_USER_ID_KEY = UniqueKeys0.USER_DETAILS_USER_ID_KEY;
+	public static final UniqueKey<UserPermissionsRecord> USER_PERMISSIONS_PKEY = UniqueKeys0.USER_PERMISSIONS_PKEY;
+	public static final UniqueKey<UserPermissionsRecord> USER_PERMISSIONS_PROJECT_NAME_REPO_NAME_KEY = UniqueKeys0.USER_PERMISSIONS_PROJECT_NAME_REPO_NAME_KEY;
+	public static final UniqueKey<UserPermissionsRecord> USER_PERMISSIONS_PROJECT_UUID_REPO_DETAILS_UUID_USER_UUID_KEY = UniqueKeys0.USER_PERMISSIONS_PROJECT_UUID_REPO_DETAILS_UUID_USER_UUID_KEY;
 	public static final UniqueKey<UserSecurityClientProfileRecord> USER_SECURITY_CLIENT_PROFILE_PKEY = UniqueKeys0.USER_SECURITY_CLIENT_PROFILE_PKEY;
 	public static final UniqueKey<UserSecurityClientProfileRecord> USER_SECURITY_CLIENT_PROFILE_PROVIDER_TYPE_PROVIDER_USER_ID_KEY = UniqueKeys0.USER_SECURITY_CLIENT_PROFILE_PROVIDER_TYPE_PROVIDER_USER_ID_KEY;
 	public static final UniqueKey<UserTokensRecord> USER_TOKENS_PKEY = UniqueKeys0.USER_TOKENS_PKEY;
@@ -78,6 +84,9 @@ public class Keys {
 	public static final ForeignKey<CommitMetadataRecord, RepoDetailsRecord> COMMIT_METADATA__COMMIT_METADATA_REPO_DETAILS_UUID_FKEY = ForeignKeys0.COMMIT_METADATA__COMMIT_METADATA_REPO_DETAILS_UUID_FKEY;
 	public static final ForeignKey<RepoDetailsRecord, ProjectDetailsRecord> REPO_DETAILS__REPO_DETAILS_PROJECT_UUID_FKEY = ForeignKeys0.REPO_DETAILS__REPO_DETAILS_PROJECT_UUID_FKEY;
 	public static final ForeignKey<RepoDetailsRecord, VersionBumpersRecord> REPO_DETAILS__REPO_DETAILS_VERSION_BUMPER_UUID_FKEY = ForeignKeys0.REPO_DETAILS__REPO_DETAILS_VERSION_BUMPER_UUID_FKEY;
+	public static final ForeignKey<UserPermissionsRecord, ProjectDetailsRecord> USER_PERMISSIONS__USER_PERMISSIONS_PROJECT_UUID_FKEY = ForeignKeys0.USER_PERMISSIONS__USER_PERMISSIONS_PROJECT_UUID_FKEY;
+	public static final ForeignKey<UserPermissionsRecord, RepoDetailsRecord> USER_PERMISSIONS__USER_PERMISSIONS_REPO_DETAILS_UUID_FKEY = ForeignKeys0.USER_PERMISSIONS__USER_PERMISSIONS_REPO_DETAILS_UUID_FKEY;
+	public static final ForeignKey<UserPermissionsRecord, UserDetailsRecord> USER_PERMISSIONS__USER_PERMISSIONS_USER_UUID_FKEY = ForeignKeys0.USER_PERMISSIONS__USER_PERMISSIONS_USER_UUID_FKEY;
 	public static final ForeignKey<UserSecurityClientProfileRecord, UserDetailsRecord> USER_SECURITY_CLIENT_PROFILE__USER_SECURITY_CLIENT_PROFILE_USER_UUID_FKEY = ForeignKeys0.USER_SECURITY_CLIENT_PROFILE__USER_SECURITY_CLIENT_PROFILE_USER_UUID_FKEY;
 	public static final ForeignKey<UserTokensRecord, UserDetailsRecord> USER_TOKENS__USER_TOKENS_USER_UUID_FKEY = ForeignKeys0.USER_TOKENS__USER_TOKENS_USER_UUID_FKEY;
 
@@ -96,6 +105,10 @@ public class Keys {
 		public static final UniqueKey<RepoDetailsRecord> REPO_DETAILS_PKEY = createUniqueKey(RepoDetailsTable.REPO_DETAILS, RepoDetailsTable.REPO_DETAILS.UUID);
 		public static final UniqueKey<RepoDetailsRecord> REPO_DETAILS_PROJECT_NAME_REPO_NAME_KEY = createUniqueKey(RepoDetailsTable.REPO_DETAILS, RepoDetailsTable.REPO_DETAILS.PROJECT_NAME, RepoDetailsTable.REPO_DETAILS.REPO_NAME);
 		public static final UniqueKey<UserDetailsRecord> USER_DETAILS_PKEY = createUniqueKey(UserDetailsTable.USER_DETAILS, UserDetailsTable.USER_DETAILS.UUID);
+		public static final UniqueKey<UserDetailsRecord> USER_DETAILS_USER_ID_KEY = createUniqueKey(UserDetailsTable.USER_DETAILS, UserDetailsTable.USER_DETAILS.USER_ID);
+		public static final UniqueKey<UserPermissionsRecord> USER_PERMISSIONS_PKEY = createUniqueKey(UserPermissionsTable.USER_PERMISSIONS, UserPermissionsTable.USER_PERMISSIONS.UUID);
+		public static final UniqueKey<UserPermissionsRecord> USER_PERMISSIONS_PROJECT_NAME_REPO_NAME_KEY = createUniqueKey(UserPermissionsTable.USER_PERMISSIONS, UserPermissionsTable.USER_PERMISSIONS.PROJECT_NAME, UserPermissionsTable.USER_PERMISSIONS.REPO_NAME);
+		public static final UniqueKey<UserPermissionsRecord> USER_PERMISSIONS_PROJECT_UUID_REPO_DETAILS_UUID_USER_UUID_KEY = createUniqueKey(UserPermissionsTable.USER_PERMISSIONS, UserPermissionsTable.USER_PERMISSIONS.PROJECT_UUID, UserPermissionsTable.USER_PERMISSIONS.REPO_DETAILS_UUID, UserPermissionsTable.USER_PERMISSIONS.USER_UUID);
 		public static final UniqueKey<UserSecurityClientProfileRecord> USER_SECURITY_CLIENT_PROFILE_PKEY = createUniqueKey(UserSecurityClientProfileTable.USER_SECURITY_CLIENT_PROFILE, UserSecurityClientProfileTable.USER_SECURITY_CLIENT_PROFILE.UUID);
 		public static final UniqueKey<UserSecurityClientProfileRecord> USER_SECURITY_CLIENT_PROFILE_PROVIDER_TYPE_PROVIDER_USER_ID_KEY = createUniqueKey(UserSecurityClientProfileTable.USER_SECURITY_CLIENT_PROFILE, UserSecurityClientProfileTable.USER_SECURITY_CLIENT_PROFILE.PROVIDER_TYPE, UserSecurityClientProfileTable.USER_SECURITY_CLIENT_PROFILE.PROVIDER_USER_ID);
 		public static final UniqueKey<UserTokensRecord> USER_TOKENS_PKEY = createUniqueKey(UserTokensTable.USER_TOKENS, UserTokensTable.USER_TOKENS.UUID);
@@ -111,6 +124,9 @@ public class Keys {
 		public static final ForeignKey<CommitMetadataRecord, RepoDetailsRecord> COMMIT_METADATA__COMMIT_METADATA_REPO_DETAILS_UUID_FKEY = createForeignKey(io.ehdev.conrad.db.Keys.REPO_DETAILS_PKEY, CommitMetadataTable.COMMIT_METADATA, CommitMetadataTable.COMMIT_METADATA.REPO_DETAILS_UUID);
 		public static final ForeignKey<RepoDetailsRecord, ProjectDetailsRecord> REPO_DETAILS__REPO_DETAILS_PROJECT_UUID_FKEY = createForeignKey(io.ehdev.conrad.db.Keys.PROJECT_DETAILS_PKEY, RepoDetailsTable.REPO_DETAILS, RepoDetailsTable.REPO_DETAILS.PROJECT_UUID);
 		public static final ForeignKey<RepoDetailsRecord, VersionBumpersRecord> REPO_DETAILS__REPO_DETAILS_VERSION_BUMPER_UUID_FKEY = createForeignKey(io.ehdev.conrad.db.Keys.VERSION_BUMPERS_PKEY, RepoDetailsTable.REPO_DETAILS, RepoDetailsTable.REPO_DETAILS.VERSION_BUMPER_UUID);
+		public static final ForeignKey<UserPermissionsRecord, ProjectDetailsRecord> USER_PERMISSIONS__USER_PERMISSIONS_PROJECT_UUID_FKEY = createForeignKey(io.ehdev.conrad.db.Keys.PROJECT_DETAILS_PKEY, UserPermissionsTable.USER_PERMISSIONS, UserPermissionsTable.USER_PERMISSIONS.PROJECT_UUID);
+		public static final ForeignKey<UserPermissionsRecord, RepoDetailsRecord> USER_PERMISSIONS__USER_PERMISSIONS_REPO_DETAILS_UUID_FKEY = createForeignKey(io.ehdev.conrad.db.Keys.REPO_DETAILS_PKEY, UserPermissionsTable.USER_PERMISSIONS, UserPermissionsTable.USER_PERMISSIONS.REPO_DETAILS_UUID);
+		public static final ForeignKey<UserPermissionsRecord, UserDetailsRecord> USER_PERMISSIONS__USER_PERMISSIONS_USER_UUID_FKEY = createForeignKey(io.ehdev.conrad.db.Keys.USER_DETAILS_PKEY, UserPermissionsTable.USER_PERMISSIONS, UserPermissionsTable.USER_PERMISSIONS.USER_UUID);
 		public static final ForeignKey<UserSecurityClientProfileRecord, UserDetailsRecord> USER_SECURITY_CLIENT_PROFILE__USER_SECURITY_CLIENT_PROFILE_USER_UUID_FKEY = createForeignKey(io.ehdev.conrad.db.Keys.USER_DETAILS_PKEY, UserSecurityClientProfileTable.USER_SECURITY_CLIENT_PROFILE, UserSecurityClientProfileTable.USER_SECURITY_CLIENT_PROFILE.USER_UUID);
 		public static final ForeignKey<UserTokensRecord, UserDetailsRecord> USER_TOKENS__USER_TOKENS_USER_UUID_FKEY = createForeignKey(io.ehdev.conrad.db.Keys.USER_DETAILS_PKEY, UserTokensTable.USER_TOKENS, UserTokensTable.USER_TOKENS.USER_UUID);
 	}

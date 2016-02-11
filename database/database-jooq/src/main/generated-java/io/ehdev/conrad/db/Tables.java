@@ -9,6 +9,7 @@ import io.ehdev.conrad.db.tables.CommitMetadataTable;
 import io.ehdev.conrad.db.tables.ProjectDetailsTable;
 import io.ehdev.conrad.db.tables.RepoDetailsTable;
 import io.ehdev.conrad.db.tables.UserDetailsTable;
+import io.ehdev.conrad.db.tables.UserPermissionsTable;
 import io.ehdev.conrad.db.tables.UserSecurityClientProfileTable;
 import io.ehdev.conrad.db.tables.UserTokensTable;
 import io.ehdev.conrad.db.tables.VersionBumpersTable;
@@ -53,6 +54,11 @@ public class Tables {
 	 * The table public.user_details
 	 */
 	public static final UserDetailsTable USER_DETAILS = io.ehdev.conrad.db.tables.UserDetailsTable.USER_DETAILS;
+
+	/**
+	 * The table public.user_permissions
+	 */
+	public static final UserPermissionsTable USER_PERMISSIONS = io.ehdev.conrad.db.tables.UserPermissionsTable.USER_PERMISSIONS;
 
 	/**
 	 * The table public.user_security_client_profile

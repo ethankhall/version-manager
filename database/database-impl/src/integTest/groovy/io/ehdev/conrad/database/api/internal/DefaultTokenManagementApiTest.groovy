@@ -1,10 +1,10 @@
 package io.ehdev.conrad.database.api.internal
+
 import io.ehdev.conrad.database.config.TestConradDatabaseConfig
 import io.ehdev.conrad.database.model.user.ApiTokenType
 import io.ehdev.conrad.db.tables.daos.UserTokensDao
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
-import org.springframework.context.annotation.Profile
 import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.transaction.annotation.Transactional
@@ -28,7 +28,7 @@ class DefaultTokenManagementApiTest extends Specification {
 
     def 'can create tokens'() {
         when:
-        def user = userManagementApi.createUser('name', 'email')
+        def user = userManagementApi.createUser('userId', 'name', 'email')
         def token = tokenManagementApi.createToken(user, ApiTokenType.USER)
 
         then:
@@ -39,7 +39,7 @@ class DefaultTokenManagementApiTest extends Specification {
 
     def 'will say token is invalid when it is expired'() {
         when:
-        def user = userManagementApi.createUser('name', 'email')
+        def user = userManagementApi.createUser('userId', 'name', 'email')
         def token = tokenManagementApi.createToken(user, ApiTokenType.USER)
         def model = userTokensDao.fetchOneByUuid(token.uuid)
         model.setExpiresAt(Instant.now().minusSeconds(1))
@@ -51,7 +51,7 @@ class DefaultTokenManagementApiTest extends Specification {
 
     def 'will say token is invalid not valid'() {
         when:
-        def user = userManagementApi.createUser('name', 'email')
+        def user = userManagementApi.createUser('userId', 'name', 'email')
         def token = tokenManagementApi.createToken(user, ApiTokenType.USER)
         tokenManagementApi.invalidateTokenValid(token)
 
@@ -61,7 +61,7 @@ class DefaultTokenManagementApiTest extends Specification {
 
     def 'can find user by token'() {
         when:
-        def user = userManagementApi.createUser('name', 'email')
+        def user = userManagementApi.createUser('userId', 'name', 'email')
         def token = tokenManagementApi.createToken(user, ApiTokenType.USER)
 
         then:

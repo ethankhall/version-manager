@@ -15,6 +15,7 @@ import io.ehdev.conrad.model.rest.commit.RestCommitIdModel
 import io.ehdev.conrad.model.version.VersionCreateModel
 import io.ehdev.conrad.service.api.config.ApiQualifiedRepoModelResolver
 import io.ehdev.conrad.service.api.service.RepoEndpoint
+import io.ehdev.conrad.service.api.service.RepoVersionEndpoint
 import io.ehdev.conrad.version.bumper.SemanticVersionBumper
 import io.ehdev.conrad.version.bumper.api.VersionBumperService
 import org.junit.Rule
@@ -51,6 +52,7 @@ class RepoEndpointApiTest extends Specification {
 
     private MockMvc mockMvc
     private RepoEndpoint repoEndpoint
+    private RepoVersionEndpoint repoVersionEndpoint
     private def bumper = new ApiVersionBumperModel(SemanticVersionBumper.getSimpleName(), ' ', 'semver');
     private RepoManagementApi repoManagementApi = new TestDoubleRepoManagementApi(bumper)
     private VersionBumperService versionBumperService = new TestDoubleVersionBumperService()
@@ -59,8 +61,9 @@ class RepoEndpointApiTest extends Specification {
     def setup() {
         document = document("{method-name}", preprocessResponse(prettyPrint()));
         repoEndpoint = new RepoEndpoint(repoManagementApi, versionBumperService)
+        repoVersionEndpoint = new RepoVersionEndpoint(repoManagementApi, versionBumperService)
 
-        mockMvc = MockMvcBuilders.standaloneSetup(repoEndpoint)
+        mockMvc = MockMvcBuilders.standaloneSetup(repoEndpoint, repoVersionEndpoint)
             .setCustomArgumentResolvers(new BaseUserModelResolver(), new ApiQualifiedRepoModelResolver(repoManagementApi))
             .apply(documentationConfiguration(this.restDocumentation))
             .alwaysDo(document)

@@ -34,7 +34,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserDetailsTable extends TableImpl<UserDetailsRecord> {
 
-	private static final long serialVersionUID = 2096289538;
+	private static final long serialVersionUID = -2138984642;
 
 	/**
 	 * The reference instance of <code>public.user_details</code>
@@ -53,6 +53,11 @@ public class UserDetailsTable extends TableImpl<UserDetailsRecord> {
 	 * The column <code>public.user_details.uuid</code>.
 	 */
 	public final TableField<UserDetailsRecord, UUID> UUID = createField("uuid", org.jooq.impl.SQLDataType.UUID.nullable(false).defaulted(true), this, "");
+
+	/**
+	 * The column <code>public.user_details.user_id</code>.
+	 */
+	public final TableField<UserDetailsRecord, String> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false), this, "");
 
 	/**
 	 * The column <code>public.user_details.name</code>.
@@ -99,7 +104,7 @@ public class UserDetailsTable extends TableImpl<UserDetailsRecord> {
 	 */
 	@Override
 	public List<UniqueKey<UserDetailsRecord>> getKeys() {
-		return Arrays.<UniqueKey<UserDetailsRecord>>asList(Keys.USER_DETAILS_PKEY);
+		return Arrays.<UniqueKey<UserDetailsRecord>>asList(Keys.USER_DETAILS_PKEY, Keys.USER_DETAILS_USER_ID_KEY);
 	}
 
 	/**

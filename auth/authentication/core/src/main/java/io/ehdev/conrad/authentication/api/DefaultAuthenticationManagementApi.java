@@ -70,8 +70,8 @@ public class DefaultAuthenticationManagementApi implements AuthenticationManagem
         if (!userDetails.isPresent()) {
             UserView newUserModel = createNewUserModel(userProfile);
             UserDetails details = dslContext
-                .insertInto(ud, ud.NAME, ud.EMAIL_ADDRESS)
-                .values(newUserModel.name, newUserModel.email)
+                .insertInto(ud, ud.USER_ID, ud.NAME, ud.EMAIL_ADDRESS)
+                .values(newUserModel.userName, newUserModel.name, newUserModel.email)
                 .returning(ud.fields())
                 .fetchOne()
                 .into(UserDetails.class);
@@ -94,20 +94,22 @@ public class DefaultAuthenticationManagementApi implements AuthenticationManagem
     }
 
     UserView createUserModel(GitHubProfile gitHubProfile) {
-        return new UserView(gitHubProfile.getDisplayName(), gitHubProfile.getEmail());
+        return new UserView(gitHubProfile.getDisplayName(), gitHubProfile.getEmail(), gitHubProfile.getUsername());
     }
 
     UserView createUserModel(Google2Profile google2Profile) {
-        return new UserView(google2Profile.getDisplayName(), google2Profile.getEmail());
+        return new UserView(google2Profile.getDisplayName(), google2Profile.getEmail(), google2Profile.getUsername());
     }
 
     private static class UserView {
         String name;
         String email;
+        String userName;
 
-        public UserView(String name, String email) {
+        public UserView(String name, String email, String userName) {
             this.name = name;
             this.email = email;
+            this.userName = userName;
         }
     }
 

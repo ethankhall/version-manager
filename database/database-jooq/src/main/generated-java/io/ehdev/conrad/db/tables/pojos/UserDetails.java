@@ -31,9 +31,10 @@ import javax.validation.constraints.Size;
 @Table(name = "user_details", schema = "public")
 public class UserDetails implements Serializable {
 
-	private static final long serialVersionUID = 1211798320;
+	private static final long serialVersionUID = -970941243;
 
 	private UUID   uuid;
+	private String userId;
 	private String name;
 	private String emailAddress;
 
@@ -41,16 +42,19 @@ public class UserDetails implements Serializable {
 
 	public UserDetails(UserDetails value) {
 		this.uuid = value.uuid;
+		this.userId = value.userId;
 		this.name = value.name;
 		this.emailAddress = value.emailAddress;
 	}
 
 	public UserDetails(
 		UUID   uuid,
+		String userId,
 		String name,
 		String emailAddress
 	) {
 		this.uuid = uuid;
+		this.userId = userId;
 		this.name = name;
 		this.emailAddress = emailAddress;
 	}
@@ -64,6 +68,17 @@ public class UserDetails implements Serializable {
 
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;
+	}
+
+	@Column(name = "user_id", unique = true, nullable = false, length = 128)
+	@NotNull
+	@Size(max = 128)
+	public String getUserId() {
+		return this.userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
 	}
 
 	@Column(name = "name", nullable = false, length = 255)
@@ -93,6 +108,7 @@ public class UserDetails implements Serializable {
 		StringBuilder sb = new StringBuilder("UserDetails (");
 
 		sb.append(uuid);
+		sb.append(", ").append(userId);
 		sb.append(", ").append(name);
 		sb.append(", ").append(emailAddress);
 
