@@ -5,7 +5,6 @@ import io.ehdev.conrad.database.model.project.ApiRepoModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection
 import io.ehdev.conrad.model.rest.commit.RestCommitIdModel
-import io.ehdev.conrad.version.bumper.api.VersionBumperService
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
 
@@ -13,12 +12,10 @@ class RepoEndpointTest extends Specification {
 
     RepoEndpoint repoEndpoint
     RepoManagementApi repoManagementApi
-    VersionBumperService versionBumperService
 
     def setup() {
         repoManagementApi = Mock(RepoManagementApi)
-        versionBumperService = Mock(VersionBumperService)
-        repoEndpoint = new RepoEndpoint(repoManagementApi, versionBumperService)
+        repoEndpoint = new RepoEndpoint(repoManagementApi)
     }
 
     def 'find version finds nothing'() {

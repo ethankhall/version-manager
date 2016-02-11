@@ -14,11 +14,13 @@ import io.ehdev.conrad.version.bumper.api.VersionBumperService;
 import io.ehdev.conrad.version.commit.CommitVersion;
 import io.ehdev.conrad.version.commit.VersionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -82,6 +84,18 @@ public class RepoVersionEndpoint {
 
         URI uri = URI.create(request.getRequestURL().toString() + "/" + nextCommit.getVersion());
         return ResponseEntity.created(uri).body(toRestModel(nextCommit));
+    }
+
+    @RequestMapping(value = "/{repoName}/version/{versionArg}", method = RequestMethod.GET)
+    public ResponseEntity<RestCommitModel> findVersion(ApiRepoModel repoModel,
+                                                       @RequestParam("versionArg") String versionArg,
+                                                       @Valid @NotNull ConradUser user) {
+        Optional<ApiCommitModel> commit = repoManagementApi.findCommit(repoModel, versionArg);
+        if (commit.isPresent()) {
+            return ResponseEntity.ok(toRestModel(commit.get()));
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     private void assertHistoryIsNotMissing(List<ApiCommitModel> commits, Optional<ApiCommitModel> latestCommit) {
