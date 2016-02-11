@@ -1,6 +1,6 @@
 CREATE TABLE user_details (
     uuid          UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id       VARCHAR(128) NOT NULL UNIQUE,
+    user_name     VARCHAR(128) NOT NULL UNIQUE,
     name          VARCHAR(255) NOT NULL,
     email_address VARCHAR(256) NOT NULL
 );

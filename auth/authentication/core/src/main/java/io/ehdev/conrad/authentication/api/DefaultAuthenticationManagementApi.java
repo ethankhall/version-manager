@@ -70,7 +70,7 @@ public class DefaultAuthenticationManagementApi implements AuthenticationManagem
         if (!userDetails.isPresent()) {
             UserView newUserModel = createNewUserModel(userProfile);
             UserDetails details = dslContext
-                .insertInto(ud, ud.USER_ID, ud.NAME, ud.EMAIL_ADDRESS)
+                .insertInto(ud, ud.USER_NAME, ud.NAME, ud.EMAIL_ADDRESS)
                 .values(newUserModel.userName, newUserModel.name, newUserModel.email)
                 .returning(ud.fields())
                 .fetchOne()

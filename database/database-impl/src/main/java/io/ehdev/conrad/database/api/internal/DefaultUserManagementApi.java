@@ -22,7 +22,7 @@ public class DefaultUserManagementApi implements UserManagementApi {
     @Override
     public ApiUser createUser(String userName, String name, String email) {
         UserDetails userDetails = dslContext
-            .insertInto(Tables.USER_DETAILS, Tables.USER_DETAILS.USER_ID, Tables.USER_DETAILS.NAME, Tables.USER_DETAILS.EMAIL_ADDRESS)
+            .insertInto(Tables.USER_DETAILS, Tables.USER_DETAILS.USER_NAME, Tables.USER_DETAILS.NAME, Tables.USER_DETAILS.EMAIL_ADDRESS)
             .values(userName, name, email)
             .returning(Tables.USER_DETAILS.fields())
             .fetchOne()

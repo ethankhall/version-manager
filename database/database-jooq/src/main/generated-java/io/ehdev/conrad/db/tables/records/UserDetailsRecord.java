@@ -38,7 +38,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @Table(name = "user_details", schema = "public")
 public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> implements Record4<UUID, String, String, String> {
 
-	private static final long serialVersionUID = -1172560903;
+	private static final long serialVersionUID = -563966535;
 
 	/**
 	 * Setter for <code>public.user_details.uuid</code>.
@@ -58,19 +58,19 @@ public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> im
 	}
 
 	/**
-	 * Setter for <code>public.user_details.user_id</code>.
+	 * Setter for <code>public.user_details.user_name</code>.
 	 */
-	public void setUserId(String value) {
+	public void setUserName(String value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>public.user_details.user_id</code>.
+	 * Getter for <code>public.user_details.user_name</code>.
 	 */
-	@Column(name = "user_id", unique = true, nullable = false, length = 128)
+	@Column(name = "user_name", unique = true, nullable = false, length = 128)
 	@NotNull
 	@Size(max = 128)
-	public String getUserId() {
+	public String getUserName() {
 		return (String) getValue(1);
 	}
 
@@ -153,7 +153,7 @@ public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> im
 	 */
 	@Override
 	public Field<String> field2() {
-		return UserDetailsTable.USER_DETAILS.USER_ID;
+		return UserDetailsTable.USER_DETAILS.USER_NAME;
 	}
 
 	/**
@@ -185,7 +185,7 @@ public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> im
 	 */
 	@Override
 	public String value2() {
-		return getUserId();
+		return getUserName();
 	}
 
 	/**
@@ -218,7 +218,7 @@ public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> im
 	 */
 	@Override
 	public UserDetailsRecord value2(String value) {
-		setUserId(value);
+		setUserName(value);
 		return this;
 	}
 
@@ -266,11 +266,11 @@ public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> im
 	/**
 	 * Create a detached, initialised UserDetailsRecord
 	 */
-	public UserDetailsRecord(UUID uuid, String userId, String name, String emailAddress) {
+	public UserDetailsRecord(UUID uuid, String userName, String name, String emailAddress) {
 		super(UserDetailsTable.USER_DETAILS);
 
 		setValue(0, uuid);
-		setValue(1, userId);
+		setValue(1, userName);
 		setValue(2, name);
 		setValue(3, emailAddress);
 	}

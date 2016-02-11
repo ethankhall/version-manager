@@ -67,17 +67,17 @@ public class UserDetailsDao extends DAOImpl<UserDetailsRecord, UserDetails, UUID
 	}
 
 	/**
-	 * Fetch records that have <code>user_id IN (values)</code>
+	 * Fetch records that have <code>user_name IN (values)</code>
 	 */
-	public List<UserDetails> fetchByUserId(String... values) {
-		return fetch(UserDetailsTable.USER_DETAILS.USER_ID, values);
+	public List<UserDetails> fetchByUserName(String... values) {
+		return fetch(UserDetailsTable.USER_DETAILS.USER_NAME, values);
 	}
 
 	/**
-	 * Fetch a unique record that has <code>user_id = value</code>
+	 * Fetch a unique record that has <code>user_name = value</code>
 	 */
-	public UserDetails fetchOneByUserId(String value) {
-		return fetchOne(UserDetailsTable.USER_DETAILS.USER_ID, value);
+	public UserDetails fetchOneByUserName(String value) {
+		return fetchOne(UserDetailsTable.USER_DETAILS.USER_NAME, value);
 	}
 
 	/**

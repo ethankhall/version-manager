@@ -56,6 +56,6 @@ public class ModelConversionUtility {
     }
 
     public static ApiUser toApiModel(UserDetails userDetails) {
-        return new ApiUser(userDetails.getUuid(), userDetails.getName(), userDetails.getEmailAddress());
+        return new ApiUser(userDetails.getUuid(), userDetails.getUserName(), userDetails.getName(), userDetails.getEmailAddress());
     }
 }
