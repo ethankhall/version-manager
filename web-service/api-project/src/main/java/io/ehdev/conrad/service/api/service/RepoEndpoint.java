@@ -9,6 +9,8 @@ import io.ehdev.conrad.model.rest.RestCommitModel;
 import io.ehdev.conrad.model.rest.RestRepoCreateModel;
 import io.ehdev.conrad.model.rest.RestRepoDetailsModel;
 import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection;
+import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
+import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,7 @@ public class RepoEndpoint {
         this.repoManagementApi = repoManagementApi;
     }
 
+    @WritePermissionRequired
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<RestRepoDetailsModel> createRepo(ApiParameterContainer apiParameterContainer,
                                                            @RequestBody RestRepoCreateModel createModel) {
@@ -46,6 +49,7 @@ public class RepoEndpoint {
         return new ResponseEntity<>(toRestModel(repo), HttpStatus.CREATED);
     }
 
+    @ReadPermissionRequired
     @RequestMapping(value = "/search/version", method = RequestMethod.POST)
     public ResponseEntity<RestCommitModel> searchForVersionInHistory(ApiParameterContainer apiParameterContainer,
                                                                      @RequestBody RestCommitIdCollection versionModel) {

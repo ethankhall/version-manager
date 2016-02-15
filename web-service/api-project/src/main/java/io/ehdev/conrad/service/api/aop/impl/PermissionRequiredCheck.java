@@ -8,6 +8,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import static io.ehdev.conrad.service.api.aop.impl.ApiParameterHelper.findApiParameterContainer;
@@ -17,10 +18,12 @@ import static io.ehdev.conrad.service.api.aop.impl.ApiParameterHelper.findApiPar
 public class PermissionRequiredCheck {
 
     private final PermissionManagementApi permissionManagementApi;
+    private final Environment env;
 
     @Autowired
-    public PermissionRequiredCheck(PermissionManagementApi permissionManagementApi) {
+    public PermissionRequiredCheck(PermissionManagementApi permissionManagementApi, Environment env) {
         this.permissionManagementApi = permissionManagementApi;
+        this.env = env;
     }
 
     @Before(value = "@annotation(io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired)")
@@ -39,6 +42,10 @@ public class PermissionRequiredCheck {
     }
 
     private void checkPermission(JoinPoint joinPoint, ApiUserPermission read) {
+        if(!env.getProperty("api.verification", Boolean.class, true)) {
+            return;
+        }
+
         ApiParameterContainer container = findApiParameterContainer(joinPoint);
 
         boolean permission = permissionManagementApi.doesUserHavePermission(container.getUser(), container.getProjectName(), container.getRepoName(), read);

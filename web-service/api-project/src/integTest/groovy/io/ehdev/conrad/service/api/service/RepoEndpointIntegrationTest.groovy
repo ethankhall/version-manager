@@ -12,12 +12,14 @@ import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.TestPropertySource
 import spock.lang.Specification
 
 import javax.transaction.Transactional
 
 @Rollback
 @Transactional
+@TestPropertySource(properties = ["api.verification = false"])
 @ContextConfiguration(classes = [TestConradProjectApiConfiguration], loader = SpringApplicationContextLoader)
 class RepoEndpointIntegrationTest extends Specification {
 

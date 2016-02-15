@@ -5,11 +5,17 @@ import io.ehdev.conrad.database.model.user.ApiUser
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired
 import io.ehdev.conrad.service.api.aop.exception.UserNotLoggedInException
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory
+import org.springframework.mock.env.MockEnvironment
 import spock.lang.Specification
 
 class LoggedInUserCheckTest extends Specification {
 
-    LoggedInUserCheck loggedInUserCheck = new LoggedInUserCheck()
+    LoggedInUserCheck loggedInUserCheck
+
+    def setup() {
+        def environment = new MockEnvironment()
+        loggedInUserCheck = new LoggedInUserCheck(environment)
+    }
 
     def 'admin permissions work'() {
         given:

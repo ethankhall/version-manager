@@ -9,12 +9,15 @@ import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired
 import io.ehdev.conrad.service.api.aop.exception.PermissionDeniedException
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory
+import org.springframework.core.env.Environment
+import org.springframework.mock.env.MockEnvironment
 import spock.lang.Specification
 
 class PermissionRequiredCheckTest extends Specification {
 
     PermissionRequiredCheck permissionRequiredCheck
     PermissionManagementApi permissionManagementApi
+    Environment environment;
 
     def setup() {
         permissionManagementApi = new PermissionManagementApi() {
@@ -29,7 +32,8 @@ class PermissionRequiredCheckTest extends Specification {
                 return false
             }
         }
-        permissionRequiredCheck = new PermissionRequiredCheck(permissionManagementApi)
+        environment = new MockEnvironment()
+        permissionRequiredCheck = new PermissionRequiredCheck(permissionManagementApi, environment)
     }
 
     def 'admin permissions work'() {
