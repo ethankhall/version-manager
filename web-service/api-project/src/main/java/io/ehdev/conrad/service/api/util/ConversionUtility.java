@@ -1,8 +1,8 @@
 package io.ehdev.conrad.service.api.util;
 
+import io.ehdev.conrad.database.model.project.ApiFullRepoModel;
 import io.ehdev.conrad.database.model.project.ApiProjectModel;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
-import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.model.rest.RestCommitModel;
 import io.ehdev.conrad.model.rest.RestProjectModel;
@@ -27,7 +27,7 @@ public class ConversionUtility {
         return new RestCommitModel(commit.getCommitId(), commit.getVersion());
     }
 
-    public static RestRepoModel toRestModel(ApiRepoModel repo) {
+    public static RestRepoModel toRestModel(ApiFullRepoModel repo) {
         return new RestRepoModel(repo.getProjectName(), repo.getRepoName(), repo.getUrl());
     }
 

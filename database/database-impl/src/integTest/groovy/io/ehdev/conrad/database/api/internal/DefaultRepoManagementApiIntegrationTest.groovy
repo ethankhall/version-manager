@@ -1,6 +1,7 @@
 package io.ehdev.conrad.database.api.internal
+
 import io.ehdev.conrad.database.config.TestConradDatabaseConfig
-import io.ehdev.conrad.database.model.project.ApiRepoModel
+import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.db.tables.daos.VersionBumpersDao
 import io.ehdev.conrad.db.tables.pojos.VersionBumpers
@@ -31,7 +32,7 @@ class DefaultRepoManagementApiIntegrationTest extends Specification {
     }
 
     def 'basic workflow'() {
-        def repoModel = new ApiRepoModel('project', 'newRepo')
+        def repoModel = new DefaultApiRepoModel('project', 'newRepo')
         when:
         def repo = repoManagementApi.createRepo(repoModel, 'semver', 'url')
 

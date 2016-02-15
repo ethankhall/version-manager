@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RepoDetailsTable extends TableImpl<RepoDetailsRecord> {
 
-	private static final long serialVersionUID = 1940616215;
+	private static final long serialVersionUID = 42463061;
 
 	/**
 	 * The reference instance of <code>public.repo_details</code>
@@ -84,6 +84,11 @@ public class RepoDetailsTable extends TableImpl<RepoDetailsRecord> {
 	 * The column <code>public.repo_details.description</code>.
 	 */
 	public final TableField<RepoDetailsRecord, String> DESCRIPTION = createField("description", org.jooq.impl.SQLDataType.CLOB.nullable(false), this, "");
+
+	/**
+	 * The column <code>public.repo_details.public</code>.
+	 */
+	public final TableField<RepoDetailsRecord, Boolean> PUBLIC = createField("public", org.jooq.impl.SQLDataType.BOOLEAN.defaulted(true), this, "");
 
 	/**
 	 * Create a <code>public.repo_details</code> table reference

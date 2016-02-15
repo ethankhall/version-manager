@@ -1,11 +1,11 @@
 package io.ehdev.conrad.database.api.internal;
 
-import io.ehdev.conrad.database.api.RepoManagementApi;
 import io.ehdev.conrad.database.api.exception.BumperNotFoundException;
 import io.ehdev.conrad.database.api.exception.ProjectNotFoundException;
 import io.ehdev.conrad.database.api.exception.RepoAlreadyExistsException;
 import io.ehdev.conrad.database.api.exception.RepoDoesNotExistsException;
 import io.ehdev.conrad.database.impl.ModelConversionUtility;
+import io.ehdev.conrad.database.model.project.ApiFullRepoModel;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
 import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
@@ -28,14 +28,17 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static io.ehdev.conrad.database.impl.ModelConversionUtility.toApiModel;
 
 @Service
-public class DefaultRepoManagementApi implements RepoManagementApi {
+public class DefaultRepoManagementApi implements RepoManagementApiInternal {
 
     private final DSLContext dslContext;
     private final RepoDetailsDao repoDetailsDao;
@@ -57,8 +60,8 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
     }
 
     @Override
-    public ApiRepoDetailsModel createRepo(ApiRepoModel qualifiedRepo, String bumperName, String repoUrl) {
-        Optional<RepoDetails> exists = findRepository(qualifiedRepo);
+    public ApiRepoDetailsModel createRepo(ApiFullRepoModel qualifiedRepo, String bumperName, String repoUrl) {
+        Optional<RepoDetails> exists = findRepository(qualifiedRepo.getProjectName(), qualifiedRepo.getRepoName());
         if (exists.isPresent()) {
             throw new RepoAlreadyExistsException(qualifiedRepo);
         }
@@ -79,21 +82,22 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
             projectDetails.getUuid(),
             versionBumpers.getUuid(),
             repoUrl,
-            "");
+            "",
+            true);
 
         repoDetailsDao.insert(repoDetails);
 
         return new ApiRepoDetailsModel(toApiModel(repoDetails), toApiModel(versionBumpers));
     }
 
-    private Optional<RepoDetails> findRepository(ApiRepoModel qualifiedRepo) {
+    public Optional<RepoDetails> findRepository(String projectName, String repoName) {
         //@formatter:off
         return Optional.ofNullable(
             dslContext
                     .select()
                     .from(Tables.REPO_DETAILS)
-                    .where(Tables.REPO_DETAILS.PROJECT_NAME.equal(qualifiedRepo.getProjectName()))
-                        .and(Tables.REPO_DETAILS.REPO_NAME.equal(qualifiedRepo.getRepoName()))
+                    .where(Tables.REPO_DETAILS.PROJECT_NAME.equal(projectName))
+                        .and(Tables.REPO_DETAILS.REPO_NAME.equal(repoName))
                     .fetchOne()
         ).map(it -> it.into(RepoDetails.class));
         //@formatter:on
@@ -124,7 +128,7 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
 
     @Override
     public void createCommit(ApiRepoModel apiRepo, @NotNull ApiCommitModel nextVersion, ApiCommitModel history) {
-        Optional<RepoDetails> repository = findRepository(apiRepo);
+        Optional<RepoDetails> repository = findRepository(apiRepo.getProjectName(), apiRepo.getRepoName());
         if(!repository.isPresent()) {
             throw new RepoDoesNotExistsException(apiRepo);
         }
@@ -214,7 +218,7 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
 
     @Override
     public Optional<ApiRepoDetailsModel> getDetails(ApiRepoModel repoModel) {
-        Optional<RepoDetails> details = findRepository(repoModel);
+        Optional<RepoDetails> details = findRepository(repoModel.getProjectName(), repoModel.getRepoName());
         if(details.isPresent()) {
             RepoDetails repoDetails = details.get();
             VersionBumpers versionBumpers = versionBumpersDao.fetchOneByUuid(repoDetails.getVersionBumperUuid());
@@ -227,7 +231,7 @@ public class DefaultRepoManagementApi implements RepoManagementApi {
 
     @Override
     public boolean doesRepoExist(ApiRepoModel repo) {
-        return findRepository(repo).isPresent();
+        return findRepository(repo.getProjectName(), repo.getRepoName()).isPresent();
     }
 
 }

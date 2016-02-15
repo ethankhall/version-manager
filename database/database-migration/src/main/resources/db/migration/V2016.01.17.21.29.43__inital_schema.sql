@@ -47,6 +47,7 @@ CREATE TABLE repo_details (
     version_bumper_uuid UUID REFERENCES version_bumpers (uuid),
     url                 CHARACTER VARYING(1024) NOT NULL,
     description         TEXT                    NOT NULL,
+    public              BOOLEAN          DEFAULT TRUE,
     UNIQUE (project_name, repo_name)
 );
 
@@ -75,7 +76,7 @@ CREATE TABLE commit_metadata (
 CREATE TABLE user_permissions (
     uuid              UUID PRIMARY KEY                              DEFAULT uuid_generate_v4(),
     project_name      CHARACTER VARYING(255)                 NOT NULL,
-    repo_name         CHARACTER VARYING(255)                 NOT NULL,
+    repo_name         CHARACTER VARYING(255),
     project_uuid      UUID REFERENCES project_details (uuid) NOT NULL,
     repo_details_uuid UUID REFERENCES repo_details (uuid),
     user_uuid         UUID REFERENCES user_details (uuid)    NOT NULL,

@@ -14,7 +14,7 @@ include ':database:database-migration'
 include ':database:database-api-model'
 
 //security
-include ':auth:user'
+//include ':auth:user'
 include ':auth:authentication:default'
 include ':auth:authentication:jwt'
 include ':auth:authentication:core'

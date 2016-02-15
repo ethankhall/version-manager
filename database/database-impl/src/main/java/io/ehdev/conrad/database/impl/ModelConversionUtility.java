@@ -1,8 +1,8 @@
 package io.ehdev.conrad.database.impl;
 
 import io.ehdev.conrad.database.model.project.ApiProjectModel;
-import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.ApiVersionBumperModel;
+import io.ehdev.conrad.database.model.project.DefaultApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.database.model.user.ApiGeneratedUserToken;
 import io.ehdev.conrad.database.model.user.ApiTokenType;
@@ -15,14 +15,14 @@ import java.util.List;
 
 public class ModelConversionUtility {
 
-    public static ApiRepoModel toApiModel(RepoDetails repo) {
-        return new ApiRepoModel(
+    public static DefaultApiRepoModel toApiModel(RepoDetails repo) {
+        return new DefaultApiRepoModel(
             repo.getProjectName(),
             repo.getRepoName(),
             repo.getUrl());
     }
 
-    public static ApiProjectModel toApiModel(ProjectDetails model, List<ApiRepoModel> repoDetails) {
+    public static ApiProjectModel toApiModel(ProjectDetails model, List<DefaultApiRepoModel> repoDetails) {
         return new ApiProjectModel(model.getProjectName(), repoDetails);
     }
 

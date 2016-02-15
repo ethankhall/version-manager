@@ -1,19 +1,18 @@
 package io.ehdev.conrad.service.api.project
 
 import groovy.json.JsonBuilder
-import io.ehdev.conrad.api.user.config.BaseUserModelResolver
 import io.ehdev.conrad.apidoc.ObjectDocumentationSnippet
 import io.ehdev.conrad.database.api.RepoManagementApi
 import io.ehdev.conrad.database.api.TestDoubleRepoManagementApi
-import io.ehdev.conrad.database.model.project.ApiRepoModel
 import io.ehdev.conrad.database.model.project.ApiVersionBumperModel
+import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.model.rest.RestCommitModel
 import io.ehdev.conrad.model.rest.RestRepoCreateModel
 import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection
 import io.ehdev.conrad.model.rest.commit.RestCommitIdModel
 import io.ehdev.conrad.model.version.VersionCreateModel
-import io.ehdev.conrad.service.api.config.ApiQualifiedRepoModelResolver
+import io.ehdev.conrad.service.api.config.ApiParameterContainerResolver
 import io.ehdev.conrad.service.api.service.RepoDetailsEndpoint
 import io.ehdev.conrad.service.api.service.RepoEndpoint
 import io.ehdev.conrad.service.api.service.RepoVersionEndpoint
@@ -46,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class RepoEndpointApiTest extends Specification {
 
     private final String REF_REST_COMMIT_MODEL = '<<class-documentation-RestCommitModel,RestCommitModel>>'
-    def model = new ApiRepoModel("bigFizzyDice", 'smallDice', "http://github.com/foo/bar")
+    def model = new DefaultApiRepoModel("bigFizzyDice", 'smallDice', "http://github.com/foo/bar")
 
     @Rule
     public RestDocumentation restDocumentation = new RestDocumentation(System.getenv('snippitDir'))
@@ -67,7 +66,7 @@ class RepoEndpointApiTest extends Specification {
         repoDetailsEndpoint = new RepoDetailsEndpoint(repoManagementApi)
 
         mockMvc = MockMvcBuilders.standaloneSetup(repoEndpoint, repoVersionEndpoint, repoDetailsEndpoint)
-            .setCustomArgumentResolvers(new BaseUserModelResolver(), new ApiQualifiedRepoModelResolver(repoManagementApi))
+            .setCustomArgumentResolvers(new ApiParameterContainerResolver())
             .apply(documentationConfiguration(this.restDocumentation))
             .alwaysDo(document)
             .build();

@@ -4,8 +4,8 @@ ext {
 }
 
 
-versions.springBoot = '1.3.1.RELEASE'
-versions.spring = '4.2.2.RELEASE'
+versions.springBoot = '1.3.2.RELEASE'
+versions.spring = '4.2.3.RELEASE'
 versions.springSecurity = '4.0.3.RELEASE'
 versions.springSecutityOAuth = '2.0.8.RELEASE'
 versions.spock = '1.0-groovy-2.4'
@@ -22,6 +22,9 @@ ext['hibernate.version'] = versions.hibernate
 libraries.kotlin = "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
 
 libraries.springTest = "org.springframework:spring-test:${versions.spring}"
+libraries.springAop = "org.springframework:spring-aop:${versions.spring}"
+libraries.aspectJ = "org.aspectj:aspectjweaver:1.8.8"
+
 libraries.springContext = "org.springframework:spring-context:${versions.spring}"
 libraries.springBoot = [
     "org.springframework.boot:spring-boot:${versions.springBoot}",
@@ -29,6 +32,7 @@ libraries.springBoot = [
     "org.springframework.boot:spring-boot-starter-thymeleaf:${versions.springBoot}"
 ]
 
+libraries.springBootTest = "org.springframework.boot:spring-boot-starter-test:${versions.springBoot}"
 libraries.springContextSupport = "org.springframework:spring-context-support:${versions.spring}"
 libraries.springJpa = ["org.springframework.data:spring-data-jpa:1.9.0.RELEASE",
                        "org.springframework.boot:spring-boot-starter-data-jpa:${versions.springBoot}"]
@@ -46,10 +50,11 @@ libraries.springWeb = [
 ]
 
 libraries.springSecurity = [
-    "org.springframework.security:spring-security-acl:${versions.springSecurity}",
     "org.springframework.security:spring-security-web:${versions.springSecurity}",
     "org.springframework.security:spring-security-config:${versions.springSecurity}",
 ]
+
+libraries.springSecurityCore = "org.springframework.security:spring-security-core:${versions.springSecurity}"
 
 libraries.hikari = 'com.zaxxer:HikariCP:2.4.1'
 
@@ -92,9 +97,10 @@ libraries.jackson = [
 ]
 
 libraries.hibernateCache = ["org.hibernate:hibernate-ehcache:${versions.hibernate}"]
+libraries.cglib = 'cglib:cglib:3.2.0'
 
 libraries.testing = [
-    'cglib:cglib:3.1',
+    libraries.cglib,
     'org.objenesis:objenesis:2.2',
     'org.ow2.asm:asm:5.0.4'
 ]

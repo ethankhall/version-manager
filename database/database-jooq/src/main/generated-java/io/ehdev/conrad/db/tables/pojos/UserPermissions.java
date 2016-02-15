@@ -35,7 +35,7 @@ import javax.validation.constraints.Size;
 })
 public class UserPermissions implements Serializable {
 
-	private static final long serialVersionUID = -1034535458;
+	private static final long serialVersionUID = 1823616546;
 
 	private UUID    uuid;
 	private String  projectName;
@@ -97,8 +97,7 @@ public class UserPermissions implements Serializable {
 		this.projectName = projectName;
 	}
 
-	@Column(name = "repo_name", nullable = false, length = 255)
-	@NotNull
+	@Column(name = "repo_name", length = 255)
 	@Size(max = 255)
 	public String getRepoName() {
 		return this.repoName;

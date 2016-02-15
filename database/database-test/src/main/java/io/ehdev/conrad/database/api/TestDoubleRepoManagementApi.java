@@ -1,5 +1,6 @@
 package io.ehdev.conrad.database.api;
 
+import io.ehdev.conrad.database.model.project.ApiFullRepoModel;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
 import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.ApiVersionBumperModel;
@@ -20,7 +21,7 @@ public class TestDoubleRepoManagementApi implements RepoManagementApi {
     }
 
     @Override
-    public ApiRepoDetailsModel createRepo(ApiRepoModel qualifiedRepo, String bumperName, String repoUrl) {
+    public ApiRepoDetailsModel createRepo(ApiFullRepoModel qualifiedRepo, String bumperName, String repoUrl) {
         storage.put(qualifiedRepo.getMergedName(), new ApiRepoDetailsModel(qualifiedRepo, bumperModel));
         commits.put(qualifiedRepo.getMergedName(), new ArrayList<>());
         return storage.get(qualifiedRepo.getMergedName());

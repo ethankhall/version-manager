@@ -1,6 +1,7 @@
 package io.ehdev.conrad.database.api;
 
 
+import io.ehdev.conrad.database.model.project.ApiFullRepoModel;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
 import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
@@ -10,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface RepoManagementApi {
-    ApiRepoDetailsModel createRepo(ApiRepoModel qualifiedRepo, String bumperName, String repoUrl);
+    ApiRepoDetailsModel createRepo(ApiFullRepoModel apiParameterContainer, String bumperName, String repoUrl);
 
     Optional<ApiCommitModel> findLatestCommit(ApiRepoModel qualifiedRepo, List<ApiCommitModel> history);
 

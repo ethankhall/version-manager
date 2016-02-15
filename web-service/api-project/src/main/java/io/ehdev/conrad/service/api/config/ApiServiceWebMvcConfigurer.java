@@ -11,10 +11,10 @@ import java.util.List;
 public class ApiServiceWebMvcConfigurer extends WebMvcConfigurerAdapter {
 
     @Autowired
-    ApiQualifiedRepoModelResolver apiQualifiedRepoModelResolver;
+    ApiParameterContainerResolver apiParameterContainerResolver;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
-        argumentResolvers.add(apiQualifiedRepoModelResolver);
+        argumentResolvers.add(apiParameterContainerResolver);
     }
 }

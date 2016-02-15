@@ -1,7 +1,7 @@
 package io.ehdev.conrad.service.api.service
 
 import io.ehdev.conrad.database.api.RepoManagementApi
-import io.ehdev.conrad.database.model.project.ApiRepoModel
+import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection
 import io.ehdev.conrad.model.rest.commit.RestCommitIdModel
@@ -23,7 +23,7 @@ class RepoEndpointTest extends Specification {
 
         when:
         def model = new RestCommitIdCollection(versionIds.collect { new RestCommitIdModel(it) })
-        def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model, null)
+        def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model)
 
         then:
         1 * repoManagementApi.findLatestCommit(_, _) >> Optional.empty()
@@ -35,7 +35,7 @@ class RepoEndpointTest extends Specification {
 
         when:
         def model = new RestCommitIdCollection(versionIds.collect { new RestCommitIdModel(it) })
-        def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model, null)
+        def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model)
 
         then:
         1 * repoManagementApi.findLatestCommit(_, _) >> Optional.of(new ApiCommitModel('commit', '2.3.4'))
@@ -45,7 +45,7 @@ class RepoEndpointTest extends Specification {
         history.body.version == '2.3.4'
     }
 
-    ApiRepoModel createTestingRepoModel() {
-        return new ApiRepoModel("projectName", "repoName")
+    ApiParameterContainer createTestingRepoModel() {
+        return new ApiParameterContainer(null, "projectName", "repoName")
     }
 }

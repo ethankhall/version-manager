@@ -1,8 +1,9 @@
 package io.ehdev.conrad.version.bumper.api
+
 import io.ehdev.conrad.database.api.RepoManagementApi
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel
-import io.ehdev.conrad.database.model.project.ApiRepoModel
 import io.ehdev.conrad.database.model.project.ApiVersionBumperModel
+import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import io.ehdev.conrad.version.bumper.SemanticVersionBumper
 import io.ehdev.conrad.version.commit.VersionFactory
 import spock.lang.Specification
@@ -24,13 +25,13 @@ class DefaultVersionBumperServiceTest extends Specification {
 
     def 'can find next version'() {
         def bumperModel = new ApiVersionBumperModel(SemanticVersionBumper.name, ' ', 'semver')
-        def apiModel = new ApiRepoModel('project', 'repo')
+        def apiModel = new DefaultApiRepoModel('project', 'repo')
 
         when:
         def version = service.findNextVersion(apiModel, 'commitId', 'some message', VersionFactory.parse('1.2.3'))
 
         then:
-        repoManagementApi.getDetails(_) >> Optional.of(new ApiRepoDetailsModel(new ApiRepoModel('project', 'repo'), bumperModel))
+        repoManagementApi.getDetails(_) >> Optional.of(new ApiRepoDetailsModel(new DefaultApiRepoModel('project', 'repo'), bumperModel))
         version.toVersionString() == '1.2.4'
     }
 }

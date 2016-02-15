@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 class RestRepoModel {
     @JsonProperty("projectName")
-    val projectName: String
+    val projectName: String?
 
     @JsonProperty("repoName")
-    val repoName: String
+    val repoName: String?
 
     @JsonProperty("url")
     val url: String?

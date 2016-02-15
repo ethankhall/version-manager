@@ -2,12 +2,11 @@ package io.ehdev.conrad.service.api.service;
 
 import io.ehdev.conrad.database.api.RepoManagementApi;
 import io.ehdev.conrad.database.api.exception.CommitNotFoundException;
+import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.comparator.ReverseApiCommitComparator;
-import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.model.rest.RestCommitModel;
 import io.ehdev.conrad.model.rest.RestVersionCollectionModel;
-import io.ehdev.conrad.model.user.ConradUser;
 import io.ehdev.conrad.model.version.VersionCreateModel;
 import io.ehdev.conrad.service.api.util.ConversionUtility;
 import io.ehdev.conrad.version.bumper.api.VersionBumperService;
@@ -23,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -47,10 +44,9 @@ public class RepoVersionEndpoint {
     }
 
     @RequestMapping(value = "/versions", method = RequestMethod.GET)
-    public ResponseEntity<RestVersionCollectionModel> getAllVersions(ApiRepoModel repoModel,
-                                                                     @Valid @NotNull ConradUser user) {
+    public ResponseEntity<RestVersionCollectionModel> getAllVersions(ApiParameterContainer apiParameterContainer) {
         Stream<RestCommitModel> restCommitStream = repoManagementApi
-            .findAllCommits(repoModel)
+            .findAllCommits(apiParameterContainer)
             .stream()
             .sorted(new ReverseApiCommitComparator())
             .map(ConversionUtility::toRestModel);
@@ -60,37 +56,35 @@ public class RepoVersionEndpoint {
     }
 
     @RequestMapping(value = "/version", method = RequestMethod.POST)
-    public ResponseEntity<RestCommitModel> createNewVersion(ApiRepoModel repoModel,
+    public ResponseEntity<RestCommitModel> createNewVersion(ApiParameterContainer apiParameterContainer,
                                                             @RequestBody VersionCreateModel versionModel,
-                                                            HttpServletRequest request,
-                                                            @Valid @NotNull ConradUser user) {
+                                                            HttpServletRequest request) {
         List<ApiCommitModel> commits = versionModel.getCommits()
             .stream()
             .map(ApiCommitModel::new)
             .collect(Collectors.toList());
 
-        Optional<ApiCommitModel> latestCommit = repoManagementApi.findLatestCommit(repoModel, commits);
+        Optional<ApiCommitModel> latestCommit = repoManagementApi.findLatestCommit(apiParameterContainer, commits);
 
         assertHistoryIsNotMissing(commits, latestCommit);
 
         CommitVersion nextVersion = versionBumperService.findNextVersion(
-            repoModel,
+            apiParameterContainer,
             versionModel.getCommitId(),
             versionModel.getMessage(),
             VersionFactory.parseApiModel(latestCommit.orElse(null)));
 
         ApiCommitModel nextCommit = new ApiCommitModel(versionModel.getCommitId(), nextVersion.toVersionString());
-        repoManagementApi.createCommit(repoModel, nextCommit, latestCommit.orElse(null));
+        repoManagementApi.createCommit(apiParameterContainer, nextCommit, latestCommit.orElse(null));
 
         URI uri = URI.create(request.getRequestURL().toString() + "/" + nextCommit.getVersion());
         return ResponseEntity.created(uri).body(toRestModel(nextCommit));
     }
 
     @RequestMapping(value = "/{repoName}/version/{versionArg}", method = RequestMethod.GET)
-    public ResponseEntity<RestCommitModel> findVersion(ApiRepoModel repoModel,
-                                                       @RequestParam("versionArg") String versionArg,
-                                                       @Valid @NotNull ConradUser user) {
-        Optional<ApiCommitModel> commit = repoManagementApi.findCommit(repoModel, versionArg);
+    public ResponseEntity<RestCommitModel> findVersion(ApiParameterContainer apiParameterContainer,
+                                                       @RequestParam("versionArg") String versionArg) {
+        Optional<ApiCommitModel> commit = repoManagementApi.findCommit(apiParameterContainer, versionArg);
         if (commit.isPresent()) {
             return ResponseEntity.ok(toRestModel(commit.get()));
         } else {

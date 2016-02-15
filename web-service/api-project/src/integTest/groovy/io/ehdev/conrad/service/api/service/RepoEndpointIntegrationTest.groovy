@@ -1,5 +1,6 @@
 package io.ehdev.conrad.service.api.service
 
+import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.db.tables.daos.VersionBumpersDao
 import io.ehdev.conrad.db.tables.pojos.VersionBumpers
 import io.ehdev.conrad.model.rest.RestRepoCreateModel
@@ -30,23 +31,27 @@ class RepoEndpointIntegrationTest extends Specification {
     VersionBumpersDao versionBumpersDao
 
     def setup() {
-        projectEndpoint.createProject("project_name", new MockHttpServletRequest(), null)
+        projectEndpoint.createProject(new ApiParameterContainer(null, "project_name", null), new MockHttpServletRequest())
         versionBumpersDao.insert(new VersionBumpers(null, 'semver', SemanticVersionBumper.getName(), 'semver'))
     }
 
     def 'full workflow'() {
         when:
-        def repo = repoEndpoint.createRepo("project_name", "repo_name", new RestRepoCreateModel("semver", 'url'), null)
+        def repo = repoEndpoint.createRepo(createApiContainer(), new RestRepoCreateModel("semver", 'url'))
 
         then:
         repo.statusCode == HttpStatus.CREATED
 
         and:
         when:
-        repo = repoEndpoint.createRepo("project_name", "repo_name", new RestRepoCreateModel("semver", 'url'), null)
+        repo = repoEndpoint.createRepo(createApiContainer(), new RestRepoCreateModel("semver", 'url'))
 
         then:
         repo.statusCode == HttpStatus.CONFLICT
+    }
+
+    private ApiParameterContainer createApiContainer() {
+        new ApiParameterContainer(null, "project_name", "repo_name")
     }
 
 }

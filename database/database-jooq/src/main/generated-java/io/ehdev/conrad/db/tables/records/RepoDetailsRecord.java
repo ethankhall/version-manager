@@ -19,8 +19,8 @@ import javax.validation.constraints.Size;
 
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record7;
-import org.jooq.Row7;
+import org.jooq.Record8;
+import org.jooq.Row8;
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -39,9 +39,9 @@ import org.jooq.impl.UpdatableRecordImpl;
 @Table(name = "repo_details", schema = "public", uniqueConstraints = {
 	@UniqueConstraint(columnNames = {"project_name", "repo_name"})
 })
-public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> implements Record7<UUID, String, String, UUID, UUID, String, String> {
+public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> implements Record8<UUID, String, String, UUID, UUID, String, String, Boolean> {
 
-	private static final long serialVersionUID = -1958754415;
+	private static final long serialVersionUID = 58746668;
 
 	/**
 	 * Setter for <code>public.repo_details.uuid</code>.
@@ -157,6 +157,21 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
 		return (String) getValue(6);
 	}
 
+	/**
+	 * Setter for <code>public.repo_details.public</code>.
+	 */
+	public void setPublic(Boolean value) {
+		setValue(7, value);
+	}
+
+	/**
+	 * Getter for <code>public.repo_details.public</code>.
+	 */
+	@Column(name = "public")
+	public Boolean getPublic() {
+		return (Boolean) getValue(7);
+	}
+
 	// -------------------------------------------------------------------------
 	// Primary key information
 	// -------------------------------------------------------------------------
@@ -170,23 +185,23 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
 	}
 
 	// -------------------------------------------------------------------------
-	// Record7 type implementation
+	// Record8 type implementation
 	// -------------------------------------------------------------------------
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Row7<UUID, String, String, UUID, UUID, String, String> fieldsRow() {
-		return (Row7) super.fieldsRow();
+	public Row8<UUID, String, String, UUID, UUID, String, String, Boolean> fieldsRow() {
+		return (Row8) super.fieldsRow();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Row7<UUID, String, String, UUID, UUID, String, String> valuesRow() {
-		return (Row7) super.valuesRow();
+	public Row8<UUID, String, String, UUID, UUID, String, String, Boolean> valuesRow() {
+		return (Row8) super.valuesRow();
 	}
 
 	/**
@@ -249,6 +264,14 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
 	 * {@inheritDoc}
 	 */
 	@Override
+	public Field<Boolean> field8() {
+		return RepoDetailsTable.REPO_DETAILS.PUBLIC;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
 	public UUID value1() {
 		return getUuid();
 	}
@@ -299,6 +322,14 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
 	@Override
 	public String value7() {
 		return getDescription();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Boolean value8() {
+		return getPublic();
 	}
 
 	/**
@@ -368,7 +399,16 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
 	 * {@inheritDoc}
 	 */
 	@Override
-	public RepoDetailsRecord values(UUID value1, String value2, String value3, UUID value4, UUID value5, String value6, String value7) {
+	public RepoDetailsRecord value8(Boolean value) {
+		setPublic(value);
+		return this;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public RepoDetailsRecord values(UUID value1, String value2, String value3, UUID value4, UUID value5, String value6, String value7, Boolean value8) {
 		value1(value1);
 		value2(value2);
 		value3(value3);
@@ -376,6 +416,7 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
 		value5(value5);
 		value6(value6);
 		value7(value7);
+		value8(value8);
 		return this;
 	}
 
@@ -393,7 +434,7 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
 	/**
 	 * Create a detached, initialised RepoDetailsRecord
 	 */
-	public RepoDetailsRecord(UUID uuid, String projectName, String repoName, UUID projectUuid, UUID versionBumperUuid, String url, String description) {
+	public RepoDetailsRecord(UUID uuid, String projectName, String repoName, UUID projectUuid, UUID versionBumperUuid, String url, String description, Boolean public_) {
 		super(RepoDetailsTable.REPO_DETAILS);
 
 		setValue(0, uuid);
@@ -403,5 +444,6 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
 		setValue(4, versionBumperUuid);
 		setValue(5, url);
 		setValue(6, description);
+		setValue(7, public_);
 	}
 }

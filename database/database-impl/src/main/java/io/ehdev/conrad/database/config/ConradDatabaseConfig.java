@@ -2,17 +2,20 @@ package io.ehdev.conrad.database.config;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import io.ehdev.conrad.database.config.transaction.SpringTransactionProvider;
 import org.jooq.ConnectionProvider;
 import org.jooq.SQLDialect;
 import org.jooq.impl.DataSourceConnectionProvider;
 import org.jooq.impl.DefaultConfiguration;
 import org.jooq.impl.DefaultDSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy;
-import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 
@@ -34,7 +37,7 @@ public class ConradDatabaseConfig {
     }
 
     @Bean
-    PlatformTransactionManager transactionManager() {
+    DataSourceTransactionManager transactionManager() {
         return new DataSourceTransactionManager(dataSource());
     }
 
@@ -52,6 +55,12 @@ public class ConradDatabaseConfig {
     public org.jooq.Configuration jooqConfiguration() {
         return new DefaultConfiguration()
             .derive(connectionProvider())
+            .derive(springTransactionProvider())
             .derive(SQLDialect.POSTGRES_9_4);
+    }
+
+    @Bean
+    public SpringTransactionProvider springTransactionProvider() {
+        return new SpringTransactionProvider(transactionManager());
     }
 }

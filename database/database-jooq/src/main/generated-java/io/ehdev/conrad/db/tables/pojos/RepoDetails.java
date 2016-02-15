@@ -34,15 +34,16 @@ import javax.validation.constraints.Size;
 })
 public class RepoDetails implements Serializable {
 
-	private static final long serialVersionUID = -472774571;
+	private static final long serialVersionUID = -2040602875;
 
-	private UUID   uuid;
-	private String projectName;
-	private String repoName;
-	private UUID   projectUuid;
-	private UUID   versionBumperUuid;
-	private String url;
-	private String description;
+	private UUID    uuid;
+	private String  projectName;
+	private String  repoName;
+	private UUID    projectUuid;
+	private UUID    versionBumperUuid;
+	private String  url;
+	private String  description;
+	private Boolean public_;
 
 	public RepoDetails() {}
 
@@ -54,16 +55,18 @@ public class RepoDetails implements Serializable {
 		this.versionBumperUuid = value.versionBumperUuid;
 		this.url = value.url;
 		this.description = value.description;
+		this.public_ = value.public_;
 	}
 
 	public RepoDetails(
-		UUID   uuid,
-		String projectName,
-		String repoName,
-		UUID   projectUuid,
-		UUID   versionBumperUuid,
-		String url,
-		String description
+		UUID    uuid,
+		String  projectName,
+		String  repoName,
+		UUID    projectUuid,
+		UUID    versionBumperUuid,
+		String  url,
+		String  description,
+		Boolean public_
 	) {
 		this.uuid = uuid;
 		this.projectName = projectName;
@@ -72,6 +75,7 @@ public class RepoDetails implements Serializable {
 		this.versionBumperUuid = versionBumperUuid;
 		this.url = url;
 		this.description = description;
+		this.public_ = public_;
 	}
 
 	@Id
@@ -146,6 +150,15 @@ public class RepoDetails implements Serializable {
 		this.description = description;
 	}
 
+	@Column(name = "public")
+	public Boolean getPublic() {
+		return this.public_;
+	}
+
+	public void setPublic(Boolean public_) {
+		this.public_ = public_;
+	}
+
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder("RepoDetails (");
@@ -157,6 +170,7 @@ public class RepoDetails implements Serializable {
 		sb.append(", ").append(versionBumperUuid);
 		sb.append(", ").append(url);
 		sb.append(", ").append(description);
+		sb.append(", ").append(public_);
 
 		sb.append(")");
 		return sb.toString();

@@ -1,9 +1,10 @@
 package io.ehdev.conrad.service.api.service
 
 import io.ehdev.conrad.database.api.RepoManagementApi
+import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel
-import io.ehdev.conrad.database.model.project.ApiRepoModel
 import io.ehdev.conrad.database.model.project.ApiVersionBumperModel
+import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
 
@@ -18,7 +19,7 @@ class RepoDetailsEndpointTest extends Specification {
 
     def 'can get details for repo'() {
         when:
-        def details = endpoint.getRepoDetails(createTestingRepoModel(), null)
+        def details = endpoint.getRepoDetails(new ApiParameterContainer(null, createTestingRepoModel()))
 
         then:
         details.statusCode == HttpStatus.OK
@@ -27,7 +28,7 @@ class RepoDetailsEndpointTest extends Specification {
 
     }
 
-    ApiRepoModel createTestingRepoModel() {
-        return new ApiRepoModel("projectName", "repoName")
+    DefaultApiRepoModel createTestingRepoModel() {
+        return new DefaultApiRepoModel("projectName", "repoName")
     }
 }

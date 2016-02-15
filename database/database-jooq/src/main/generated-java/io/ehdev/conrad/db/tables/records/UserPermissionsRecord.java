@@ -42,7 +42,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 })
 public class UserPermissionsRecord extends UpdatableRecordImpl<UserPermissionsRecord> implements Record7<UUID, String, String, UUID, UUID, UUID, Integer> {
 
-	private static final long serialVersionUID = -176397139;
+	private static final long serialVersionUID = -2086424847;
 
 	/**
 	 * Setter for <code>public.user_permissions.uuid</code>.
@@ -88,8 +88,7 @@ public class UserPermissionsRecord extends UpdatableRecordImpl<UserPermissionsRe
 	/**
 	 * Getter for <code>public.user_permissions.repo_name</code>.
 	 */
-	@Column(name = "repo_name", nullable = false, length = 255)
-	@NotNull
+	@Column(name = "repo_name", length = 255)
 	@Size(max = 255)
 	public String getRepoName() {
 		return (String) getValue(2);

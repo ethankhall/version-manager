@@ -1,6 +1,7 @@
 package io.ehdev.conrad.service.api.service
 
 import io.ehdev.conrad.database.api.RepoManagementApi
+import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.project.ApiRepoModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.model.version.VersionCreateModel
@@ -26,7 +27,7 @@ class RepoVersionEndpointTest extends Specification {
     def 'can get all versions'() {
 
         when:
-        def versions = repoEndpoint.getAllVersions(createTestingRepoModel(), null)
+        def versions = repoEndpoint.getAllVersions(createTestingRepoModel())
 
         then:
         1 * repoManagementApi.findAllCommits(_) >> [ new ApiCommitModel('abcd1234', '1.2.3')]
@@ -40,7 +41,7 @@ class RepoVersionEndpointTest extends Specification {
     def 'when there are no versions, it will pass'() {
 
         when:
-        def versions = repoEndpoint.getAllVersions(createTestingRepoModel(), null)
+        def versions = repoEndpoint.getAllVersions(createTestingRepoModel())
 
         then:
         1 * repoManagementApi.findAllCommits(_) >> [ ]
@@ -56,7 +57,7 @@ class RepoVersionEndpointTest extends Specification {
         when:
         def model = new VersionCreateModel(versionIds, "Some Message", "f")
         def request = new MockHttpServletRequest("POST", ":8080/api/v1/project/pn/repo/rp/version")
-        def version = repoEndpoint.createNewVersion(createTestingRepoModel(), model, request, null)
+        def version = repoEndpoint.createNewVersion(createTestingRepoModel(), model, request)
 
         then:
         1 * repoManagementApi.findLatestCommit(_, _) >> Optional.of(lastCommit)
@@ -68,7 +69,7 @@ class RepoVersionEndpointTest extends Specification {
         version.body.version == '1.4.5'
     }
 
-    ApiRepoModel createTestingRepoModel() {
-        return new ApiRepoModel("projectName", "repoName")
+    ApiParameterContainer createTestingRepoModel() {
+        return new ApiParameterContainer(null, "projectName", "repoName")
     }
 }

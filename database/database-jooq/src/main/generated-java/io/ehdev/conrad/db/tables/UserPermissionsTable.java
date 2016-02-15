@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserPermissionsTable extends TableImpl<UserPermissionsRecord> {
 
-	private static final long serialVersionUID = 1813711296;
+	private static final long serialVersionUID = 354947169;
 
 	/**
 	 * The reference instance of <code>public.user_permissions</code>
@@ -63,7 +63,7 @@ public class UserPermissionsTable extends TableImpl<UserPermissionsRecord> {
 	/**
 	 * The column <code>public.user_permissions.repo_name</code>.
 	 */
-	public final TableField<UserPermissionsRecord, String> REPO_NAME = createField("repo_name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false), this, "");
+	public final TableField<UserPermissionsRecord, String> REPO_NAME = createField("repo_name", org.jooq.impl.SQLDataType.VARCHAR.length(255), this, "");
 
 	/**
 	 * The column <code>public.user_permissions.project_uuid</code>.
