@@ -4,6 +4,7 @@ import io.ehdev.conrad.database.api.RepoManagementApi;
 import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.model.rest.RestRepoDetailsModel;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
+import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ public class RepoDetailsEndpoint {
     }
 
     @ReadPermissionRequired
+    @RepoRequired(exists = true)
     @RequestMapping(value = "/details", method = RequestMethod.GET)
     public ResponseEntity<RestRepoDetailsModel> getRepoDetails(ApiParameterContainer repoModel) {
         return ResponseEntity.ok(toRestModel(repoManagementApi.getDetails(repoModel).get()));

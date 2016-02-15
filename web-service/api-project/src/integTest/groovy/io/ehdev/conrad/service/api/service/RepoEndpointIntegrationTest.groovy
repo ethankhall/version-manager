@@ -43,13 +43,6 @@ class RepoEndpointIntegrationTest extends Specification {
 
         then:
         repo.statusCode == HttpStatus.CREATED
-
-        and:
-        when:
-        repo = repoEndpoint.createRepo(createApiContainer(), new RestRepoCreateModel("semver", 'url'))
-
-        then:
-        repo.statusCode == HttpStatus.CONFLICT
     }
 
     private ApiParameterContainer createApiContainer() {

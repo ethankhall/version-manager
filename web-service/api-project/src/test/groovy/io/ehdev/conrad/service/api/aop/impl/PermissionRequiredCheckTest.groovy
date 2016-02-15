@@ -114,20 +114,20 @@ class PermissionRequiredCheckTest extends Specification {
         noExceptionThrown()
     }
 
-    def 'will throw when parameters do not match'() {
-        given:
-        FooTestInterface target = new FooTestInterfaceImpl()
-        AspectJProxyFactory factory = new AspectJProxyFactory(target);
-        factory.addAspect(permissionRequiredCheck)
-        FooTestInterface proxy = factory.getProxy()
+        def 'will throw when parameters do not match'() {
+            given:
+            FooTestInterface target = new FooTestInterfaceImpl()
+            AspectJProxyFactory factory = new AspectJProxyFactory(target);
+            factory.addAspect(permissionRequiredCheck)
+            FooTestInterface proxy = factory.getProxy()
 
-        when:
-        proxy.nonConformingParameter('asdf')
+            when:
+            proxy.nonConformingParameter('asdf')
 
-        then:
-        def e = thrown(RuntimeException)
-        e.message == 'Unable to find ApiParameterContainer on FooTestInterface.nonConformingParameter(..)'
-    }
+            then:
+            def e = thrown(RuntimeException)
+            e.message == 'Unable to find ApiParameterContainer on FooTestInterface.nonConformingParameter(..)'
+        }
 
     private interface FooTestInterface {
         void adminPermissions(ApiParameterContainer container, String foo)

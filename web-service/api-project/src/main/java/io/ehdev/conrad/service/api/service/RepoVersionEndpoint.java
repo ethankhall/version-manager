@@ -8,7 +8,9 @@ import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.model.rest.RestCommitModel;
 import io.ehdev.conrad.model.rest.RestVersionCollectionModel;
 import io.ehdev.conrad.model.version.VersionCreateModel;
+import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
+import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
 import io.ehdev.conrad.service.api.util.ConversionUtility;
 import io.ehdev.conrad.version.bumper.api.VersionBumperService;
@@ -46,6 +48,7 @@ public class RepoVersionEndpoint {
     }
 
     @ReadPermissionRequired
+    @RepoRequired(exists = true)
     @RequestMapping(value = "/versions", method = RequestMethod.GET)
     public ResponseEntity<RestVersionCollectionModel> getAllVersions(ApiParameterContainer apiParameterContainer) {
         Stream<RestCommitModel> restCommitStream = repoManagementApi
@@ -58,7 +61,9 @@ public class RepoVersionEndpoint {
         return ResponseEntity.ok(new RestVersionCollectionModel(commits));
     }
 
+    @LoggedInUserRequired
     @WritePermissionRequired
+    @RepoRequired(exists = true)
     @RequestMapping(value = "/version", method = RequestMethod.POST)
     public ResponseEntity<RestCommitModel> createNewVersion(ApiParameterContainer apiParameterContainer,
                                                             @RequestBody VersionCreateModel versionModel,
@@ -86,6 +91,7 @@ public class RepoVersionEndpoint {
     }
 
     @ReadPermissionRequired
+    @RepoRequired(exists = true)
     @RequestMapping(value = "/{repoName}/version/{versionArg}", method = RequestMethod.GET)
     public ResponseEntity<RestCommitModel> findVersion(ApiParameterContainer apiParameterContainer,
                                                        @RequestParam("versionArg") String versionArg) {

@@ -9,7 +9,9 @@ import io.ehdev.conrad.model.rest.RestCommitModel;
 import io.ehdev.conrad.model.rest.RestRepoCreateModel;
 import io.ehdev.conrad.model.rest.RestRepoDetailsModel;
 import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection;
+import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
+import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -36,20 +38,19 @@ public class RepoEndpoint {
         this.repoManagementApi = repoManagementApi;
     }
 
+    @LoggedInUserRequired
     @WritePermissionRequired
+    @RepoRequired(exists = false)
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<RestRepoDetailsModel> createRepo(ApiParameterContainer apiParameterContainer,
                                                            @RequestBody RestRepoCreateModel createModel) {
-        if (repoManagementApi.doesRepoExist(apiParameterContainer)) {
-            return new ResponseEntity<>(HttpStatus.CONFLICT);
-        }
-
         DefaultApiRepoModel newModel = new DefaultApiRepoModel(apiParameterContainer.getProjectName(), apiParameterContainer.getRepoName(), createModel.getRepoUrl());
         ApiRepoDetailsModel repo = repoManagementApi.createRepo(newModel, createModel.getBumperName(), createModel.getRepoUrl());
         return new ResponseEntity<>(toRestModel(repo), HttpStatus.CREATED);
     }
 
     @ReadPermissionRequired
+    @RepoRequired(exists = true)
     @RequestMapping(value = "/search/version", method = RequestMethod.POST)
     public ResponseEntity<RestCommitModel> searchForVersionInHistory(ApiParameterContainer apiParameterContainer,
                                                                      @RequestBody RestCommitIdCollection versionModel) {
