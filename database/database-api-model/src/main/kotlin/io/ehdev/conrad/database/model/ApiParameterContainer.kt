@@ -8,6 +8,4 @@ class ApiParameterContainer(val user: ApiUser?,
                             override val repoName: String?) : ApiRepoModel {
 
     constructor(user: ApiUser?, repo: ApiRepoModel) : this(user, repo.projectName, repo.projectName)
-
-//    constructor() : this(null, null, null)
 }

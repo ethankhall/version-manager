@@ -5,6 +5,7 @@ import io.ehdev.conrad.database.api.exception.ProjectAlreadyExistsException;
 import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.project.ApiProjectModel;
 import io.ehdev.conrad.model.rest.RestProjectModel;
+import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.util.ConversionUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,6 +28,7 @@ public class ProjectEndpoint {
         this.projectManagementApi = projectManagementApi;
     }
 
+    @LoggedInUserRequired
     @RequestMapping(value = "/{projectName}", method = RequestMethod.POST)
     public ResponseEntity<RestProjectModel> createProject(ApiParameterContainer apiParameterContainer,
                                                           HttpServletRequest request) {

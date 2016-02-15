@@ -1,4 +1,4 @@
-package io.ehdev.conrad.service.api.aop
+package io.ehdev.conrad.service.api.aop.impl
 
 import io.ehdev.conrad.database.api.PermissionManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
