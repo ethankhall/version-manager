@@ -79,5 +79,13 @@ class DefaultRepoManagementApiIntegrationTest extends Specification {
         then:
         allCommits.isPresent()
         allCommits.get().commitId == '2'
+        allCommits.get().version == '1.3.4'
+
+        when:
+        def commit = repoManagementApi.findCommit(repoModel, 'latest')
+
+        then:
+        commit.get().commitId == '2'
+        commit.get().version == '1.3.4'
     }
 }
