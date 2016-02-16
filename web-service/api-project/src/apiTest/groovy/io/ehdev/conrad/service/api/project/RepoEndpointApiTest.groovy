@@ -1,6 +1,6 @@
 package io.ehdev.conrad.service.api.project
 
-import groovy.json.JsonBuilder
+import com.fasterxml.jackson.databind.ObjectMapper
 import io.ehdev.conrad.apidoc.ObjectDocumentationSnippet
 import io.ehdev.conrad.database.api.RepoManagementApi
 import io.ehdev.conrad.database.api.TestDoubleRepoManagementApi
@@ -217,7 +217,7 @@ class RepoEndpointApiTest extends Specification {
     }
 
     void createRepo() {
-        repoManagementApi.createRepo(model, 'semver', 'http://github.com/foo/bar')
+        repoManagementApi.createRepo(model, 'semver')
         repoManagementApi.createCommit(model, new ApiCommitModel('1', '1.0.0'), null)
         repoManagementApi.createCommit(model, new ApiCommitModel('2', '2.0.0-BETA'), new ApiCommitModel('1', '1.0.0'))
     }
@@ -247,6 +247,14 @@ class RepoEndpointApiTest extends Specification {
     }
 
     String toJson(Object o) {
-        return new JsonBuilder(o).toPrettyString()
+
+        def mapper = new ObjectMapper()
+        def sw = new StringWriter()
+        mapper.writeValue(sw, o)
+
+        def string = sw.toString()
+        println string
+
+        return string
     }
 }

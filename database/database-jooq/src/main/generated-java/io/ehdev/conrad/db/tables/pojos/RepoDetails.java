@@ -34,7 +34,7 @@ import javax.validation.constraints.Size;
 })
 public class RepoDetails implements Serializable {
 
-	private static final long serialVersionUID = -2040602875;
+	private static final long serialVersionUID = 610140023;
 
 	private UUID    uuid;
 	private String  projectName;
@@ -129,8 +129,7 @@ public class RepoDetails implements Serializable {
 		this.versionBumperUuid = versionBumperUuid;
 	}
 
-	@Column(name = "url", nullable = false, length = 1024)
-	@NotNull
+	@Column(name = "url", length = 1024)
 	@Size(max = 1024)
 	public String getUrl() {
 		return this.url;

@@ -1,11 +1,11 @@
 package io.ehdev.conrad.service.api.service
 
+import io.ehdev.conrad.database.api.UserManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
+import io.ehdev.conrad.database.model.user.ApiUser
 import io.ehdev.conrad.db.tables.daos.VersionBumpersDao
-import io.ehdev.conrad.db.tables.pojos.VersionBumpers
 import io.ehdev.conrad.model.rest.RestRepoCreateModel
 import io.ehdev.conrad.service.api.config.TestConradProjectApiConfiguration
-import io.ehdev.conrad.version.bumper.SemanticVersionBumper
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.HttpStatus
@@ -32,9 +32,14 @@ class RepoEndpointIntegrationTest extends Specification {
     @Autowired
     VersionBumpersDao versionBumpersDao
 
+    @Autowired
+    UserManagementApi userManagementApi
+
+    ApiUser userApi
+
     def setup() {
-        projectEndpoint.createProject(new ApiParameterContainer(null, "project_name", null), new MockHttpServletRequest())
-        versionBumpersDao.insert(new VersionBumpers(null, 'semver', SemanticVersionBumper.getName(), 'semver'))
+        userApi = userManagementApi.createUser("username", "name", "email")
+        projectEndpoint.createProject(new ApiParameterContainer(userApi, "project_name", null), new MockHttpServletRequest())
     }
 
     def 'full workflow'() {
@@ -46,7 +51,7 @@ class RepoEndpointIntegrationTest extends Specification {
     }
 
     private ApiParameterContainer createApiContainer() {
-        new ApiParameterContainer(null, "project_name", "repo_name")
+        new ApiParameterContainer(userApi, "project_name", "repo_name")
     }
 
 }

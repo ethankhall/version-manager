@@ -41,7 +41,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 })
 public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> implements Record8<UUID, String, String, UUID, UUID, String, String, Boolean> {
 
-	private static final long serialVersionUID = 58746668;
+	private static final long serialVersionUID = -57351302;
 
 	/**
 	 * Setter for <code>public.repo_details.uuid</code>.
@@ -134,8 +134,7 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
 	/**
 	 * Getter for <code>public.repo_details.url</code>.
 	 */
-	@Column(name = "url", nullable = false, length = 1024)
-	@NotNull
+	@Column(name = "url", length = 1024)
 	@Size(max = 1024)
 	public String getUrl() {
 		return (String) getValue(5);

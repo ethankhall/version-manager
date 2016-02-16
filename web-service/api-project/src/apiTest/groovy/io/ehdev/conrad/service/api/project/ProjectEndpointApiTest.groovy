@@ -1,14 +1,21 @@
 package io.ehdev.conrad.service.api.project
 
+import io.ehdev.conrad.database.api.PermissionManagementApi
 import io.ehdev.conrad.database.api.TestDoubleProjectManagementApi
+import io.ehdev.conrad.database.model.ApiParameterContainer
+import io.ehdev.conrad.database.model.user.ApiUser
 import io.ehdev.conrad.service.api.config.ApiParameterContainerResolver
 import io.ehdev.conrad.service.api.service.ProjectEndpoint
 import org.junit.Rule
+import org.springframework.core.MethodParameter
 import org.springframework.http.MediaType
 import org.springframework.restdocs.RestDocumentation
 import org.springframework.restdocs.mockmvc.RestDocumentationResultHandler
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.setup.MockMvcBuilders
+import org.springframework.web.bind.support.WebDataBinderFactory
+import org.springframework.web.context.request.NativeWebRequest
+import org.springframework.web.method.support.ModelAndViewContainer
 import spock.lang.Specification
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document
@@ -36,10 +43,10 @@ class ProjectEndpointApiTest extends Specification {
     def setup() {
         document = document("{method-name}", preprocessResponse(prettyPrint()));
         projectManagementApi = new TestDoubleProjectManagementApi()
-        projectEndpoint = new ProjectEndpoint(projectManagementApi)
+        projectEndpoint = new ProjectEndpoint(projectManagementApi, Mock(PermissionManagementApi))
 
         mockMvc = MockMvcBuilders.standaloneSetup(projectEndpoint)
-            .setCustomArgumentResolvers(ApiParameterContainerResolver.newInstance())
+            .setCustomArgumentResolvers(new LocalApiParameterContainerResolver())
             .apply(documentationConfiguration(this.restDocumentation))
             .alwaysDo(document)
             .build();
@@ -60,5 +67,18 @@ class ProjectEndpointApiTest extends Specification {
             ))
         mockMvc.perform(post("/api/v1/project/{projectName}", 'bigFizzyDice').accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isCreated());
+    }
+
+    class LocalApiParameterContainerResolver extends ApiParameterContainerResolver {
+
+        public ApiParameterContainer resolveArgument(MethodParameter parameter,
+                                                     ModelAndViewContainer mavContainer,
+                                                     NativeWebRequest webRequest,
+                                                     WebDataBinderFactory binderFactory) throws Exception {
+            def result = super.resolveArgument(parameter, mavContainer, webRequest, binderFactory)
+
+            def user = new ApiUser(UUID.randomUUID(), 'user', 'name', 'email')
+            return new ApiParameterContainer(user, result.getProjectName(), result.getRepoName())
+        }
     }
 }

@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RepoDetailsTable extends TableImpl<RepoDetailsRecord> {
 
-	private static final long serialVersionUID = 42463061;
+	private static final long serialVersionUID = -1645543626;
 
 	/**
 	 * The reference instance of <code>public.repo_details</code>
@@ -78,7 +78,7 @@ public class RepoDetailsTable extends TableImpl<RepoDetailsRecord> {
 	/**
 	 * The column <code>public.repo_details.url</code>.
 	 */
-	public final TableField<RepoDetailsRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(1024).nullable(false), this, "");
+	public final TableField<RepoDetailsRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(1024), this, "");
 
 	/**
 	 * The column <code>public.repo_details.description</code>.

@@ -45,7 +45,7 @@ public class RepoEndpoint {
     public ResponseEntity<RestRepoDetailsModel> createRepo(ApiParameterContainer apiParameterContainer,
                                                            @RequestBody RestRepoCreateModel createModel) {
         DefaultApiRepoModel newModel = new DefaultApiRepoModel(apiParameterContainer.getProjectName(), apiParameterContainer.getRepoName(), createModel.getRepoUrl());
-        ApiRepoDetailsModel repo = repoManagementApi.createRepo(newModel, createModel.getBumperName(), createModel.getRepoUrl());
+        ApiRepoDetailsModel repo = repoManagementApi.createRepo(newModel, createModel.getBumperName());
         return new ResponseEntity<>(toRestModel(repo), HttpStatus.CREATED);
     }
 

@@ -40,7 +40,8 @@ public class DefaultVersionBumperService implements VersionBumperService {
                                          String message,
                                          CommitVersion lastCommit) {
 
-        ApiRepoDetailsModel apiModel = repoManagementApi.getDetails(repoModel).get();
+        Optional<ApiRepoDetailsModel> details = repoManagementApi.getDetails(repoModel);
+        ApiRepoDetailsModel apiModel = details.get();
 
         VersionBumper versionBumper = findVersionBumper(apiModel.getBumper().getClassName());
         DefaultCommitDetails commitDetails = new DefaultCommitDetails(commitId, message);

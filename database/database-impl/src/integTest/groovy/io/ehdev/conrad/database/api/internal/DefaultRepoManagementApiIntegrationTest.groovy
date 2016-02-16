@@ -4,7 +4,6 @@ import io.ehdev.conrad.database.config.TestConradDatabaseConfig
 import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.db.tables.daos.VersionBumpersDao
-import io.ehdev.conrad.db.tables.pojos.VersionBumpers
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.test.annotation.Rollback
@@ -28,13 +27,12 @@ class DefaultRepoManagementApiIntegrationTest extends Specification {
 
     def setup() {
         projectManagementApi.createProject("project")
-        versionBumpersDao.insert(new VersionBumpers(null, 'semver', Object.name, 'some description'))
     }
 
     def 'basic workflow'() {
         def repoModel = new DefaultApiRepoModel('project', 'newRepo')
         when:
-        def repo = repoManagementApi.createRepo(repoModel, 'semver', 'url')
+        def repo = repoManagementApi.createRepo(repoModel, 'semver')
 
         then:
         repo != null

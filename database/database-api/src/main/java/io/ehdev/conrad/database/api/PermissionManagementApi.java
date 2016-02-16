@@ -9,4 +9,6 @@ public interface PermissionManagementApi {
     boolean doesUserHavePermission(ApiUser apiUser, String project, String repoName, ApiUserPermission permission);
 
     boolean addPermission(String username, ApiUser authenticatedUser, String projectName, String repoName, ApiUserPermission permission);
+
+    boolean forceAddPermission(String username, String projectName, String repoName, ApiUserPermission permission);
 }

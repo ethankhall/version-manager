@@ -21,7 +21,7 @@ public class TestDoubleRepoManagementApi implements RepoManagementApi {
     }
 
     @Override
-    public ApiRepoDetailsModel createRepo(ApiFullRepoModel qualifiedRepo, String bumperName, String repoUrl) {
+    public ApiRepoDetailsModel createRepo(ApiFullRepoModel qualifiedRepo, String bumperName) {
         storage.put(qualifiedRepo.getMergedName(), new ApiRepoDetailsModel(qualifiedRepo, bumperModel));
         commits.put(qualifiedRepo.getMergedName(), new ArrayList<>());
         return storage.get(qualifiedRepo.getMergedName());

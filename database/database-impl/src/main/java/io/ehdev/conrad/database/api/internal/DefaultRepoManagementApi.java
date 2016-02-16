@@ -60,7 +60,7 @@ public class DefaultRepoManagementApi implements RepoManagementApiInternal {
     }
 
     @Override
-    public ApiRepoDetailsModel createRepo(ApiFullRepoModel qualifiedRepo, String bumperName, String repoUrl) {
+    public ApiRepoDetailsModel createRepo(ApiFullRepoModel qualifiedRepo, String bumperName) {
         Optional<RepoDetails> exists = findRepository(qualifiedRepo.getProjectName(), qualifiedRepo.getRepoName());
         if (exists.isPresent()) {
             throw new RepoAlreadyExistsException(qualifiedRepo);
@@ -81,7 +81,7 @@ public class DefaultRepoManagementApi implements RepoManagementApiInternal {
             qualifiedRepo.getRepoName(),
             projectDetails.getUuid(),
             versionBumpers.getUuid(),
-            repoUrl,
+            qualifiedRepo.getUrl(),
             "",
             true);
 
@@ -115,15 +115,14 @@ public class DefaultRepoManagementApi implements RepoManagementApiInternal {
         CommitDetailsTable cd = Tables.COMMIT_DETAILS.as("cd");
         RepoDetailsTable rd = Tables.REPO_DETAILS.as("rd");
         //@formatter:off
-        CommitDetails commitDetails = createQueryForCommitsForRepo(repo, cd, rd)
+        Record record = createQueryForCommitsForRepo(repo, cd, rd)
                 .and(cd.COMMIT_ID.in(commitIds))
             .orderBy(cd.CREATED_AT.desc())
             .limit(1)
-            .fetchOne()
-            .into(CommitDetails.class);
-        //@formatter:on
+            .fetchOne();
 
-        return Optional.ofNullable(commitDetails).map(ModelConversionUtility::toApiModel);
+        //@formatter:on
+        return Optional.ofNullable(record).map(it -> it.into(CommitDetails.class)).map(ModelConversionUtility::toApiModel);
     }
 
     @Override

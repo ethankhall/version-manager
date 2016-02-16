@@ -39,13 +39,15 @@ CREATE TABLE version_bumpers (
     UNIQUE (class_name)
 );
 
+INSERT INTO version_bumpers(bumper_name, class_name, description) VALUES ('semver', 'io.ehdev.conrad.version.bumper.SemanticVersionBumper', 'Default semantic versions bumper');
+
 CREATE TABLE repo_details (
     uuid                UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     project_name        CHARACTER VARYING(255)  NOT NULL,
     repo_name           CHARACTER VARYING(255)  NOT NULL,
     project_uuid        UUID REFERENCES project_details (uuid),
     version_bumper_uuid UUID REFERENCES version_bumpers (uuid),
-    url                 CHARACTER VARYING(1024) NOT NULL,
+    url                 CHARACTER VARYING(1024),
     description         TEXT                    NOT NULL,
     public              BOOLEAN          DEFAULT TRUE,
     UNIQUE (project_name, repo_name)

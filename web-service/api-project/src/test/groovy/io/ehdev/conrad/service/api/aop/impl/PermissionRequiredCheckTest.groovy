@@ -31,6 +31,11 @@ class PermissionRequiredCheckTest extends Specification {
             boolean addPermission(String username, ApiUser authenticatedUser, String projectName, String repoName, ApiUserPermission permission) {
                 return false
             }
+
+            @Override
+            boolean forceAddPermission(String username, String projectName, String repoName, ApiUserPermission permission) {
+                return false
+            }
         }
         environment = new MockEnvironment()
         permissionRequiredCheck = new PermissionRequiredCheck(permissionManagementApi, environment)
