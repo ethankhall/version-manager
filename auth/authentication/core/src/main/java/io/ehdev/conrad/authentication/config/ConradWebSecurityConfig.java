@@ -62,6 +62,7 @@ public class ConradWebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
             .addFilterBefore(statelessAuthenticationFilter, AnonymousAuthenticationFilter.class)
             .addFilterBefore(clientAuthenticationFilter(), AnonymousAuthenticationFilter.class)
+            .csrf().disable()
             .rememberMe();
         //@formatter:on
     }

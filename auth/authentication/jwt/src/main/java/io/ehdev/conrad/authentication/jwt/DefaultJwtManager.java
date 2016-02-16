@@ -57,6 +57,7 @@ public class DefaultJwtManager implements JwtManager {
     @Override
     public Optional<Pair<ApiUser, ApiToken>> parseToken(String token) {
         if(StringUtils.isBlank(token)) {
+            logger.debug("Token was blank");
             return Optional.empty();
         }
         try {
@@ -68,11 +69,12 @@ public class DefaultJwtManager implements JwtManager {
             ApiProvidedToken conradToken = new ApiProvidedToken(UUID.fromString(parsed.getId()));
             ApiUser user = tokenManagementApi.findUser(conradToken);
             if(user == null) {
+                logger.debug("User was not found.");
                 return Optional.empty();
             }
             return Optional.of(new ImmutablePair<>(user, conradToken));
         } catch (JwtException | IllegalArgumentException exception) {
-            logger.info("Token {} was invalid: {}", token, exception.getMessage());
+            logger.debug("Token {} was invalid: {}", token, exception.getMessage());
             return Optional.empty();
         }
     }

@@ -27,6 +27,7 @@ class SpringRestDocPlugin implements Plugin<Project> {
                     snippetsDir = file("$buildDir/generated-snippets")
                 }
                 shouldRunAfter(tasks.test)
+                reports.html.destination = file("$buildDir/reports/api-test")
                 testClassesDir = sourceSets.apiTest.output.classesDir
                 classpath = sourceSets.apiTest.runtimeClasspath
                 outputs.dir snippetsDir

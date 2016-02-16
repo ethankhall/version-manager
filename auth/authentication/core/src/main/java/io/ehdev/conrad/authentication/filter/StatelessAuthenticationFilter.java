@@ -24,9 +24,9 @@ import java.util.Optional;
 @Component
 public class StatelessAuthenticationFilter extends OncePerRequestFilter {
 
-    private static final Logger logger = LoggerFactory.getLogger(StatelessAuthenticationFilter.class);
+    public static final String HEADER_NAME = "X-AUTH-TOKEN";
 
-    static final String HEADER_NAME = "X-AUTH-TOKEN";
+    private static final Logger logger = LoggerFactory.getLogger(StatelessAuthenticationFilter.class);
 
     private final UserCookieManger userCookieManger;
     private final JwtManager jwtManager;
@@ -39,7 +39,7 @@ public class StatelessAuthenticationFilter extends OncePerRequestFilter {
     }
 
     public String getToken(HttpServletRequest request) {
-        if (request.getHeader(HEADER_NAME) == null) {
+        if (request.getHeader(HEADER_NAME) != null) {
             return request.getHeader(HEADER_NAME);
         } else {
             return userCookieManger.readCookieValue(request);

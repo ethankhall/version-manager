@@ -51,4 +51,12 @@ class ReverseApiCommitComparatorTest extends Specification {
         list[0].version == '1.3.4'
         list[1].version == '1.2.3'
     }
+
+    def 'finish out test coverage'() {
+        def same = new ApiCommitModel('1', '1.2.3')
+        def comparator = new ReverseApiCommitComparator()
+
+        expect:
+        comparator.compare(same, same) == 0
+    }
 }
