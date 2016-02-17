@@ -11,4 +11,15 @@ enum class ApiUserPermission {
     constructor(id: Int) {
         this.securityId = id
     }
+
+    companion object {
+        @JvmStatic fun findById(id: Int): ApiUserPermission? {
+            for (value in values()) {
+                if(value.securityId == id) {
+                    return value
+                }
+            }
+            return null;
+        }
+    }
 }

@@ -1,5 +1,7 @@
 package io.ehdev.conrad.database.api.internal;
 
+import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.database.model.user.ApiRepoUserPermission;
 import io.ehdev.conrad.database.model.user.ApiUser;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.db.Tables;
@@ -8,15 +10,20 @@ import io.ehdev.conrad.db.tables.daos.UserDetailsDao;
 import io.ehdev.conrad.db.tables.pojos.ProjectDetails;
 import io.ehdev.conrad.db.tables.pojos.RepoDetails;
 import io.ehdev.conrad.db.tables.pojos.UserDetails;
+import io.ehdev.conrad.db.tables.records.UserPermissionsRecord;
 import org.jooq.DSLContext;
+import org.jooq.Record;
 import org.jooq.Record1;
+import org.jooq.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class DefaultPermissionManagementApi implements PermissionManagementApiInternal {
@@ -83,6 +90,27 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
         return true;
     }
 
+    @Override
+    public List<ApiRepoUserPermission> getPermissionsForProject(ApiParameterContainer repoModel) {
+        UserPermissionsTable up = Tables.USER_PERMISSIONS;
+
+        //@formatter:off
+        Result<Record> fetch = dslContext
+            .select()
+            .from(up)
+            .where(up.PROJECT_NAME.eq(repoModel.getProjectName()))
+                .and(up.REPO_NAME.eq(repoModel.getRepoName()).or(up.REPO_NAME.isNull()))
+            .fetch();
+        //@formatter:on
+
+        return fetch.into(UserPermissionsRecord.class).stream().map(this::convert).collect(Collectors.toList());
+    }
+
+    private ApiRepoUserPermission convert(UserPermissionsRecord record) {
+        UserDetails userDetails = userDetailsDao.fetchOneByUuid(record.getUserUuid());
+        return new ApiRepoUserPermission(userDetails.getUserName(), ApiUserPermission.findById(record.getPermissions()).name());
+    }
+
     private void doInsert(String projectName, UUID projectUUID, String repoName, UUID repoId, UserDetails userDetails, ApiUserPermission permission) {
         UserPermissionsTable up = Tables.USER_PERMISSIONS;
 
@@ -103,11 +131,18 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
                 .values(projectName, projectUUID, repoName, repoId, userDetails.getUuid(), permission.getSecurityId())
                 .execute();
         } else {
-            dslContext
-                .update(up)
-                .set(up.PERMISSIONS, permission.getSecurityId())
-                .where(up.UUID.eq(record.value1()))
-                .execute();
+            if(ApiUserPermission.NONE == permission) {
+                dslContext
+                    .delete(up)
+                    .where(up.UUID.eq(record.value1()))
+                    .execute();
+            } else {
+                dslContext
+                    .update(up)
+                    .set(up.PERMISSIONS, permission.getSecurityId())
+                    .where(up.UUID.eq(record.value1()))
+                    .execute();
+            }
         }
     }
 }

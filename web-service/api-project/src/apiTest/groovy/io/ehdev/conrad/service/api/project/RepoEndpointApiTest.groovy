@@ -63,7 +63,7 @@ class RepoEndpointApiTest extends Specification {
         document = document("{method-name}", preprocessResponse(prettyPrint()));
         repoEndpoint = new RepoEndpoint(repoManagementApi)
         repoVersionEndpoint = new RepoVersionEndpoint(repoManagementApi, versionBumperService)
-        repoDetailsEndpoint = new RepoDetailsEndpoint(repoManagementApi)
+        repoDetailsEndpoint = new RepoDetailsEndpoint(repoManagementApi, permissionManagementApi)
 
         mockMvc = MockMvcBuilders.standaloneSetup(repoEndpoint, repoVersionEndpoint, repoDetailsEndpoint)
             .setCustomArgumentResolvers(new ApiParameterContainerResolver())

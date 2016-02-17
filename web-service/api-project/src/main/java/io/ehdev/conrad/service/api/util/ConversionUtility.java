@@ -7,7 +7,7 @@ import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.model.rest.RestCommitModel;
 import io.ehdev.conrad.model.rest.RestProjectModel;
 import io.ehdev.conrad.model.rest.RestRepoDetailsModel;
-import io.ehdev.conrad.model.rest.RestRepoModel;
+import io.ehdev.conrad.model.rest.repo.RestRepoModel;
 
 import java.util.Collections;
 import java.util.List;

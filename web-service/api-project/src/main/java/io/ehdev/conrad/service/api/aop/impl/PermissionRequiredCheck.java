@@ -48,7 +48,12 @@ public class PermissionRequiredCheck {
 
         ApiParameterContainer container = findApiParameterContainer(joinPoint);
 
+        if(container.getUser() == null) {
+            throw new PermissionDeniedException();
+        }
+
         boolean permission = permissionManagementApi.doesUserHavePermission(container.getUser(), container.getProjectName(), container.getRepoName(), read);
+
         if (!permission) {
             throw new PermissionDeniedException();
         }

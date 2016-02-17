@@ -14,7 +14,7 @@ class RepoDetailsEndpointTest extends Specification {
 
     def setup() {
         repoManagementApi = Mock(RepoManagementApi)
-        endpoint = new RepoDetailsEndpoint(repoManagementApi)
+        endpoint = new RepoDetailsEndpoint(repoManagementApi, permissionManagementApi)
     }
 
     def 'can get details for repo'() {
