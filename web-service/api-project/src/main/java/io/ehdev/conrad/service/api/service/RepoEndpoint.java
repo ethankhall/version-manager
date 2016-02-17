@@ -1,5 +1,6 @@
 package io.ehdev.conrad.service.api.service;
 
+import io.ehdev.conrad.database.api.PermissionManagementApi;
 import io.ehdev.conrad.database.api.RepoManagementApi;
 import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
@@ -9,6 +10,8 @@ import io.ehdev.conrad.model.rest.RestCommitModel;
 import io.ehdev.conrad.model.rest.RestRepoCreateModel;
 import io.ehdev.conrad.model.rest.RestRepoDetailsModel;
 import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection;
+import io.ehdev.conrad.model.rest.repo.RestRepoModel;
+import io.ehdev.conrad.model.rest.repo.RestUserPermissionModel;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
@@ -32,10 +35,13 @@ import static io.ehdev.conrad.service.api.util.ConversionUtility.toRestModel;
 public class RepoEndpoint {
 
     private final RepoManagementApi repoManagementApi;
+    private final PermissionManagementApi permissionManagementApi;
 
     @Autowired
-    public RepoEndpoint(RepoManagementApi repoManagementApi) {
+    public RepoEndpoint(RepoManagementApi repoManagementApi,
+                        PermissionManagementApi permissionManagementApi) {
         this.repoManagementApi = repoManagementApi;
+        this.permissionManagementApi = permissionManagementApi;
     }
 
     @LoggedInUserRequired
@@ -47,6 +53,24 @@ public class RepoEndpoint {
         DefaultApiRepoModel newModel = new DefaultApiRepoModel(apiParameterContainer.getProjectName(), apiParameterContainer.getRepoName(), createModel.getRepoUrl());
         ApiRepoDetailsModel repo = repoManagementApi.createRepo(newModel, createModel.getBumperName());
         return new ResponseEntity<>(toRestModel(repo), HttpStatus.CREATED);
+    }
+
+    @ReadPermissionRequired
+    @RepoRequired(exists = true)
+    @RequestMapping(method = RequestMethod.GET)
+    public ResponseEntity<RestRepoModel> getRepoDetails(ApiParameterContainer repoModel) {
+        ApiRepoDetailsModel details = repoManagementApi.getDetails(repoModel).get();
+
+        RestRepoModel restRepoModel = new RestRepoModel();
+        restRepoModel.setProjectName(details.getRepo().getProjectName());
+        restRepoModel.setRepoName(details.getRepo().getProjectName());
+        restRepoModel.setUrl(details.getRepo().getUrl());
+
+        permissionManagementApi.getPermissionsForProject(repoModel).forEach(it -> {
+            restRepoModel.addPermission(new RestUserPermissionModel(it.getUsername(), it.getPermissions()));
+        });
+
+        return ResponseEntity.ok(restRepoModel);
     }
 
     @ReadPermissionRequired

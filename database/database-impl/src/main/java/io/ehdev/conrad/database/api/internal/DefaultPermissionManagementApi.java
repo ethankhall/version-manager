@@ -6,6 +6,7 @@ import io.ehdev.conrad.database.model.user.ApiUser;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.db.Tables;
 import io.ehdev.conrad.db.tables.UserPermissionsTable;
+import io.ehdev.conrad.db.tables.daos.ProjectDetailsDao;
 import io.ehdev.conrad.db.tables.daos.UserDetailsDao;
 import io.ehdev.conrad.db.tables.pojos.ProjectDetails;
 import io.ehdev.conrad.db.tables.pojos.RepoDetails;
@@ -33,17 +34,17 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
     private final DSLContext dslContext;
     private final UserDetailsDao userDetailsDao;
     private final RepoManagementApiInternal repoManagementApi;
-    private final ProjectManagementApiInternal projectManagementApi;
+    private final ProjectDetailsDao projectDetailsDao;
 
     @Autowired
     public DefaultPermissionManagementApi(DSLContext dslContext,
                                           UserDetailsDao userDetailsDao,
                                           RepoManagementApiInternal repoManagementApi,
-                                          ProjectManagementApiInternal projectManagementApi) {
+                                          ProjectDetailsDao projectManagementApi) {
         this.dslContext = dslContext;
         this.userDetailsDao = userDetailsDao;
         this.repoManagementApi = repoManagementApi;
-        this.projectManagementApi = projectManagementApi;
+        this.projectDetailsDao = projectManagementApi;
     }
 
     @Override
@@ -84,7 +85,7 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
             RepoDetails repoDetails = details.get();
             doInsert(repoDetails.getProjectName(), repoDetails.getProjectUuid(), repoDetails.getRepoName(), repoDetails.getUuid(), userDetails, permission);
         } else {
-            ProjectDetails details = projectManagementApi.findProject(projectName).get();
+            ProjectDetails details = projectDetailsDao.fetchOneByProjectName(projectName);
             doInsert(details.getProjectName(), details.getUuid(), null, null, userDetails, permission);
         }
         return true;

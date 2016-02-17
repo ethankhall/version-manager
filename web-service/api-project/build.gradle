@@ -16,6 +16,8 @@ dependencies {
     compile libraries.springSecurityCore
     compile libraries.servletApi
 
+    compile 'org.springframework.hateoas:spring-hateoas:0.19.0.RELEASE'
+
     testCompile project(':database:database-test')
 
     testCompile libraries.groovy

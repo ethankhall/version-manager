@@ -1,5 +1,7 @@
 package io.ehdev.conrad.database.api;
 
+import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.database.model.project.ApiProjectDetails;
 import io.ehdev.conrad.database.model.project.ApiProjectModel;
 import io.ehdev.conrad.database.model.project.ApiVersionBumperModel;
 
@@ -13,13 +15,18 @@ public class TestDoubleProjectManagementApi implements ProjectManagementApi {
     private final Map<String, ApiProjectModel> projects = new HashMap<>();
 
     @Override
-    public ApiProjectModel createProject(String projectName) {
+    public void createProject(ApiParameterContainer apiParameterContainer) {
+        String projectName = apiParameterContainer.getProjectName();
         projects.put(projectName, new ApiProjectModel(projectName, new ArrayList<>()));
-        return projects.get(projectName);
     }
 
     @Override
     public List<ApiVersionBumperModel> findAllVersionBumpers(String projectName) {
+        return null;
+    }
+
+    @Override
+    public ApiProjectDetails getProjectDetails(ApiParameterContainer apiParameterContainer) {
         return null;
     }
 }
