@@ -15,20 +15,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Service
-@RequestMapping("/api/v1/project/{projectName}/repo/{repoName}")
-public class RepoDetailsEndpoint {
+@RequestMapping("/api/v1/project/{projectName}/repo/{repoName}/permissions")
+public class RepoPermissionsEndpoint {
 
     private final PermissionManagementApi permissionManagementApi;
 
     @Autowired
-    public RepoDetailsEndpoint(PermissionManagementApi permissionManagementApi) {
+    public RepoPermissionsEndpoint(PermissionManagementApi permissionManagementApi) {
         this.permissionManagementApi = permissionManagementApi;
     }
 
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RepoRequired(exists = true)
-    @RequestMapping(value = "/permissions/{username}", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/{username}", method = RequestMethod.DELETE)
     public ResponseEntity deletePermissions(ApiParameterContainer repoModel,
                                             @PathVariable("username") String username) {
         permissionManagementApi.addPermission(username,
@@ -43,7 +43,7 @@ public class RepoDetailsEndpoint {
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RepoRequired(exists = true)
-    @RequestMapping(value = "/permissions/{username}/{permissionType}", method = RequestMethod.POST)
+    @RequestMapping(value = "/{username}/{permissionType}", method = RequestMethod.POST)
     public ResponseEntity addPermission(ApiParameterContainer repoModel,
                                         @PathVariable("username") String username,
                                         @PathVariable("permissionType") String permissionType) {

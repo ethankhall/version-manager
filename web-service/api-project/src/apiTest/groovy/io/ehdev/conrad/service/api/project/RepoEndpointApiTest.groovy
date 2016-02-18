@@ -13,7 +13,7 @@ import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection
 import io.ehdev.conrad.model.rest.commit.RestCommitIdModel
 import io.ehdev.conrad.model.version.VersionCreateModel
 import io.ehdev.conrad.service.api.config.ApiParameterContainerResolver
-import io.ehdev.conrad.service.api.service.RepoDetailsEndpoint
+import io.ehdev.conrad.service.api.service.RepoPermissionsEndpoint
 import io.ehdev.conrad.service.api.service.RepoEndpoint
 import io.ehdev.conrad.service.api.service.RepoVersionEndpoint
 import io.ehdev.conrad.version.bumper.SemanticVersionBumper
@@ -53,7 +53,7 @@ class RepoEndpointApiTest extends Specification {
     private MockMvc mockMvc
     private RepoEndpoint repoEndpoint
     private RepoVersionEndpoint repoVersionEndpoint
-    private RepoDetailsEndpoint repoDetailsEndpoint
+    private RepoPermissionsEndpoint repoDetailsEndpoint
     private def bumper = new ApiVersionBumperModel(SemanticVersionBumper.getSimpleName(), ' ', 'semver');
     private RepoManagementApi repoManagementApi = new TestDoubleRepoManagementApi(bumper)
     private VersionBumperService versionBumperService = new TestDoubleVersionBumperService()
@@ -63,7 +63,7 @@ class RepoEndpointApiTest extends Specification {
         document = document("{method-name}", preprocessResponse(prettyPrint()));
         repoEndpoint = new RepoEndpoint(repoManagementApi)
         repoVersionEndpoint = new RepoVersionEndpoint(repoManagementApi, versionBumperService)
-        repoDetailsEndpoint = new RepoDetailsEndpoint(repoManagementApi, permissionManagementApi)
+        repoDetailsEndpoint = new RepoPermissionsEndpoint(repoManagementApi, permissionManagementApi)
 
         mockMvc = MockMvcBuilders.standaloneSetup(repoEndpoint, repoVersionEndpoint, repoDetailsEndpoint)
             .setCustomArgumentResolvers(new ApiParameterContainerResolver())

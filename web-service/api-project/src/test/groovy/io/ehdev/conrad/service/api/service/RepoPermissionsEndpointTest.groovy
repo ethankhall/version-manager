@@ -8,13 +8,13 @@ import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import org.springframework.http.HttpStatus
 import spock.lang.Specification
 
-class RepoDetailsEndpointTest extends Specification {
-    RepoDetailsEndpoint endpoint
+class RepoPermissionsEndpointTest extends Specification {
+    RepoPermissionsEndpoint endpoint
     RepoManagementApi repoManagementApi
 
     def setup() {
         repoManagementApi = Mock(RepoManagementApi)
-        endpoint = new RepoDetailsEndpoint(repoManagementApi, permissionManagementApi)
+        endpoint = new RepoPermissionsEndpoint(repoManagementApi, permissionManagementApi)
     }
 
     def 'can get details for repo'() {

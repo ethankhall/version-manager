@@ -167,7 +167,7 @@ public class DefaultRepoManagementApi implements RepoManagementApiInternal {
                 .fetchOne();
         } else {
             record = query
-                .and(cd.COMMIT_ID.eq(commitId))
+                .and(cd.COMMIT_ID.eq(commitId).or(cd.VERSION.eq(commitId)))
                 .fetchOne();
         }
         return Optional.ofNullable(record).map(it -> it.into(CommitDetails.class));
