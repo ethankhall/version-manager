@@ -51,7 +51,11 @@ public class PermissionRequiredCheck {
         boolean permission = permissionManagementApi.doesUserHavePermission(container.getUser(), container.getProjectName(), container.getRepoName(), read);
 
         if (!permission) {
-            throw new PermissionDeniedException();
+            if(container.getUser() == null) {
+                throw new PermissionDeniedException("unkown");
+            } else {
+                throw new PermissionDeniedException(container.getUser().getUserName());
+            }
         }
     }
 }

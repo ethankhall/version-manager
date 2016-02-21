@@ -1,0 +1,34 @@
+#%RAML 1.0
+title: Conrad
+version: v1
+baseUri: http://api.samplehost.com/api/v1
+types:
+  TestType:
+    type: object
+    properties:
+      id: number
+      optional?: string
+      expanded:
+        type: object
+        properties:
+          count: number
+
+/project/{projectName}:
+  post:
+    description: Creates a project
+    responses:
+      200:
+        body:
+          application/json:
+            example: |
+              {
+                "links": [
+                  {
+                    "rel": "self",
+                    "href": "http://localhost:8080/api/v1/project/test-project/repo/packer-builder4"
+                  }
+                ],
+                "projectName": "test-project",
+                "repoName": "packer-builder4",
+                "url": "git@github.com:ethankhall/packer-builder.git"
+              }

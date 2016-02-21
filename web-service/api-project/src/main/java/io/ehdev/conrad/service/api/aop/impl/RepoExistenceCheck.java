@@ -3,6 +3,8 @@ package io.ehdev.conrad.service.api.aop.impl;
 import io.ehdev.conrad.database.api.RepoManagementApi;
 import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
+import io.ehdev.conrad.service.api.aop.exception.RepositoryExistsException;
+import io.ehdev.conrad.service.api.aop.exception.RepositoryMissingException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -37,9 +39,9 @@ public class RepoExistenceCheck {
         boolean required = repoRequired.exists();
 
         if(required && !repoExists) {
-            throw new RuntimeException("Repo (" + container.getMergedName() + ") doesn't exist, but it is required.");
+            throw new RepositoryMissingException(container);
         } else if(!required && repoExists) {
-            throw new RuntimeException("Repo (" + container.getMergedName() + ") exists, but it is required not to.");
+            throw new RepositoryExistsException(container);
         }
     }
 }
