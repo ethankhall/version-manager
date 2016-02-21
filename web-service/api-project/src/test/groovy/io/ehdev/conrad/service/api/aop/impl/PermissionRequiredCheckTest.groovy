@@ -2,6 +2,7 @@ package io.ehdev.conrad.service.api.aop.impl
 
 import io.ehdev.conrad.database.api.PermissionManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
+import io.ehdev.conrad.database.model.user.ApiRepoUserPermission
 import io.ehdev.conrad.database.model.user.ApiUser
 import io.ehdev.conrad.database.model.user.ApiUserPermission
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired
@@ -36,6 +37,11 @@ class PermissionRequiredCheckTest extends Specification {
             boolean forceAddPermission(String username, String projectName, String repoName, ApiUserPermission permission) {
                 return false
             }
+
+            @Override
+            List<ApiRepoUserPermission> getPermissionsForProject(ApiParameterContainer repoModel) {
+                return new ArrayList<ApiRepoUserPermission>()
+            }
         }
         environment = new MockEnvironment()
         permissionRequiredCheck = new PermissionRequiredCheck(permissionManagementApi, environment)
@@ -47,21 +53,22 @@ class PermissionRequiredCheckTest extends Specification {
         AspectJProxyFactory factory = new AspectJProxyFactory(target);
         factory.addAspect(permissionRequiredCheck)
         FooTestInterface proxy = factory.getProxy()
+        def apiUser = new ApiUser(UUID.randomUUID(), 'username', 'name', 'email')
 
         when:
-        proxy.adminPermissions(new ApiParameterContainer(null, 'read', null), 'a')
+        proxy.adminPermissions(new ApiParameterContainer(apiUser, 'read', null), 'a')
 
         then:
         thrown(PermissionDeniedException)
 
         when:
-        proxy.adminPermissions(new ApiParameterContainer(null, 'write', null), 'b')
+        proxy.adminPermissions(new ApiParameterContainer(apiUser, 'write', null), 'b')
 
         then:
         thrown(PermissionDeniedException)
 
         when:
-        proxy.adminPermissions(new ApiParameterContainer(null, 'admin', null), 'c')
+        proxy.adminPermissions(new ApiParameterContainer(apiUser, 'admin', null), 'c')
 
         then:
         noExceptionThrown()
@@ -73,21 +80,22 @@ class PermissionRequiredCheckTest extends Specification {
         AspectJProxyFactory factory = new AspectJProxyFactory(target);
         factory.addAspect(permissionRequiredCheck)
         FooTestInterface proxy = factory.getProxy()
+        def apiUser = new ApiUser(UUID.randomUUID(), 'username', 'name', 'email')
 
         when:
-        proxy.readPermissions(new ApiParameterContainer(null, 'read', null))
+        proxy.readPermissions(new ApiParameterContainer(apiUser, 'read', null))
 
         then:
         noExceptionThrown()
 
         when:
-        proxy.readPermissions(new ApiParameterContainer(null, 'write', null))
+        proxy.readPermissions(new ApiParameterContainer(apiUser, 'write', null))
 
         then:
         noExceptionThrown()
 
         when:
-        proxy.readPermissions(new ApiParameterContainer(null, 'admin', null))
+        proxy.readPermissions(new ApiParameterContainer(apiUser, 'admin', null))
 
         then:
         noExceptionThrown()
@@ -99,21 +107,22 @@ class PermissionRequiredCheckTest extends Specification {
         AspectJProxyFactory factory = new AspectJProxyFactory(target);
         factory.addAspect(permissionRequiredCheck)
         FooTestInterface proxy = factory.getProxy()
+        def apiUser = new ApiUser(UUID.randomUUID(), 'username', 'name', 'email')
 
         when:
-        proxy.writePermissions(new ApiParameterContainer(null, 'read', null))
+        proxy.writePermissions(new ApiParameterContainer(apiUser, 'read', null))
 
         then:
         thrown(PermissionDeniedException)
 
         when:
-        proxy.writePermissions(new ApiParameterContainer(null, 'write', null))
+        proxy.writePermissions(new ApiParameterContainer(apiUser, 'write', null))
 
         then:
         noExceptionThrown()
 
         when:
-        proxy.writePermissions(new ApiParameterContainer(null, 'admin', null))
+        proxy.writePermissions(new ApiParameterContainer(apiUser, 'admin', null))
 
         then:
         noExceptionThrown()

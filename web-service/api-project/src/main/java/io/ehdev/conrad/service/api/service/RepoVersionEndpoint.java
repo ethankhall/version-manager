@@ -10,6 +10,7 @@ import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
+import io.ehdev.conrad.service.api.service.model.LinkUtilities;
 import io.ehdev.conrad.service.api.service.model.version.CreateVersionResponse;
 import io.ehdev.conrad.service.api.service.model.version.GetAllVersionsCommitResponse;
 import io.ehdev.conrad.service.api.service.model.version.GetAllVersionsResponse;
@@ -18,7 +19,6 @@ import io.ehdev.conrad.version.bumper.api.VersionBumperService;
 import io.ehdev.conrad.version.commit.CommitVersion;
 import io.ehdev.conrad.version.commit.VersionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.Link;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -32,9 +32,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 @Service
 @RequestMapping("/api/v1/project/{projectName}/repo/{repoName}")
@@ -61,9 +58,16 @@ public class RepoVersionEndpoint {
             .sorted(new ReverseApiCommitComparator())
             .forEach(it -> {
                 GetAllVersionsCommitResponse commit = new GetAllVersionsCommitResponse(it.getCommitId(), it.getVersion());
-                commit.add(versionSelfLink(apiParameterContainer, it.getVersion()));
+                commit.add(LinkUtilities.versionSelfLink(apiParameterContainer, it.getVersion()));
                 response.addCommits(commit);
             });
+
+        if(!response.getCommits().isEmpty()) {
+            response.setLatest(response.getCommits().get(0));
+        }
+
+        response.add(LinkUtilities.repositoryLink(apiParameterContainer, LinkUtilities.REPOSITORY_REF));
+        response.add(LinkUtilities.versionListLink(apiParameterContainer, "self"));
 
         return ResponseEntity.ok(response);
     }
@@ -96,7 +100,7 @@ public class RepoVersionEndpoint {
         URI uri = URI.create(request.getRequestURL().toString() + "/" + nextCommit.getVersion());
 
         CreateVersionResponse response = new CreateVersionResponse(versionModel.getCommitId(), nextVersion.toVersionString());
-        response.add(versionSelfLink(apiParameterContainer, nextVersion.toVersionString()));
+        response.add(LinkUtilities.versionSelfLink(apiParameterContainer, nextVersion.toVersionString()));
         return ResponseEntity.created(uri).body(response);
     }
 
@@ -108,7 +112,9 @@ public class RepoVersionEndpoint {
         Optional<ApiCommitModel> commit = repoManagementApi.findCommit(apiParameterContainer, versionArg);
         if (commit.isPresent()) {
             GetVersionResponse versionResponse = new GetVersionResponse(commit.get().getCommitId(), commit.get().getVersion());
-            versionResponse.add(versionSelfLink(apiParameterContainer, commit.get().getVersion()));
+            versionResponse.add(LinkUtilities.versionSelfLink(apiParameterContainer, commit.get().getVersion()));
+            versionResponse.add(LinkUtilities.versionListLink(apiParameterContainer, LinkUtilities.VERSION_REF));
+            versionResponse.add(LinkUtilities.repositoryLink(apiParameterContainer, LinkUtilities.REPOSITORY_REF));
             return ResponseEntity.ok(versionResponse);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -121,10 +127,4 @@ public class RepoVersionEndpoint {
             throw new CommitNotFoundException(joinedCommit);
         }
     }
-
-    public static Link versionSelfLink(ApiParameterContainer container, String version) {
-        return linkTo(methodOn(RepoVersionEndpoint.class, container.getProjectName(), container.getRepoName())
-            .findVersion(container, version)).withSelfRel();
-    }
-
 }

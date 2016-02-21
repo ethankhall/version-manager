@@ -1,6 +1,5 @@
 package io.ehdev.conrad.service.api.project
 
-import io.ehdev.conrad.database.api.PermissionManagementApi
 import io.ehdev.conrad.database.api.TestDoubleProjectManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.user.ApiUser
@@ -43,7 +42,7 @@ class ProjectEndpointApiTest extends Specification {
     def setup() {
         document = document("{method-name}", preprocessResponse(prettyPrint()));
         projectManagementApi = new TestDoubleProjectManagementApi()
-        projectEndpoint = new ProjectEndpoint(projectManagementApi, Mock(PermissionManagementApi))
+        projectEndpoint = new ProjectEndpoint(projectManagementApi)
 
         mockMvc = MockMvcBuilders.standaloneSetup(projectEndpoint)
             .setCustomArgumentResolvers(new LocalApiParameterContainerResolver())
@@ -56,10 +55,9 @@ class ProjectEndpointApiTest extends Specification {
         expect:
         document.snippets(
             responseFields(
+                fieldWithPath("links").description("Links to resources related to the object"),
                 fieldWithPath("name")
-                    .description("Name of the project just created"),
-                fieldWithPath("repos")
-                    .description("Repositories related to this project")),
+                    .description("Name of the project just created")),
             pathParameters(
                 parameterWithName("projectName")
                     .description("Name of the project to create.")

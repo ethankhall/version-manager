@@ -15,6 +15,8 @@ import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.context.request.ServletRequestAttributes
 import spock.lang.Specification
 
 import javax.transaction.Transactional
@@ -44,6 +46,8 @@ class RepoVersionEndpointIntegrationTest extends Specification {
 
 
     def setup() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
         userApi = userManagementApi.createUser("username", "name", "email")
         projectEndpoint.createProject(new ApiParameterContainer(userApi, "project_name", null), new MockHttpServletRequest())
     }

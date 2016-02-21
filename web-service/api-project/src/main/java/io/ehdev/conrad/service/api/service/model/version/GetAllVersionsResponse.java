@@ -13,11 +13,22 @@ public class GetAllVersionsResponse extends ResourceSupport {
     @JsonProperty("commits")
     List<GetAllVersionsCommitResponse> commits = new ArrayList<>();
 
+    @JsonProperty("latest")
+    GetAllVersionsCommitResponse latest;
+
     public List<GetAllVersionsCommitResponse> getCommits() {
         return commits;
     }
 
     public void addCommits(GetAllVersionsCommitResponse commit) {
         this.commits.add(commit);
+    }
+
+    public GetAllVersionsCommitResponse getLatest() {
+        return latest;
+    }
+
+    public void setLatest(GetAllVersionsCommitResponse latest) {
+        this.latest = latest;
     }
 }

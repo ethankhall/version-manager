@@ -1,6 +1,7 @@
 package io.ehdev.conrad.database.api.internal
 
 import io.ehdev.conrad.database.config.TestConradDatabaseConfig
+import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.db.tables.daos.VersionBumpersDao
@@ -23,10 +24,14 @@ class DefaultRepoManagementApiIntegrationTest extends Specification {
     DefaultProjectManagementApi projectManagementApi
 
     @Autowired
+    DefaultUserManagementApi userManagementApi
+
+    @Autowired
     VersionBumpersDao versionBumpersDao
 
     def setup() {
-        projectManagementApi.createProject("project")
+        def user = userManagementApi.createUser('name', 'bob', 'bob')
+        projectManagementApi.createProject(new ApiParameterContainer(user, "project", null))
     }
 
     def 'basic workflow'() {

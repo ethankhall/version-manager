@@ -2,11 +2,13 @@ package io.ehdev.conrad.service.api.project
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import io.ehdev.conrad.apidoc.ObjectDocumentationSnippet
+import io.ehdev.conrad.database.api.PermissionManagementApi
 import io.ehdev.conrad.database.api.RepoManagementApi
 import io.ehdev.conrad.database.api.TestDoubleRepoManagementApi
 import io.ehdev.conrad.database.model.project.ApiVersionBumperModel
 import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
+import io.ehdev.conrad.database.model.user.ApiRepoUserPermission
 import io.ehdev.conrad.model.rest.RestCommitModel
 import io.ehdev.conrad.model.rest.RestRepoCreateModel
 import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection
@@ -57,13 +59,14 @@ class RepoEndpointApiTest extends Specification {
     private def bumper = new ApiVersionBumperModel(SemanticVersionBumper.getSimpleName(), ' ', 'semver');
     private RepoManagementApi repoManagementApi = new TestDoubleRepoManagementApi(bumper)
     private VersionBumperService versionBumperService = new TestDoubleVersionBumperService()
+    private PermissionManagementApi permissionManagementApi = Mock(PermissionManagementApi)
     private RestDocumentationResultHandler document
 
     def setup() {
         document = document("{method-name}", preprocessResponse(prettyPrint()));
-        repoEndpoint = new RepoEndpoint(repoManagementApi)
+        repoEndpoint = new RepoEndpoint(repoManagementApi, permissionManagementApi)
         repoVersionEndpoint = new RepoVersionEndpoint(repoManagementApi, versionBumperService)
-        repoDetailsEndpoint = new RepoPermissionsEndpoint(repoManagementApi, permissionManagementApi)
+        repoDetailsEndpoint = new RepoPermissionsEndpoint(permissionManagementApi)
 
         mockMvc = MockMvcBuilders.standaloneSetup(repoEndpoint, repoVersionEndpoint, repoDetailsEndpoint)
             .setCustomArgumentResolvers(new ApiParameterContainerResolver())
@@ -76,13 +79,13 @@ class RepoEndpointApiTest extends Specification {
         expect:
         document.snippets(
             responseFields(
-                fieldWithPath("repo")
-                    .description("A JSON object containing details about project structure."),
-                fieldWithPath("repo.projectName")
+                fieldWithPath("links")
+                    .description("Links to resources related to the object"),
+                fieldWithPath("projectName")
                     .description("Name of the project that manages this repo."),
-                fieldWithPath("repo.repoName")
+                fieldWithPath("repoName")
                     .description("Name of the repo"),
-                fieldWithPath("repo.url")
+                fieldWithPath("url")
                     .description("URL for checkout/cloning the repository.")),
             pathParameters(defaultParameters())
         )
@@ -97,22 +100,31 @@ class RepoEndpointApiTest extends Specification {
     }
 
     def 'get-repo-details'() {
+        1 * permissionManagementApi.getPermissionsForProject(_) >> [new ApiRepoUserPermission('bob', 'ADMIN')]
+
         expect:
         createRepo()
         document.snippets(
             responseFields(
-                fieldWithPath("repo")
-                    .description("A JSON object containing details about project structure."),
-                fieldWithPath("repo.projectName")
+                fieldWithPath("links")
+                    .description("Links to resources related to the object"),
+                fieldWithPath("projectName")
                     .description("Name of the project that manages this repo."),
-                fieldWithPath("repo.repoName")
+                fieldWithPath("repoName")
                     .description("Name of the repo"),
-                fieldWithPath("repo.url")
-                    .description("URL for checkout/cloning the repository.")),
+                fieldWithPath("url")
+                    .description("URL for checkout/cloning the repository."),
+                fieldWithPath("permissions[]")
+                    .description("Permissions granted to users for the repository"),
+                fieldWithPath("permissions[0].username")
+                    .description("Username for the permission."),
+                fieldWithPath("permissions[0].permission")
+                    .description("The permission level granted to the user.")),
+
             pathParameters(defaultParameters())
         )
         mockMvc.perform(
-            get("/api/v1/project/{projectName}/repo/{repoName}/details", 'bigFizzyDice', 'smallDice')
+            get("/api/v1/project/{projectName}/repo/{repoName}", 'bigFizzyDice', 'smallDice')
                 .contentType(MediaType.APPLICATION_JSON))
             .andExpect(status().isOk());
 
@@ -123,6 +135,7 @@ class RepoEndpointApiTest extends Specification {
         createRepo()
         document.snippets(
             responseFields(
+                fieldWithPath("links").description("Links to resources related to the object"),
                 fieldWithPath("latest").description("The latest commit.").type(REF_REST_COMMIT_MODEL),
                 fieldWithPath("commits").description("List of commits.").type(REF_REST_COMMIT_MODEL + '[]'),
             ),
@@ -235,6 +248,7 @@ class RepoEndpointApiTest extends Specification {
 
     FieldDescriptor[] defaultVersionResponse() {
         return [
+            fieldWithPath('links').description('Links to resources related to the object'),
             fieldWithPath('commitId').description('Commit id for commit').type(JsonFieldType.STRING),
             fieldWithPath('version').description('Version string for commit').type(JsonFieldType.STRING),
             fieldWithPath('versionParts')

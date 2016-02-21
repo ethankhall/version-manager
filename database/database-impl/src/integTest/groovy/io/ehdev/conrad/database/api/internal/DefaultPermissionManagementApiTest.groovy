@@ -1,6 +1,7 @@
 package io.ehdev.conrad.database.api.internal
 
 import io.ehdev.conrad.database.config.TestConradDatabaseConfig
+import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.user.ApiUserPermission
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
@@ -34,7 +35,7 @@ class DefaultPermissionManagementApiTest extends Specification {
         given:
         def user = userManagementApi.createUser('userName', 'name', 'email')
         def readUser = userManagementApi.createUser('readUser', 'name', 'email')
-        projectManagementApi.createProject('project')
+        projectManagementApi.createProject(new ApiParameterContainer(user, 'project', null))
 
         when:
         def permission = permissionManagementApi.forceAddPermission('userName', 'project', null, ApiUserPermission.ADMIN)

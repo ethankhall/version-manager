@@ -3,7 +3,7 @@ package io.ehdev.conrad.service.api.service.model.repo;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.hateoas.ResourceSupport;
 
-public class CreateRepoModel extends ResourceSupport {
+public class CreateRepoResponseModel extends ResourceSupport {
     @JsonProperty("projectName")
     String projectName;
 

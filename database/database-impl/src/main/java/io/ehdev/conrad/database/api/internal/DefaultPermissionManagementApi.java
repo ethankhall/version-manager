@@ -49,6 +49,10 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
 
     @Override
     public boolean doesUserHavePermission(ApiUser apiUser, String project, String repoName, ApiUserPermission permission) {
+        if(apiUser == null) {
+            return permission == ApiUserPermission.READ && repoManagementApi.findRepository(project, repoName).get().getPublic();
+        }
+
         UserPermissionsTable up = Tables.USER_PERMISSIONS.as("up");
         //@formatter:off
         int count = dslContext

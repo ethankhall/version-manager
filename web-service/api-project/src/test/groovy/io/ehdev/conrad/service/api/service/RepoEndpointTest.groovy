@@ -1,21 +1,35 @@
 package io.ehdev.conrad.service.api.service
 
+import io.ehdev.conrad.database.api.PermissionManagementApi
 import io.ehdev.conrad.database.api.RepoManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
+import io.ehdev.conrad.database.model.project.ApiFullRepoModel
+import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel
+import io.ehdev.conrad.database.model.project.ApiVersionBumperModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
+import io.ehdev.conrad.database.model.user.ApiRepoUserPermission
+import io.ehdev.conrad.database.model.user.ApiUser
 import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection
 import io.ehdev.conrad.model.rest.commit.RestCommitIdModel
 import org.springframework.http.HttpStatus
+import org.springframework.mock.web.MockHttpServletRequest
+import org.springframework.web.context.request.RequestContextHolder
+import org.springframework.web.context.request.ServletRequestAttributes
 import spock.lang.Specification
 
 class RepoEndpointTest extends Specification {
 
     RepoEndpoint repoEndpoint
     RepoManagementApi repoManagementApi
+    PermissionManagementApi permissionManagementApi
 
     def setup() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
         repoManagementApi = Mock(RepoManagementApi)
-        repoEndpoint = new RepoEndpoint(repoManagementApi)
+        permissionManagementApi = Mock(PermissionManagementApi)
+        repoEndpoint = new RepoEndpoint(repoManagementApi, permissionManagementApi)
     }
 
     def 'find version finds nothing'() {
@@ -43,6 +57,18 @@ class RepoEndpointTest extends Specification {
         history.statusCode == HttpStatus.OK
         history.body.commitId == 'commit'
         history.body.version == '2.3.4'
+    }
+
+    def 'can get details for repo'() {
+        when:
+        def details = repoEndpoint.getRepoDetails(new ApiParameterContainer(new ApiUser(UUID.randomUUID(), '','',''), createTestingRepoModel()))
+
+        then:
+        details.statusCode == HttpStatus.OK
+
+        repoManagementApi.getDetails(_) >> Optional.of(new ApiRepoDetailsModel(Mock(ApiFullRepoModel), new ApiVersionBumperModel(' ', ' ', ' ')))
+        permissionManagementApi.getPermissionsForProject(_) >> [new ApiRepoUserPermission('bob', 'ADMIN')]
+
     }
 
     ApiParameterContainer createTestingRepoModel() {

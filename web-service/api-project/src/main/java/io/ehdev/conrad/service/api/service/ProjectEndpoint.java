@@ -6,6 +6,7 @@ import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.project.ApiProjectDetails;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
+import io.ehdev.conrad.service.api.service.model.LinkUtilities;
 import io.ehdev.conrad.service.api.service.model.project.CreateProjectModel;
 import io.ehdev.conrad.service.api.service.model.project.GetProjectModel;
 import io.ehdev.conrad.service.api.service.model.project.RepoDefinitionsDetails;
@@ -64,7 +65,7 @@ public class ProjectEndpoint {
             RepoDefinitionsDetails repo = new RepoDefinitionsDetails();
             repo.setName(it.getName());
 
-            repo.add(RepoEndpoint.repositorySelfLink(apiParameterContainer, it.getName()));
+            repo.add(LinkUtilities.repositorySelfLink(apiParameterContainer, it.getName()));
             projectModel.addRepo(repo);
         });
 
