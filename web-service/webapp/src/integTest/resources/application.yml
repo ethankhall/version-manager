@@ -6,3 +6,12 @@ spring:
             url: jdbc:postgresql://172.0.1.100/version_manager_test
             username: version_manager_test
             password: password
+
+auth:
+    client:
+        github:
+            key: e26002913dce86419723
+            secret: c8d18cb9b65212ad8acb3d0603a85f6bc3aa704f
+        google:
+            key: 428210344673-bmar2c3qa5daop98pu9731l8v0tihrt1.apps.googleusercontent.com
+            secret: Y4UZtHiDP1R2o5_INu9MWykI
