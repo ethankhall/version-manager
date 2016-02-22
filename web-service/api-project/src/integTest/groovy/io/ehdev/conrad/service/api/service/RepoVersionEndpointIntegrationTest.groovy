@@ -3,11 +3,11 @@ package io.ehdev.conrad.service.api.service
 import io.ehdev.conrad.database.api.RepoManagementApi
 import io.ehdev.conrad.database.api.UserManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
+import io.ehdev.conrad.database.model.permission.UserApiAuthentication
 import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
-import io.ehdev.conrad.database.model.user.ApiUser
 import io.ehdev.conrad.db.tables.daos.VersionBumpersDao
-import io.ehdev.conrad.model.version.VersionCreateModel
 import io.ehdev.conrad.service.api.config.TestConradProjectApiConfiguration
+import io.ehdev.conrad.service.api.service.model.version.CreateVersionRequestBody
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.HttpStatus
@@ -42,8 +42,7 @@ class RepoVersionEndpointIntegrationTest extends Specification {
     @Autowired
     UserManagementApi userManagementApi
 
-    ApiUser userApi
-
+    UserApiAuthentication userApi
 
     def setup() {
         MockHttpServletRequest request = new MockHttpServletRequest();
@@ -53,7 +52,7 @@ class RepoVersionEndpointIntegrationTest extends Specification {
     }
 
     def 'can create a new version for a new repo'() {
-        def createModel = new VersionCreateModel([], "message", "1")
+        def createModel = new CreateVersionRequestBody([], "message", "1")
         def request = new MockHttpServletRequest()
         request.setRequestURI("http://localhost:8080/")
 

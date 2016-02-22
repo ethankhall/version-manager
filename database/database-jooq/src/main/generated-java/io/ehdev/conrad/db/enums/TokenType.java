@@ -27,7 +27,9 @@ public enum TokenType implements EnumType {
 
 	USER("USER"),
 
-	API("API");
+	REPOSITORY("REPOSITORY"),
+
+	PROJECT("PROJECT");
 
 	private final String literal;
 

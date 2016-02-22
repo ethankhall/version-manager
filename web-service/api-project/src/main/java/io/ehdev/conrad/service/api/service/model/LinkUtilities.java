@@ -1,6 +1,7 @@
 package io.ehdev.conrad.service.api.service.model;
 
 import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.service.api.service.ProjectEndpoint;
 import io.ehdev.conrad.service.api.service.RepoEndpoint;
 import io.ehdev.conrad.service.api.service.RepoVersionEndpoint;
 import org.springframework.hateoas.Link;
@@ -37,5 +38,13 @@ public class LinkUtilities {
     public static Link versionSelfLink(ApiParameterContainer container, String version) {
         return linkTo(methodOn(RepoVersionEndpoint.class, container.getProjectName(), container.getRepoName())
             .findVersion(container, version)).withSelfRel();
+    }
+
+    public static Link projectSelfLink(ApiParameterContainer apiParameterContainer) {
+        return linkTo(methodOn(ProjectEndpoint.class, apiParameterContainer.getProjectName()).getProject(apiParameterContainer)).withSelfRel();
+    }
+
+    public static Link projectLink(ApiParameterContainer apiParameterContainer, String name) {
+        return linkTo(methodOn(ProjectEndpoint.class, apiParameterContainer.getProjectName()).getProject(apiParameterContainer)).withSelfRel();
     }
 }

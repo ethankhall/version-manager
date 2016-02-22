@@ -2,17 +2,17 @@ package io.ehdev.conrad.database.api;
 
 
 import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
 import io.ehdev.conrad.database.model.user.ApiRepoUserPermission;
-import io.ehdev.conrad.database.model.user.ApiUser;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 
 import java.util.List;
 
 public interface PermissionManagementApi {
 
-    boolean doesUserHavePermission(ApiUser apiUser, String project, String repoName, ApiUserPermission permission);
+    boolean doesUserHavePermission(ApiTokenAuthentication apiUser, String project, String repoName, ApiUserPermission permission);
 
-    boolean addPermission(String username, ApiUser authenticatedUser, String projectName, String repoName, ApiUserPermission permission);
+    boolean addPermission(String username, ApiTokenAuthentication authenticatedUser, String projectName, String repoName, ApiUserPermission permission);
 
     boolean forceAddPermission(String username, String projectName, String repoName, ApiUserPermission permission);
 

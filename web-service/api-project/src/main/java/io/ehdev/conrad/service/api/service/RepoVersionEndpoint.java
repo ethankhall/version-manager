@@ -5,16 +5,12 @@ import io.ehdev.conrad.database.api.exception.CommitNotFoundException;
 import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.comparator.ReverseApiCommitComparator;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
-import io.ehdev.conrad.model.version.VersionCreateModel;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
 import io.ehdev.conrad.service.api.service.model.LinkUtilities;
-import io.ehdev.conrad.service.api.service.model.version.CreateVersionResponse;
-import io.ehdev.conrad.service.api.service.model.version.GetAllVersionsCommitResponse;
-import io.ehdev.conrad.service.api.service.model.version.GetAllVersionsResponse;
-import io.ehdev.conrad.service.api.service.model.version.GetVersionResponse;
+import io.ehdev.conrad.service.api.service.model.version.*;
 import io.ehdev.conrad.version.bumper.api.VersionBumperService;
 import io.ehdev.conrad.version.commit.CommitVersion;
 import io.ehdev.conrad.version.commit.VersionFactory;
@@ -72,12 +68,11 @@ public class RepoVersionEndpoint {
         return ResponseEntity.ok(response);
     }
 
-    @LoggedInUserRequired
     @WritePermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(value = "/version", method = RequestMethod.POST)
     public ResponseEntity<CreateVersionResponse> createNewVersion(ApiParameterContainer apiParameterContainer,
-                                                                  @RequestBody VersionCreateModel versionModel,
+                                                                  @RequestBody CreateVersionRequestBody versionModel,
                                                                   HttpServletRequest request) {
         List<ApiCommitModel> commits = versionModel.getCommits()
             .stream()

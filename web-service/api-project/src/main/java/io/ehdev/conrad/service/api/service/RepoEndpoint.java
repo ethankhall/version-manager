@@ -8,7 +8,6 @@ import io.ehdev.conrad.database.model.project.DefaultApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection;
 import io.ehdev.conrad.model.rest.repo.RestUserPermissionModel;
-import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
@@ -43,7 +42,6 @@ public class RepoEndpoint {
         this.permissionManagementApi = permissionManagementApi;
     }
 
-    @LoggedInUserRequired
     @WritePermissionRequired
     @RepoRequired(exists = false)
     @RequestMapping(method = RequestMethod.POST)

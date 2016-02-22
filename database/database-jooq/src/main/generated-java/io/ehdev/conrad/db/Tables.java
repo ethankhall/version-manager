@@ -8,10 +8,11 @@ import io.ehdev.conrad.db.tables.CommitDetailsTable;
 import io.ehdev.conrad.db.tables.CommitMetadataTable;
 import io.ehdev.conrad.db.tables.ProjectDetailsTable;
 import io.ehdev.conrad.db.tables.RepoDetailsTable;
+import io.ehdev.conrad.db.tables.TokenAuthenticationsTable;
+import io.ehdev.conrad.db.tables.TokenJoinTable;
 import io.ehdev.conrad.db.tables.UserDetailsTable;
 import io.ehdev.conrad.db.tables.UserPermissionsTable;
 import io.ehdev.conrad.db.tables.UserSecurityClientProfileTable;
-import io.ehdev.conrad.db.tables.UserTokensTable;
 import io.ehdev.conrad.db.tables.VersionBumpersTable;
 
 import javax.annotation.Generated;
@@ -51,6 +52,16 @@ public class Tables {
 	public static final RepoDetailsTable REPO_DETAILS = io.ehdev.conrad.db.tables.RepoDetailsTable.REPO_DETAILS;
 
 	/**
+	 * The table public.token_authentications
+	 */
+	public static final TokenAuthenticationsTable TOKEN_AUTHENTICATIONS = io.ehdev.conrad.db.tables.TokenAuthenticationsTable.TOKEN_AUTHENTICATIONS;
+
+	/**
+	 * The table public.token_join
+	 */
+	public static final TokenJoinTable TOKEN_JOIN = io.ehdev.conrad.db.tables.TokenJoinTable.TOKEN_JOIN;
+
+	/**
 	 * The table public.user_details
 	 */
 	public static final UserDetailsTable USER_DETAILS = io.ehdev.conrad.db.tables.UserDetailsTable.USER_DETAILS;
@@ -64,11 +75,6 @@ public class Tables {
 	 * The table public.user_security_client_profile
 	 */
 	public static final UserSecurityClientProfileTable USER_SECURITY_CLIENT_PROFILE = io.ehdev.conrad.db.tables.UserSecurityClientProfileTable.USER_SECURITY_CLIENT_PROFILE;
-
-	/**
-	 * The table public.user_tokens
-	 */
-	public static final UserTokensTable USER_TOKENS = io.ehdev.conrad.db.tables.UserTokensTable.USER_TOKENS;
 
 	/**
 	 * The table public.version_bumpers

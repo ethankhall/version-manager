@@ -2,7 +2,7 @@ package io.ehdev.conrad.service.api.project
 
 import io.ehdev.conrad.database.api.TestDoubleProjectManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
-import io.ehdev.conrad.database.model.user.ApiUser
+import io.ehdev.conrad.database.model.permission.UserApiAuthentication
 import io.ehdev.conrad.service.api.config.ApiParameterContainerResolver
 import io.ehdev.conrad.service.api.service.ProjectEndpoint
 import org.junit.Rule
@@ -75,7 +75,7 @@ class ProjectEndpointApiTest extends Specification {
                                                      WebDataBinderFactory binderFactory) throws Exception {
             def result = super.resolveArgument(parameter, mavContainer, webRequest, binderFactory)
 
-            def user = new ApiUser(UUID.randomUUID(), 'user', 'name', 'email')
+            def user = new UserApiAuthentication(UUID.randomUUID(), 'user', 'name', 'email')
             return new ApiParameterContainer(user, result.getProjectName(), result.getRepoName())
         }
     }

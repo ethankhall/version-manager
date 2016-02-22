@@ -1,7 +1,7 @@
 package io.ehdev.conrad.database.api;
 
-import io.ehdev.conrad.database.model.user.ApiUser;
+import io.ehdev.conrad.database.model.permission.UserApiAuthentication;
 
 public interface UserManagementApi {
-    ApiUser createUser(String userName, String name, String email);
+    UserApiAuthentication createUser(String userName, String name, String email);
 }

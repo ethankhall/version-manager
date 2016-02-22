@@ -2,7 +2,7 @@ package io.ehdev.conrad.service.api.service
 
 import io.ehdev.conrad.database.api.UserManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
-import io.ehdev.conrad.database.model.user.ApiUser
+import io.ehdev.conrad.database.model.permission.UserApiAuthentication
 import io.ehdev.conrad.db.tables.daos.VersionBumpersDao
 import io.ehdev.conrad.service.api.config.TestConradProjectApiConfiguration
 import io.ehdev.conrad.service.api.service.model.repo.CreateRepoRequestModel
@@ -37,7 +37,7 @@ class RepoEndpointIntegrationTest extends Specification {
     @Autowired
     UserManagementApi userManagementApi
 
-    ApiUser userApi
+    UserApiAuthentication userApi
 
     def setup() {
         MockHttpServletRequest request = new MockHttpServletRequest();

@@ -6,12 +6,6 @@ Some requests require link:../authentication/index.html[authentication]. Each de
 
 Every version belongs to a link:../index.html[Repository].
 
-[shared-objects]
-== Shared Objects
-
-
-*TBD*
-
 == Requests
 include::_include/create-version.adoc[]
 include::_include/get-versions.adoc[]

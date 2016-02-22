@@ -10,10 +10,5 @@ include::{snippets}/post-repo-search-not-found/path-parameters.adoc[]
 ===== Curl Request
 include::{snippets}/post-repo-search-not-found/curl-request.adoc[]
 
-==== Example response
-
-===== Response Fields
-include::{snippets}/post-repo-search-not-found/response-fields.adoc[]
-
 ===== Response Body
 include::{snippets}/post-repo-search-not-found/http-response.adoc[]

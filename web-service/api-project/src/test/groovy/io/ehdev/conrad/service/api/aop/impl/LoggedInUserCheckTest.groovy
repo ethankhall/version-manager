@@ -1,7 +1,7 @@
 package io.ehdev.conrad.service.api.aop.impl
 
 import io.ehdev.conrad.database.model.ApiParameterContainer
-import io.ehdev.conrad.database.model.user.ApiUser
+import io.ehdev.conrad.database.model.permission.UserApiAuthentication
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired
 import io.ehdev.conrad.service.api.aop.exception.UserNotLoggedInException
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory
@@ -31,7 +31,7 @@ class LoggedInUserCheckTest extends Specification {
         thrown(UserNotLoggedInException)
 
         when:
-        proxy.doWork(new ApiParameterContainer(new ApiUser(UUID.randomUUID(), ' ', ',', ' '), null, null))
+        proxy.doWork(new ApiParameterContainer(new UserApiAuthentication(UUID.randomUUID(), ' ', ',', ' '), null, null))
 
         then:
         noExceptionThrown()

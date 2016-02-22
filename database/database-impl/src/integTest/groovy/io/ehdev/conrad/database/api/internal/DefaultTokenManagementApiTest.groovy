@@ -2,7 +2,7 @@ package io.ehdev.conrad.database.api.internal
 
 import io.ehdev.conrad.database.config.TestConradDatabaseConfig
 import io.ehdev.conrad.database.model.user.ApiTokenType
-import io.ehdev.conrad.db.tables.daos.UserTokensDao
+import io.ehdev.conrad.db.tables.daos.TokenAuthenticationsDao
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.test.annotation.Rollback
@@ -21,7 +21,7 @@ class DefaultTokenManagementApiTest extends Specification {
     DefaultTokenManagementApi tokenManagementApi
 
     @Autowired
-    UserTokensDao userTokensDao;
+    TokenAuthenticationsDao userTokensDao;
 
     @Autowired
     DefaultUserManagementApi userManagementApi
@@ -29,7 +29,7 @@ class DefaultTokenManagementApiTest extends Specification {
     def 'can create tokens'() {
         when:
         def user = userManagementApi.createUser('userId', 'name', 'email')
-        def token = tokenManagementApi.createToken(user, ApiTokenType.USER)
+        def token = tokenManagementApi.createToken(user)
 
         then:
         token.uuid != null
@@ -40,7 +40,7 @@ class DefaultTokenManagementApiTest extends Specification {
     def 'will say token is invalid when it is expired'() {
         when:
         def user = userManagementApi.createUser('userId', 'name', 'email')
-        def token = tokenManagementApi.createToken(user, ApiTokenType.USER)
+        def token = tokenManagementApi.createToken(user)
         def model = userTokensDao.fetchOneByUuid(token.uuid)
         model.setExpiresAt(Instant.now().minusSeconds(1))
         userTokensDao.update(model)
@@ -52,7 +52,7 @@ class DefaultTokenManagementApiTest extends Specification {
     def 'will say token is invalid not valid'() {
         when:
         def user = userManagementApi.createUser('userId', 'name', 'email')
-        def token = tokenManagementApi.createToken(user, ApiTokenType.USER)
+        def token = tokenManagementApi.createToken(user)
         tokenManagementApi.invalidateTokenValid(token)
 
         then:
@@ -62,7 +62,7 @@ class DefaultTokenManagementApiTest extends Specification {
     def 'can find user by token'() {
         when:
         def user = userManagementApi.createUser('userId', 'name', 'email')
-        def token = tokenManagementApi.createToken(user, ApiTokenType.USER)
+        def token = tokenManagementApi.createToken(user)
 
         then:
         tokenManagementApi.findUser(token).uuid == user.uuid

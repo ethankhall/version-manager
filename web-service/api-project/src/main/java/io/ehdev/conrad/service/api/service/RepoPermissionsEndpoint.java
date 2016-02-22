@@ -6,11 +6,15 @@ import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
+import io.ehdev.conrad.service.api.service.model.LinkUtilities;
+import io.ehdev.conrad.service.api.service.model.permissions.PermissionCreateResponse;
+import io.ehdev.conrad.service.api.service.model.permissions.PermissionGrant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
@@ -43,16 +47,18 @@ public class RepoPermissionsEndpoint {
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RepoRequired(exists = true)
-    @RequestMapping(value = "/{username}/{permissionType}", method = RequestMethod.POST)
-    public ResponseEntity addPermission(ApiParameterContainer repoModel,
-                                        @PathVariable("username") String username,
-                                        @PathVariable("permissionType") String permissionType) {
-        permissionManagementApi.addPermission(username,
+    @RequestMapping(method = RequestMethod.POST)
+    public ResponseEntity<PermissionCreateResponse> addPermission(ApiParameterContainer repoModel,
+                                                                  @RequestBody PermissionGrant permissionGrant) {
+        boolean created = permissionManagementApi.addPermission(permissionGrant.getUsername(),
             repoModel.getUser(),
             repoModel.getProjectName(),
             repoModel.getRepoName(),
-            ApiUserPermission.valueOf(permissionType.toUpperCase()));
+            ApiUserPermission.valueOf(permissionGrant.getPermission().toUpperCase()));
 
-        return new ResponseEntity(HttpStatus.OK);
+        PermissionCreateResponse response = new PermissionCreateResponse(created);
+        response.add(LinkUtilities.repositoryLink(repoModel, "repository"));
+
+        return new ResponseEntity<>(response, created ? HttpStatus.CREATED : HttpStatus.FORBIDDEN);
     }
 }

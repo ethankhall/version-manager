@@ -2,6 +2,7 @@ package io.ehdev.conrad.service.api.aop.impl;
 
 import io.ehdev.conrad.database.api.PermissionManagementApi;
 import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.service.api.aop.exception.PermissionDeniedException;
 import org.aspectj.lang.JoinPoint;
@@ -41,20 +42,25 @@ public class PermissionRequiredCheck {
         checkPermission(joinPoint, ApiUserPermission.ADMIN);
     }
 
-    private void checkPermission(JoinPoint joinPoint, ApiUserPermission read) {
-        if(!env.getProperty("api.verification", Boolean.class, true)) {
+    private void checkPermission(JoinPoint joinPoint, ApiUserPermission permission) {
+        if (!env.getProperty("api.verification", Boolean.class, true)) {
             return;
         }
 
         ApiParameterContainer container = findApiParameterContainer(joinPoint);
 
-        boolean permission = permissionManagementApi.doesUserHavePermission(container.getUser(), container.getProjectName(), container.getRepoName(), read);
+        ApiTokenAuthentication user = container.getUser();
 
-        if (!permission) {
-            if(container.getUser() == null) {
-                throw new PermissionDeniedException("unkown");
+        boolean granted = permissionManagementApi.doesUserHavePermission(user,
+            container.getProjectName(),
+            container.getRepoName(),
+            permission);
+
+        if (!granted) {
+            if (user == null) {
+                throw new PermissionDeniedException("unknown");
             } else {
-                throw new PermissionDeniedException(container.getUser().getUserName());
+                throw new PermissionDeniedException(user.getNiceName());
             }
         }
     }

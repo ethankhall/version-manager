@@ -2,7 +2,7 @@ package io.ehdev.conrad.service.api.project
 
 import io.ehdev.conrad.database.api.ProjectManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
-import io.ehdev.conrad.database.model.user.ApiUser
+import io.ehdev.conrad.database.model.permission.UserApiAuthentication
 import io.ehdev.conrad.service.api.service.ProjectEndpoint
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.web.context.request.RequestContextHolder
@@ -21,7 +21,7 @@ class ProjectEndpointTest extends Specification {
     }
 
     def 'can create project'() {
-        def apiUser = new ApiUser(UUID.randomUUID(), 'username', 'name', 'email')
+        def apiUser = new UserApiAuthentication(UUID.randomUUID(), 'username', 'name', 'email')
         def container = new ApiParameterContainer(apiUser, 'newProject', null)
 
         when:

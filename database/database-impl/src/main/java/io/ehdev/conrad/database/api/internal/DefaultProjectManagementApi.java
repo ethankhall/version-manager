@@ -2,8 +2,10 @@ package io.ehdev.conrad.database.api.internal;
 
 import io.ehdev.conrad.database.api.PermissionManagementApi;
 import io.ehdev.conrad.database.api.exception.ProjectAlreadyExistsException;
+import io.ehdev.conrad.database.api.exception.ProjectCreationMustBeDoneByUserException;
 import io.ehdev.conrad.database.impl.ModelConversionUtility;
 import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.database.model.permission.UserApiAuthentication;
 import io.ehdev.conrad.database.model.project.ApiProjectDetails;
 import io.ehdev.conrad.database.model.project.ApiProjectRepositoryDetails;
 import io.ehdev.conrad.database.model.project.ApiVersionBumperModel;
@@ -50,13 +52,17 @@ public class DefaultProjectManagementApi implements ProjectManagementApiInternal
             throw new ProjectAlreadyExistsException(projectName);
         }
 
+        if(!(apiParameterContainer.getUser() instanceof UserApiAuthentication)) {
+            throw new ProjectCreationMustBeDoneByUserException();
+        }
+
         dslContext.insertInto(Tables.PROJECT_DETAILS, Tables.PROJECT_DETAILS.PROJECT_NAME)
             .values(projectName)
             .returning(Tables.PROJECT_DETAILS.fields())
             .fetchOne()
             .into(ProjectDetails.class);
 
-        String userName = apiParameterContainer.getUser().getUserName();
+        String userName = ((UserApiAuthentication)apiParameterContainer.getUser()).getUserName();
         permissionManagementApi.forceAddPermission(userName, projectName, null, ApiUserPermission.ADMIN);
     }
 

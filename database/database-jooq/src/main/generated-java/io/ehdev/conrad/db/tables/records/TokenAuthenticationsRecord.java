@@ -5,7 +5,7 @@ package io.ehdev.conrad.db.tables.records;
 
 
 import io.ehdev.conrad.db.enums.TokenType;
-import io.ehdev.conrad.db.tables.UserTokensTable;
+import io.ehdev.conrad.db.tables.TokenAuthenticationsTable;
 
 import java.time.Instant;
 import java.util.UUID;
@@ -19,8 +19,8 @@ import javax.validation.constraints.NotNull;
 
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record6;
-import org.jooq.Row6;
+import org.jooq.Record5;
+import org.jooq.Row5;
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -36,20 +36,20 @@ import org.jooq.impl.UpdatableRecordImpl;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
-@Table(name = "user_tokens", schema = "public")
-public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> implements Record6<UUID, UUID, Instant, Instant, Boolean, TokenType> {
+@Table(name = "token_authentications", schema = "public")
+public class TokenAuthenticationsRecord extends UpdatableRecordImpl<TokenAuthenticationsRecord> implements Record5<UUID, Instant, Instant, Boolean, TokenType> {
 
-	private static final long serialVersionUID = 1980285280;
+	private static final long serialVersionUID = -476850463;
 
 	/**
-	 * Setter for <code>public.user_tokens.uuid</code>.
+	 * Setter for <code>public.token_authentications.uuid</code>.
 	 */
 	public void setUuid(UUID value) {
 		setValue(0, value);
 	}
 
 	/**
-	 * Getter for <code>public.user_tokens.uuid</code>.
+	 * Getter for <code>public.token_authentications.uuid</code>.
 	 */
 	@Id
 	@Column(name = "uuid", unique = true, nullable = false)
@@ -59,81 +59,65 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
 	}
 
 	/**
-	 * Setter for <code>public.user_tokens.user_uuid</code>.
+	 * Setter for <code>public.token_authentications.created_at</code>.
 	 */
-	public void setUserUuid(UUID value) {
+	public void setCreatedAt(Instant value) {
 		setValue(1, value);
 	}
 
 	/**
-	 * Getter for <code>public.user_tokens.user_uuid</code>.
-	 */
-	@Column(name = "user_uuid", nullable = false)
-	@NotNull
-	public UUID getUserUuid() {
-		return (UUID) getValue(1);
-	}
-
-	/**
-	 * Setter for <code>public.user_tokens.created_at</code>.
-	 */
-	public void setCreatedAt(Instant value) {
-		setValue(2, value);
-	}
-
-	/**
-	 * Getter for <code>public.user_tokens.created_at</code>.
+	 * Getter for <code>public.token_authentications.created_at</code>.
 	 */
 	@Column(name = "created_at", nullable = false)
 	@NotNull
 	public Instant getCreatedAt() {
+		return (Instant) getValue(1);
+	}
+
+	/**
+	 * Setter for <code>public.token_authentications.expires_at</code>.
+	 */
+	public void setExpiresAt(Instant value) {
+		setValue(2, value);
+	}
+
+	/**
+	 * Getter for <code>public.token_authentications.expires_at</code>.
+	 */
+	@Column(name = "expires_at")
+	public Instant getExpiresAt() {
 		return (Instant) getValue(2);
 	}
 
 	/**
-	 * Setter for <code>public.user_tokens.expires_at</code>.
+	 * Setter for <code>public.token_authentications.valid</code>.
 	 */
-	public void setExpiresAt(Instant value) {
+	public void setValid(Boolean value) {
 		setValue(3, value);
 	}
 
 	/**
-	 * Getter for <code>public.user_tokens.expires_at</code>.
+	 * Getter for <code>public.token_authentications.valid</code>.
 	 */
-	@Column(name = "expires_at")
-	public Instant getExpiresAt() {
-		return (Instant) getValue(3);
+	@Column(name = "valid")
+	public Boolean getValid() {
+		return (Boolean) getValue(3);
 	}
 
 	/**
-	 * Setter for <code>public.user_tokens.valid</code>.
+	 * Setter for <code>public.token_authentications.token_type</code>.
 	 */
-	public void setValid(Boolean value) {
+	public void setTokenType(TokenType value) {
 		setValue(4, value);
 	}
 
 	/**
-	 * Getter for <code>public.user_tokens.valid</code>.
-	 */
-	@Column(name = "valid")
-	public Boolean getValid() {
-		return (Boolean) getValue(4);
-	}
-
-	/**
-	 * Setter for <code>public.user_tokens.token_type</code>.
-	 */
-	public void setTokenType(TokenType value) {
-		setValue(5, value);
-	}
-
-	/**
-	 * Getter for <code>public.user_tokens.token_type</code>.
+	 * Getter for <code>public.token_authentications.token_type</code>.
 	 */
 	@Column(name = "token_type", nullable = false)
 	@NotNull
 	public TokenType getTokenType() {
-		return (TokenType) getValue(5);
+		return (TokenType) getValue(4);
 	}
 
 	// -------------------------------------------------------------------------
@@ -149,23 +133,23 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
 	}
 
 	// -------------------------------------------------------------------------
-	// Record6 type implementation
+	// Record5 type implementation
 	// -------------------------------------------------------------------------
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Row6<UUID, UUID, Instant, Instant, Boolean, TokenType> fieldsRow() {
-		return (Row6) super.fieldsRow();
+	public Row5<UUID, Instant, Instant, Boolean, TokenType> fieldsRow() {
+		return (Row5) super.fieldsRow();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Row6<UUID, UUID, Instant, Instant, Boolean, TokenType> valuesRow() {
-		return (Row6) super.valuesRow();
+	public Row5<UUID, Instant, Instant, Boolean, TokenType> valuesRow() {
+		return (Row5) super.valuesRow();
 	}
 
 	/**
@@ -173,15 +157,15 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
 	 */
 	@Override
 	public Field<UUID> field1() {
-		return UserTokensTable.USER_TOKENS.UUID;
+		return TokenAuthenticationsTable.TOKEN_AUTHENTICATIONS.UUID;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Field<UUID> field2() {
-		return UserTokensTable.USER_TOKENS.USER_UUID;
+	public Field<Instant> field2() {
+		return TokenAuthenticationsTable.TOKEN_AUTHENTICATIONS.CREATED_AT;
 	}
 
 	/**
@@ -189,31 +173,23 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
 	 */
 	@Override
 	public Field<Instant> field3() {
-		return UserTokensTable.USER_TOKENS.CREATED_AT;
+		return TokenAuthenticationsTable.TOKEN_AUTHENTICATIONS.EXPIRES_AT;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Field<Instant> field4() {
-		return UserTokensTable.USER_TOKENS.EXPIRES_AT;
+	public Field<Boolean> field4() {
+		return TokenAuthenticationsTable.TOKEN_AUTHENTICATIONS.VALID;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Field<Boolean> field5() {
-		return UserTokensTable.USER_TOKENS.VALID;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Field<TokenType> field6() {
-		return UserTokensTable.USER_TOKENS.TOKEN_TYPE;
+	public Field<TokenType> field5() {
+		return TokenAuthenticationsTable.TOKEN_AUTHENTICATIONS.TOKEN_TYPE;
 	}
 
 	/**
@@ -228,15 +204,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UUID value2() {
-		return getUserUuid();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public Instant value3() {
+	public Instant value2() {
 		return getCreatedAt();
 	}
 
@@ -244,7 +212,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Instant value4() {
+	public Instant value3() {
 		return getExpiresAt();
 	}
 
@@ -252,7 +220,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Boolean value5() {
+	public Boolean value4() {
 		return getValid();
 	}
 
@@ -260,7 +228,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
 	 * {@inheritDoc}
 	 */
 	@Override
-	public TokenType value6() {
+	public TokenType value5() {
 		return getTokenType();
 	}
 
@@ -268,7 +236,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserTokensRecord value1(UUID value) {
+	public TokenAuthenticationsRecord value1(UUID value) {
 		setUuid(value);
 		return this;
 	}
@@ -277,16 +245,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserTokensRecord value2(UUID value) {
-		setUserUuid(value);
-		return this;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public UserTokensRecord value3(Instant value) {
+	public TokenAuthenticationsRecord value2(Instant value) {
 		setCreatedAt(value);
 		return this;
 	}
@@ -295,7 +254,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserTokensRecord value4(Instant value) {
+	public TokenAuthenticationsRecord value3(Instant value) {
 		setExpiresAt(value);
 		return this;
 	}
@@ -304,7 +263,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserTokensRecord value5(Boolean value) {
+	public TokenAuthenticationsRecord value4(Boolean value) {
 		setValid(value);
 		return this;
 	}
@@ -313,7 +272,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserTokensRecord value6(TokenType value) {
+	public TokenAuthenticationsRecord value5(TokenType value) {
 		setTokenType(value);
 		return this;
 	}
@@ -322,13 +281,12 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
 	 * {@inheritDoc}
 	 */
 	@Override
-	public UserTokensRecord values(UUID value1, UUID value2, Instant value3, Instant value4, Boolean value5, TokenType value6) {
+	public TokenAuthenticationsRecord values(UUID value1, Instant value2, Instant value3, Boolean value4, TokenType value5) {
 		value1(value1);
 		value2(value2);
 		value3(value3);
 		value4(value4);
 		value5(value5);
-		value6(value6);
 		return this;
 	}
 
@@ -337,23 +295,22 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
 	// -------------------------------------------------------------------------
 
 	/**
-	 * Create a detached UserTokensRecord
+	 * Create a detached TokenAuthenticationsRecord
 	 */
-	public UserTokensRecord() {
-		super(UserTokensTable.USER_TOKENS);
+	public TokenAuthenticationsRecord() {
+		super(TokenAuthenticationsTable.TOKEN_AUTHENTICATIONS);
 	}
 
 	/**
-	 * Create a detached, initialised UserTokensRecord
+	 * Create a detached, initialised TokenAuthenticationsRecord
 	 */
-	public UserTokensRecord(UUID uuid, UUID userUuid, Instant createdAt, Instant expiresAt, Boolean valid, TokenType tokenType) {
-		super(UserTokensTable.USER_TOKENS);
+	public TokenAuthenticationsRecord(UUID uuid, Instant createdAt, Instant expiresAt, Boolean valid, TokenType tokenType) {
+		super(TokenAuthenticationsTable.TOKEN_AUTHENTICATIONS);
 
 		setValue(0, uuid);
-		setValue(1, userUuid);
-		setValue(2, createdAt);
-		setValue(3, expiresAt);
-		setValue(4, valid);
-		setValue(5, tokenType);
+		setValue(1, createdAt);
+		setValue(2, expiresAt);
+		setValue(3, valid);
+		setValue(4, tokenType);
 	}
 }

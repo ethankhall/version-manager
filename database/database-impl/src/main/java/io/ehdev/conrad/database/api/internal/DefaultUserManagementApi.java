@@ -2,7 +2,7 @@ package io.ehdev.conrad.database.api.internal;
 
 import io.ehdev.conrad.database.api.UserManagementApi;
 import io.ehdev.conrad.database.impl.ModelConversionUtility;
-import io.ehdev.conrad.database.model.user.ApiUser;
+import io.ehdev.conrad.database.model.permission.UserApiAuthentication;
 import io.ehdev.conrad.db.Tables;
 import io.ehdev.conrad.db.tables.pojos.UserDetails;
 import org.jooq.DSLContext;
@@ -20,7 +20,7 @@ public class DefaultUserManagementApi implements UserManagementApi {
     }
 
     @Override
-    public ApiUser createUser(String userName, String name, String email) {
+    public UserApiAuthentication createUser(String userName, String name, String email) {
         UserDetails userDetails = dslContext
             .insertInto(Tables.USER_DETAILS, Tables.USER_DETAILS.USER_NAME, Tables.USER_DETAILS.NAME, Tables.USER_DETAILS.EMAIL_ADDRESS)
             .values(userName, name, email)

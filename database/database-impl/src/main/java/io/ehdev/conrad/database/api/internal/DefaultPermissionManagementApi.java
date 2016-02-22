@@ -1,8 +1,10 @@
 package io.ehdev.conrad.database.api.internal;
 
 import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
+import io.ehdev.conrad.database.model.permission.ProjectApiAuthentication;
+import io.ehdev.conrad.database.model.permission.RepositoryApiAuthentication;
 import io.ehdev.conrad.database.model.user.ApiRepoUserPermission;
-import io.ehdev.conrad.database.model.user.ApiUser;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.db.Tables;
 import io.ehdev.conrad.db.tables.UserPermissionsTable;
@@ -48,9 +50,13 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
     }
 
     @Override
-    public boolean doesUserHavePermission(ApiUser apiUser, String project, String repoName, ApiUserPermission permission) {
+    public boolean doesUserHavePermission(ApiTokenAuthentication apiUser, String project, String repoName, ApiUserPermission permission) {
         if(apiUser == null) {
             return permission == ApiUserPermission.READ && repoManagementApi.findRepository(project, repoName).get().getPublic();
+        }
+
+        if(apiUser instanceof ProjectApiAuthentication || apiUser instanceof RepositoryApiAuthentication) {
+            return isApiUserAllowed(apiUser, project, repoName, permission);
         }
 
         UserPermissionsTable up = Tables.USER_PERMISSIONS.as("up");
@@ -68,8 +74,24 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
 
         return count != 0;
     }
+
+    private boolean isApiUserAllowed(ApiTokenAuthentication user, String project, String repoName, ApiUserPermission permission) {
+        if (user instanceof ProjectApiAuthentication) {
+            ProjectApiAuthentication projectApiAuthentication = (ProjectApiAuthentication) user;
+            return projectApiAuthentication.getProjectName().equals(project) && ApiUserPermission.ADMIN != permission;
+        }
+
+        if (user instanceof RepositoryApiAuthentication) {
+            RepositoryApiAuthentication repoApiAuthentication = (RepositoryApiAuthentication) user;
+            return repoApiAuthentication.getProjectName().equals(project)
+                && repoApiAuthentication.getRepoName().equals(repoName)
+                && ApiUserPermission.ADMIN != permission;
+        }
+        return false;
+    }
+
     @Override
-    public boolean addPermission(String username, ApiUser authenticatedUser, String projectName, String repoName, ApiUserPermission permission) {
+    public boolean addPermission(String username, ApiTokenAuthentication authenticatedUser, String projectName, String repoName, ApiUserPermission permission) {
         if (!doesUserHavePermission(authenticatedUser, projectName, repoName, ApiUserPermission.ADMIN)) {
             return false;
         }

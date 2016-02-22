@@ -3,12 +3,12 @@ package io.ehdev.conrad.service.api.service
 import io.ehdev.conrad.database.api.PermissionManagementApi
 import io.ehdev.conrad.database.api.RepoManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
+import io.ehdev.conrad.database.model.permission.UserApiAuthentication
 import io.ehdev.conrad.database.model.project.ApiFullRepoModel
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel
 import io.ehdev.conrad.database.model.project.ApiVersionBumperModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.database.model.user.ApiRepoUserPermission
-import io.ehdev.conrad.database.model.user.ApiUser
 import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection
 import io.ehdev.conrad.model.rest.commit.RestCommitIdModel
 import org.springframework.http.HttpStatus
@@ -61,7 +61,7 @@ class RepoEndpointTest extends Specification {
 
     def 'can get details for repo'() {
         when:
-        def details = repoEndpoint.getRepoDetails(new ApiParameterContainer(new ApiUser(UUID.randomUUID(), '','',''), createTestingRepoModel()))
+        def details = repoEndpoint.getRepoDetails(createTestingRepoModel())
 
         then:
         details.statusCode == HttpStatus.OK
@@ -72,6 +72,6 @@ class RepoEndpointTest extends Specification {
     }
 
     ApiParameterContainer createTestingRepoModel() {
-        return new ApiParameterContainer(null, "projectName", "repoName")
+        return new ApiParameterContainer(new UserApiAuthentication(UUID.randomUUID(), '','',''), "projectName", "repoName")
     }
 }

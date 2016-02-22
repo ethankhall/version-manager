@@ -1,6 +1,8 @@
 package io.ehdev.conrad.service.api.aop.impl;
 
 import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.database.model.permission.UserApiAuthentication;
+import io.ehdev.conrad.service.api.aop.exception.NonUserNotAllowedException;
 import io.ehdev.conrad.service.api.aop.exception.UserNotLoggedInException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -32,6 +34,9 @@ public class LoggedInUserCheck {
 
         if(null == container.getUser()) {
             throw new UserNotLoggedInException();
+        }
+        if(!(container.getUser() instanceof UserApiAuthentication)) {
+            throw new NonUserNotAllowedException();
         }
     }
 }

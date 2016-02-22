@@ -3,7 +3,7 @@ package io.ehdev.conrad.authentication.api;
 
 import io.ehdev.conrad.authentication.util.FilterUtilities;
 import io.ehdev.conrad.database.impl.ModelConversionUtility;
-import io.ehdev.conrad.database.model.user.ApiUser;
+import io.ehdev.conrad.database.model.permission.UserApiAuthentication;
 import io.ehdev.conrad.db.Tables;
 import io.ehdev.conrad.db.tables.UserDetailsTable;
 import io.ehdev.conrad.db.tables.UserSecurityClientProfileTable;
@@ -36,7 +36,7 @@ public class DefaultAuthenticationManagementApi implements AuthenticationManagem
 
         UserDetailsTable ud = Tables.USER_DETAILS.as("ud");
         UserSecurityClientProfileTable uscp = Tables.USER_SECURITY_CLIENT_PROFILE.as("uscp");
-        Optional<ApiUser> record = findUserDetails(userProfile, ud, uscp).map(ModelConversionUtility::toApiModel);
+        Optional<UserApiAuthentication> record = findUserDetails(userProfile, ud, uscp).map(ModelConversionUtility::toApiModel);
 
         if (record.isPresent()) {
             return FilterUtilities.createAuthentication(record.get());

@@ -3,9 +3,8 @@ package io.ehdev.conrad.authentication.remember;
 import io.ehdev.conrad.authentication.cookie.UserCookieManger;
 import io.ehdev.conrad.authentication.jwt.JwtManager;
 import io.ehdev.conrad.database.api.TokenManagementApi;
+import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
 import io.ehdev.conrad.database.model.user.ApiToken;
-import io.ehdev.conrad.database.model.user.ApiTokenType;
-import io.ehdev.conrad.database.model.user.ApiUser;
 import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,18 +43,18 @@ public class RememberMeServicesImpl implements RememberMeServices {
 
     @Override
     public Authentication autoLogin(HttpServletRequest request, HttpServletResponse response) {
-        Optional<Pair<ApiUser, ApiToken>> pair = jwtManager.parseToken(userCookieManger.readCookieValue(request));
+        Optional<Pair<ApiTokenAuthentication, ApiToken>> pair = jwtManager.parseToken(userCookieManger.readCookieValue(request));
 
         if (pair.isPresent()) {
-            ApiUser conradUser = pair.get().getKey();
-            return new RememberMeAuthenticationToken(conradUser.getUuid().toString(), conradUser, ROLE_USER);
+            ApiTokenAuthentication conradUser = pair.get().getKey();
+            return new RememberMeAuthenticationToken(conradUser.getNiceName(), conradUser, ROLE_USER);
         }
         return null;
     }
 
     @Override
     public void loginFail(HttpServletRequest request, HttpServletResponse response) {
-        Optional<Pair<ApiUser, ApiToken>> pair = jwtManager.parseToken(userCookieManger.readCookieValue(request));
+        Optional<Pair<ApiTokenAuthentication, ApiToken>> pair = jwtManager.parseToken(userCookieManger.readCookieValue(request));
         if(pair.isPresent()) {
             tokenManagementApi.invalidateTokenValid(pair.get().getRight());
         }
@@ -65,13 +64,13 @@ public class RememberMeServicesImpl implements RememberMeServices {
     @Override
     public void loginSuccess(HttpServletRequest request, HttpServletResponse response, Authentication auth) {
         logger.info("Login Success: {}", auth);
-        if (auth.getPrincipal() instanceof ApiUser) {
-            addLogin((ApiUser) auth.getPrincipal(), response);
+        if (auth.getPrincipal() instanceof ApiTokenAuthentication) {
+            addLogin((ApiTokenAuthentication) auth.getPrincipal(), response);
         }
     }
 
-    private void addLogin(ApiUser user, HttpServletResponse response) {
-        String token = jwtManager.createToken(user, ApiTokenType.USER);
+    private void addLogin(ApiTokenAuthentication user, HttpServletResponse response) {
+        String token = jwtManager.createToken(user);
         userCookieManger.addCookie(token, response);
     }
 }

@@ -4,7 +4,7 @@ import io.ehdev.conrad.database.api.RepoManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.project.ApiRepoModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
-import io.ehdev.conrad.model.version.VersionCreateModel
+import io.ehdev.conrad.service.api.service.model.version.CreateVersionRequestBody
 import io.ehdev.conrad.version.bumper.api.VersionBumperService
 import io.ehdev.conrad.version.commit.CommitVersion
 import io.ehdev.conrad.version.commit.VersionFactory
@@ -55,7 +55,7 @@ class RepoVersionEndpointTest extends Specification {
         def lastCommit = new ApiCommitModel('a', '1.2.3')
 
         when:
-        def model = new VersionCreateModel(versionIds, "Some Message", "f")
+        def model = new CreateVersionRequestBody(versionIds, "Some Message", "f")
         def request = new MockHttpServletRequest("POST", ":8080/api/v1/project/pn/repo/rp/version")
         def version = repoEndpoint.createNewVersion(createTestingRepoModel(), model, request)
 

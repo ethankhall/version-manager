@@ -30,39 +30,35 @@ import javax.validation.constraints.NotNull;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
-@Table(name = "user_tokens", schema = "public")
-public class UserTokens implements Serializable {
+@Table(name = "token_authentications", schema = "public")
+public class TokenAuthentications implements Serializable {
 
-	private static final long serialVersionUID = 1463342750;
+	private static final long serialVersionUID = 318961615;
 
 	private UUID      uuid;
-	private UUID      userUuid;
 	private Instant   createdAt;
 	private Instant   expiresAt;
 	private Boolean   valid;
 	private TokenType tokenType;
 
-	public UserTokens() {}
+	public TokenAuthentications() {}
 
-	public UserTokens(UserTokens value) {
+	public TokenAuthentications(TokenAuthentications value) {
 		this.uuid = value.uuid;
-		this.userUuid = value.userUuid;
 		this.createdAt = value.createdAt;
 		this.expiresAt = value.expiresAt;
 		this.valid = value.valid;
 		this.tokenType = value.tokenType;
 	}
 
-	public UserTokens(
+	public TokenAuthentications(
 		UUID      uuid,
-		UUID      userUuid,
 		Instant   createdAt,
 		Instant   expiresAt,
 		Boolean   valid,
 		TokenType tokenType
 	) {
 		this.uuid = uuid;
-		this.userUuid = userUuid;
 		this.createdAt = createdAt;
 		this.expiresAt = expiresAt;
 		this.valid = valid;
@@ -78,16 +74,6 @@ public class UserTokens implements Serializable {
 
 	public void setUuid(UUID uuid) {
 		this.uuid = uuid;
-	}
-
-	@Column(name = "user_uuid", nullable = false)
-	@NotNull
-	public UUID getUserUuid() {
-		return this.userUuid;
-	}
-
-	public void setUserUuid(UUID userUuid) {
-		this.userUuid = userUuid;
 	}
 
 	@Column(name = "created_at", nullable = false)
@@ -130,10 +116,9 @@ public class UserTokens implements Serializable {
 
 	@Override
 	public String toString() {
-		StringBuilder sb = new StringBuilder("UserTokens (");
+		StringBuilder sb = new StringBuilder("TokenAuthentications (");
 
 		sb.append(uuid);
-		sb.append(", ").append(userUuid);
 		sb.append(", ").append(createdAt);
 		sb.append(", ").append(expiresAt);
 		sb.append(", ").append(valid);

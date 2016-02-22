@@ -2,8 +2,9 @@ package io.ehdev.conrad.service.api.aop.impl
 
 import io.ehdev.conrad.database.api.PermissionManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
+import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication
+import io.ehdev.conrad.database.model.permission.UserApiAuthentication
 import io.ehdev.conrad.database.model.user.ApiRepoUserPermission
-import io.ehdev.conrad.database.model.user.ApiUser
 import io.ehdev.conrad.database.model.user.ApiUserPermission
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired
@@ -24,12 +25,12 @@ class PermissionRequiredCheckTest extends Specification {
         permissionManagementApi = new PermissionManagementApi() {
 
             @Override
-            boolean doesUserHavePermission(ApiUser apiUser, String project, String repoName, ApiUserPermission permission) {
+            boolean doesUserHavePermission(ApiTokenAuthentication apiUser, String project, String repoName, ApiUserPermission permission) {
                 return ApiUserPermission.valueOf(project.toUpperCase()) >= permission
             }
 
             @Override
-            boolean addPermission(String username, ApiUser authenticatedUser, String projectName, String repoName, ApiUserPermission permission) {
+            boolean addPermission(String username, ApiTokenAuthentication authenticatedUser, String projectName, String repoName, ApiUserPermission permission) {
                 return false
             }
 
@@ -53,7 +54,7 @@ class PermissionRequiredCheckTest extends Specification {
         AspectJProxyFactory factory = new AspectJProxyFactory(target);
         factory.addAspect(permissionRequiredCheck)
         FooTestInterface proxy = factory.getProxy()
-        def apiUser = new ApiUser(UUID.randomUUID(), 'username', 'name', 'email')
+        def apiUser = new UserApiAuthentication(UUID.randomUUID(), 'username', 'name', 'email')
 
         when:
         proxy.adminPermissions(new ApiParameterContainer(apiUser, 'read', null), 'a')
@@ -80,7 +81,7 @@ class PermissionRequiredCheckTest extends Specification {
         AspectJProxyFactory factory = new AspectJProxyFactory(target);
         factory.addAspect(permissionRequiredCheck)
         FooTestInterface proxy = factory.getProxy()
-        def apiUser = new ApiUser(UUID.randomUUID(), 'username', 'name', 'email')
+        def apiUser = new UserApiAuthentication(UUID.randomUUID(), 'username', 'name', 'email')
 
         when:
         proxy.readPermissions(new ApiParameterContainer(apiUser, 'read', null))
@@ -107,7 +108,7 @@ class PermissionRequiredCheckTest extends Specification {
         AspectJProxyFactory factory = new AspectJProxyFactory(target);
         factory.addAspect(permissionRequiredCheck)
         FooTestInterface proxy = factory.getProxy()
-        def apiUser = new ApiUser(UUID.randomUUID(), 'username', 'name', 'email')
+        def apiUser = new UserApiAuthentication(UUID.randomUUID(), 'username', 'name', 'email')
 
         when:
         proxy.writePermissions(new ApiParameterContainer(apiUser, 'read', null))

@@ -1,7 +1,10 @@
 package io.ehdev.conrad.authentication.jwt;
 
 import io.ehdev.conrad.database.api.TokenManagementApi;
-import io.ehdev.conrad.database.model.user.*;
+import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
+import io.ehdev.conrad.database.model.user.ApiGeneratedUserToken;
+import io.ehdev.conrad.database.model.user.ApiProvidedToken;
+import io.ehdev.conrad.database.model.user.ApiToken;
 import io.jsonwebtoken.*;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -34,28 +37,23 @@ public class DefaultJwtManager implements JwtManager {
     }
 
     @Override
-    public String createUserToken(ApiUser user) {
-        return createToken(user, ApiTokenType.USER);
-    }
-
-    @Override
-    public String createToken(ApiUser user, ApiTokenType type) {
-        ApiGeneratedUserToken token = tokenManagementApi.createToken(user, type);
+    public String createToken(ApiTokenAuthentication authentication) {
+        ApiGeneratedUserToken token = tokenManagementApi.createToken(authentication);
         Claims claims = Jwts.claims()
-            .setSubject(user.getUuid().toString())
+            .setSubject(authentication.getUuid().toString())
             .setExpiration(Date.from(token.getExpiresAt().toInstant()))
             .setId(token.getUuid().toString())
             .setNotBefore(Date.from(token.getCreatedAt().toInstant()));
 
         return Jwts.builder()
             .setClaims(claims)
-            .setHeaderParam(TOKEN_TYPE, type.getType())
+            .setHeaderParam(TOKEN_TYPE, token.getTokenType().getType())
             .signWith(SignatureAlgorithm.HS256, new SecretKeySpec(key, "HmacSHA256"))
             .compact();
     }
 
     @Override
-    public Optional<Pair<ApiUser, ApiToken>> parseToken(String token) {
+    public Optional<Pair<ApiTokenAuthentication, ApiToken>> parseToken(String token) {
         if(StringUtils.isBlank(token)) {
             logger.debug("Token was blank");
             return Optional.empty();
@@ -67,7 +65,7 @@ public class DefaultJwtManager implements JwtManager {
             Claims parsed = claimsJws.getBody();
 
             ApiProvidedToken conradToken = new ApiProvidedToken(UUID.fromString(parsed.getId()));
-            ApiUser user = tokenManagementApi.findUser(conradToken);
+            ApiTokenAuthentication user = tokenManagementApi.findUser(conradToken);
             if(user == null) {
                 logger.debug("User was not found.");
                 return Optional.empty();

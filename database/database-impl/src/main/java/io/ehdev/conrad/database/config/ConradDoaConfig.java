@@ -33,8 +33,13 @@ public class ConradDoaConfig {
     }
 
     @Bean
-    UserTokensDao userTokenDao(org.jooq.Configuration configuration) {
-        return new UserTokensDao(configuration);
+    TokenAuthenticationsDao tokenDao(org.jooq.Configuration configuration) {
+        return new TokenAuthenticationsDao(configuration);
+    }
+
+    @Bean
+    TokenJoinDao tokeMapDao(org.jooq.Configuration configuration) {
+        return new TokenJoinDao(configuration);
     }
 
     @Bean

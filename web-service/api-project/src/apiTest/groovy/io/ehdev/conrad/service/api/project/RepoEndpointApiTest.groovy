@@ -18,6 +18,7 @@ import io.ehdev.conrad.service.api.config.ApiParameterContainerResolver
 import io.ehdev.conrad.service.api.service.RepoPermissionsEndpoint
 import io.ehdev.conrad.service.api.service.RepoEndpoint
 import io.ehdev.conrad.service.api.service.RepoVersionEndpoint
+import io.ehdev.conrad.service.api.service.model.permissions.PermissionGrant
 import io.ehdev.conrad.version.bumper.SemanticVersionBumper
 import io.ehdev.conrad.version.bumper.api.VersionBumperService
 import org.junit.Rule
@@ -93,6 +94,27 @@ class RepoEndpointApiTest extends Specification {
         def model = new RestRepoCreateModel("semver", "http://github.com/foo/bar")
         mockMvc.perform(
             post("/api/v1/project/{projectName}/repo/{repoName}", 'bigFizzyDice', 'smallDice')
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(toJson(model)))
+            .andExpect(status().isCreated());
+    }
+
+    def 'add-permission-repo'() {
+        1 * permissionManagementApi.addPermission(_, _, _, _, _) >> true
+        expect:
+        document.snippets(
+            responseFields(
+                fieldWithPath("links")
+                    .description("Links to resources related to the object"),
+                fieldWithPath("accepted")
+                    .description("If the request was accepted or not."),),
+            pathParameters(defaultParameters())
+        )
+
+        def model = new PermissionGrant("test", "ADMIN")
+        mockMvc.perform(
+            post("/api/v1/project/{projectName}/repo/{repoName}/permissions", 'bigFizzyDice', 'smallDice')
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(toJson(model)))

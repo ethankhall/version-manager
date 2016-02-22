@@ -5,15 +5,14 @@ CREATE TABLE user_details (
     email_address VARCHAR(256) NOT NULL
 );
 
-CREATE TYPE token_type AS ENUM ('USER', 'API');
+CREATE TYPE token_type AS ENUM ('USER', 'REPOSITORY', 'PROJECT');
 
-CREATE TABLE user_tokens (
+CREATE TABLE token_authentications (
     uuid       UUID PRIMARY KEY                                DEFAULT uuid_generate_v4(),
-    user_uuid  UUID REFERENCES user_details (uuid) NOT NULL,
-    created_at TIMESTAMP WITH TIME ZONE            NOT NULL    DEFAULT current_timestamp,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL               DEFAULT current_timestamp,
     expires_at TIMESTAMP WITH TIME ZONE                        DEFAULT NULL,
     valid      BOOLEAN                                         DEFAULT TRUE,
-    token_type token_type                          NOT NULL
+    token_type token_type               NOT NULL
 );
 
 CREATE TABLE user_security_client_profile (
@@ -39,18 +38,27 @@ CREATE TABLE version_bumpers (
     UNIQUE (class_name)
 );
 
-INSERT INTO version_bumpers(bumper_name, class_name, description) VALUES ('semver', 'io.ehdev.conrad.version.bumper.SemanticVersionBumper', 'Default semantic versions bumper');
+INSERT INTO version_bumpers (bumper_name, class_name, description)
+VALUES ('semver', 'io.ehdev.conrad.version.bumper.SemanticVersionBumper', 'Default semantic versions bumper');
 
 CREATE TABLE repo_details (
     uuid                UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    project_name        CHARACTER VARYING(255)  NOT NULL,
-    repo_name           CHARACTER VARYING(255)  NOT NULL,
+    project_name        CHARACTER VARYING(255) NOT NULL,
+    repo_name           CHARACTER VARYING(255) NOT NULL,
     project_uuid        UUID REFERENCES project_details (uuid),
     version_bumper_uuid UUID REFERENCES version_bumpers (uuid),
     url                 CHARACTER VARYING(1024),
-    description         TEXT                    NOT NULL,
+    description         TEXT                   NOT NULL,
     public              BOOLEAN          DEFAULT TRUE,
     UNIQUE (project_name, repo_name)
+);
+
+CREATE TABLE token_join (
+    uuid         UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    token        UUID REFERENCES token_authentications (uuid) NOT NULL UNIQUE,
+    project_uuid UUID REFERENCES project_details (uuid),
+    repo_uuid    UUID REFERENCES repo_details (uuid),
+    user_uuid    UUID REFERENCES user_details (uuid)
 );
 
 CREATE TABLE commit_details (
