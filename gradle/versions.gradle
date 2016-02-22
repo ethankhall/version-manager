@@ -93,7 +93,8 @@ libraries.jsonPath = 'com.jayway.jsonpath:json-path:2.0.0'
 
 libraries.jackson = [
     "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson}",
-    "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}"
+    "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}",
+    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${versions.jackson}"
 ]
 
 libraries.hibernateCache = ["org.hibernate:hibernate-ehcache:${versions.hibernate}"]

@@ -39,10 +39,14 @@ public class DefaultJwtManager implements JwtManager {
     @Override
     public String createToken(ApiTokenAuthentication authentication) {
         ApiGeneratedUserToken token = tokenManagementApi.createToken(authentication);
+        return createToken(token);
+    }
+
+    @Override
+    public String createToken(ApiGeneratedUserToken token) {
         Claims claims = Jwts.claims()
-            .setSubject(authentication.getUuid().toString())
+            .setSubject(token.getUuid().toString())
             .setExpiration(Date.from(token.getExpiresAt().toInstant()))
-            .setId(token.getUuid().toString())
             .setNotBefore(Date.from(token.getCreatedAt().toInstant()));
 
         return Jwts.builder()
@@ -64,7 +68,7 @@ public class DefaultJwtManager implements JwtManager {
                 .parseClaimsJws(token);
             Claims parsed = claimsJws.getBody();
 
-            ApiProvidedToken conradToken = new ApiProvidedToken(UUID.fromString(parsed.getId()));
+            ApiProvidedToken conradToken = new ApiProvidedToken(UUID.fromString(parsed.getSubject()));
             ApiTokenAuthentication user = tokenManagementApi.findUser(conradToken);
             if(user == null) {
                 logger.debug("User was not found.");

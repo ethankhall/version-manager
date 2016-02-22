@@ -6,22 +6,28 @@ import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
 import io.ehdev.conrad.database.model.permission.ProjectApiAuthentication;
 import io.ehdev.conrad.database.model.permission.RepositoryApiAuthentication;
 import io.ehdev.conrad.database.model.permission.UserApiAuthentication;
+import io.ehdev.conrad.database.model.token.RetrievedToken;
 import io.ehdev.conrad.database.model.user.ApiGeneratedUserToken;
 import io.ehdev.conrad.database.model.user.ApiToken;
 import io.ehdev.conrad.database.model.user.ApiTokenType;
 import io.ehdev.conrad.db.Tables;
 import io.ehdev.conrad.db.enums.TokenType;
 import io.ehdev.conrad.db.tables.TokenAuthenticationsTable;
+import io.ehdev.conrad.db.tables.TokenJoinTable;
 import io.ehdev.conrad.db.tables.daos.*;
 import io.ehdev.conrad.db.tables.pojos.*;
+import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class DefaultTokenManagementApi implements TokenManagementApi {
@@ -110,9 +116,35 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
 
         return new ApiGeneratedUserToken(
             token.getUuid(),
-            ApiTokenType.parse(type.getName()),
+            ApiTokenType.parse(type.getLiteral()),
             token.getCreatedAt().atZone(ZoneOffset.UTC),
             token.getExpiresAt().atZone(ZoneOffset.UTC));
+    }
+
+    @Override
+    public List<RetrievedToken> getTokens(String project, String repo) {
+        TokenAuthenticationsTable ta = Tables.TOKEN_AUTHENTICATIONS.as("ta");
+        TokenJoinTable tj = Tables.TOKEN_JOIN.as("tj");
+        Condition filterCondition;
+
+        if(repo != null) {
+            UUID repoId = repoManagementApiInternal.findRepository(project, repo).get().getUuid();
+            filterCondition = tj.REPO_UUID.eq(repoId);
+        } else {
+            UUID projectId = projectDetailsDao.fetchOneByProjectName(project).getUuid();
+            filterCondition = tj.PROJECT_UUID.eq(projectId);
+        }
+        return dslContext
+            .select(tj.UUID, ta.CREATED_AT, ta.EXPIRES_AT)
+            .from(ta)
+            .join(tj).on(tj.TOKEN.eq(ta.UUID))
+            .where(filterCondition)
+                .and(ta.VALID.eq(true))
+                .and(ta.EXPIRES_AT.greaterOrEqual(Clock.systemUTC().instant()))
+            .fetch()
+            .stream()
+            .map(it -> new RetrievedToken(it.value1(), it.value2().atZone(ZoneOffset.UTC), it.value3().atZone(ZoneOffset.UTC)))
+            .collect(Collectors.toList());
     }
 
     @Override
@@ -125,6 +157,21 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
         return token != null
             && token.getValid()
             && Instant.now().isBefore(token.getExpiresAt());
+    }
+
+    @Override
+    public void invalidateTokenValidByJoinId(UUID tokenId) {
+        TokenJoin tokenJoin = tokenMapDao.fetchOneByUuid(tokenId);
+        invalidateTokenValid(tokenJoin.getToken());
+    }
+
+    public void invalidateTokenValid(UUID apiToken) {
+        TokenAuthentications token = tokensDao.fetchOneByUuid(apiToken);
+        if (token == null) {
+            throw new TokenNotFoundException(apiToken);
+        }
+        token.setValid(false);
+        tokensDao.update(token);
     }
 
     @Override

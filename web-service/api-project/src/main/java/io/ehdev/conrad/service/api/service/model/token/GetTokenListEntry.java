@@ -1,15 +1,13 @@
 package io.ehdev.conrad.service.api.service.model.token;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.springframework.hateoas.ResourceSupport;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-public class CreateTokenResponse extends ResourceSupport {
-
-    @JsonProperty("uuid")
-    private final UUID uuid;
+public class GetTokenListEntry {
+    @JsonProperty("id")
+    private final UUID id;
 
     @JsonProperty("createdAt")
     private final ZonedDateTime createdAt;
@@ -17,18 +15,14 @@ public class CreateTokenResponse extends ResourceSupport {
     @JsonProperty("expiresAt")
     private final ZonedDateTime expiresAt;
 
-    @JsonProperty("authToken")
-    private final String authToken;
-
-    public CreateTokenResponse(UUID uuid, ZonedDateTime createdAt, ZonedDateTime expiresAt, String authToken) {
-        this.uuid = uuid;
+    public GetTokenListEntry(UUID id, ZonedDateTime createdAt, ZonedDateTime expiresAt) {
+        this.id = id;
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
-        this.authToken = authToken;
     }
 
-    public UUID getUuid() {
-        return uuid;
+    public UUID getId() {
+        return id;
     }
 
     public ZonedDateTime getCreatedAt() {
@@ -37,9 +31,5 @@ public class CreateTokenResponse extends ResourceSupport {
 
     public ZonedDateTime getExpiresAt() {
         return expiresAt;
-    }
-
-    public String getAuthToken() {
-        return authToken;
     }
 }

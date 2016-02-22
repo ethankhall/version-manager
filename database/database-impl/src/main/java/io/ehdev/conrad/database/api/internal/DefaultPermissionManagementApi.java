@@ -52,7 +52,8 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
     @Override
     public boolean doesUserHavePermission(ApiTokenAuthentication apiUser, String project, String repoName, ApiUserPermission permission) {
         if(apiUser == null) {
-            return permission == ApiUserPermission.READ && repoManagementApi.findRepository(project, repoName).get().getPublic();
+            Optional<RepoDetails> repository = repoManagementApi.findRepository(project, repoName);
+            return permission == ApiUserPermission.READ && repository.isPresent() && repository.get().getPublic();
         }
 
         if(apiUser instanceof ProjectApiAuthentication || apiUser instanceof RepositoryApiAuthentication) {
