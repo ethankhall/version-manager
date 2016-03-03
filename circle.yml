@@ -1,4 +1,6 @@
 machine:
+    java:
+        version: oraclejdk8
     services:
         - docker
         - postgresql
@@ -9,11 +11,11 @@ machine:
 
 dependencies:
     override:
-        - ./gradlew dependencies
+        - ./gradlew dependencies --console=plain
 
 test:
     override:
-        - ./gradlew check
+        - ./gradlew check --console=plain
     post:
         - mkdir -p $CIRCLE_ARTIFACTS/docs
         - cp -r build/docs/asciidoc/html5 $CIRCLE_ARTIFACTS/docs
