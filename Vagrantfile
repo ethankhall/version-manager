@@ -2,7 +2,7 @@
 # vi: set ft=ruby :
 
 Vagrant.configure(2) do |config|
-  config.vm.box = "boxcutter/centos71"
+  config.vm.box = "boxcutter/centos72-docker"
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.

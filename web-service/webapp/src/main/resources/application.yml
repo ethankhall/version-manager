@@ -19,11 +19,6 @@ jwt:
     signing:
         key: secret
 
-security:
-    text:
-        password: password
-        salt: 0123456789ABCDEF
-
 logging:
     level:
         io:
@@ -44,3 +39,27 @@ spring:
         show-sql: true
         hibernate:
             ddl-auto: verify
+
+---
+spring:
+    profiles: container
+    datasource:
+            url: jdbc:postgresql://${DATABASE_URL}/${DATABASE_NAME}
+            username: ${DATABASE_USERNAME}
+            password: ${DATABASE_PASSWORD}
+        jpa:
+            show-sql: true
+            hibernate:
+                ddl-auto: verify
+jwt:
+    signing:
+        key: ${JWT_SIGNING_KEY}
+
+auth:
+    client:
+        github:
+            key: ${GITHUB_KEY}
+            secret: ${GITHUB_SECRET}
+        google:
+            key: ${GOOGLE_KEY}
+            secret: ${GOOGLE_SECRET}

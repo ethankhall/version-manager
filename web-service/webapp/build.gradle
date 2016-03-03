@@ -10,6 +10,7 @@ buildscript {
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath 'se.transmode.gradle:gradle-docker:1.2'
     }
 }
 
@@ -18,6 +19,7 @@ apply plugin: 'groovy'
 apply plugin: 'local-dev'
 apply plugin: 'spring-boot'
 apply from: "$rootDir/gradle/publishing.gradle"
+apply plugin: 'docker'
 
 artifactoryPublish.dependsOn assemble
 
@@ -54,4 +56,21 @@ dependencies {
     testCompile libraries.jsonPath
 
     testCompile libraries.testing
+}
+
+docker {
+    maintainer 'Ethan Hall "ethan@ehdev.io"'
+}
+
+task buildDocker(type: Docker, dependsOn: assemble) {
+    push = project.hasProperty("dockerPush")
+    applicationName = jar.baseName
+    dockerfile = file('src/main/docker/Dockerfile')
+    doFirst {
+        copy {
+            from jar
+            into stageDir
+            rename "${project.name}-.*.jar", 'webapp.jar'
+        }
+    }
 }
