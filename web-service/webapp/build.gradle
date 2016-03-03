@@ -66,6 +66,7 @@ task buildDocker(type: Docker, dependsOn: assemble) {
     push = project.hasProperty("dockerPush")
     applicationName = jar.baseName
     dockerfile = file('src/main/docker/Dockerfile')
+    tag = "conrad/${applicationName}:${tagVersion}"
     doFirst {
         copy {
             from jar
