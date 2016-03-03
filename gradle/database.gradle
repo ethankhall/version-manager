@@ -3,6 +3,6 @@ ext {
 }
 
 database.driver = 'org.postgresql.Driver'
-database.url = 'jdbc:postgresql://172.0.1.100/version_manager_test'
-database.user = 'version_manager_test'
-database.password = 'password'
+database.url = System.getenv('SPRING_DATASOURCE_URL') ?:'jdbc:postgresql://172.0.1.100/version_manager_test'
+database.user = System.getenv('SPRING_DATASOURCE_USERNAME') ?: 'version_manager_test'
+database.password = System.getenv('SPRING_DATASOURCE_PASSWORD') ?: 'password'

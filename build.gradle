@@ -53,6 +53,12 @@ subprojects {
             configurations.testRuntime.files
         }
     }
+
+    tasks.withType(Test) { test ->
+        test.environment 'SPRING_DATASOURCE_URL', database.url
+        test.environment 'SPRING_DATASOURCE_USERNAME', database.user
+        test.environment 'SPRING_DATASOURCE_PASSWORD', database.password
+    }
 }
 
 idea.project.ipr {
