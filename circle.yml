@@ -13,6 +13,10 @@ dependencies:
     override:
         - ./gradlew resolveDependencies --console=plain
 
+database:
+    pre:
+        - psql -U ubuntu circle_test --command 'CREATE EXTENSION "uuid-ossp";'
+
 test:
     override:
         - ./gradlew check --console=plain
