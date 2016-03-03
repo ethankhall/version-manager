@@ -1,6 +1,12 @@
-google:
-    clientId: 428210344673-bmar2c3qa5daop98pu9731l8v0tihrt1.apps.googleusercontent.com
-    clientSecret: Y4UZtHiDP1R2o5_INu9MWykI
+
+auth:
+    client:
+        github:
+            key: e26002913dce86419723
+            secret: c8d18cb9b65212ad8acb3d0603a85f6bc3aa704f
+        google:
+            key: 428210344673-bmar2c3qa5daop98pu9731l8v0tihrt1.apps.googleusercontent.com
+            secret: Y4UZtHiDP1R2o5_INu9MWykI
 
 server:
     port: 8080
@@ -12,11 +18,6 @@ management:
 jwt:
     signing:
         key: secret
-
-security:
-    text:
-        password: password
-        salt: 0123456789ABCDEF
 
 logging:
     level:
@@ -38,3 +39,27 @@ spring:
         show-sql: true
         hibernate:
             ddl-auto: verify
+
+---
+spring:
+    profiles: container
+    datasource:
+            url: jdbc:postgresql://${DATABASE_URL}/${DATABASE_NAME}
+            username: ${DATABASE_USERNAME}
+            password: ${DATABASE_PASSWORD}
+        jpa:
+            show-sql: true
+            hibernate:
+                ddl-auto: verify
+jwt:
+    signing:
+        key: ${JWT_SIGNING_KEY}
+
+auth:
+    client:
+        github:
+            key: ${GITHUB_KEY}
+            secret: ${GITHUB_SECRET}
+        google:
+            key: ${GOOGLE_KEY}
+            secret: ${GOOGLE_SECRET}

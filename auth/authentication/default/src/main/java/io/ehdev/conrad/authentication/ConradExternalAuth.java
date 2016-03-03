@@ -5,13 +5,18 @@ import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.oauth.client.GitHubClient;
 import org.pac4j.oauth.client.Google2Client;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 @Configuration
 @ConditionalOnMissingBean(Config.class)
 public class ConradExternalAuth {
+
+    @Autowired
+    Environment environment;
 
     @Bean
     public Config config() {
@@ -22,12 +27,14 @@ public class ConradExternalAuth {
 
     @Bean
     GitHubClient gitHubClient() {
-        return new GitHubClient("e26002913dce86419723", "c8d18cb9b65212ad8acb3d0603a85f6bc3aa704f");
+        return new GitHubClient(environment.getRequiredProperty("auth.client.github.key"),
+            environment.getRequiredProperty("auth.client.github.secret"));
     }
 
     @Bean
     Google2Client google2Client() {
-        return new Google2Client("428210344673-bmar2c3qa5daop98pu9731l8v0tihrt1.apps.googleusercontent.com", "Y4UZtHiDP1R2o5_INu9MWykI");
+        return new Google2Client(environment.getRequiredProperty("auth.client.google.key"),
+            environment.getRequiredProperty("auth.client.google.secret"));
     }
 
     @Bean
