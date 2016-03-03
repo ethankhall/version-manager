@@ -55,6 +55,7 @@ subprojects {
     }
 
     tasks.withType(Test) { test ->
+        test.maxHeapSize = '512m'
         test.environment 'SPRING_DATASOURCE_URL', database.url
         test.environment 'SPRING_DATASOURCE_USERNAME', database.user
         test.environment 'SPRING_DATASOURCE_PASSWORD', database.password

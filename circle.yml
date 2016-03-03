@@ -19,6 +19,7 @@ database:
 
 test:
     override:
+        - ./gradlew --stop
         - ./gradlew check --console=plain
     post:
         - mkdir -p $CIRCLE_ARTIFACTS/docs
