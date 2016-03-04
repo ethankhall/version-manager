@@ -40,4 +40,4 @@ deployment:
         commands:
             - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS ehdev-docker-dockerv2-local.artifactoryonline.com:443
             - ./gradlew buildDocker --console=plain
-            - docker push conrad/webapp
+            - docker push ehdev-docker-dockerv2-local.artifactoryonline.com/conrad/webapp
