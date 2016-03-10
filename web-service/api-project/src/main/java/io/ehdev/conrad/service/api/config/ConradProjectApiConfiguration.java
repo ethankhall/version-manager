@@ -1,10 +1,8 @@
 package io.ehdev.conrad.service.api.config;
 
+import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import io.ehdev.conrad.authentication.jwt.config.ConradJwtConfig;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 
 @Configuration
 @EnableAspectJAutoProxy
@@ -12,4 +10,8 @@ import org.springframework.context.annotation.Import;
 @ComponentScan("io.ehdev.conrad.service.api")
 public class ConradProjectApiConfiguration {
 
+    @Bean
+    public KotlinModule kotlinModule() {
+        return new KotlinModule();
+    }
 }

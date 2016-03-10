@@ -1,6 +1,7 @@
 package io.ehdev.conrad.service.api.service.model;
 
 import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.model.ResourceLink;
 import io.ehdev.conrad.service.api.service.ProjectEndpoint;
 import io.ehdev.conrad.service.api.service.RepoEndpoint;
 import io.ehdev.conrad.service.api.service.RepoVersionEndpoint;
@@ -46,5 +47,9 @@ public class LinkUtilities {
 
     public static Link projectLink(ApiParameterContainer apiParameterContainer, String name) {
         return linkTo(methodOn(ProjectEndpoint.class, apiParameterContainer.getProjectName()).getProject(apiParameterContainer)).withSelfRel();
+    }
+
+    public static ResourceLink toLink(Link link) {
+        return new ResourceLink(link.getRel(), link.getHref());
     }
 }

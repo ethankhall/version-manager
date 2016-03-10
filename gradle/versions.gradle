@@ -11,10 +11,10 @@ versions.springSecutityOAuth = '2.0.8.RELEASE'
 versions.spock = '1.0-groovy-2.4'
 versions.slf4j = '1.7.12'
 versions.hibernate = '5.0.5.Final'
-versions.jackson = '2.6.3'
+versions.jackson = '2.7.2'
 versions.metrics = '3.1.0'
 versions.springSocial = '1.1.4.RELEASE'
-versions.kotlin = '1.0.0-beta-4589'
+versions.kotlin = '1.0.0'
 
 // Because spring boot is fucking stupid
 ext['hibernate.version'] = versions.hibernate

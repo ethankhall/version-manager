@@ -7,14 +7,17 @@ repositories {
     mavenCentral()
 }
 
-sourceCompatibility = '1.6'
+sourceCompatibility = '1.7'
 
 dependencies {
     compile project(":api:rest-model")
     compile ('org.eclipse.jgit:org.eclipse.jgit:4.1.0.201509280440-r') {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
-    compile libraries.httpClient
+
+    compile 'com.squareup.okhttp3:okhttp:3.2.0'
+    compile 'com.netflix.feign:feign-jackson:8.15.1'
+    compile 'com.netflix.feign:feign-core:8.15.1'
 
     testCompile libraries.spock
     testCompile libraries.springTest
