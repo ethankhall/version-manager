@@ -1,19 +1,22 @@
 package io.ehdev.conrad.client.java
 
+import com.squareup.okhttp.mockwebserver.MockResponse
+import com.squareup.okhttp.mockwebserver.MockWebServer
 import groovy.json.JsonBuilder
 import io.ehdev.conrad.client.java.internal.DefaultVersionManagerClient
-import io.ehdev.conrad.model.rest.RestCommitModel
-import org.apache.http.HttpVersion
-import org.apache.http.client.HttpClient
-import org.apache.http.entity.BasicHttpEntity
-import org.apache.http.message.BasicHttpResponse
+import io.ehdev.conrad.model.version.GetVersionResponse
+import okhttp3.OkHttpClient
+import org.junit.Rule
 import spock.lang.Specification
 
 class VersionManagerClientTest extends Specification {
 
+    @Rule
+    public final MockWebServer server = new MockWebServer();
+
     def 'can get snapshot version'() {
         when:
-        def commit = new RestCommitModel('id', '1.2.5-SNAPSHOT')
+        def commit = new GetVersionResponse('id', '1.2.5-SNAPSHOT')
         def requester = createRequester(commit)
 
         then:
@@ -22,7 +25,7 @@ class VersionManagerClientTest extends Specification {
 
     def 'can post to version'() {
         when:
-        def commit = new RestCommitModel("10", "1.2.5")
+        def commit = new GetVersionResponse("10", "1.2.5")
         def requester = createRequester(commit)
 
         then:
@@ -31,22 +34,16 @@ class VersionManagerClientTest extends Specification {
 
     public DefaultVersionManagerClient createRequester(def responseObject) {
         def string = new JsonBuilder(responseObject).toString()
+        server.enqueue(new MockResponse().setBody(string).setResponseCode(200))
 
-        def response = new BasicHttpResponse(HttpVersion.HTTP_1_1, 200, null)
-        def entity = new BasicHttpEntity()
-        entity.setContent(new ByteArrayInputStream(string.bytes))
-        response.setEntity(entity)
-
-        def client = Mock(HttpClient)
-        client.execute(_) >> response
-
-        return new DefaultVersionManagerClient(client, createConfig())
+        return new DefaultVersionManagerClient(new OkHttpClient(), createConfig())
     }
 
     private VersionServiceConfiguration createConfig() {
         def configuration = new VersionServiceConfiguration()
-        configuration.setProviderBaseUrl('http://example.com')
-        configuration.setRepoId(UUID.randomUUID().toString())
+        configuration.setApplicationUrl('http://localhost:' + server.getPort())
+        configuration.setProjectName(UUID.randomUUID().toString())
+        configuration.setRepoName(UUID.randomUUID().toString())
         return configuration
     }
 }

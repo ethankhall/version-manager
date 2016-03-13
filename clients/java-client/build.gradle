@@ -25,17 +25,27 @@ dependencies {
 
     compile 'com.squareup.retrofit2:retrofit:2.0.0'
     compile 'com.squareup.retrofit2:converter-jackson:2.0.0'
-    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.6.5-2"
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.7.2"
 
     testCompile libraries.spock
     testCompile libraries.springTest
     testCompile libraries.jsonPath
     testCompile libraries.testing
+    testCompile 'com.squareup.okhttp:mockwebserver:2.7.5'
 
     integTestCompile 'com.github.tomjankes:wiremock-groovy:0.2.0'
     integTestCompile 'com.github.tomakehurst:wiremock:1.58'
 }
 
 shadowJar {
-    relocate 'com.fasterxml.jackson', 'jarjar.jackson'
+    relocate 'com.fasterxml.jackson', 'jarjar.com.fasterxml.jackson'
+}
+
+publishing {
+    publications {
+        shadow(MavenPublication) {
+            from components.java
+            artifact shadowJar
+        }
+    }
 }

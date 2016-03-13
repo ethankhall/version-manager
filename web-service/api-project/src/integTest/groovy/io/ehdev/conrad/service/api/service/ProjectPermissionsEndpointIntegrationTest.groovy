@@ -7,8 +7,8 @@ import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.permission.UserApiAuthentication
 import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import io.ehdev.conrad.database.model.user.ApiUserPermission
+import io.ehdev.conrad.model.permission.PermissionGrant
 import io.ehdev.conrad.service.api.config.TestConradProjectApiConfiguration
-import io.ehdev.conrad.service.api.service.model.permissions.PermissionGrant
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.mock.web.MockHttpServletRequest

@@ -1,78 +1,58 @@
 package io.ehdev.conrad.client.java
 
-import com.github.tomakehurst.wiremock.junit.WireMockRule
-import com.github.tomjankes.wiremock.WireMockGroovy
+import com.squareup.okhttp.mockwebserver.MockResponse
+import com.squareup.okhttp.mockwebserver.MockWebServer
 import groovy.json.JsonBuilder
 import io.ehdev.conrad.client.java.internal.DefaultVersionManagerClient
-import io.ehdev.conrad.model.rest.RestCommitModel
-import org.apache.http.impl.client.DefaultHttpClient
+import io.ehdev.conrad.model.version.GetVersionResponse
+import okhttp3.OkHttpClient
 import org.junit.Rule
 import spock.lang.Specification
 
 class VersionManagerClientIntegrationTest extends Specification {
 
     @Rule
-    WireMockRule wireMockRule = new WireMockRule(8009)
-
-    def wireMockStub = new WireMockGroovy(8009)
-
+    public final MockWebServer server = new MockWebServer();
 
     def 'can get snapshot version'() {
-        given:
-        wireMockStub.stub {
-            request {
-                method "POST"
-                url "/api/version/repo-name/search"
-            }
-            response {
-                status 200
-                body new JsonBuilder(new RestCommitModel("id", "1.2.3.5-SNAPSHOT")).toPrettyString()
-                headers {
-                    "Content-Type" "application/json"
-                }
-            }
-        }
+        def jsonPretty = new JsonBuilder(new GetVersionResponse("id", "1.2.3.5-SNAPSHOT")).toPrettyString()
 
-        def configuration = createVersionServiceConfiguration('repo-name')
-        def requester = new DefaultVersionManagerClient(new DefaultHttpClient(), configuration)
+        given:
+        server.enqueue(new MockResponse().setBody(jsonPretty).setResponseCode(200).addHeader("Content-Type", "application/json"))
+        def requester = new DefaultVersionManagerClient(new OkHttpClient(), createConfig())
 
         when:
         def version = requester.findVersion(['1.2.3.4', '1.2.3.3', '1.2.3.2', '1.2.3.1', '1.2.3.0'])
 
         then:
         version.version == '1.2.3.5-SNAPSHOT'
+
+        def request = server.takeRequest()
+        request.path =~ "/api/v1/project/(.*?)/repo/(.*?)/search/version"
+        request.method == 'POST'
     }
 
     def 'can claim real version'() {
+        def jsonPretty = new JsonBuilder(new GetVersionResponse("id", "2.0.0")).toPrettyString()
+
         given:
-        wireMockStub.stub {
-            request {
-                method "POST"
-                url "/api/version/repo-name"
-            }
-            response {
-                status 200
-                body new JsonBuilder(new RestCommitModel("id", "2.0.0")).toPrettyString()
-                headers {
-                    "Content-Type" "application/json"
-                }
-            }
-        }
-
-        def configuration = createVersionServiceConfiguration('repo-name')
-        def requester = new DefaultVersionManagerClient(new DefaultHttpClient(), configuration)
-
+        server.enqueue(new MockResponse().setBody(jsonPretty).setResponseCode(200).addHeader("Content-Type", "application/json"))
+        def requester = new DefaultVersionManagerClient(new OkHttpClient(), createConfig())
         when:
         def version = requester.claimVersion((1..10).collect { it as String }, "This is a commit\n[bump major]", 'a' * 10)
 
         then:
         version.version == '2.0.0'
+        def request = server.takeRequest()
+        request.path =~ "/api/v1/project/(.*?)/repo/(.*?)/version"
+        request.method == 'POST'
     }
 
-    VersionServiceConfiguration createVersionServiceConfiguration(String id) {
+    private VersionServiceConfiguration createConfig() {
         def configuration = new VersionServiceConfiguration()
-        configuration.setProviderBaseUrl("http://localhost:8009")
-        configuration.setRepoId(id.toString())
+        configuration.setApplicationUrl('http://localhost:' + server.getPort())
+        configuration.setProjectName(UUID.randomUUID().toString())
+        configuration.setRepoName(UUID.randomUUID().toString())
         return configuration
     }
 }

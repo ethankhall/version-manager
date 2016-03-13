@@ -9,16 +9,15 @@ import io.ehdev.conrad.database.model.project.ApiVersionBumperModel
 import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.database.model.user.ApiRepoUserPermission
-import io.ehdev.conrad.model.rest.RestCommitModel
-import io.ehdev.conrad.model.rest.RestRepoCreateModel
-import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection
-import io.ehdev.conrad.model.rest.commit.RestCommitIdModel
-import io.ehdev.conrad.model.version.VersionCreateModel
+import io.ehdev.conrad.model.commit.CommitIdCollection
+import io.ehdev.conrad.model.permission.PermissionGrant
+import io.ehdev.conrad.model.repository.CreateRepoRequest
+import io.ehdev.conrad.model.version.BaseVersionResponse
+import io.ehdev.conrad.model.version.CreateVersionRequest
 import io.ehdev.conrad.service.api.config.ApiParameterContainerResolver
-import io.ehdev.conrad.service.api.service.RepoPermissionsEndpoint
 import io.ehdev.conrad.service.api.service.RepoEndpoint
+import io.ehdev.conrad.service.api.service.RepoPermissionsEndpoint
 import io.ehdev.conrad.service.api.service.RepoVersionEndpoint
-import io.ehdev.conrad.service.api.service.model.permissions.PermissionGrant
 import io.ehdev.conrad.version.bumper.SemanticVersionBumper
 import io.ehdev.conrad.version.bumper.api.VersionBumperService
 import org.junit.Rule
@@ -91,7 +90,7 @@ class RepoEndpointApiTest extends Specification {
             pathParameters(defaultParameters())
         )
 
-        def model = new RestRepoCreateModel("semver", "http://github.com/foo/bar")
+        def model = new CreateRepoRequest("semver", "http://github.com/foo/bar", null)
         mockMvc.perform(
             post("/api/v1/project/{projectName}/repo/{repoName}", 'bigFizzyDice', 'smallDice')
                 .accept(MediaType.APPLICATION_JSON)
@@ -190,7 +189,7 @@ class RepoEndpointApiTest extends Specification {
             post("/api/v1/project/{projectName}/repo/{repoName}/version", 'bigFizzyDice', 'smallDice')
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(toJson(new VersionCreateModel(['1', '2'], '[bump major version]', '3')))
+                .content(toJson(new CreateVersionRequest(['1', '2'], '[bump major version]', '3')))
         )
             .andExpect(status().isCreated());
     }
@@ -202,8 +201,6 @@ class RepoEndpointApiTest extends Specification {
             responseFields(defaultVersionResponse()),
             requestFields(
                 fieldWithPath("commits[]").description("Array of commitId's to search"),
-                fieldWithPath("commits[].commitId").description("CommitId to include in the search"),
-
             ),
             pathParameters(defaultParameters()),
         )
@@ -212,7 +209,7 @@ class RepoEndpointApiTest extends Specification {
             post("/api/v1/project/{projectName}/repo/{repoName}/search/version", 'bigFizzyDice', 'smallDice')
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(toJson(new RestCommitIdCollection([new RestCommitIdModel('1'), new RestCommitIdModel('2')])))
+                .content(toJson(new CommitIdCollection(['1', '2'])))
         ).andExpect(status().isOk());
     }
 
@@ -222,8 +219,6 @@ class RepoEndpointApiTest extends Specification {
         document.snippets(
             requestFields(
                 fieldWithPath("commits[]").description("Array of commitId's to search"),
-                fieldWithPath("commits[].commitId").description("CommitId to include in the search"),
-
             ),
             pathParameters(defaultParameters()),
         )
@@ -232,13 +227,13 @@ class RepoEndpointApiTest extends Specification {
             post("/api/v1/project/{projectName}/repo/{repoName}/search/version", 'bigFizzyDice', 'smallDice')
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
-                .content(toJson(new RestCommitIdCollection([new RestCommitIdModel('10')])))
+                .content(toJson(new CommitIdCollection(['10'])))
         ).andExpect(status().isNotFound());
     }
 
     ObjectDocumentationSnippet createCommitDocumentationSnippet() {
         return objectSnippits(
-            documentObject(new RestCommitModel("abc123", "2.4.5-BETA5"),
+            documentObject(new BaseVersionResponse("abc123", "2.4.5-BETA5"),
                 fieldDocumentation('commitId').description('Commit id for commit').withType(JsonFieldType.STRING),
                 fieldDocumentation('version').description('Version string for commit').withType(JsonFieldType.STRING),
                 fieldDocumentation('versionParts')

@@ -5,14 +5,9 @@ import io.ehdev.conrad.model.DefaultResourceSupport
 import io.ehdev.conrad.model.permission.PermissionGrant
 
 class GetRepoResponse(
-    @JsonProperty("projectName")
-    val projectName: String,
-
-    @JsonProperty("repoName")
-    val repoName: String,
-
-    @JsonProperty("url")
-    val url: String?): DefaultResourceSupport() {
+    @JsonProperty("projectName") val projectName: String,
+    @JsonProperty("repoName") val repoName: String,
+    @JsonProperty("url") val url: String?): DefaultResourceSupport() {
 
     @JsonProperty("permissions")
     val permissions: MutableList<PermissionGrant> = mutableListOf()

@@ -6,8 +6,8 @@ import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.permission.UserApiAuthentication
 import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import io.ehdev.conrad.db.tables.daos.VersionBumpersDao
+import io.ehdev.conrad.model.version.CreateVersionRequest
 import io.ehdev.conrad.service.api.config.TestConradProjectApiConfiguration
-import io.ehdev.conrad.service.api.service.model.version.CreateVersionRequestBody
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.HttpStatus
@@ -52,7 +52,7 @@ class RepoVersionEndpointIntegrationTest extends Specification {
     }
 
     def 'can create a new version for a new repo'() {
-        def createModel = new CreateVersionRequestBody([], "message", "1")
+        def createModel = new CreateVersionRequest([], "message", "1")
         def request = new MockHttpServletRequest()
         request.setRequestURI("http://localhost:8080/")
 

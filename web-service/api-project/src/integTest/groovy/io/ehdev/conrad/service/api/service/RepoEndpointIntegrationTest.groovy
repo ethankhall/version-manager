@@ -4,8 +4,8 @@ import io.ehdev.conrad.database.api.UserManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.permission.UserApiAuthentication
 import io.ehdev.conrad.db.tables.daos.VersionBumpersDao
+import io.ehdev.conrad.model.repository.CreateRepoRequest
 import io.ehdev.conrad.service.api.config.TestConradProjectApiConfiguration
-import io.ehdev.conrad.service.api.service.model.repo.CreateRepoRequestModel
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.HttpStatus
@@ -48,7 +48,7 @@ class RepoEndpointIntegrationTest extends Specification {
 
     def 'full workflow'() {
         when:
-        def repo = repoEndpoint.createRepo(createApiContainer(), new CreateRepoRequestModel("semver", 'url'))
+        def repo = repoEndpoint.createRepo(createApiContainer(), new CreateRepoRequest("semver", 'url', null))
 
         then:
         repo.statusCode == HttpStatus.CREATED

@@ -4,13 +4,12 @@ import io.ehdev.conrad.database.api.PermissionManagementApi
 import io.ehdev.conrad.database.api.RepoManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.permission.UserApiAuthentication
-import io.ehdev.conrad.database.model.project.ApiFullRepoModel
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel
 import io.ehdev.conrad.database.model.project.ApiVersionBumperModel
+import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.database.model.user.ApiRepoUserPermission
-import io.ehdev.conrad.model.rest.commit.RestCommitIdCollection
-import io.ehdev.conrad.model.rest.commit.RestCommitIdModel
+import io.ehdev.conrad.model.commit.CommitIdCollection
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.web.context.request.RequestContextHolder
@@ -33,10 +32,8 @@ class RepoEndpointTest extends Specification {
     }
 
     def 'find version finds nothing'() {
-        def versionIds = ['a', 'b', 'c']
-
         when:
-        def model = new RestCommitIdCollection(versionIds.collect { new RestCommitIdModel(it) })
+        def model = new CommitIdCollection(['a', 'b', 'c'])
         def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model)
 
         then:
@@ -45,10 +42,8 @@ class RepoEndpointTest extends Specification {
     }
 
     def 'find version'() {
-        def versionIds = ['a', 'b', 'c']
-
         when:
-        def model = new RestCommitIdCollection(versionIds.collect { new RestCommitIdModel(it) })
+        def model = new CommitIdCollection(['a', 'b', 'c'])
         def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model)
 
         then:
@@ -66,7 +61,7 @@ class RepoEndpointTest extends Specification {
         then:
         details.statusCode == HttpStatus.OK
 
-        repoManagementApi.getDetails(_) >> Optional.of(new ApiRepoDetailsModel(Mock(ApiFullRepoModel), new ApiVersionBumperModel(' ', ' ', ' ')))
+        repoManagementApi.getDetails(_) >> Optional.of(new ApiRepoDetailsModel(new DefaultApiRepoModel("projectName", "repoName"), new ApiVersionBumperModel(' ', ' ', ' ')))
         permissionManagementApi.getPermissionsForProject(_) >> [new ApiRepoUserPermission('bob', 'ADMIN')]
 
     }
