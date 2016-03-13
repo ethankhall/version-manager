@@ -1,5 +1,11 @@
-apply plugin: 'groovy'
+plugins {
+    id 'java'
+    id 'groovy'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
 apply plugin: 'local-dev'
+apply plugin: 'kotlin'
 apply plugin: 'maven-publish'
 apply from: "$rootDir/gradle/publishing.gradle"
 
@@ -15,9 +21,11 @@ dependencies {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
 
-    compile 'com.squareup.okhttp3:okhttp:3.2.0'
-    compile 'com.netflix.feign:feign-jackson:8.15.1'
-    compile 'com.netflix.feign:feign-core:8.15.1'
+    compile libraries.kotlin
+
+    compile 'com.squareup.retrofit2:retrofit:2.0.0'
+    compile 'com.squareup.retrofit2:converter-jackson:2.0.0'
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.6.5-2"
 
     testCompile libraries.spock
     testCompile libraries.springTest
@@ -26,4 +34,8 @@ dependencies {
 
     integTestCompile 'com.github.tomjankes:wiremock-groovy:0.2.0'
     integTestCompile 'com.github.tomakehurst:wiremock:1.58'
+}
+
+shadowJar {
+    relocate 'com.fasterxml.jackson', 'jarjar.jackson'
 }

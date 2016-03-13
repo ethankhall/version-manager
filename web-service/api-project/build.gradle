@@ -18,7 +18,7 @@ dependencies {
     compile libraries.servletApi
     compile libraries.jackson
 
-    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.7.1-2"
+    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.6.5-2"
     compile 'javax.validation:validation-api:1.1.0.Final'
     compile 'org.hibernate:hibernate-validator:5.0.1.Final'
     compile 'org.springframework.hateoas:spring-hateoas:0.19.0.RELEASE'

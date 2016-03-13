@@ -2,7 +2,6 @@ package io.ehdev.conrad.app.gradle;
 
 import io.ehdev.conrad.client.java.Version;
 import io.ehdev.conrad.client.java.VersionManagerClient;
-import io.ehdev.conrad.client.java.exception.UnsuccessfulRequestException;
 import io.ehdev.conrad.client.java.internal.DefaultVersionManagerClient;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.gradle.api.logging.Logger;
@@ -27,10 +26,11 @@ public class VersionClaimer {
         try {
             VersionManagerClient versionManagerClient = new DefaultVersionManagerClient(extension.getClient(), extension);
             Version version = versionManagerClient.claimVersion(rootProjectDir);
-            logger.lifecycle("Version claimed was: {}", version.getVersion());
-            versionManagerClient.tagVersion(rootProjectDir, version);
+            String versionString = version.toString();
+            logger.lifecycle("Version claimed was: {}", versionString);
+            versionManagerClient.tagVersion(rootProjectDir, versionString);
             return version;
-        } catch (IOException | GitAPIException | UnsuccessfulRequestException e) {
+        } catch (IOException | GitAPIException e) {
             logger.error("Unable to claim version! Reason: {}", e.getMessage());
             logger.info("Unable to claim version! Reason: {}", e.getMessage(), e);
             throw new UnableToClaimVersionException(e);

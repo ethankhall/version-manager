@@ -2,7 +2,6 @@ package io.ehdev.conrad.app.gradle;
 
 import io.ehdev.conrad.client.java.Version;
 import io.ehdev.conrad.client.java.VersionManagerClient;
-import io.ehdev.conrad.client.java.exception.UnsuccessfulRequestException;
 import io.ehdev.conrad.client.java.internal.DefaultVersionManagerClient;
 import org.apache.commons.lang.StringUtils;
 import org.eclipse.jgit.api.errors.GitAPIException;
@@ -49,7 +48,7 @@ public class VersionRequester {
                 version = versionManagerClient.findVersion(rootProjectDir);
             }
             persistBackup();
-        } catch (IOException | GitAPIException | URISyntaxException | UnsuccessfulRequestException e) {
+        } catch (IOException | GitAPIException | URISyntaxException e) {
             String versionString = getBackup();
             if(null == versionString) {
                 logger.error("Unable to get version ({}), using default version.", e.getMessage());

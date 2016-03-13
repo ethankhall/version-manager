@@ -1,14 +1,17 @@
 package io.ehdev.conrad.app.gradle
+
+import com.squareup.okhttp.mockwebserver.MockResponse
+import com.squareup.okhttp.mockwebserver.MockWebServer
 import groovy.json.JsonBuilder
-import io.ehdev.conrad.model.rest.RestCommitModel
+import io.ehdev.conrad.model.version.GetVersionResponse
 import nebula.test.PluginProjectSpec
-import org.apache.http.HttpVersion
-import org.apache.http.client.HttpClient
-import org.apache.http.entity.BasicHttpEntity
-import org.apache.http.message.BasicHttpResponse
+import org.junit.Rule
 import spock.lang.Unroll
 
 class VersionManagerPluginTest extends PluginProjectSpec {
+
+    @Rule
+    public final MockWebServer server = new MockWebServer();
 
     @Override
     String getPluginName() {
@@ -28,7 +31,7 @@ class VersionManagerPluginTest extends PluginProjectSpec {
         when:
         project.apply plugin: pluginName
 
-        def commitModel = new RestCommitModel('1', '1.2.5-SNAPSHOT')
+        def commitModel = new GetVersionResponse('1', '1.2.5-SNAPSHOT')
         configureProject(project.getExtensions().getByType(VersionManagerExtension), new JsonBuilder(commitModel).toString())
 
         then:
@@ -50,21 +53,15 @@ class VersionManagerPluginTest extends PluginProjectSpec {
     }
 
     public void configureProject(VersionManagerExtension configuration, String body, int statusCode = 200) {
-        def response = new BasicHttpResponse(HttpVersion.HTTP_1_1, statusCode, null)
-        def entity = new BasicHttpEntity()
-        entity.setContent(new ByteArrayInputStream(body.bytes))
-        response.setEntity(entity)
+        server.enqueue(new MockResponse().setBody(body).setResponseCode(statusCode))
 
-        def client = Mock(HttpClient)
-        1 * client.execute(_) >> response
-
-        configuration.setClient(client)
         configure(configuration)
     }
 
-    private static void configure(VersionManagerExtension configuration) {
-        configuration.setProviderBaseUrl('http://example.com')
-        configuration.setRepoId(UUID.randomUUID().toString())
+    private void configure(VersionManagerExtension configuration) {
+        configuration.setApplicationUrl('http://localhost:' + server.getPort())
+        configuration.setProjectName(UUID.randomUUID().toString())
+        configuration.setRepoName(UUID.randomUUID().toString())
     }
 
 }

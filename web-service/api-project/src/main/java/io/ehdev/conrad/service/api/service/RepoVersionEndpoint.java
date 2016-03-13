@@ -5,12 +5,13 @@ import io.ehdev.conrad.database.api.exception.CommitNotFoundException;
 import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.comparator.ReverseApiCommitComparator;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
-import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
+import io.ehdev.conrad.model.version.CreateVersionRequest;
+import io.ehdev.conrad.model.version.CreateVersionResponse;
+import io.ehdev.conrad.model.version.GetAllVersionsResponse;
+import io.ehdev.conrad.model.version.GetVersionResponse;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
-import io.ehdev.conrad.service.api.service.model.LinkUtilities;
-import io.ehdev.conrad.service.api.service.model.version.*;
 import io.ehdev.conrad.version.bumper.api.VersionBumperService;
 import io.ehdev.conrad.version.commit.CommitVersion;
 import io.ehdev.conrad.version.commit.VersionFactory;
@@ -28,6 +29,8 @@ import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static io.ehdev.conrad.service.api.service.model.LinkUtilities.*;
 
 @Service
 @RequestMapping("/api/v1/project/{projectName}/repo/{repoName}")
@@ -53,17 +56,17 @@ public class RepoVersionEndpoint {
             .stream()
             .sorted(new ReverseApiCommitComparator())
             .forEach(it -> {
-                GetAllVersionsCommitResponse commit = new GetAllVersionsCommitResponse(it.getCommitId(), it.getVersion());
-                commit.add(LinkUtilities.versionSelfLink(apiParameterContainer, it.getVersion()));
-                response.addCommits(commit);
+                GetAllVersionsResponse.CommitModel commit = new GetAllVersionsResponse.CommitModel(it.getCommitId(), it.getVersion());
+                commit.addLink(toLink(versionSelfLink(apiParameterContainer, it.getVersion())));
+                response.addCommit(commit);
             });
 
         if(!response.getCommits().isEmpty()) {
             response.setLatest(response.getCommits().get(0));
         }
 
-        response.add(LinkUtilities.repositoryLink(apiParameterContainer, LinkUtilities.REPOSITORY_REF));
-        response.add(LinkUtilities.versionListLink(apiParameterContainer, "self"));
+        response.addLink(toLink(repositoryLink(apiParameterContainer, REPOSITORY_REF)));
+        response.addLink(toLink(versionListLink(apiParameterContainer, "self")));
 
         return ResponseEntity.ok(response);
     }
@@ -72,7 +75,7 @@ public class RepoVersionEndpoint {
     @RepoRequired(exists = true)
     @RequestMapping(value = "/version", method = RequestMethod.POST)
     public ResponseEntity<CreateVersionResponse> createNewVersion(ApiParameterContainer apiParameterContainer,
-                                                                  @RequestBody CreateVersionRequestBody versionModel,
+                                                                  @RequestBody CreateVersionRequest versionModel,
                                                                   HttpServletRequest request) {
         List<ApiCommitModel> commits = versionModel.getCommits()
             .stream()
@@ -95,7 +98,7 @@ public class RepoVersionEndpoint {
         URI uri = URI.create(request.getRequestURL().toString() + "/" + nextCommit.getVersion());
 
         CreateVersionResponse response = new CreateVersionResponse(versionModel.getCommitId(), nextVersion.toVersionString());
-        response.add(LinkUtilities.versionSelfLink(apiParameterContainer, nextVersion.toVersionString()));
+        response.addLink(toLink(versionSelfLink(apiParameterContainer, nextVersion.toVersionString())));
         return ResponseEntity.created(uri).body(response);
     }
 
@@ -107,9 +110,9 @@ public class RepoVersionEndpoint {
         Optional<ApiCommitModel> commit = repoManagementApi.findCommit(apiParameterContainer, versionArg);
         if (commit.isPresent()) {
             GetVersionResponse versionResponse = new GetVersionResponse(commit.get().getCommitId(), commit.get().getVersion());
-            versionResponse.add(LinkUtilities.versionSelfLink(apiParameterContainer, commit.get().getVersion()));
-            versionResponse.add(LinkUtilities.versionListLink(apiParameterContainer, LinkUtilities.VERSION_REF));
-            versionResponse.add(LinkUtilities.repositoryLink(apiParameterContainer, LinkUtilities.REPOSITORY_REF));
+            versionResponse.addLink(toLink(versionSelfLink(apiParameterContainer, commit.get().getVersion())));
+            versionResponse.addLink(toLink(versionListLink(apiParameterContainer, VERSION_REF)));
+            versionResponse.addLink(toLink(repositoryLink(apiParameterContainer, REPOSITORY_REF)));
             return ResponseEntity.ok(versionResponse);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

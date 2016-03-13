@@ -3,7 +3,6 @@ package io.ehdev.conrad.service.api.service;
 import io.ehdev.conrad.database.api.PermissionManagementApi;
 import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
-import io.ehdev.conrad.model.ResourceLink;
 import io.ehdev.conrad.model.permission.PermissionCreateResponse;
 import io.ehdev.conrad.model.permission.PermissionGrant;
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
@@ -17,9 +16,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import java.util.Collections;
-import java.util.List;
 
 import static io.ehdev.conrad.service.api.service.model.LinkUtilities.projectLink;
 import static io.ehdev.conrad.service.api.service.model.LinkUtilities.toLink;
@@ -62,8 +58,8 @@ public class ProjectPermissionsEndpoint {
             repoModel.getRepoName(),
             ApiUserPermission.valueOf(permissionGrant.getPermission().toUpperCase()));
 
-        List<ResourceLink> links = Collections.singletonList(toLink(projectLink(repoModel, "project")));
-        PermissionCreateResponse response = new PermissionCreateResponse(created, links);
+        PermissionCreateResponse response = new PermissionCreateResponse(created);
+        response.addLink(toLink(projectLink(repoModel, "project")));
 
         return new ResponseEntity<>(response, created ? HttpStatus.CREATED : HttpStatus.FORBIDDEN);
     }

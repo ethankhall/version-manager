@@ -62,8 +62,8 @@ public class RepoPermissionsEndpoint {
             repoModel.getRepoName(),
             ApiUserPermission.valueOf(permissionGrant.getPermission().toUpperCase()));
 
-        List<ResourceLink> links = Collections.singletonList(toLink(repositoryLink(repoModel, "repository")));
-        PermissionCreateResponse response = new PermissionCreateResponse(created, links);
+        PermissionCreateResponse response = new PermissionCreateResponse(created);
+        response.addLink(toLink(repositoryLink(repoModel, "repository")));
 
         return new ResponseEntity<>(response, created ? HttpStatus.CREATED : HttpStatus.FORBIDDEN);
     }
