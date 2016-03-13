@@ -35,8 +35,8 @@ dependencies {
     testCompile libraries.testing
 
     integTestCompile project(':database:database-impl')
-    integTestCompile libraries.h2
     integTestCompile libraries.springBoot
+    integTestCompile libraries.springBootTest
     integTestCompile 'javax.transaction:javax.transaction-api:1.2'
 
     apiTestCompile project(':test-utils')

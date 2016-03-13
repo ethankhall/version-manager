@@ -20,6 +20,8 @@ dependencies {
 
     integTestCompile libraries.springTest
     integTestCompile libraries.springTx
+    integTestCompile libraries.springBoot
+    integTestCompile libraries.springBootTest
     integTestCompile project(':database:database-impl')
     integTestCompile project(':web-service:api-project')
 }

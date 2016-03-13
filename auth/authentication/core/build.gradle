@@ -18,6 +18,7 @@ dependencies {
     testCompile libraries.springTest
 
     integTestCompile libraries.springTest
+    integTestCompile libraries.springBootTest
     integTestCompile libraries.springBoot
     integTestCompile project(":auth:authentication:default")
 }

@@ -29,10 +29,10 @@ test:
         - cp -r build/docs/asciidoc/html5 $CIRCLE_ARTIFACTS/docs
 
         - mkdir -p $CIRCLE_ARTIFACTS/junit
-        - find build/ -maxdepth 5 -name 'TEST-*.xml' -exec cp {} $CIRCLE_ARTIFACTS/junit/ \;
+        - find build -maxdepth 5 -name 'TEST-*.xml' -exec cp {} $CIRCLE_ARTIFACTS/junit/ \;
 
         - mkdir -p $CIRCLE_ARTIFACTS/coverage
-        - cp -r build/reports/jacoco/testCoverage $CIRCLE_ARTIFACTS/coverage
+        - cp -r build/reports/jacoco/testCoverage/* $CIRCLE_ARTIFACTS/coverage
 
 deployment:
     hub:
