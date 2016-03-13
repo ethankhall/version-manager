@@ -41,16 +41,17 @@ spring:
             ddl-auto: verify
 
 ---
+
 spring:
     profiles: container
     datasource:
-            url: jdbc:postgresql://${DATABASE_URL}/${DATABASE_NAME}
-            username: ${DATABASE_USERNAME}
-            password: ${DATABASE_PASSWORD}
-        jpa:
-            show-sql: true
-            hibernate:
-                ddl-auto: verify
+        url: jdbc:postgresql://${DATABASE_URL}/${DATABASE_NAME}
+        username: ${DATABASE_USERNAME}
+        password: ${DATABASE_PASSWORD}
+    jpa:
+        show-sql: true
+        hibernate:
+            ddl-auto: verify
 jwt:
     signing:
         key: ${JWT_SIGNING_KEY}

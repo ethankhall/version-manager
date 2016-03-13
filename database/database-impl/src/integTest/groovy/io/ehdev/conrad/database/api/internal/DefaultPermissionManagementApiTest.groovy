@@ -5,7 +5,7 @@ import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.user.ApiUserPermission
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.ConfigFileApplicationContextInitializer
 import org.springframework.test.annotation.Rollback
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.transaction.annotation.Transactional
@@ -13,7 +13,7 @@ import spock.lang.Specification
 
 @Rollback
 @Transactional
-@ContextConfiguration(classes = [TestConradDatabaseConfig], loader = SpringApplicationContextLoader)
+@ContextConfiguration(classes = [TestConradDatabaseConfig], initializers = ConfigFileApplicationContextInitializer)
 class DefaultPermissionManagementApiTest extends Specification {
 
     @Autowired

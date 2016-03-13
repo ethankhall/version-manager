@@ -3,6 +3,7 @@ package io.ehdev.conrad.service.api.config;
 import com.fasterxml.jackson.module.kotlin.KotlinModule;
 import io.ehdev.conrad.authentication.jwt.config.ConradJwtConfig;
 import org.springframework.context.annotation.*;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
 @Configuration
 @EnableAspectJAutoProxy
@@ -11,7 +12,7 @@ import org.springframework.context.annotation.*;
 public class ConradProjectApiConfiguration {
 
     @Bean
-    public KotlinModule kotlinModule() {
-        return new KotlinModule();
+    public Jackson2ObjectMapperBuilder objectMapperBuilder() {
+        return new Jackson2ObjectMapperBuilder().modulesToInstall(new KotlinModule());
     }
 }

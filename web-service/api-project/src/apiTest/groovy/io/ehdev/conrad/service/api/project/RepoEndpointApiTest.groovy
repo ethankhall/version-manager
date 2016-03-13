@@ -1,6 +1,7 @@
 package io.ehdev.conrad.service.api.project
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import io.ehdev.conrad.apidoc.ObjectDocumentationSnippet
 import io.ehdev.conrad.database.api.PermissionManagementApi
 import io.ehdev.conrad.database.api.RepoManagementApi
@@ -78,6 +79,14 @@ class RepoEndpointApiTest extends Specification {
     def 'create-repo'() {
         expect:
         document.snippets(
+            requestFields(
+                fieldWithPath("history")
+                    .description("Any history that the project has that needs to be migrated."),
+                fieldWithPath("bumper")
+                    .description("Name of the version bumper to use. Most cases will be semver"),
+                fieldWithPath("scmUrl")
+                    .description("The URL for the scm.")
+            ),
             responseFields(
                 fieldWithPath("links")
                     .description("Links to resources related to the object"),
@@ -91,11 +100,12 @@ class RepoEndpointApiTest extends Specification {
         )
 
         def model = new CreateRepoRequest("semver", "http://github.com/foo/bar", null)
+        def str = toJson(model)
         mockMvc.perform(
             post("/api/v1/project/{projectName}/repo/{repoName}", 'bigFizzyDice', 'smallDice')
                 .accept(MediaType.APPLICATION_JSON)
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(toJson(model)))
+                .content(str))
             .andExpect(status().isCreated());
     }
 
@@ -278,14 +288,10 @@ class RepoEndpointApiTest extends Specification {
     }
 
     String toJson(Object o) {
-
-        def mapper = new ObjectMapper()
+        def mapper = new ObjectMapper().registerModule(new KotlinModule())
         def sw = new StringWriter()
         mapper.writeValue(sw, o)
 
-        def string = sw.toString()
-        println string
-
-        return string
+        return sw.toString()
     }
 }
