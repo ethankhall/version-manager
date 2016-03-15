@@ -15,6 +15,8 @@ public interface TokenManagementApi {
 
     List<RetrievedToken> getTokens(String project, String repo);
 
+    List<RetrievedToken> getTokens(ApiTokenAuthentication authentication);
+
     boolean isTokenValid(ApiToken token);
 
     void invalidateTokenValidByJoinId(UUID tokenId);

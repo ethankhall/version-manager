@@ -6,6 +6,8 @@ import io.ehdev.conrad.database.model.permission.UserApiAuthentication
 import io.ehdev.conrad.db.tables.daos.VersionBumpersDao
 import io.ehdev.conrad.model.repository.CreateRepoRequest
 import io.ehdev.conrad.service.api.config.TestConradProjectApiConfiguration
+import io.ehdev.conrad.service.api.service.project.ProjectEndpoint
+import io.ehdev.conrad.service.api.service.repo.RepoEndpoint
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.HttpStatus

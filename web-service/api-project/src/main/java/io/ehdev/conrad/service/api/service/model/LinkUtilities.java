@@ -2,9 +2,9 @@ package io.ehdev.conrad.service.api.service.model;
 
 import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.model.ResourceLink;
-import io.ehdev.conrad.service.api.service.ProjectEndpoint;
-import io.ehdev.conrad.service.api.service.RepoEndpoint;
-import io.ehdev.conrad.service.api.service.RepoVersionEndpoint;
+import io.ehdev.conrad.service.api.service.project.ProjectEndpoint;
+import io.ehdev.conrad.service.api.service.repo.RepoEndpoint;
+import io.ehdev.conrad.service.api.service.repo.RepoVersionEndpoint;
 import org.springframework.hateoas.Link;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;

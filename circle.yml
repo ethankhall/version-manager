@@ -23,6 +23,7 @@ test:
         - ./gradlew --stop
         - ./gradlew check --console=plain
         - ./gradlew asciidoctor --console=plain
+        - ./gradlew publish --console=plain
 
     post:
         - mkdir -p $CIRCLE_ARTIFACTS/docs

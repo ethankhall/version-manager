@@ -4,7 +4,7 @@ import io.ehdev.conrad.database.api.TestDoubleProjectManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.permission.UserApiAuthentication
 import io.ehdev.conrad.service.api.config.ApiParameterContainerResolver
-import io.ehdev.conrad.service.api.service.ProjectEndpoint
+import io.ehdev.conrad.service.api.service.project.ProjectEndpoint
 import org.junit.Rule
 import org.springframework.core.MethodParameter
 import org.springframework.http.MediaType

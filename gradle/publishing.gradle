@@ -1,4 +1,4 @@
-apply plugin: 'maven-publish'
+apply from: "$rootDir/gradle/publishing-base.gradle"
 
 publishing {
     publications {
@@ -7,20 +7,3 @@ publishing {
         }
     }
 }
-
-apply plugin: 'com.jfrog.artifactory'
-
-artifactory {
-    contextUrl = 'https://ehdev.artifactoryonline.com/ehdev'
-    publish {
-        repository {
-            repoKey = 'local-release'
-            username = 'deploy'
-            password = '8N5#T[:!TwWnwC8\'/\\Rr!'
-        }
-        defaults {
-            publications('mavenJava')
-        }
-    }
-}
-

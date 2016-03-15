@@ -8,6 +8,8 @@ import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import io.ehdev.conrad.db.tables.daos.VersionBumpersDao
 import io.ehdev.conrad.model.version.CreateVersionRequest
 import io.ehdev.conrad.service.api.config.TestConradProjectApiConfiguration
+import io.ehdev.conrad.service.api.service.project.ProjectEndpoint
+import io.ehdev.conrad.service.api.service.repo.RepoVersionEndpoint
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.SpringApplicationContextLoader
 import org.springframework.http.HttpStatus

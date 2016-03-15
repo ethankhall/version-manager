@@ -1,4 +1,4 @@
-package io.ehdev.conrad.service.api.service;
+package io.ehdev.conrad.service.api.service.project;
 
 import io.ehdev.conrad.database.api.ProjectManagementApi;
 import io.ehdev.conrad.database.api.exception.ProjectAlreadyExistsException;

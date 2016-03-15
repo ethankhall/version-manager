@@ -22,7 +22,7 @@ apply plugin: 'local-dev'
 apply plugin: 'spring-boot'
 apply from: "$rootDir/gradle/publishing.gradle"
 
-artifactoryPublish.dependsOn assemble
+publish.dependsOn assemble
 
 dependencies {
     compile project(":api:rest-model")
@@ -56,11 +56,4 @@ dependencies {
     testCompile libraries.testing
     integTestCompile libraries.springBoot
     integTestCompile libraries.springBootTest
-}
-
-task copyFileIntoDockerDir(type: Copy, dependsOn: assemble) {
-    from jar
-    from file('src/main/docker')
-    into project.file("$buildDir/docker")
-    rename "${project.name}-.*.jar", 'webapp.jar'
 }

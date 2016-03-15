@@ -1,4 +1,4 @@
-package io.ehdev.conrad.service.api.service;
+package io.ehdev.conrad.service.api.service.repo;
 
 import io.ehdev.conrad.authentication.jwt.JwtManager;
 import io.ehdev.conrad.database.api.TokenManagementApi;

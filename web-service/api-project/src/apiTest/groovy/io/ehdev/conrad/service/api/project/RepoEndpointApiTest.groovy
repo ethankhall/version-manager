@@ -16,9 +16,9 @@ import io.ehdev.conrad.model.repository.CreateRepoRequest
 import io.ehdev.conrad.model.version.BaseVersionResponse
 import io.ehdev.conrad.model.version.CreateVersionRequest
 import io.ehdev.conrad.service.api.config.ApiParameterContainerResolver
-import io.ehdev.conrad.service.api.service.RepoEndpoint
-import io.ehdev.conrad.service.api.service.RepoPermissionsEndpoint
-import io.ehdev.conrad.service.api.service.RepoVersionEndpoint
+import io.ehdev.conrad.service.api.service.repo.RepoEndpoint
+import io.ehdev.conrad.service.api.service.repo.RepoPermissionsEndpoint
+import io.ehdev.conrad.service.api.service.repo.RepoVersionEndpoint
 import io.ehdev.conrad.version.bumper.SemanticVersionBumper
 import io.ehdev.conrad.version.bumper.api.VersionBumperService
 import org.junit.Rule

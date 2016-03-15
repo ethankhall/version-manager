@@ -16,8 +16,10 @@ import io.ehdev.conrad.db.tables.TokenAuthenticationsTable;
 import io.ehdev.conrad.db.tables.TokenJoinTable;
 import io.ehdev.conrad.db.tables.daos.*;
 import io.ehdev.conrad.db.tables.pojos.*;
+import io.ehdev.conrad.db.tables.records.TokenJoinRecord;
 import org.jooq.Condition;
 import org.jooq.DSLContext;
+import org.jooq.TableField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -61,24 +63,10 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
     public ApiGeneratedUserToken createToken(ApiTokenAuthentication authentication) {
         Instant now = Instant.now();
 
-        UUID userId = null;
-        UUID projectId = null;
-        UUID repoId = null;
-        TokenType type;
+        ParsedToken parsedToken = new ParsedToken(authentication);
 
-        if(authentication instanceof UserApiAuthentication) {
-            userId = authentication.getUuid();
-            type = TokenType.USER;
-        } else if(authentication instanceof ProjectApiAuthentication) {
-            projectId = authentication.getUuid();
-            type = TokenType.PROJECT;
-        } else {
-            repoId = authentication.getUuid();
-            type = TokenType.REPOSITORY;
-        }
-
-        TokenAuthentications tokens = createNewToken(now, type);
-        tokenMapDao.insert(new TokenJoin(null, tokens.getUuid(), projectId, repoId, userId));
+        TokenAuthentications tokens = createNewToken(now, parsedToken.type);
+        tokenMapDao.insert(new TokenJoin(null, tokens.getUuid(), parsedToken.projectId, parsedToken.repoId, parsedToken.userId));
 
         return new ApiGeneratedUserToken(
             tokens.getUuid(),
@@ -148,6 +136,28 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
     }
 
     @Override
+    public List<RetrievedToken> getTokens(ApiTokenAuthentication authentication) {
+        ParsedToken parsedToken = new ParsedToken(authentication);
+        TokenAuthenticationsTable ta = Tables.TOKEN_AUTHENTICATIONS.as("ta");
+        TokenJoinTable tj = Tables.TOKEN_JOIN.as("tj");
+        return dslContext
+            .select(tj.UUID, ta.CREATED_AT, ta.CREATED_AT)
+            .from(ta)
+            .join(tj).on(tj.TOKEN.eq(ta.UUID))
+            .where(valueOrNull(parsedToken.userId, tj.USER_UUID))
+                .and(valueOrNull(parsedToken.projectId, tj.PROJECT_UUID))
+                .and(valueOrNull(parsedToken.repoId, tj.REPO_UUID))
+            .fetch()
+            .stream()
+            .map(it -> new RetrievedToken(it.value1(), it.value2().atZone(ZoneOffset.UTC), it.value3().atZone(ZoneOffset.UTC)))
+            .collect(Collectors.toList());
+    }
+
+    private <T> Condition valueOrNull(T value, TableField<TokenJoinRecord, T> field) {
+        return value != null ? field.eq(value) : field.isNull();
+    }
+
+    @Override
     public boolean isTokenValid(ApiToken apiToken) {
         TokenAuthentications token = tokensDao.fetchOneByUuid(apiToken.getUuid());
         return isValid(token);
@@ -200,6 +210,32 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
         } else {
             UserDetails userDetails = userDetailsDao.fetchOneByUuid(tokenMap.getUserUuid());
             return new UserApiAuthentication(userDetails.getUuid(), userDetails.getUserName(), userDetails.getName(), userDetails.getEmailAddress());
+        }
+    }
+
+    private class ParsedToken {
+        private final UUID userId;
+        private final UUID projectId ;
+        private final UUID repoId;
+        private final TokenType type;
+
+        public ParsedToken(ApiTokenAuthentication authentication) {
+            if(authentication instanceof UserApiAuthentication) {
+                userId = authentication.getUuid();
+                projectId = null;
+                repoId = null;
+                type = TokenType.USER;
+            } else if(authentication instanceof ProjectApiAuthentication) {
+                projectId = authentication.getUuid();
+                userId = null;
+                repoId = null;
+                type = TokenType.PROJECT;
+            } else {
+                repoId = authentication.getUuid();
+                userId = null;
+                projectId = null;
+                type = TokenType.REPOSITORY;
+            }
         }
     }
 }

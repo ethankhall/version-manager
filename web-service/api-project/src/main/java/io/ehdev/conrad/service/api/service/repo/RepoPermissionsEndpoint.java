@@ -1,4 +1,4 @@
-package io.ehdev.conrad.service.api.service;
+package io.ehdev.conrad.service.api.service.repo;
 
 import io.ehdev.conrad.database.api.PermissionManagementApi;
 import io.ehdev.conrad.database.model.ApiParameterContainer;
@@ -11,23 +11,23 @@ import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import static io.ehdev.conrad.service.api.service.model.LinkUtilities.projectLink;
+import static io.ehdev.conrad.service.api.service.model.LinkUtilities.repositoryLink;
 import static io.ehdev.conrad.service.api.service.model.LinkUtilities.toLink;
 
-@Controller
-@RequestMapping("/api/v1/project/{projectName}/permissions")
-public class ProjectPermissionsEndpoint {
+@Service
+@RequestMapping("/api/v1/project/{projectName}/repo/{repoName}/permissions")
+public class RepoPermissionsEndpoint {
 
     private final PermissionManagementApi permissionManagementApi;
 
     @Autowired
-    public ProjectPermissionsEndpoint(PermissionManagementApi permissionManagementApi) {
+    public RepoPermissionsEndpoint(PermissionManagementApi permissionManagementApi) {
         this.permissionManagementApi = permissionManagementApi;
     }
 
@@ -59,7 +59,7 @@ public class ProjectPermissionsEndpoint {
             ApiUserPermission.valueOf(permissionGrant.getPermission().toUpperCase()));
 
         PermissionCreateResponse response = new PermissionCreateResponse(created);
-        response.addLink(toLink(projectLink(repoModel, "project")));
+        response.addLink(toLink(repositoryLink(repoModel, "repository")));
 
         return new ResponseEntity<>(response, created ? HttpStatus.CREATED : HttpStatus.FORBIDDEN);
     }

@@ -2,6 +2,7 @@ import io.ehdev.conrad.gradle.SpringRestDocPlugin
 
 apply plugin: 'base'
 apply plugin: 'org.asciidoctor.gradle.asciidoctor'
+apply from: "$rootDir/gradle/publishing-base.gradle"
 
 task mergeResults(type: Copy) {
     into "$buildDir/snippits"
@@ -27,3 +28,15 @@ asciidoctor {
 }
 
 build.dependsOn asciidoctor
+
+task zipped(type: Zip, dependsOn: 'asciidoctor') {
+    from asciidoctor.outputDir.absolutePath + '/html5'
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact zipped
+        }
+    }
+}

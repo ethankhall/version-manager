@@ -1,4 +1,4 @@
-package io.ehdev.conrad.service.api.service;
+package io.ehdev.conrad.service.api.service.repo;
 
 import io.ehdev.conrad.database.api.PermissionManagementApi;
 import io.ehdev.conrad.database.api.RepoManagementApi;

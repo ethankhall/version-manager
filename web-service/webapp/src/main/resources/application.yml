@@ -4,9 +4,6 @@ auth:
         github:
             key: e26002913dce86419723
             secret: c8d18cb9b65212ad8acb3d0603a85f6bc3aa704f
-        google:
-            key: 428210344673-bmar2c3qa5daop98pu9731l8v0tihrt1.apps.googleusercontent.com
-            secret: Y4UZtHiDP1R2o5_INu9MWykI
 
 server:
     port: 8080
@@ -42,6 +39,7 @@ spring:
 
 ---
 
+
 spring:
     profiles: container
     datasource:
@@ -57,10 +55,11 @@ jwt:
         key: ${JWT_SIGNING_KEY}
 
 auth:
+    callback.url: http://${PUBLIC_ADDRESS}:${PUBLIC_PORT}
     client:
         github:
             key: ${GITHUB_KEY}
             secret: ${GITHUB_SECRET}
-        google:
-            key: ${GOOGLE_KEY}
-            secret: ${GOOGLE_SECRET}
+server:
+    address: ${PUBLIC_ADDRESS}
+    port: ${PUBLIC_PORT}

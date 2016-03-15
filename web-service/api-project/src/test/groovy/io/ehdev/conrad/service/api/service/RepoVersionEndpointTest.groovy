@@ -5,6 +5,7 @@ import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.project.ApiRepoModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.model.version.CreateVersionRequest
+import io.ehdev.conrad.service.api.service.repo.RepoVersionEndpoint
 import io.ehdev.conrad.version.bumper.api.VersionBumperService
 import io.ehdev.conrad.version.commit.CommitVersion
 import io.ehdev.conrad.version.commit.VersionFactory

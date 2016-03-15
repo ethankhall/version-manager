@@ -10,6 +10,7 @@ import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.database.model.user.ApiRepoUserPermission
 import io.ehdev.conrad.model.commit.CommitIdCollection
+import io.ehdev.conrad.service.api.service.repo.RepoEndpoint
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.web.context.request.RequestContextHolder
