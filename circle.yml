@@ -23,7 +23,7 @@ test:
         - ./gradlew --stop
         - ./gradlew check --console=plain
         - ./gradlew asciidoctor --console=plain
-        - ./gradlew publish --console=plain
+        - ./gradlew publish -Ps3.accessKey=$S3_ACCESS_KEY -Ps3.secretKey=$S3_SECRET_KEY --console=plain
 
     post:
         - mkdir -p $CIRCLE_ARTIFACTS/docs
@@ -35,12 +35,3 @@ test:
         - mkdir -p $CIRCLE_ARTIFACTS/coverage
         - cp -r build/reports/jacoco/testCoverage/* $CIRCLE_ARTIFACTS/coverage
 
-deployment:
-    hub:
-        branch: master
-        commands:
-            - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS https://$DOCKER_REGISTRY_HOST
-            - ./gradlew copyFileIntoDockerDir --console=plain
-            - docker build -t ethankhall/conrad-webapp build/web-service/webapp/docker
-            - docker tag ethankhall/conrad-webapp $DOCKER_REGISTRY_HOST/ethankhall/conrad-webapp
-            - docker push $DOCKER_REGISTRY_HOST/ethankhall/conrad-webapp
