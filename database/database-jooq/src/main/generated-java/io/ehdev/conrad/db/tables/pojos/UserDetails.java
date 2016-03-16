@@ -31,7 +31,7 @@ import javax.validation.constraints.Size;
 @Table(name = "user_details", schema = "public")
 public class UserDetails implements Serializable {
 
-	private static final long serialVersionUID = -1878546587;
+	private static final long serialVersionUID = 114994657;
 
 	private UUID   uuid;
 	private String userName;
@@ -92,8 +92,7 @@ public class UserDetails implements Serializable {
 		this.name = name;
 	}
 
-	@Column(name = "email_address", nullable = false, length = 256)
-	@NotNull
+	@Column(name = "email_address", length = 256)
 	@Size(max = 256)
 	public String getEmailAddress() {
 		return this.emailAddress;

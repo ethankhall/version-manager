@@ -38,7 +38,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 @Table(name = "user_details", schema = "public")
 public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> implements Record4<UUID, String, String, String> {
 
-	private static final long serialVersionUID = -563966535;
+	private static final long serialVersionUID = -1468846539;
 
 	/**
 	 * Setter for <code>public.user_details.uuid</code>.
@@ -101,8 +101,7 @@ public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> im
 	/**
 	 * Getter for <code>public.user_details.email_address</code>.
 	 */
-	@Column(name = "email_address", nullable = false, length = 256)
-	@NotNull
+	@Column(name = "email_address", length = 256)
 	@Size(max = 256)
 	public String getEmailAddress() {
 		return (String) getValue(3);

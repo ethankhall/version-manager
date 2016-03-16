@@ -2,9 +2,13 @@ package io.ehdev.conrad.database.api.internal;
 
 import io.ehdev.conrad.database.api.UserManagementApi;
 import io.ehdev.conrad.database.impl.ModelConversionUtility;
+import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
 import io.ehdev.conrad.database.model.permission.UserApiAuthentication;
+import io.ehdev.conrad.database.model.project.ApiProjectDetails;
 import io.ehdev.conrad.db.Tables;
 import io.ehdev.conrad.db.tables.pojos.UserDetails;
+import java.util.Collections;
+import java.util.List;
 import org.jooq.DSLContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,5 +33,15 @@ public class DefaultUserManagementApi implements UserManagementApi {
             .into(UserDetails.class);
 
         return ModelConversionUtility.toApiModel(userDetails);
+    }
+
+    //TODO
+    @Override
+    public List<ApiProjectDetails> findProjectsForUser(ApiTokenAuthentication user) {
+        if(!(user instanceof UserApiAuthentication)) {
+            return Collections.emptyList();
+        }
+
+        return null;
     }
 }
