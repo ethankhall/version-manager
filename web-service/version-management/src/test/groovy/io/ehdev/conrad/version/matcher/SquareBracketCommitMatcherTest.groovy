@@ -1,4 +1,6 @@
 package io.ehdev.conrad.version.matcher
+
+import io.ehdev.conrad.version.matcher.internal.SquareBracketCommitMatcher
 import spock.lang.Specification
 
 class SquareBracketCommitMatcherTest extends Specification {

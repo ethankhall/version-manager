@@ -1,12 +1,13 @@
 package io.ehdev.conrad.version.commit.internal
 
+import io.ehdev.conrad.version.bumper.semver.DefaultVersionCommitBumper
 import io.ehdev.conrad.version.commit.CommitVersion
 import io.ehdev.conrad.version.commit.VersionFactory
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
 
-class DefaultVersionCommitBumperTest extends Specification {
+class SemverVersionCommitBumperTest extends Specification {
 
     @Shared
     CommitVersion commitVersion = VersionFactory.parse('1.2.3')

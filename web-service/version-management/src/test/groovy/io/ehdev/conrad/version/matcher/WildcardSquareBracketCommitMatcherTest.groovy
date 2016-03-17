@@ -2,6 +2,7 @@ package io.ehdev.conrad.version.matcher
 
 import io.ehdev.conrad.version.commit.VersionFactory
 import io.ehdev.conrad.version.commit.details.CommitDetailsFactory
+import io.ehdev.conrad.version.matcher.internal.WildcardSquareBracketCommitMatcher
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll

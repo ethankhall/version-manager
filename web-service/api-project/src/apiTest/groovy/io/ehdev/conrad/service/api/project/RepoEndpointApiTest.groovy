@@ -19,7 +19,7 @@ import io.ehdev.conrad.service.api.config.ApiParameterContainerResolver
 import io.ehdev.conrad.service.api.service.repo.RepoEndpoint
 import io.ehdev.conrad.service.api.service.repo.RepoPermissionsEndpoint
 import io.ehdev.conrad.service.api.service.repo.RepoVersionEndpoint
-import io.ehdev.conrad.version.bumper.SemanticVersionBumper
+import io.ehdev.conrad.version.bumper.semver.SemanticVersionBumper
 import io.ehdev.conrad.version.bumper.api.VersionBumperService
 import org.junit.Rule
 import org.springframework.http.MediaType

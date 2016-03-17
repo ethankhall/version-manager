@@ -1,6 +1,7 @@
 package io.ehdev.conrad.version.commit.internal
 
-import io.ehdev.conrad.version.commit.StandardVersionGroupBump
+import io.ehdev.conrad.version.bumper.semver.SnapshotCommitVersionBumper
+import io.ehdev.conrad.version.bumper.semver.StandardVersionGroupBump
 import io.ehdev.conrad.version.commit.VersionFactory
 import spock.lang.Specification
 

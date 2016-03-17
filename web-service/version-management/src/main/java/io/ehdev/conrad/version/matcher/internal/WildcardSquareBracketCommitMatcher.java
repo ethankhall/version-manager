@@ -1,22 +1,30 @@
-package io.ehdev.conrad.version.matcher;
+package io.ehdev.conrad.version.matcher.internal;
 
+import io.ehdev.conrad.version.commit.CommitVersion;
 import io.ehdev.conrad.version.commit.CommitVersionBumper;
-import io.ehdev.conrad.version.commit.internal.DefaultVersionCommitBumper;
+import io.ehdev.conrad.version.commit.CommitVersionFactory;
+import io.ehdev.conrad.version.matcher.GlobalCommitMatcherProvider;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class WildcardSquareBracketCommitMatcher implements GlobalCommitMatcherProvider {
+public class WildcardSquareBracketCommitMatcher<T extends CommitVersion> implements GlobalCommitMatcherProvider<T> {
 
     private final Pattern pattern = Pattern.compile(".*?\\[\\s*bump group (\\d+)\\s*\\].*?", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+    private final CommitVersionFactory<T> factory;
+
     private Integer groupNumber = null;
 
+    public WildcardSquareBracketCommitMatcher(CommitVersionFactory<T> factory) {
+        this.factory = factory;
+    }
+
     @Override
-    public CommitVersionBumper getBumper() {
+    public CommitVersionBumper<T> getBumper() {
         if(null == groupNumber) {
             throw new GroupNotFoundException();
         }
-        return new DefaultVersionCommitBumper(groupNumber);
+        return factory.dispenseBumper(groupNumber);
     }
 
     @Override
@@ -30,7 +38,7 @@ public class WildcardSquareBracketCommitMatcher implements GlobalCommitMatcherPr
     }
 
     public static class GroupNotFoundException extends RuntimeException {
-        public GroupNotFoundException() {
+        GroupNotFoundException() {
             super("Unable to find group from message");
         }
     }

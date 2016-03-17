@@ -2,15 +2,13 @@ package io.ehdev.conrad.version.commit;
 
 import java.util.List;
 
-public interface CommitVersion extends Comparable<CommitVersion> {
-
-    CommitVersion bump(CommitVersionBumper defaultCommitVersionBumper);
+public interface CommitVersion<T> extends Comparable<CommitVersion<T>> {
 
     String toVersionString();
 
-    List<Integer> getVersionGroup();
-
-    Integer getGroup(CommitVersionGroup versionGroup);
+    List<T> getVersionGroup();
 
     String getPostFix();
+
+    T getGroup(CommitVersionGroup versionGroup);
 }

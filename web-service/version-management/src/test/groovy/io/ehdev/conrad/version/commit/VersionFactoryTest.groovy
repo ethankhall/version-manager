@@ -1,5 +1,6 @@
 package io.ehdev.conrad.version.commit
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
+import io.ehdev.conrad.version.bumper.semver.StandardVersionGroupBump
 import io.ehdev.conrad.version.commit.internal.DefaultCommitVersion
 import spock.lang.Specification
 import spock.lang.Unroll

@@ -4,7 +4,7 @@ import io.ehdev.conrad.database.api.RepoManagementApi
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel
 import io.ehdev.conrad.database.model.project.ApiVersionBumperModel
 import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
-import io.ehdev.conrad.version.bumper.SemanticVersionBumper
+import io.ehdev.conrad.version.bumper.semver.SemanticVersionBumper
 import io.ehdev.conrad.version.commit.VersionFactory
 import spock.lang.Specification
 

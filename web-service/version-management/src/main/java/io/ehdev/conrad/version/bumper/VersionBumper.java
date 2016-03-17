@@ -4,7 +4,7 @@ import io.ehdev.conrad.version.commit.details.CommitDetails;
 import io.ehdev.conrad.version.commit.CommitVersion;
 
 public interface VersionBumper {
-    CommitVersion createNextVersion(CommitVersion parentVersion, CommitDetails commitDetails);
+    CommitVersion createNextVersion(String parentVersion, CommitDetails commitDetails);
 
-    CommitVersion createDefaultNextVersion(CommitVersion parentVersion);
+    CommitVersion createDefaultNextVersion(String parentVersion);
 }

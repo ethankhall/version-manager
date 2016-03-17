@@ -1,6 +1,7 @@
 package io.ehdev.conrad.version.bumper
 
 import de.svenjacobs.loremipsum.LoremIpsum
+import io.ehdev.conrad.version.bumper.semver.SemanticVersionBumper
 import io.ehdev.conrad.version.commit.details.CommitDetails
 import io.ehdev.conrad.version.commit.details.CommitDetailsFactory
 import io.ehdev.conrad.version.commit.CommitVersion

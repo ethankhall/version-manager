@@ -3,9 +3,10 @@ package io.ehdev.conrad.version.bumper.api;
 import io.ehdev.conrad.database.api.RepoManagementApi;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
 import io.ehdev.conrad.database.model.project.ApiRepoModel;
+import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.version.bumper.VersionBumper;
 import io.ehdev.conrad.version.commit.CommitVersion;
-import io.ehdev.conrad.version.commit.internal.DefaultCommitDetails;
+import io.ehdev.conrad.version.commit.details.DefaultCommitDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,13 +39,13 @@ public class DefaultVersionBumperService implements VersionBumperService {
     public CommitVersion findNextVersion(ApiRepoModel repoModel,
                                          String commitId,
                                          String message,
-                                         CommitVersion lastCommit) {
+                                         ApiCommitModel lastCommit) {
 
         Optional<ApiRepoDetailsModel> details = repoManagementApi.getDetails(repoModel);
         ApiRepoDetailsModel apiModel = details.get();
 
         VersionBumper versionBumper = findVersionBumper(apiModel.getBumper().getClassName());
         DefaultCommitDetails commitDetails = new DefaultCommitDetails(commitId, message);
-        return versionBumper.createNextVersion(lastCommit, commitDetails);
+        return versionBumper.createNextVersion(lastCommit.getVersion(), commitDetails);
     }
 }

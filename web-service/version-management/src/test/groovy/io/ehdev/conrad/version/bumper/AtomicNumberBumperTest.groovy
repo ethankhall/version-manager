@@ -1,6 +1,6 @@
 package io.ehdev.conrad.version.bumper
 
-
+import io.ehdev.conrad.version.bumper.atomic.AtomicNumberBumper
 import io.ehdev.conrad.version.commit.internal.DefaultCommitVersion
 import spock.lang.Ignore
 import spock.lang.Specification

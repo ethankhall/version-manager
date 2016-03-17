@@ -1,17 +1,19 @@
-package io.ehdev.conrad.version.matcher;
+package io.ehdev.conrad.version.matcher.internal;
 
+import io.ehdev.conrad.version.commit.CommitVersion;
 import io.ehdev.conrad.version.commit.CommitVersionBumper;
+import io.ehdev.conrad.version.matcher.GlobalCommitMatcherProvider;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.regex.Pattern;
 
 
-public class SquareBracketCommitMatcher implements GlobalCommitMatcherProvider {
+public class SquareBracketCommitMatcher<T extends CommitVersion> implements GlobalCommitMatcherProvider<T> {
 
-    private final CommitVersionBumper bumper;
+    private final CommitVersionBumper<T> bumper;
     private final Pattern pattern;
 
-    public SquareBracketCommitMatcher(String groupName, CommitVersionBumper bumper) {
+    public SquareBracketCommitMatcher(String groupName, CommitVersionBumper<T> bumper) {
         String expectedString = StringUtils.trimToEmpty(String.format("bump %s", groupName.toLowerCase()));
         expectedString = StringUtils.removeStart(expectedString, "[");
         expectedString = StringUtils.removeEnd(expectedString, "]");
@@ -25,7 +27,7 @@ public class SquareBracketCommitMatcher implements GlobalCommitMatcherProvider {
         this.bumper = bumper;
     }
 
-    public CommitVersionBumper getBumper() {
+    public CommitVersionBumper<T> getBumper() {
         return bumper;
     }
 
@@ -35,7 +37,7 @@ public class SquareBracketCommitMatcher implements GlobalCommitMatcherProvider {
     }
 
     public static class InvalidSearchStringException extends RuntimeException {
-        public InvalidSearchStringException() {
+        InvalidSearchStringException() {
             super("Unable to search for empty string");
         }
     }

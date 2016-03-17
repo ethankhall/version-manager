@@ -1,6 +1,7 @@
 package io.ehdev.conrad.version.matcher
 
 import io.ehdev.conrad.version.commit.VersionFactory
+import io.ehdev.conrad.version.matcher.internal.ForceVersionSquareBracketCommitMatcher
 import spock.lang.Specification
 import spock.lang.Unroll
 

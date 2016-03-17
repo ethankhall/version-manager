@@ -14,7 +14,6 @@ import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
 import io.ehdev.conrad.version.bumper.api.VersionBumperService;
 import io.ehdev.conrad.version.commit.CommitVersion;
-import io.ehdev.conrad.version.commit.VersionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -90,7 +89,7 @@ public class RepoVersionEndpoint {
             apiParameterContainer,
             versionModel.getCommitId(),
             versionModel.getMessage(),
-            VersionFactory.parseApiModel(latestCommit.orElse(null)));
+            latestCommit.orElse(new ApiCommitModel("<default>", "0.0.0")));
 
         ApiCommitModel nextCommit = new ApiCommitModel(versionModel.getCommitId(), nextVersion.toVersionString());
         repoManagementApi.createCommit(apiParameterContainer, nextCommit, latestCommit.orElse(null));

@@ -1,6 +1,5 @@
-package io.ehdev.conrad.version.commit.internal;
+package io.ehdev.conrad.version.commit.details;
 
-import io.ehdev.conrad.version.commit.details.CommitDetails;
 import io.ehdev.conrad.version.matcher.CommitMessageMatcher;
 
 public class DefaultCommitDetails implements CommitDetails {

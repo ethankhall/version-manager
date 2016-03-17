@@ -1,11 +1,11 @@
 package io.ehdev.conrad.service.api.project;
 
 import io.ehdev.conrad.database.model.project.ApiRepoModel;
-import io.ehdev.conrad.version.bumper.SemanticVersionBumper;
+import io.ehdev.conrad.version.bumper.semver.SemanticVersionBumper;
 import io.ehdev.conrad.version.bumper.VersionBumper;
 import io.ehdev.conrad.version.bumper.api.VersionBumperService;
 import io.ehdev.conrad.version.commit.CommitVersion;
-import io.ehdev.conrad.version.commit.internal.DefaultCommitDetails;
+import io.ehdev.conrad.version.commit.details.DefaultCommitDetails;
 
 public class TestDoubleVersionBumperService implements VersionBumperService {
 

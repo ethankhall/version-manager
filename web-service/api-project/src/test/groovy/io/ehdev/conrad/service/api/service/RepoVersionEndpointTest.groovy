@@ -7,8 +7,8 @@ import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
 import io.ehdev.conrad.model.version.CreateVersionRequest
 import io.ehdev.conrad.service.api.service.repo.RepoVersionEndpoint
 import io.ehdev.conrad.version.bumper.api.VersionBumperService
+import io.ehdev.conrad.version.bumper.semver.SemanticCommitVersion
 import io.ehdev.conrad.version.commit.CommitVersion
-import io.ehdev.conrad.version.commit.VersionFactory
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletRequest
 import spock.lang.Specification
@@ -63,7 +63,7 @@ class RepoVersionEndpointTest extends Specification {
         then:
         1 * repoManagementApi.findLatestCommit(_, _) >> Optional.of(lastCommit)
         1 * versionBumperService.findNextVersion(_ as ApiRepoModel,
-            'f', 'Some Message', _ as CommitVersion) >> VersionFactory.parse("1.4.5")
+            'f', 'Some Message', _ as CommitVersion) >> SemanticCommitVersion.parse("1.4.5")
         version.statusCode == HttpStatus.CREATED
         version.body.commitId == 'f'
         version.body.postfix == null
