@@ -6,6 +6,8 @@ import io.ehdev.conrad.database.model.project.ApiProjectDetails;
 import io.ehdev.conrad.database.model.project.ApiVersionBumperModel;
 
 import java.util.List;
+import java.util.Optional;
+
 
 public interface ProjectManagementApi {
 
@@ -13,5 +15,5 @@ public interface ProjectManagementApi {
 
     List<ApiVersionBumperModel> findAllVersionBumpers(String projectName);
 
-    ApiProjectDetails getProjectDetails(ApiParameterContainer apiParameterContainer);
+    Optional<ApiProjectDetails> getProjectDetails(ApiParameterContainer apiParameterContainer);
 }

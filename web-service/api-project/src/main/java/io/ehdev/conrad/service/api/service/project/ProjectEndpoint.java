@@ -8,6 +8,7 @@ import io.ehdev.conrad.model.project.CreateProjectRequest;
 import io.ehdev.conrad.model.project.GetProjectResponse;
 import io.ehdev.conrad.model.project.RepoDefinitionsDetails;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
+import io.ehdev.conrad.service.api.aop.annotation.ProjectRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -34,6 +35,7 @@ public class ProjectEndpoint {
         this.projectManagementApi = projectManagementApi;
     }
 
+    @ProjectRequired(exists = false)
     @LoggedInUserRequired
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<CreateProjectRequest> createProject(ApiParameterContainer apiParameterContainer,
@@ -50,15 +52,17 @@ public class ProjectEndpoint {
         }
     }
 
+    @ProjectRequired
     @ReadPermissionRequired
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<GetProjectResponse> getProject(ApiParameterContainer apiParameterContainer) {
-        ApiProjectDetails projectDetails = projectManagementApi.getProjectDetails(apiParameterContainer);
+        ApiProjectDetails projectDetails = projectManagementApi.getProjectDetails(apiParameterContainer).get();
 
         List<RepoDefinitionsDetails> details = new ArrayList<>();
 
         GetProjectResponse projectModel = new GetProjectResponse(projectDetails.getName(), details);
         projectModel.addLink(toLink(projectSelfLink(apiParameterContainer)));
+        projectModel.addLink(toLink(projectTokenLink(apiParameterContainer, "tokens")));
 
         projectDetails.getDetails().forEach(it -> {
             RepoDefinitionsDetails repo = new RepoDefinitionsDetails(it.getName());

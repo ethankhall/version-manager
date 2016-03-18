@@ -110,6 +110,10 @@ public class DefaultRepoManagementApi implements RepoManagementApiInternal {
 
     @Override
     public Optional<ApiCommitModel> findLatestCommit(ApiRepoModel repo, List<ApiCommitModel> history) {
+        if (!history.isEmpty() && "latest".equalsIgnoreCase(history.get(0).getCommitId())) {
+            return findCommit(repo, "latest");
+        }
+
         List<String> commitIds = history.stream().map(ApiCommitModel::getCommitId).collect(Collectors.toList());
 
         CommitDetailsTable cd = Tables.COMMIT_DETAILS.as("cd");

@@ -82,6 +82,7 @@ public class RepoEndpoint {
 
         restRepoModel.addLink(toLink(repositorySelfLink(container)));
         restRepoModel.addLink(toLink(versionListLink(container, VERSION_REF)));
+        restRepoModel.addLink(toLink(repositoryTokenLink(container, "tokens")));
         return ResponseEntity.ok(restRepoModel);
     }
 

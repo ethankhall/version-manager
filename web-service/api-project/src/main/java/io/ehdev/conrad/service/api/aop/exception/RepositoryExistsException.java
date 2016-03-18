@@ -7,6 +7,6 @@ import org.springframework.http.HttpStatus;
 public class RepositoryExistsException extends BaseHttpException {
 
     public RepositoryExistsException(ApiParameterContainer container) {
-        super(HttpStatus.CONFLICT, "RP-001", "Repo (" + container.getMergedName() + ") exists, but it is required not to.");
+        super(HttpStatus.CONFLICT, "RP-002", "Repo (" + container.getMergedName() + ") exists, but it is required not to.");
     }
 }

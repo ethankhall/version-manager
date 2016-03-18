@@ -1,5 +1,8 @@
 package io.ehdev.conrad.database.model.user;
 
+import org.jetbrains.annotations.NotNull;
+
+
 public enum ApiUserPermission {
     NONE(0),
     READ(1 << (0)),
@@ -16,12 +19,12 @@ public enum ApiUserPermission {
         return securityId;
     }
 
-    public static ApiUserPermission findById(int id) {
+    @NotNull public static ApiUserPermission findById(int id) {
         for (ApiUserPermission value : values()) {
             if (value.securityId == id) {
                 return value;
             }
         }
-        return null;
+        throw new RuntimeException(id + " is not a known permission level");
     }
 }

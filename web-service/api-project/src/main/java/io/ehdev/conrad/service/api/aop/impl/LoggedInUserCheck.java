@@ -10,6 +10,7 @@ import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +18,7 @@ import static io.ehdev.conrad.service.api.aop.impl.ApiParameterHelper.findApiPar
 
 @Aspect
 @Service
-public class LoggedInUserCheck {
+public class LoggedInUserCheck implements Ordered {
 
     private static final Logger logger = LoggerFactory.getLogger(LoggedInUserCheck.class);
     private final Environment env;
@@ -43,5 +44,10 @@ public class LoggedInUserCheck {
         if(!(container.getUser() instanceof UserApiAuthentication)) {
             throw new NonUserNotAllowedException();
         }
+    }
+
+    @Override
+    public int getOrder() {
+        return 900;
     }
 }

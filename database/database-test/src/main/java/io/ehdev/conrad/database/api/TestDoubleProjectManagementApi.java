@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 
 public class TestDoubleProjectManagementApi implements ProjectManagementApi {
 
@@ -26,7 +28,7 @@ public class TestDoubleProjectManagementApi implements ProjectManagementApi {
     }
 
     @Override
-    public ApiProjectDetails getProjectDetails(ApiParameterContainer apiParameterContainer) {
-        return null;
+    public Optional<ApiProjectDetails> getProjectDetails(ApiParameterContainer apiParameterContainer) {
+        return Optional.empty();
     }
 }

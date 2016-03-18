@@ -17,7 +17,7 @@ class AtomicCommitVersion implements CommitVersion<Integer> {
     }
 
     public static AtomicCommitVersion parse(String version) {
-        return new AtomicCommitVersion(Integer.parseInt(version));
+        return new AtomicCommitVersion(Integer.parseInt(version.split("\\.")[0]));
     }
 
     public Integer getVersion() {

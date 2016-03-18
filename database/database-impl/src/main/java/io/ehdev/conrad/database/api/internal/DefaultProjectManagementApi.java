@@ -82,13 +82,17 @@ public class DefaultProjectManagementApi implements ProjectManagementApiInternal
     }
 
     @Override
-    public ApiProjectDetails getProjectDetails(ApiParameterContainer apiParameterContainer) {
-        ProjectDetailsRecord projectDetails = dslContext
-            .select()
+    public Optional<ApiProjectDetails> getProjectDetails(ApiParameterContainer apiParameterContainer) {
+        Record record = dslContext.select()
             .from(Tables.PROJECT_DETAILS)
             .where(Tables.PROJECT_DETAILS.PROJECT_NAME.eq(apiParameterContainer.getProjectName()))
-            .fetchOne()
-            .into(Tables.PROJECT_DETAILS);
+            .fetchOne();
+
+        if(record == null) {
+            return Optional.empty();
+        }
+
+        ProjectDetailsRecord projectDetails = record.into(Tables.PROJECT_DETAILS);
 
         List<RepoDetailsRecord> repoDetails = dslContext
             .select()
@@ -100,7 +104,7 @@ public class DefaultProjectManagementApi implements ProjectManagementApiInternal
         ApiProjectDetails apiProjectDetails = new ApiProjectDetails(projectDetails.getProjectName());
 
         repoDetails.forEach(it -> apiProjectDetails.addDetails(new ApiProjectRepositoryDetails(it.getRepoName())));
-        return apiProjectDetails;
+        return Optional.of(apiProjectDetails);
     }
 
     @Override

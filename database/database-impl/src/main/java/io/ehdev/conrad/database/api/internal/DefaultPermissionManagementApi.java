@@ -6,6 +6,7 @@ import io.ehdev.conrad.database.model.permission.ProjectApiAuthentication;
 import io.ehdev.conrad.database.model.permission.RepositoryApiAuthentication;
 import io.ehdev.conrad.database.model.user.ApiRepoUserPermission;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
+import io.ehdev.conrad.database.model.user.UserPermissionGrants;
 import io.ehdev.conrad.db.Tables;
 import io.ehdev.conrad.db.tables.UserPermissionsTable;
 import io.ehdev.conrad.db.tables.daos.ProjectDetailsDao;
@@ -14,6 +15,8 @@ import io.ehdev.conrad.db.tables.pojos.ProjectDetails;
 import io.ehdev.conrad.db.tables.pojos.RepoDetails;
 import io.ehdev.conrad.db.tables.pojos.UserDetails;
 import io.ehdev.conrad.db.tables.records.UserPermissionsRecord;
+import java.util.ArrayList;
+import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record1;
@@ -137,6 +140,32 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
         //@formatter:on
 
         return fetch.into(UserPermissionsRecord.class).stream().map(this::convert).collect(Collectors.toList());
+    }
+
+    @Override
+    public UserPermissionGrants getUserPermissions(ApiTokenAuthentication authenticatedUser) {
+        UserPermissionsTable up = Tables.USER_PERMISSIONS;
+
+        List<UserPermissionsRecord> records = dslContext.select()
+            .from(up)
+            .where(up.USER_UUID.eq(authenticatedUser.getUuid()))
+            .fetch()
+            .into(UserPermissionsRecord.class);
+
+        List<UserPermissionGrants.ProjectPermissionDetails> projectPermissions = new ArrayList<>();
+        List<UserPermissionGrants.RepoPermissionDetails> repoPermissions = new ArrayList<>();
+
+        records.forEach( it -> {
+            if (StringUtils.isBlank(it.getRepoName())) {
+                projectPermissions.add(new UserPermissionGrants.ProjectPermissionDetails(it.getProjectName(),
+                    ApiUserPermission.findById(it.getPermissions())));
+            } else {
+                repoPermissions.add(new UserPermissionGrants.RepoPermissionDetails(it.getProjectName(), it.getRepoName(),
+                    ApiUserPermission.findById(it.getPermissions())));
+            }
+        });
+
+        return new UserPermissionGrants(projectPermissions, repoPermissions);
     }
 
     private ApiRepoUserPermission convert(UserPermissionsRecord record) {

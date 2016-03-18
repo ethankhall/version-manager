@@ -7,6 +7,6 @@ import org.springframework.http.HttpStatus;
 public class RepositoryMissingException extends BaseHttpException {
 
     public RepositoryMissingException(ApiParameterContainer container) {
-        super(HttpStatus.NOT_FOUND, "RP-002", "Repo (" + container.getMergedName() + ") doesn't exist, but it is required.");
+        super(HttpStatus.NOT_FOUND, "RP-001", "Repo (" + container.getMergedName() + ") doesn't exist, but it is required.");
     }
 }

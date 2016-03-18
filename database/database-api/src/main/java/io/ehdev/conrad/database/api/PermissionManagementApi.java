@@ -6,6 +6,7 @@ import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
 import io.ehdev.conrad.database.model.user.ApiRepoUserPermission;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 
+import io.ehdev.conrad.database.model.user.UserPermissionGrants;
 import java.util.List;
 
 public interface PermissionManagementApi {
@@ -17,4 +18,6 @@ public interface PermissionManagementApi {
     boolean forceAddPermission(String username, String projectName, String repoName, ApiUserPermission permission);
 
     List<ApiRepoUserPermission> getPermissions(ApiParameterContainer repoModel);
+
+    UserPermissionGrants getUserPermissions(ApiTokenAuthentication authenticatedUser);
 }

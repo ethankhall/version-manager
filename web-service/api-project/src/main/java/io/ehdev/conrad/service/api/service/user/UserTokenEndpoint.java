@@ -3,6 +3,8 @@ package io.ehdev.conrad.service.api.service.user;
 import io.ehdev.conrad.authentication.jwt.JwtManager;
 import io.ehdev.conrad.database.api.TokenManagementApi;
 import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.database.model.user.ApiGeneratedUserToken;
+import io.ehdev.conrad.model.permission.CreateTokenResponse;
 import io.ehdev.conrad.model.permission.GetTokensResponse;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +33,24 @@ public class UserTokenEndpoint {
 
     @LoggedInUserRequired
     @RequestMapping(value = "/{tokenId}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteTOken(@PathVariable("tokenId") String tokenId) {
+    public ResponseEntity deleteToken(@PathVariable("tokenId") String tokenId) {
         tokenManagementApi.invalidateTokenValidByJoinId(UUID.fromString(tokenId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @LoggedInUserRequired
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<String> createNewToken(ApiParameterContainer repoModel) {
-        return new ResponseEntity<>(jwtManager.createToken(repoModel.getUser()), HttpStatus.OK);
+    public ResponseEntity<CreateTokenResponse> createNewToken(ApiParameterContainer repoModel) {
+        ApiGeneratedUserToken token = tokenManagementApi.createToken(repoModel.getUser());
+        String authToken = jwtManager.createToken(token);
+
+        CreateTokenResponse created = new CreateTokenResponse(
+            token.getUuid(),
+            token.getCreatedAt(),
+            token.getExpiresAt(),
+            authToken);
+
+        return new ResponseEntity<>(created, HttpStatus.OK);
     }
 
     @LoggedInUserRequired

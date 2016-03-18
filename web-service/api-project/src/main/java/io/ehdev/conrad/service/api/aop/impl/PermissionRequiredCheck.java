@@ -9,6 +9,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ import static io.ehdev.conrad.service.api.aop.impl.ApiParameterHelper.findApiPar
 
 @Aspect
 @Service
-public class PermissionRequiredCheck {
+public class PermissionRequiredCheck implements Ordered {
 
     private final PermissionManagementApi permissionManagementApi;
     private final Environment env;
@@ -63,5 +64,10 @@ public class PermissionRequiredCheck {
                 throw new PermissionDeniedException(user.getNiceName());
             }
         }
+    }
+
+    @Override
+    public int getOrder() {
+        return 1000;
     }
 }

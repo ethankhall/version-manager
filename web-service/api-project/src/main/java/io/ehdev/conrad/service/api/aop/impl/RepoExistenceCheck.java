@@ -9,6 +9,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
@@ -16,7 +17,7 @@ import static io.ehdev.conrad.service.api.aop.impl.ApiParameterHelper.findApiPar
 
 @Aspect
 @Service
-public class RepoExistenceCheck {
+public class RepoExistenceCheck implements Ordered {
 
     private final Environment env;
     private final RepoManagementApi repoManagementApi;
@@ -43,5 +44,10 @@ public class RepoExistenceCheck {
         } else if(!required && repoExists) {
             throw new RepositoryExistsException(container);
         }
+    }
+
+    @Override
+    public int getOrder() {
+        return -900;
     }
 }
