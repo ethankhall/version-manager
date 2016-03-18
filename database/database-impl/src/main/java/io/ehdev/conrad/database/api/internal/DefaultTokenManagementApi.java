@@ -21,6 +21,7 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.TableField;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.TypedStringValue;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -63,7 +64,7 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
     public ApiGeneratedUserToken createToken(ApiTokenAuthentication authentication) {
         Instant now = Instant.now();
 
-        ParsedToken parsedToken = new ParsedToken(authentication);
+        ParsedToken parsedToken = ParsedToken.from(authentication);
 
         TokenAuthentications tokens = createNewToken(now, parsedToken.type);
         tokenMapDao.insert(new TokenJoin(null, tokens.getUuid(), parsedToken.projectId, parsedToken.repoId, parsedToken.userId));
@@ -111,33 +112,21 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
 
     @Override
     public List<RetrievedToken> getTokens(String project, String repo) {
-        TokenAuthenticationsTable ta = Tables.TOKEN_AUTHENTICATIONS.as("ta");
-        TokenJoinTable tj = Tables.TOKEN_JOIN.as("tj");
-        Condition filterCondition;
-
+        ParsedToken parsedToken;
         if(repo != null) {
-            UUID repoId = repoManagementApiInternal.findRepository(project, repo).get().getUuid();
-            filterCondition = tj.REPO_UUID.eq(repoId);
+            parsedToken = ParsedToken.withRepository(repoManagementApiInternal.findRepository(project, repo).get().getUuid());
         } else {
-            UUID projectId = projectDetailsDao.fetchOneByProjectName(project).getUuid();
-            filterCondition = tj.PROJECT_UUID.eq(projectId);
+            parsedToken = ParsedToken.withProject(projectDetailsDao.fetchOneByProjectName(project).getUuid());
         }
-        return dslContext
-            .select(tj.UUID, ta.CREATED_AT, ta.EXPIRES_AT)
-            .from(ta)
-            .join(tj).on(tj.TOKEN.eq(ta.UUID))
-            .where(filterCondition)
-                .and(ta.VALID.eq(true))
-                .and(ta.EXPIRES_AT.greaterOrEqual(Clock.systemUTC().instant()))
-            .fetch()
-            .stream()
-            .map(it -> new RetrievedToken(it.value1(), it.value2().atZone(ZoneOffset.UTC), it.value3().atZone(ZoneOffset.UTC)))
-            .collect(Collectors.toList());
+        return getTokens(parsedToken);
     }
 
     @Override
     public List<RetrievedToken> getTokens(ApiTokenAuthentication authentication) {
-        ParsedToken parsedToken = new ParsedToken(authentication);
+        return getTokens(ParsedToken.from(authentication));
+    }
+
+    public List<RetrievedToken> getTokens(ParsedToken parsedToken) {
         TokenAuthenticationsTable ta = Tables.TOKEN_AUTHENTICATIONS.as("ta");
         TokenJoinTable tj = Tables.TOKEN_JOIN.as("tj");
         return dslContext
@@ -147,6 +136,8 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
             .where(valueOrNull(parsedToken.userId, tj.USER_UUID))
                 .and(valueOrNull(parsedToken.projectId, tj.PROJECT_UUID))
                 .and(valueOrNull(parsedToken.repoId, tj.REPO_UUID))
+                .and(ta.VALID.eq(true))
+                .and(ta.EXPIRES_AT.greaterOrEqual(Clock.systemUTC().instant()))
             .fetch()
             .stream()
             .map(it -> new RetrievedToken(it.value1(), it.value2().atZone(ZoneOffset.UTC), it.value3().atZone(ZoneOffset.UTC)))
@@ -213,29 +204,39 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
         }
     }
 
-    private class ParsedToken {
+    private static class ParsedToken {
         private final UUID userId;
         private final UUID projectId ;
         private final UUID repoId;
         private final TokenType type;
 
-        public ParsedToken(ApiTokenAuthentication authentication) {
+        private ParsedToken(UUID userId, UUID projectId, UUID repoId, TokenType type) {
+            this.userId = userId;
+            this.projectId = projectId;
+            this.repoId = repoId;
+            this.type = type;
+        }
+
+        static ParsedToken withUser(UUID userId) {
+            return new ParsedToken(userId, null, null, TokenType.USER);
+        }
+        static ParsedToken withProject(UUID projectId) {
+            return new ParsedToken(null, projectId, null, TokenType.PROJECT);
+        }
+
+        static ParsedToken withRepository(UUID repoId) {
+            return new ParsedToken(null, null, repoId, TokenType.REPOSITORY);
+        }
+
+        static ParsedToken from(ApiTokenAuthentication authentication) {
             if(authentication instanceof UserApiAuthentication) {
-                userId = authentication.getUuid();
-                projectId = null;
-                repoId = null;
-                type = TokenType.USER;
+                return withUser(authentication.getUuid());
             } else if(authentication instanceof ProjectApiAuthentication) {
-                projectId = authentication.getUuid();
-                userId = null;
-                repoId = null;
-                type = TokenType.PROJECT;
+                return withProject(authentication.getUuid());
             } else {
-                repoId = authentication.getUuid();
-                userId = null;
-                projectId = null;
-                type = TokenType.REPOSITORY;
+                return withRepository(authentication.getUuid());
             }
         }
+
     }
 }

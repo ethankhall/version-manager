@@ -33,7 +33,7 @@ public class UserTokenEndpoint {
 
     @LoggedInUserRequired
     @RequestMapping(value = "/{tokenId}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteToken(@PathVariable("tokenId") String tokenId) {
+    public ResponseEntity deleteToken(ApiParameterContainer repoModel, @PathVariable("tokenId") String tokenId) {
         tokenManagementApi.invalidateTokenValidByJoinId(UUID.fromString(tokenId));
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -69,6 +69,10 @@ public class DefaultJwtManager implements JwtManager {
             Claims parsed = claimsJws.getBody();
 
             ApiProvidedToken conradToken = new ApiProvidedToken(UUID.fromString(parsed.getSubject()));
+            if(!tokenManagementApi.isTokenValid(conradToken)) {
+                return Optional.empty();
+            }
+
             ApiTokenAuthentication user = tokenManagementApi.findUser(conradToken);
             if(user == null) {
                 logger.debug("User was not found.");

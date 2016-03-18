@@ -68,6 +68,10 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
             return true;
         }
 
+        if(apiUser == null) {
+            return false;
+        }
+
         if(apiUser instanceof ProjectApiAuthentication || apiUser instanceof RepositoryApiAuthentication) {
             return isApiUserAllowed(apiUser, project, repoName, permission);
         }
