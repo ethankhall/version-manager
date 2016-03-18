@@ -21,7 +21,6 @@ import org.jooq.Condition;
 import org.jooq.DSLContext;
 import org.jooq.TableField;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.TypedStringValue;
 import org.springframework.stereotype.Service;
 
 import java.time.Clock;
@@ -39,7 +38,7 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
     private final TokenAuthenticationsDao tokensDao;
     private final ProjectDetailsDao projectDetailsDao;
     private final RepoManagementApiInternal repoManagementApiInternal;
-    private final TokenJoinDao tokenMapDao;
+    private final TokenJoinDao tokenJoinDao;
     private final RepoDetailsDao repoDetailsDao;
     private final UserDetailsDao userDetailsDao;
 
@@ -48,14 +47,14 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
                                      TokenAuthenticationsDao tokensDao,
                                      ProjectDetailsDao projectDetailsDao,
                                      RepoManagementApiInternal repoManagementApiInternal,
-                                     TokenJoinDao tokenMapDao,
+                                     TokenJoinDao tokenJoinDao,
                                      RepoDetailsDao repoDetailsDao,
                                      UserDetailsDao userDetailsDao) {
         this.dslContext = dslContext;
         this.tokensDao = tokensDao;
         this.projectDetailsDao = projectDetailsDao;
         this.repoManagementApiInternal = repoManagementApiInternal;
-        this.tokenMapDao = tokenMapDao;
+        this.tokenJoinDao = tokenJoinDao;
         this.repoDetailsDao = repoDetailsDao;
         this.userDetailsDao = userDetailsDao;
     }
@@ -67,7 +66,7 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
         ParsedToken parsedToken = ParsedToken.from(authentication);
 
         TokenAuthentications tokens = createNewToken(now, parsedToken.type);
-        tokenMapDao.insert(new TokenJoin(null, tokens.getUuid(), parsedToken.projectId, parsedToken.repoId, parsedToken.userId));
+        tokenJoinDao.insert(new TokenJoin(null, tokens.getUuid(), parsedToken.projectId, parsedToken.repoId, parsedToken.userId));
 
         return new ApiGeneratedUserToken(
             tokens.getUuid(),
@@ -101,7 +100,7 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
         }
 
         TokenAuthentications token = createNewToken(Instant.now(), type);
-        tokenMapDao.insert(new TokenJoin(null, token.getUuid(), projectId, repoId, null));
+        tokenJoinDao.insert(new TokenJoin(null, token.getUuid(), projectId, repoId, null));
 
         return new ApiGeneratedUserToken(
             token.getUuid(),
@@ -162,7 +161,7 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
 
     @Override
     public void invalidateTokenValidByJoinId(UUID tokenId) {
-        TokenJoin tokenJoin = tokenMapDao.fetchOneByUuid(tokenId);
+        TokenJoin tokenJoin = tokenJoinDao.fetchOneByUuid(tokenId);
         invalidateTokenValid(tokenJoin.getToken());
     }
 
@@ -187,7 +186,7 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
 
     @Override
     public ApiTokenAuthentication findUser(ApiToken apiToken) {
-        TokenJoin tokenMap = tokenMapDao.fetchOneByToken(apiToken.getUuid());
+        TokenJoin tokenMap = tokenJoinDao.fetchOneByToken(apiToken.getUuid());
         if(tokenMap == null) {
             return null;
         }

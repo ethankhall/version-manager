@@ -12,6 +12,7 @@ import io.ehdev.conrad.model.repository.CreateRepoRequest;
 import io.ehdev.conrad.model.repository.CreateRepoResponse;
 import io.ehdev.conrad.model.repository.GetRepoResponse;
 import io.ehdev.conrad.model.version.VersionSearchResponse;
+import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
@@ -41,6 +42,14 @@ public class RepoEndpoint {
                         PermissionManagementApi permissionManagementApi) {
         this.repoManagementApi = repoManagementApi;
         this.permissionManagementApi = permissionManagementApi;
+    }
+
+    @AdminPermissionRequired
+    @RepoRequired(exists = true)
+    @RequestMapping(method = RequestMethod.DELETE)
+    public ResponseEntity deleteRepo(ApiParameterContainer apiParameterContainer) {
+        repoManagementApi.delete(apiParameterContainer);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @WritePermissionRequired

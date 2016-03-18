@@ -1,6 +1,7 @@
 package io.ehdev.conrad.database.api;
 
 
+import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.project.ApiFullRepoModel;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
 import io.ehdev.conrad.database.model.project.ApiRepoModel;
@@ -26,4 +27,6 @@ public interface RepoManagementApi {
     Optional<ApiRepoDetailsModel> getDetails(ApiRepoModel qualifiedRepo);
 
     boolean doesRepoExist(ApiRepoModel qualifiedRepo);
+
+    void delete(ApiParameterContainer apiParameterContainer);
 }

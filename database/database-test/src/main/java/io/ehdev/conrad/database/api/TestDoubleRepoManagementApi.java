@@ -1,5 +1,6 @@
 package io.ehdev.conrad.database.api;
 
+import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.project.ApiFullRepoModel;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
 import io.ehdev.conrad.database.model.project.ApiRepoModel;
@@ -73,4 +74,8 @@ public class TestDoubleRepoManagementApi implements RepoManagementApi {
         return storage.containsKey(qualifiedRepo.getMergedName());
     }
 
+    @Override
+    public void delete(ApiParameterContainer apiParameterContainer) {
+        
+    }
 }

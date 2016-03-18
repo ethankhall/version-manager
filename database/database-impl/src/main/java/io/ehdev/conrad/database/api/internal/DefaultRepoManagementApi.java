@@ -5,6 +5,7 @@ import io.ehdev.conrad.database.api.exception.ProjectNotFoundException;
 import io.ehdev.conrad.database.api.exception.RepoAlreadyExistsException;
 import io.ehdev.conrad.database.api.exception.RepoDoesNotExistsException;
 import io.ehdev.conrad.database.impl.ModelConversionUtility;
+import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.project.ApiFullRepoModel;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
 import io.ehdev.conrad.database.model.project.ApiRepoModel;
@@ -237,4 +238,13 @@ public class DefaultRepoManagementApi implements RepoManagementApiInternal {
         return findRepository(repo.getProjectName(), repo.getRepoName()).isPresent();
     }
 
+    @Override
+    public void delete(ApiParameterContainer apiParameterContainer) {
+        Optional<RepoDetails> repository = findRepository(apiParameterContainer.getProjectName(), apiParameterContainer.getRepoName());
+        if(!repository.isPresent()) {
+            return;
+        }
+
+        repoDetailsDao.delete(repository.get());
+    }
 }
