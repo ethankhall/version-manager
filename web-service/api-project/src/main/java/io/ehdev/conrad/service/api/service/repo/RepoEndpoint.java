@@ -53,7 +53,7 @@ public class RepoEndpoint {
             apiParameterContainer.getRepoName(),
             createModel.getRepoUrl());
 
-        ApiRepoDetailsModel repo = repoManagementApi.createRepo(newModel, createModel.getBumperName());
+        ApiRepoDetailsModel repo = repoManagementApi.createRepo(newModel, createModel.getBumperName(), true);
 
         CreateRepoResponse model = new CreateRepoResponse(
             repo.getRepo().getProjectName(),
@@ -76,7 +76,7 @@ public class RepoEndpoint {
             details.getRepo().getUrl()
         );
 
-        permissionManagementApi.getPermissionsForProject(container).forEach(it -> {
+        permissionManagementApi.getPermissions(container).forEach(it -> {
             restRepoModel.addPermission(new PermissionGrant(it.getUsername(), it.getPermissions()));
         });
 

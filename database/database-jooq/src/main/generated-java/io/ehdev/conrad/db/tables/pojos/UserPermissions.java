@@ -30,12 +30,12 @@ import javax.validation.constraints.Size;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
 @Table(name = "user_permissions", schema = "public", uniqueConstraints = {
-	@UniqueConstraint(columnNames = {"project_name", "repo_name"}),
+	@UniqueConstraint(columnNames = {"project_name", "repo_name", "user_uuid"}),
 	@UniqueConstraint(columnNames = {"project_uuid", "repo_details_uuid", "user_uuid"})
 })
 public class UserPermissions implements Serializable {
 
-	private static final long serialVersionUID = 1823616546;
+	private static final long serialVersionUID = 100616275;
 
 	private UUID    uuid;
 	private String  projectName;

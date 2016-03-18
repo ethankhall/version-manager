@@ -1,0 +1,3 @@
+ALTER TABLE user_permissions DROP CONSTRAINT user_permissions_project_name_repo_name_key;
+
+ALTER TABLE user_permissions ADD CONSTRAINT user_permissions_project_name_repo_name_user_uuid_key UNIQUE (project_name, repo_name, user_uuid);

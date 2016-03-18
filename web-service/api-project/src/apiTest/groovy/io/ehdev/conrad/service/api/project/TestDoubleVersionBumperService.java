@@ -1,6 +1,7 @@
 package io.ehdev.conrad.service.api.project;
 
 import io.ehdev.conrad.database.model.project.ApiRepoModel;
+import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.version.bumper.semver.SemanticVersionBumper;
 import io.ehdev.conrad.version.bumper.VersionBumper;
 import io.ehdev.conrad.version.bumper.api.VersionBumperService;
@@ -15,9 +16,9 @@ public class TestDoubleVersionBumperService implements VersionBumperService {
     }
 
     @Override
-    public CommitVersion findNextVersion(ApiRepoModel repoModel, String commitId, String message, CommitVersion lastCommit) {
+    public CommitVersion findNextVersion(ApiRepoModel repoModel, String commitId, String message, ApiCommitModel lastCommit) {
         VersionBumper versionBumper = findVersionBumper(null);
         DefaultCommitDetails commitDetails = new DefaultCommitDetails(commitId, message);
-        return versionBumper.createNextVersion(lastCommit, commitDetails);
+        return versionBumper.createNextVersion(lastCommit.getVersion(), commitDetails);
     }
 }

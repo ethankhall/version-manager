@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public interface RepoManagementApi {
-    ApiRepoDetailsModel createRepo(ApiFullRepoModel apiParameterContainer, String bumperName);
+    ApiRepoDetailsModel createRepo(ApiFullRepoModel apiParameterContainer, String bumperName, boolean isPublic);
 
     Optional<ApiCommitModel> findLatestCommit(ApiRepoModel qualifiedRepo, List<ApiCommitModel> history);
 

@@ -80,8 +80,11 @@ evaluationDependsOnChildren()
 task testCoverage(type: JacocoReport) {
     dependsOn mergeReport
     sourceDirectories = files(subprojects.sourceSets.main.allSource.srcDirs)
-    classDirectories = files(subprojects.sourceSets.main.output)
+    classDirectories = files(subprojects.sourceSets.main.output).asFileTree.matching {
+        exclude '**/io/ehdev/conrad/db/tables/**'
+    }
     executionData = mergeReport.executionData
+
     onlyIf = {
         true
     }
@@ -106,9 +109,3 @@ task generateDocumentation(type: Copy) {
 }
 
 build.dependsOn generateDocumentation
-
-task teamcityVersion {
-    doLast {
-        println "##teamcity[buildNumber '$version']"
-    }
-}

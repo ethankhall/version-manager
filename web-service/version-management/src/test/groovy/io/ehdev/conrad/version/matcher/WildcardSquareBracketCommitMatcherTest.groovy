@@ -1,6 +1,8 @@
 package io.ehdev.conrad.version.matcher
 
-import io.ehdev.conrad.version.commit.VersionFactory
+
+import io.ehdev.conrad.version.bumper.semver.SemanticCommitVersion
+import io.ehdev.conrad.version.bumper.semver.SemanticCommitVersionFactory
 import io.ehdev.conrad.version.commit.details.CommitDetailsFactory
 import io.ehdev.conrad.version.matcher.internal.WildcardSquareBracketCommitMatcher
 import spock.lang.Shared
@@ -10,17 +12,17 @@ import spock.lang.Unroll
 class WildcardSquareBracketCommitMatcherTest extends Specification {
 
     @Shared
-    def version = VersionFactory.parse('1.2.3')
+    def version = SemanticCommitVersion.parse('1.2.3')
 
     @Unroll
     def 'can bump group #groupNumber and makes #expectedVersion'() {
         when:
-        def matcher = new WildcardSquareBracketCommitMatcher()
+        def matcher = new WildcardSquareBracketCommitMatcher(new SemanticCommitVersionFactory())
         def details = CommitDetailsFactory.createCommitDetails('123', "some message \n[bump group ${groupNumber}]\nfoo")
 
         then:
         details.messageContains(matcher)
-        version.bump(matcher.getBumper()).toString() == expectedVersion
+        matcher.getBumper().bump(version).toString() == expectedVersion
 
         where:
         groupNumber || expectedVersion

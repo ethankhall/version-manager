@@ -18,7 +18,7 @@ public class SemanticCommitBumperContainer {
             int[] ints = Arrays.copyOf(commitVersion.getVersionList(), commitVersion.getVersionList().length);
             ints[commitVersion.getVersionList().length - 1]++;
 
-            return new SemanticCommitVersion(ints, "SNAPSHOT");
+            return new SemanticCommitVersion(ints, null);
         }
     }
 
@@ -49,19 +49,19 @@ public class SemanticCommitBumperContainer {
         }
     }
 
-//    static public class PostfixCommitVersionBumper implements CommitVersionBumper<SemanticCommitVersion> {
-//
-//        private final String postfix;
-//
-//        public PostfixCommitVersionBumper(String postfix) {
-//            this.postfix = postfix;
-//        }
-//
-//        @Override
-//        public SemanticCommitVersion bump(SemanticCommitVersion parent) {
-//            return new SemanticCommitVersion(parent.getVersionList(), this.postfix);
-//        }
-//    }
+    static public class PostfixCommitVersionBumper implements CommitVersionBumper<SemanticCommitVersion> {
+
+        private final String postfix;
+
+        public PostfixCommitVersionBumper(String postfix) {
+            this.postfix = postfix;
+        }
+
+        @Override
+        public SemanticCommitVersion bump(SemanticCommitVersion parent) {
+            return new SemanticCommitVersion(parent.getVersionList(), this.postfix);
+        }
+    }
 
     public static List<SquareBracketCommitMatcher<SemanticCommitVersion>> getAllSquareBracketMatchers() {
         StandardMessageMatchers<SemanticCommitVersion> matchers = new StandardMessageMatchers<>(new SemanticCommitVersionFactory());

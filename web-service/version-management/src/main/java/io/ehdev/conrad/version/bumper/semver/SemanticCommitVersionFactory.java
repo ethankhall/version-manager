@@ -4,7 +4,7 @@ import io.ehdev.conrad.version.commit.CommitVersionBumper;
 import io.ehdev.conrad.version.commit.CommitVersionFactory;
 import io.ehdev.conrad.version.commit.CommitVersionGroup;
 
-class SemanticCommitVersionFactory implements CommitVersionFactory<SemanticCommitVersion> {
+public class SemanticCommitVersionFactory implements CommitVersionFactory<SemanticCommitVersion> {
     @Override
     public CommitVersionBumper<SemanticCommitVersion> dispenseBumper(int group) {
         return new SemanticCommitBumperContainer.SemverVersionCommitBumper(group);

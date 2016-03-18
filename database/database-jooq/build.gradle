@@ -10,6 +10,7 @@ sourceSets {
 }
 
 configurations {
+    migration
     codegen
     compile.extendsFrom codegen
 }
@@ -20,6 +21,8 @@ dependencies {
     codegen 'org.jooq:jooq-meta:3.7.2'
     codegen 'org.jooq:jooq-codegen:3.7.2'
 
+    migration project(':database:database-migration')
+
     compile project(':database:database-migration')
     compile 'javax.validation:validation-api:1.1.0.Final'
     compile 'javax.persistence:persistence-api:1.0.2'
@@ -29,6 +32,8 @@ def createLibraryXml = task createLibraryXml {
     dependsOn ':database:database-migration:flywayMigrate'
     ext.libraryFile = file("$buildDir/library.xml")
     ext.outputDir = file('src/main/generated-java')
+    inputs.files(configurations.migration)
+    outputs.dir(ext.outputDir)
     doFirst {
         (ext.libraryFile as File).parentFile.mkdirs()
     }

@@ -40,7 +40,7 @@ class PermissionRequiredCheckTest extends Specification {
             }
 
             @Override
-            List<ApiRepoUserPermission> getPermissionsForProject(ApiParameterContainer repoModel) {
+            List<ApiRepoUserPermission> getPermissions(ApiParameterContainer repoModel) {
                 return new ArrayList<ApiRepoUserPermission>()
             }
         }

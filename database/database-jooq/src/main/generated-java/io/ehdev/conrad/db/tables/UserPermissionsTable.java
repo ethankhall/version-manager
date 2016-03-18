@@ -35,7 +35,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserPermissionsTable extends TableImpl<UserPermissionsRecord> {
 
-	private static final long serialVersionUID = 354947169;
+	private static final long serialVersionUID = 1071112337;
 
 	/**
 	 * The reference instance of <code>public.user_permissions</code>
@@ -120,7 +120,7 @@ public class UserPermissionsTable extends TableImpl<UserPermissionsRecord> {
 	 */
 	@Override
 	public List<UniqueKey<UserPermissionsRecord>> getKeys() {
-		return Arrays.<UniqueKey<UserPermissionsRecord>>asList(Keys.USER_PERMISSIONS_PKEY, Keys.USER_PERMISSIONS_PROJECT_NAME_REPO_NAME_KEY, Keys.USER_PERMISSIONS_PROJECT_UUID_REPO_DETAILS_UUID_USER_UUID_KEY);
+		return Arrays.<UniqueKey<UserPermissionsRecord>>asList(Keys.USER_PERMISSIONS_PKEY, Keys.USER_PERMISSIONS_PROJECT_NAME_REPO_NAME_USER_UUID_KEY, Keys.USER_PERMISSIONS_PROJECT_UUID_REPO_DETAILS_UUID_USER_UUID_KEY);
 	}
 
 	/**

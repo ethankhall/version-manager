@@ -1,8 +1,6 @@
-package io.ehdev.conrad.version.commit.internal
+package io.ehdev.conrad.version.bumper.semver
 
-import io.ehdev.conrad.version.bumper.semver.DefaultVersionCommitBumper
-import io.ehdev.conrad.version.commit.CommitVersion
-import io.ehdev.conrad.version.commit.VersionFactory
+
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Unroll
@@ -10,12 +8,12 @@ import spock.lang.Unroll
 class SemverVersionCommitBumperTest extends Specification {
 
     @Shared
-    CommitVersion commitVersion = VersionFactory.parse('1.2.3')
+    SemanticCommitVersion commitVersion = SemanticCommitVersion.parse('1.2.3')
 
     @Unroll
     def 'version bump group can go to #depth giving #version'() {
         expect:
-        commitVersion.bump(new DefaultVersionCommitBumper(depth)).toString() == version
+        new SemanticCommitBumperContainer.SemverVersionCommitBumper(depth).bump(commitVersion).toString() == version
 
         where:
         depth || version

@@ -53,6 +53,10 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
     public boolean doesUserHavePermission(ApiTokenAuthentication apiUser, String project, String repoName, ApiUserPermission permission) {
         Optional<RepoDetails> repository = repoManagementApi.findRepository(project, repoName);
 
+        if(ApiUserPermission.NONE == permission) {
+            return true;
+        }
+
         if(repository.isPresent() && permission == ApiUserPermission.READ && repository.get().getPublic() ) {
             return true;
         }
@@ -67,7 +71,7 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
             .selectCount()
             .from(up)
             .where(up.PROJECT_NAME.eq(project))
-                .and(up.REPO_NAME.eq(repoName).or(up.REPO_NAME.isNull()))
+                .and(repoName != null ? up.REPO_NAME.eq(repoName).or(up.REPO_NAME.isNull()) : up.REPO_NAME.isNull())
                 .and(up.USER_UUID.eq(apiUser.getUuid()))
                 .and(up.PERMISSIONS.greaterOrEqual(permission.getSecurityId()))
             .fetchOne()
@@ -120,7 +124,7 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
     }
 
     @Override
-    public List<ApiRepoUserPermission> getPermissionsForProject(ApiParameterContainer repoModel) {
+    public List<ApiRepoUserPermission> getPermissions(ApiParameterContainer repoModel) {
         UserPermissionsTable up = Tables.USER_PERMISSIONS;
 
         //@formatter:off
@@ -148,18 +152,18 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
             .select(up.UUID)
             .from(up)
             .where(up.PROJECT_UUID.eq(projectUUID))
-                .and(up.REPO_DETAILS_UUID.eq(repoId))
+                .and(repoId != null ? up.REPO_DETAILS_UUID.eq(repoId) : up.REPO_DETAILS_UUID.isNull())
                 .and(up.USER_UUID.eq(userDetails.getUuid()))
             .fetchOne();
         //@formatter:on
 
-        if(record == null) {
+        if(record == null && ApiUserPermission.NONE != permission) {
             dslContext
                 .insertInto(up)
                 .columns(up.PROJECT_NAME, up.PROJECT_UUID, up.REPO_NAME, up.REPO_DETAILS_UUID, up.USER_UUID, up.PERMISSIONS)
                 .values(projectName, projectUUID, repoName, repoId, userDetails.getUuid(), permission.getSecurityId())
                 .execute();
-        } else {
+        } else if(record != null) {
             if(ApiUserPermission.NONE == permission) {
                 dslContext
                     .delete(up)

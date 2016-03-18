@@ -37,12 +37,12 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
 @Table(name = "user_permissions", schema = "public", uniqueConstraints = {
-	@UniqueConstraint(columnNames = {"project_name", "repo_name"}),
+	@UniqueConstraint(columnNames = {"project_name", "repo_name", "user_uuid"}),
 	@UniqueConstraint(columnNames = {"project_uuid", "repo_details_uuid", "user_uuid"})
 })
 public class UserPermissionsRecord extends UpdatableRecordImpl<UserPermissionsRecord> implements Record7<UUID, String, String, UUID, UUID, UUID, Integer> {
 
-	private static final long serialVersionUID = -2086424847;
+	private static final long serialVersionUID = -1677784482;
 
 	/**
 	 * Setter for <code>public.user_permissions.uuid</code>.

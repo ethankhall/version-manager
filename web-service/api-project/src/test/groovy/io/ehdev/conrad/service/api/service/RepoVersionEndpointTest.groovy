@@ -61,9 +61,9 @@ class RepoVersionEndpointTest extends Specification {
         def version = repoEndpoint.createNewVersion(createTestingRepoModel(), model, request)
 
         then:
-        1 * repoManagementApi.findLatestCommit(_, _) >> Optional.of(lastCommit)
+        1 * repoManagementApi.findLatestCommit(_ as ApiRepoModel, _ as List<ApiCommitModel>) >> Optional.of(lastCommit)
         1 * versionBumperService.findNextVersion(_ as ApiRepoModel,
-            'f', 'Some Message', _ as CommitVersion) >> SemanticCommitVersion.parse("1.4.5")
+            'f', 'Some Message', _ as ApiCommitModel) >> SemanticCommitVersion.parse("1.4.5")
         version.statusCode == HttpStatus.CREATED
         version.body.commitId == 'f'
         version.body.postfix == null

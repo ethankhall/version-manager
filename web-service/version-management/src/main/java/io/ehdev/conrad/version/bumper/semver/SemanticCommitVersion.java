@@ -1,15 +1,14 @@
 package io.ehdev.conrad.version.bumper.semver;
 
+import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.version.commit.CommitVersion;
 import io.ehdev.conrad.version.commit.CommitVersionGroup;
-import io.ehdev.conrad.version.commit.DefaultCommitVersionGroup;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
-import org.jetbrains.annotations.NotNull;
-
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import org.apache.commons.lang3.ArrayUtils;
+import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 public class SemanticCommitVersion implements CommitVersion<Integer> {
     private final static int[] EMPTY_INT_ARRAY = new int[] {};
@@ -38,6 +37,10 @@ public class SemanticCommitVersion implements CommitVersion<Integer> {
         }
 
         return new SemanticCommitVersion(versionList, postfix);
+    }
+
+    public static SemanticCommitVersion parse(ApiCommitModel version) {
+        return parse(version.getVersion());
     }
 
     @Override
@@ -102,16 +105,17 @@ public class SemanticCommitVersion implements CommitVersion<Integer> {
             return 0;
         }
 
-        int majorDelta = getDistance(DefaultCommitVersionGroup.majorVersion(), this, other);
-        int minorDelta = getDistance(DefaultCommitVersionGroup.minorVersion(), this, other);
-        int patchDelta = getDistance(DefaultCommitVersionGroup.patchVersion(), this, other);
-        int buildDelta = getDistance(DefaultCommitVersionGroup.buildVersion(), this, other);
-        int postfixDelta = StringUtils.trimToEmpty(getPostFix()).compareTo(StringUtils.trimToEmpty(other.getPostFix()));
+        int length = Math.min(other.versionList.length, versionList.length);
+        long difference = 0;
 
-        return (int) (majorDelta * Math.pow(10, 7) + minorDelta * Math.pow(10, 5) + patchDelta * Math.pow(10, 3) + buildDelta + postfixDelta);
-    }
+        for(int i = 0; i < length; i++) {
+            difference += (versionList[i] - other.versionList[i]) * Math.pow(10, i * 2 + 1);
+        }
 
-    private static int getDistance(CommitVersionGroup group, SemanticCommitVersion self, SemanticCommitVersion other) {
-        return self.getGroup(group) - other.getGroup(group);
+        if(difference == 0) {
+            return other.versionList.length - versionList.length;
+        } else {
+            return (int)difference;
+        }
     }
 }

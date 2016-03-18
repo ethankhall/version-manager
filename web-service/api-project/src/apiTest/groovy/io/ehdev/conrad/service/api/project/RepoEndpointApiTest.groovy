@@ -131,7 +131,7 @@ class RepoEndpointApiTest extends Specification {
     }
 
     def 'get-repo-details'() {
-        1 * permissionManagementApi.getPermissionsForProject(_) >> [new ApiRepoUserPermission('bob', 'ADMIN')]
+        1 * permissionManagementApi.getPermissions(_) >> [new ApiRepoUserPermission('bob', 'ADMIN')]
 
         expect:
         createRepo()
@@ -257,7 +257,7 @@ class RepoEndpointApiTest extends Specification {
     }
 
     void createRepo() {
-        repoManagementApi.createRepo(model, 'semver')
+        repoManagementApi.createRepo(model, 'semver', true)
         repoManagementApi.createCommit(model, new ApiCommitModel('1', '1.0.0'), null)
         repoManagementApi.createCommit(model, new ApiCommitModel('2', '2.0.0-BETA'), new ApiCommitModel('1', '1.0.0'))
     }

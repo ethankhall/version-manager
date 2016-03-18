@@ -56,7 +56,7 @@ class RepoPermissionsEndpointIntegrationTest extends Specification {
 
         container = new ApiParameterContainer(adminUser, "project_name", 'repo_name')
         projectEndpoint.createProject(container, new MockHttpServletRequest())
-        repoManagementApi.createRepo(new DefaultApiRepoModel("project_name", 'repo_name'), 'semver')
+        repoManagementApi.createRepo(new DefaultApiRepoModel("project_name", 'repo_name'), 'semver', true)
     }
 
     def 'can add user to permission'() {

@@ -14,18 +14,18 @@ public class DefaultCommitVersionGroup implements CommitVersionGroup {
     }
 
     public static DefaultCommitVersionGroup majorVersion() {
-        return new DefaultCommitVersionGroup(1);
+        return new DefaultCommitVersionGroup(0);
     }
 
     public static DefaultCommitVersionGroup minorVersion() {
-        return new DefaultCommitVersionGroup(2);
+        return new DefaultCommitVersionGroup(1);
     }
 
     public static DefaultCommitVersionGroup patchVersion() {
-        return new DefaultCommitVersionGroup(3);
+        return new DefaultCommitVersionGroup(2);
     }
 
     public static DefaultCommitVersionGroup buildVersion() {
-        return new DefaultCommitVersionGroup(4);
+        return new DefaultCommitVersionGroup(3);
     }
 }

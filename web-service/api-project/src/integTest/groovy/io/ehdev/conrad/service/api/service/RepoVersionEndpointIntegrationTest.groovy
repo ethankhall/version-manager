@@ -59,7 +59,7 @@ class RepoVersionEndpointIntegrationTest extends Specification {
         request.setRequestURI("http://localhost:8080/")
 
         when:
-        repoManagementApi.createRepo(new DefaultApiRepoModel('project_name', 'repo_name'), 'semver')
+        repoManagementApi.createRepo(new DefaultApiRepoModel('project_name', 'repo_name'), 'semver', true)
         def version = repoVersionEndpoint.createNewVersion(createApiContainer(), createModel, request)
 
         then:

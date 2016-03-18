@@ -1,11 +1,9 @@
-package io.ehdev.conrad.version.bumper
+package io.ehdev.conrad.version.bumper.semver
+
 
 import de.svenjacobs.loremipsum.LoremIpsum
-import io.ehdev.conrad.version.bumper.semver.SemanticVersionBumper
 import io.ehdev.conrad.version.commit.details.CommitDetails
 import io.ehdev.conrad.version.commit.details.CommitDetailsFactory
-import io.ehdev.conrad.version.commit.CommitVersion
-import io.ehdev.conrad.version.commit.VersionFactory
 import spock.lang.Shared
 import spock.lang.Specification
 import spock.lang.Subject
@@ -16,24 +14,21 @@ class SemanticVersionBumperTest extends Specification {
     @Shared
     def ipsum = new LoremIpsum()
 
-    @Shared
-    CommitVersion commitVersion = VersionFactory.parse('1.2.3')
-
     @Subject
     SemanticVersionBumper semVerBumper = new SemanticVersionBumper()
 
     def 'will get default version if no bump is included'() {
         expect:
-        semVerBumper.createNextVersion(commitVersion, commitDetails('some message')) == VersionFactory.parse('1.2.4')
+        semVerBumper.createNextVersion('1.2.3', commitDetails('some message')) == SemanticCommitVersion.parse('1.2.4')
     }
 
     @Unroll
     def 'message containing #search will give version #version'() {
         def details = commitDetails(search)
-        def nextVersion = semVerBumper.createNextVersion(commitVersion, details)
+        def nextVersion = semVerBumper.createNextVersion('1.2.3', details)
 
         expect:
-        nextVersion == VersionFactory.parse(version)
+        nextVersion == SemanticCommitVersion.parse(version)
         nextVersion.toString() == version
 
         where:

@@ -63,7 +63,7 @@ class RepoEndpointTest extends Specification {
         details.statusCode == HttpStatus.OK
 
         repoManagementApi.getDetails(_) >> Optional.of(new ApiRepoDetailsModel(new DefaultApiRepoModel("projectName", "repoName"), new ApiVersionBumperModel(' ', ' ', ' ')))
-        permissionManagementApi.getPermissionsForProject(_) >> [new ApiRepoUserPermission('bob', 'ADMIN')]
+        permissionManagementApi.getPermissions(_) >> [new ApiRepoUserPermission('bob', 'ADMIN')]
 
     }
 

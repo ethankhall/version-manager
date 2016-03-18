@@ -1,5 +1,8 @@
 package io.ehdev.conrad.database.api.internal
 
+
+import io.ehdev.conrad.database.api.exception.BumperNotFoundException
+import io.ehdev.conrad.database.api.exception.RepoAlreadyExistsException
 import io.ehdev.conrad.database.config.TestConradDatabaseConfig
 import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
@@ -37,7 +40,7 @@ class DefaultRepoManagementApiIntegrationTest extends Specification {
     def 'basic workflow'() {
         def repoModel = new DefaultApiRepoModel('project', 'newRepo')
         when:
-        def repo = repoManagementApi.createRepo(repoModel, 'semver')
+        def repo = repoManagementApi.createRepo(repoModel, 'semver', true)
 
         then:
         repo != null
@@ -96,5 +99,22 @@ class DefaultRepoManagementApiIntegrationTest extends Specification {
 
         then:
         details.get().mergedName == repoModel.mergedName
+    }
+
+    def 'basic errors'() {
+        def repoModel = new DefaultApiRepoModel('project', 'newRepo')
+
+        when:
+        def repo = repoManagementApi.createRepo(repoModel, 'not found', true)
+
+        then:
+        thrown(BumperNotFoundException)
+
+        when:
+        repo = repoManagementApi.createRepo(repoModel, 'semver', true)
+        repo = repoManagementApi.createRepo(repoModel, 'semver', true)
+
+        then:
+        thrown(RepoAlreadyExistsException)
     }
 }

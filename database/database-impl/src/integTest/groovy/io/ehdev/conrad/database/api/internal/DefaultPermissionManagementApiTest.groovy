@@ -2,6 +2,8 @@ package io.ehdev.conrad.database.api.internal
 
 import io.ehdev.conrad.database.config.TestConradDatabaseConfig
 import io.ehdev.conrad.database.model.ApiParameterContainer
+import io.ehdev.conrad.database.model.project.ApiFullRepoModel
+import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import io.ehdev.conrad.database.model.user.ApiUserPermission
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
@@ -36,6 +38,7 @@ class DefaultPermissionManagementApiTest extends Specification {
         def user = userManagementApi.createUser('userName', 'name', 'email')
         def readUser = userManagementApi.createUser('readUser', 'name', 'email')
         projectManagementApi.createProject(new ApiParameterContainer(user, 'project', null))
+        repoManagementApi.createRepo(new DefaultApiRepoModel('project', 'newRepo'), 'semver', false)
 
         when:
         def permission = permissionManagementApi.forceAddPermission('userName', 'project', null, ApiUserPermission.ADMIN)
@@ -59,5 +62,23 @@ class DefaultPermissionManagementApiTest extends Specification {
         permissionManagementApi.doesUserHavePermission(user, 'project', null, ApiUserPermission.READ)
         permissionManagementApi.doesUserHavePermission(user, 'project', null, ApiUserPermission.WRITE)
         permissionManagementApi.doesUserHavePermission(user, 'project', null, ApiUserPermission.ADMIN)
+
+        when:
+        readPermissions = permissionManagementApi.forceAddPermission('readUser', 'project', null, ApiUserPermission.READ)
+
+        then:
+        readPermissions
+        permissionManagementApi.doesUserHavePermission(user, 'project', 'newRepo', ApiUserPermission.NONE)
+        permissionManagementApi.doesUserHavePermission(user, 'project', 'newRepo', ApiUserPermission.READ)
+
+        when:
+        println 'deleting readUser from project'
+        readPermissions = permissionManagementApi.forceAddPermission('readUser', 'project', null, ApiUserPermission.NONE) &&
+            permissionManagementApi.forceAddPermission('readUser', 'project', 'newRepo', ApiUserPermission.NONE)
+
+        then:
+        readPermissions
+        permissionManagementApi.doesUserHavePermission(readUser, 'project', 'newRepo', ApiUserPermission.NONE)
+        !permissionManagementApi.doesUserHavePermission(readUser, 'project', 'newRepo', ApiUserPermission.READ)
     }
 }

@@ -60,7 +60,7 @@ public class DefaultRepoManagementApi implements RepoManagementApiInternal {
     }
 
     @Override
-    public ApiRepoDetailsModel createRepo(ApiFullRepoModel qualifiedRepo, String bumperName) {
+    public ApiRepoDetailsModel createRepo(ApiFullRepoModel qualifiedRepo, String bumperName, boolean isPublic) {
         Optional<RepoDetails> exists = findRepository(qualifiedRepo.getProjectName(), qualifiedRepo.getRepoName());
         if (exists.isPresent()) {
             throw new RepoAlreadyExistsException(qualifiedRepo);
@@ -83,7 +83,7 @@ public class DefaultRepoManagementApi implements RepoManagementApiInternal {
             versionBumpers.getUuid(),
             qualifiedRepo.getUrl(),
             "",
-            true);
+            isPublic);
 
         repoDetailsDao.insert(repoDetails);
 

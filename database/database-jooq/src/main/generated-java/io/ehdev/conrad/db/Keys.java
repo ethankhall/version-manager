@@ -70,7 +70,7 @@ public class Keys {
 	public static final UniqueKey<UserDetailsRecord> USER_DETAILS_PKEY = UniqueKeys0.USER_DETAILS_PKEY;
 	public static final UniqueKey<UserDetailsRecord> USER_DETAILS_USER_NAME_KEY = UniqueKeys0.USER_DETAILS_USER_NAME_KEY;
 	public static final UniqueKey<UserPermissionsRecord> USER_PERMISSIONS_PKEY = UniqueKeys0.USER_PERMISSIONS_PKEY;
-	public static final UniqueKey<UserPermissionsRecord> USER_PERMISSIONS_PROJECT_NAME_REPO_NAME_KEY = UniqueKeys0.USER_PERMISSIONS_PROJECT_NAME_REPO_NAME_KEY;
+	public static final UniqueKey<UserPermissionsRecord> USER_PERMISSIONS_PROJECT_NAME_REPO_NAME_USER_UUID_KEY = UniqueKeys0.USER_PERMISSIONS_PROJECT_NAME_REPO_NAME_USER_UUID_KEY;
 	public static final UniqueKey<UserPermissionsRecord> USER_PERMISSIONS_PROJECT_UUID_REPO_DETAILS_UUID_USER_UUID_KEY = UniqueKeys0.USER_PERMISSIONS_PROJECT_UUID_REPO_DETAILS_UUID_USER_UUID_KEY;
 	public static final UniqueKey<UserSecurityClientProfileRecord> USER_SECURITY_CLIENT_PROFILE_PKEY = UniqueKeys0.USER_SECURITY_CLIENT_PROFILE_PKEY;
 	public static final UniqueKey<UserSecurityClientProfileRecord> USER_SECURITY_CLIENT_PROFILE_PROVIDER_TYPE_PROVIDER_USER_ID_KEY = UniqueKeys0.USER_SECURITY_CLIENT_PROFILE_PROVIDER_TYPE_PROVIDER_USER_ID_KEY;
@@ -117,7 +117,7 @@ public class Keys {
 		public static final UniqueKey<UserDetailsRecord> USER_DETAILS_PKEY = createUniqueKey(UserDetailsTable.USER_DETAILS, UserDetailsTable.USER_DETAILS.UUID);
 		public static final UniqueKey<UserDetailsRecord> USER_DETAILS_USER_NAME_KEY = createUniqueKey(UserDetailsTable.USER_DETAILS, UserDetailsTable.USER_DETAILS.USER_NAME);
 		public static final UniqueKey<UserPermissionsRecord> USER_PERMISSIONS_PKEY = createUniqueKey(UserPermissionsTable.USER_PERMISSIONS, UserPermissionsTable.USER_PERMISSIONS.UUID);
-		public static final UniqueKey<UserPermissionsRecord> USER_PERMISSIONS_PROJECT_NAME_REPO_NAME_KEY = createUniqueKey(UserPermissionsTable.USER_PERMISSIONS, UserPermissionsTable.USER_PERMISSIONS.PROJECT_NAME, UserPermissionsTable.USER_PERMISSIONS.REPO_NAME);
+		public static final UniqueKey<UserPermissionsRecord> USER_PERMISSIONS_PROJECT_NAME_REPO_NAME_USER_UUID_KEY = createUniqueKey(UserPermissionsTable.USER_PERMISSIONS, UserPermissionsTable.USER_PERMISSIONS.PROJECT_NAME, UserPermissionsTable.USER_PERMISSIONS.REPO_NAME, UserPermissionsTable.USER_PERMISSIONS.USER_UUID);
 		public static final UniqueKey<UserPermissionsRecord> USER_PERMISSIONS_PROJECT_UUID_REPO_DETAILS_UUID_USER_UUID_KEY = createUniqueKey(UserPermissionsTable.USER_PERMISSIONS, UserPermissionsTable.USER_PERMISSIONS.PROJECT_UUID, UserPermissionsTable.USER_PERMISSIONS.REPO_DETAILS_UUID, UserPermissionsTable.USER_PERMISSIONS.USER_UUID);
 		public static final UniqueKey<UserSecurityClientProfileRecord> USER_SECURITY_CLIENT_PROFILE_PKEY = createUniqueKey(UserSecurityClientProfileTable.USER_SECURITY_CLIENT_PROFILE, UserSecurityClientProfileTable.USER_SECURITY_CLIENT_PROFILE.UUID);
 		public static final UniqueKey<UserSecurityClientProfileRecord> USER_SECURITY_CLIENT_PROFILE_PROVIDER_TYPE_PROVIDER_USER_ID_KEY = createUniqueKey(UserSecurityClientProfileTable.USER_SECURITY_CLIENT_PROFILE, UserSecurityClientProfileTable.USER_SECURITY_CLIENT_PROFILE.PROVIDER_TYPE, UserSecurityClientProfileTable.USER_SECURITY_CLIENT_PROFILE.PROVIDER_USER_ID);

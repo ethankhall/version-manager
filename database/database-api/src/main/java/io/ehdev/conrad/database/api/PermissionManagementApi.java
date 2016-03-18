@@ -16,5 +16,5 @@ public interface PermissionManagementApi {
 
     boolean forceAddPermission(String username, String projectName, String repoName, ApiUserPermission permission);
 
-    List<ApiRepoUserPermission> getPermissionsForProject(ApiParameterContainer repoModel);
+    List<ApiRepoUserPermission> getPermissions(ApiParameterContainer repoModel);
 }
