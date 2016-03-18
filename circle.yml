@@ -11,7 +11,6 @@ machine:
 
 dependencies:
     override:
-        - docker pull java:8
         - ./gradlew resolveDependencies --console=plain
 
 database:
