@@ -6,6 +6,7 @@ import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication
 import io.ehdev.conrad.database.model.permission.UserApiAuthentication
 import io.ehdev.conrad.database.model.user.ApiRepoUserPermission
 import io.ehdev.conrad.database.model.user.ApiUserPermission
+import io.ehdev.conrad.database.model.user.UserPermissionGrants
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired
@@ -42,6 +43,11 @@ class PermissionRequiredCheckTest extends Specification {
             @Override
             List<ApiRepoUserPermission> getPermissions(ApiParameterContainer repoModel) {
                 return new ArrayList<ApiRepoUserPermission>()
+            }
+
+            @Override
+            UserPermissionGrants getUserPermissions(ApiTokenAuthentication authenticatedUser) {
+                return new UserPermissionGrants([], [])
             }
         }
         environment = new MockEnvironment()
