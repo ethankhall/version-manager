@@ -64,6 +64,15 @@ public class RepoEndpoint {
 
         ApiRepoDetailsModel repo = repoManagementApi.createRepo(newModel, createModel.getBumperName(), true);
 
+        if(createModel.getHistory() != null) {
+            ApiCommitModel prev = null;
+            for (CreateRepoRequest.CreateHistory it : createModel.getHistory()) {
+                ApiCommitModel nextVersion = new ApiCommitModel(it.getCommitId(), it.getVersion());
+                repoManagementApi.createCommit(apiParameterContainer, nextVersion, prev);
+                prev = nextVersion;
+            }
+        }
+
         CreateRepoResponse model = new CreateRepoResponse(
             repo.getRepo().getProjectName(),
             repo.getRepo().getRepoName(),
