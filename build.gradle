@@ -1,11 +1,7 @@
 buildscript {
     repositories {
         maven {
-            url 'https://ehdev.artifactoryonline.com/ehdev/local-release/'
-            credentials {
-                username 'read'
-                password 'WUKPJRpDY6AMqdGWxyce334QwCKj3KFw'
-            }
+            url 'https://s3-us-west-1.amazonaws.com/ehdev-maven-repo/maven2'
         }
         mavenLocal()
         mavenCentral()

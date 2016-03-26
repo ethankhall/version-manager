@@ -7,5 +7,6 @@ data class CreateRepoRequest(
     @JsonProperty("scmUrl") val repoUrl: String? = null,
     @JsonProperty("history") val history: List<CreateHistory>? = null) {
 
-    class CreateHistory(val version: String, val commitId: String)
+    class CreateHistory(@JsonProperty("version") val version: String,
+                        @JsonProperty("commitId") val commitId: String)
 }
