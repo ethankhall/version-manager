@@ -8,6 +8,6 @@ import org.springframework.http.HttpStatus;
 public class ProjectExistsException extends BaseHttpException {
 
     public ProjectExistsException(ApiParameterContainer container) {
-        super(HttpStatus.NOT_FOUND, "PR-002", "Project (" + container.getProjectName() + ") exists, but it should not.");
+        super(HttpStatus.CONFLICT, "PR-002", "Project (" + container.getProjectName() + ") exists, but it should not.");
     }
 }

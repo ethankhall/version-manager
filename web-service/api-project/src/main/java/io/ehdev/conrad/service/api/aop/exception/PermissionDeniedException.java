@@ -6,6 +6,6 @@ import org.springframework.http.HttpStatus;
 public class PermissionDeniedException extends BaseHttpException {
 
     public PermissionDeniedException(String name) {
-        super(HttpStatus.FORBIDDEN, "PD-001", name + " does not have access.");
+        super(HttpStatus.UNAUTHORIZED, "PD-001", name + " does not have access.");
     }
 }

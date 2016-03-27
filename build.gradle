@@ -29,15 +29,16 @@ allprojects {
 
 apply from: "gradle/versions.gradle"
 apply from: "gradle/database.gradle"
-apply plugin: 'version-manager'
+//apply plugin: 'version-manager'
 apply plugin: 'base'
 apply plugin: 'jacoco'
 
-versionManager {
-    repoId = '3e79966b-a630-4efa-901b-8819c929c5e3'
-    token = '08A7jgz3PYAcBFh9yZNY8PmsrnNxpEyHU4mgeTYFsntHDno6yRPMkvk7RuOR'
-    providerBaseUrl = 'http://api.ehdev.io'
-}
+//versionManager {
+//    repoName = 'ethankhall'
+//    projectName = 'version-manager'
+//    applicationUrl = 'http://api.ehdev.io'
+////    authToken = ''
+//}
 
 
 subprojects {

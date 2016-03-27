@@ -13,9 +13,17 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    swaggerCodeGen
+    swaggerDeps
+}
+
 sourceCompatibility = '1.7'
 
 dependencies {
+    swaggerDeps project(path: ":web-service:api-project", configuration: 'swagger')
+    swaggerCodeGen 'io.swagger:swagger-codegen-cli:2.1.5'
+
     compile project(":api:rest-model")
     compile ('org.eclipse.jgit:org.eclipse.jgit:4.1.0.201509280440-r') {
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
@@ -39,6 +47,15 @@ dependencies {
 
 shadowJar {
     relocate 'com.fasterxml.jackson', 'jarjar.com.fasterxml.jackson'
+}
+
+task generateCode(type: JavaExec, dependsOn: [configurations.swaggerDeps]) {
+    classpath = configurations.swaggerCodeGen
+    main = 'io.swagger.codegen.SwaggerCodegen'
+    args 'generate',
+        '-l', 'java',
+        '-i', configurations.swaggerDeps.singleFile.absolutePath,
+        '-o', file('src/main/generated-java').absolutePath
 }
 
 publishing {

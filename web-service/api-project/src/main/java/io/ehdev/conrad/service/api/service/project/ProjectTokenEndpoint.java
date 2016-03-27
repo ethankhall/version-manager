@@ -9,8 +9,13 @@ import io.ehdev.conrad.model.permission.GetTokensResponse;
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,7 +30,10 @@ import static io.ehdev.conrad.service.api.service.model.LinkUtilities.projectLin
 import static io.ehdev.conrad.service.api.service.model.LinkUtilities.toLink;
 
 @Controller
-@RequestMapping("/api/v1/project/{projectName}/token")
+@RequestMapping(
+    value = "/api/v1/project/{projectName}/token",
+    consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProjectTokenEndpoint {
 
     private final TokenManagementApi tokenManagementApi;
@@ -37,6 +45,14 @@ public class ProjectTokenEndpoint {
         this.jwtManager = jwtManager;
     }
 
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Permissions deleted"),
+        @ApiResponse(code = 403, message = "Unable to delete token")
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectName", value = "The project name", required = true, dataType = "string", paramType = "path"),
+        @ApiImplicitParam(name = "tokenId", value = "Token to delete", required = true, dataType = "string", paramType = "path"),
+    })
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RepoRequired(exists = true)
@@ -47,6 +63,13 @@ public class ProjectTokenEndpoint {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @ApiResponses({
+        @ApiResponse(code = 201, message = "Token create", response = CreateTokenResponse.class),
+        @ApiResponse(code = 403, message = "Unable to create token")
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectName", value = "The project name", required = true, dataType = "string", paramType = "path"),
+    })
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RepoRequired(exists = true)
@@ -66,11 +89,18 @@ public class ProjectTokenEndpoint {
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Get all Tokens for project", response = GetTokensResponse.class),
+        @ApiResponse(code = 403, message = "Unable to create token")
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectName", value = "The project name", required = true, dataType = "string", paramType = "path"),
+    })
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(method = RequestMethod.GET)
-        public ResponseEntity<GetTokensResponse> findAllTokens(ApiParameterContainer repoModel) {
+    public ResponseEntity<GetTokensResponse> findAllTokens(ApiParameterContainer repoModel) {
         List<GetTokensResponse.TokenEntryModel> tokens = tokenManagementApi
             .getTokens(repoModel.getProjectName(), null)
             .stream()

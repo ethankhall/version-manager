@@ -11,27 +11,32 @@ import retrofit2.http.*
 
 interface ProjectConradClient {
     @POST("/api/v1/project/{projectName}")
-    fun createProject(@Path("projectName") projectName: String): Call<CreateProjectRequest>
+    fun createProject(@Header("X-AUTH-TOKEN") authorization: String, @Path("projectName") projectName: String): Call<CreateProjectRequest>
 
     @GET("/api/v1/project/{projectName}")
-    fun getProject(@Path("projectName") projectName: String): Call<GetProjectResponse>
+    fun getProject(@Header("X-AUTH-TOKEN") authorization: String, @Path("projectName") projectName: String): Call<GetProjectResponse>
 
     @POST("/api/v1/project/{projectName}/permissions")
-    fun addPermission(@Path("projectName") projectName: String,
+    fun addPermission(@Header("X-AUTH-TOKEN") authorization: String,
+                      @Path("projectName") projectName: String,
                       @Body permissionGrant: PermissionGrant): Call<PermissionCreateResponse>
 
     @DELETE("/api/v1/project/{projectName}/permissions/{username}")
-    fun deletePermission(@Path("projectName") projectName: String,
+    fun deletePermission(@Header("X-AUTH-TOKEN") authorization: String,
+                         @Path("projectName") projectName: String,
                          @Path("username") username: String)
 
     @DELETE("/api/v1/project/{projectName}/token/{tokenId}")
-    fun deleteToken(@Path("projectName") projectName: String,
+    fun deleteToken(@Header("X-AUTH-TOKEN") authorization: String,
+                    @Path("projectName") projectName: String,
                     @Path("tokenId") username: String)
 
     @POST("/api/v1/project/{projectName}/token")
-    fun createToken(@Path("projectName") projectName: String): Call<CreateTokenResponse>
+    fun createToken(@Header("X-AUTH-TOKEN") authorization: String,
+                    @Path("projectName") projectName: String): Call<CreateTokenResponse>
 
     @GET("/api/v1/project/{projectName}/token")
-    fun getTokens(@Path("projectName") projectName: String): Call<GetTokensResponse>
+    fun getTokens(@Header("X-AUTH-TOKEN") authorization: String,
+                  @Path("projectName") projectName: String): Call<GetTokensResponse>
 
 }

@@ -20,8 +20,8 @@ include ':auth:authentication:jwt'
 include ':auth:authentication:core'
 
 //Clients
-include ':clients:gradle-plugin'
-include ':clients:java-client'
+//include ':clients:gradle-plugin'
+//include ':clients:java-client'
 
 //api model
 include ':api:rest-model'

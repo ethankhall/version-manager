@@ -4,13 +4,17 @@ import io.ehdev.conrad.database.api.PermissionManagementApi;
 import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.user.UserPermissionGrants;
 import io.ehdev.conrad.model.user.GetUserAccessResponse;
+import io.ehdev.conrad.model.version.CreateVersionResponse;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
-import java.util.stream.Collectors;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -24,6 +28,9 @@ public class UserEndpoint {
         this.permissionManagementApi = permissionManagementApi;
     }
 
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "List access for user", response = GetUserAccessResponse.class),
+    })
     @LoggedInUserRequired
     @RequestMapping(value = "/access")
     public ResponseEntity<GetUserAccessResponse> findAccess(ApiParameterContainer apiParameterContainer) {
@@ -44,6 +51,9 @@ public class UserEndpoint {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Get user profile", response = CreateVersionResponse.class),
+    })
     @LoggedInUserRequired
     @RequestMapping(value = "/profile")
     public ResponseEntity findProfile() {

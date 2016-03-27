@@ -10,8 +10,10 @@ import io.ehdev.conrad.model.project.RepoDefinitionsDetails;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ProjectRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
+import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +27,10 @@ import java.util.List;
 import static io.ehdev.conrad.service.api.service.model.LinkUtilities.*;
 
 @Controller
-@RequestMapping("/api/v1/project/{projectName}")
+@RequestMapping(
+    value = "/api/v1/project/{projectName}",
+    consumes = MediaType.APPLICATION_JSON_VALUE,
+    produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProjectEndpoint {
 
     private final ProjectManagementApi projectManagementApi;
@@ -35,8 +40,16 @@ public class ProjectEndpoint {
         this.projectManagementApi = projectManagementApi;
     }
 
-    @ProjectRequired(exists = false)
+    @ApiResponses({
+        @ApiResponse(code = 201, message = "Created Project", response = CreateProjectRequest.class),
+        @ApiResponse(code = 403, message = "User does not have permissions"),
+        @ApiResponse(code = 409, message = "Project already exists")
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectName", value = "The project name", required = true, dataType = "string", paramType = "path"),
+    })
     @LoggedInUserRequired
+    @ProjectRequired(exists = false)
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<CreateProjectRequest> createProject(ApiParameterContainer apiParameterContainer,
                                                               HttpServletRequest request) {
@@ -52,6 +65,14 @@ public class ProjectEndpoint {
         }
     }
 
+    @ApiResponses({
+        @ApiResponse(code = 404, message = "Project does not exist"),
+        @ApiResponse(code = 403, message = "User does not have permissions"),
+        @ApiResponse(code = 200, message = "Gets the details of a project", response = GetProjectResponse.class)
+    })
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "projectName", value = "The project name", required = true, dataType = "string", paramType = "path"),
+    })
     @ProjectRequired
     @ReadPermissionRequired
     @RequestMapping(method = RequestMethod.GET)

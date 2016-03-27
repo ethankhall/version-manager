@@ -36,8 +36,9 @@ class DefaultVersionManagerClient(val client: OkHttpClient, val configuration: V
         val gitHelper = GitHelper(searchDir)
         return Version(
             conradClient.findVersion(
-                configuration.projectName,
-                configuration.repoName,
+                configuration.authToken!!,
+                configuration.projectName!!,
+                configuration.repoName!!,
                 gitHelper.headCommitId.name).execute().body().version)
     }
 
@@ -52,16 +53,18 @@ class DefaultVersionManagerClient(val client: OkHttpClient, val configuration: V
     override fun findVersion(commitIds: List<String>): Version {
         return Version(
             conradClient.findVersion(
-                configuration.projectName,
-                configuration.repoName,
+                configuration.authToken!!,
+                configuration.projectName!!,
+                configuration.repoName!!,
                 CommitIdCollection(commitIds)).execute().body().version)
     }
 
     @Throws(IOException::class)
     override fun claimVersion(commitIds: List<String>, message: String, headCommitId: String): Version {
         val newVersion = conradClient.createNewVersion(
-            configuration.projectName,
-            configuration.repoName,
+            configuration.authToken!!,
+            configuration.projectName!!,
+            configuration.repoName!!,
             CreateVersionRequest(commitIds, message, headCommitId)).execute().body()
 
         return Version(newVersion.version)
@@ -77,8 +80,9 @@ class DefaultVersionManagerClient(val client: OkHttpClient, val configuration: V
     @Throws(IOException::class)
     override fun createRepository(repoCreateModel: CreateRepoRequest): CreateRepoResponse {
         return conradClient.createRepository(
-            configuration.projectName,
-            configuration.repoName,
+            configuration.authToken!!,
+            configuration.projectName!!,
+            configuration.repoName!!,
             repoCreateModel).execute().body()
     }
 

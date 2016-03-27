@@ -1,0 +1,9 @@
+spring:
+    datasource:
+            url: jdbc:postgresql://172.0.1.100/version_manager_test
+            username: version_manager_test
+            password: password
+
+jwt:
+    signing:
+        key: secret

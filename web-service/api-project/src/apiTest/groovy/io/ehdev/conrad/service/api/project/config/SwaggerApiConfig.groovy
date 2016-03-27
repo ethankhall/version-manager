@@ -1,7 +1,8 @@
-package io.ehdev.conrad.service.api.config
+package io.ehdev.conrad.service.api.project.config
 
 import io.ehdev.conrad.database.config.ConradDatabaseConfig
 import io.ehdev.conrad.database.model.ApiParameterContainer
+import io.ehdev.conrad.service.api.config.ConradProjectApiConfiguration
 import io.ehdev.conrad.version.config.ConradVersionConfiguration
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
@@ -16,7 +17,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2
 @Configuration
 @EnableSwagger2
 @Import([ConradDatabaseConfig, ConradProjectApiConfiguration, ConradVersionConfiguration])
-class TestConradProjectApiConfiguration {
+class SwaggerApiConfig {
     @Bean
     public Docket customImplementation() {
         def info = new ApiInfo(
