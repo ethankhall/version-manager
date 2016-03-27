@@ -49,15 +49,6 @@ shadowJar {
     relocate 'com.fasterxml.jackson', 'jarjar.com.fasterxml.jackson'
 }
 
-task generateCode(type: JavaExec, dependsOn: [configurations.swaggerDeps]) {
-    classpath = configurations.swaggerCodeGen
-    main = 'io.swagger.codegen.SwaggerCodegen'
-    args 'generate',
-        '-l', 'java',
-        '-i', configurations.swaggerDeps.singleFile.absolutePath,
-        '-o', file('src/main/generated-java').absolutePath
-}
-
 publishing {
     publications {
         shadow(MavenPublication) {

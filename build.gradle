@@ -27,6 +27,8 @@ allprojects {
     }
 }
 
+version = '0.0.1-SNAPSHOT'
+
 apply from: "gradle/versions.gradle"
 apply from: "gradle/database.gradle"
 //apply plugin: 'version-manager'
