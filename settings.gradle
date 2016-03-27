@@ -28,7 +28,7 @@ include ':api:rest-model'
 
 //Tests
 include ':test-utils'
-include ':test-runners'
+//include ':test-runners'
 
 //Docs
 include ':docs'

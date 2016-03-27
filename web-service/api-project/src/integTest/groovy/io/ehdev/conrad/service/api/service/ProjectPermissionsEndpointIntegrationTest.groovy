@@ -61,7 +61,7 @@ class ProjectPermissionsEndpointIntegrationTest extends Specification {
 
     def 'can add user to permission'() {
         when:
-        projectPermissionsEndpoint.addPermission(container, new PermissionGrant("test", "WRITE"))
+        projectPermissionsEndpoint.addPermission(container, new PermissionGrant("test", PermissionGrant.PermissionDefinition.WRITE))
 
         then:
         permissionManagementApi.doesUserHavePermission(testUser, "project_name", 'repo_name', ApiUserPermission.WRITE)
