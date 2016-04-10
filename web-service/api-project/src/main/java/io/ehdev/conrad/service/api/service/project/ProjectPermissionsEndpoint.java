@@ -8,10 +8,6 @@ import io.ehdev.conrad.model.permission.PermissionGrant;
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ProjectRequired;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,15 +35,7 @@ public class ProjectPermissionsEndpoint {
         this.permissionManagementApi = permissionManagementApi;
     }
 
-    @ApiResponses({
-        @ApiResponse(code = 200, message = "Permissions deleted", response = PermissionCreateResponse.class),
-        @ApiResponse(code = 401, message = "You do not have permissions to add permissions"),
-        @ApiResponse(code = 403, message = "Unable to create permission", response = PermissionCreateResponse.class)
-    })
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "projectName", value = "The project name", required = true, dataType = "string", paramType = "path"),
-        @ApiImplicitParam(name = "username", value = "Username to add to the project", required = true, dataType = "string", paramType = "path"),
-    })
+
     @ProjectRequired
     @LoggedInUserRequired
     @AdminPermissionRequired
@@ -63,14 +51,6 @@ public class ProjectPermissionsEndpoint {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @ApiResponses({
-        @ApiResponse(code = 201, message = "New permission created", response = PermissionCreateResponse.class),
-        @ApiResponse(code = 401, message = "You do not have permissions to add permissions"),
-        @ApiResponse(code = 403, message = "Unable to create permission", response = PermissionCreateResponse.class)
-    })
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "projectName", value = "The project name", required = true, dataType = "string", paramType = "path"),
-    })
     @ProjectRequired
     @LoggedInUserRequired
     @AdminPermissionRequired

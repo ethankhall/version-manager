@@ -14,10 +14,6 @@ import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
 import io.ehdev.conrad.version.bumper.api.VersionBumperService;
 import io.ehdev.conrad.version.commit.CommitVersion;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,13 +44,6 @@ public class RepoVersionEndpoint {
         this.versionBumperService = versionBumperService;
     }
 
-    @ApiResponses({
-        @ApiResponse(code = 200, message = "All versions for a project", response = GetAllVersionsResponse.class),
-    })
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "projectName", value = "The project name", required = true, dataType = "string", paramType = "path"),
-        @ApiImplicitParam(name = "repoName", value = "The repo name", required = true, dataType = "string", paramType = "path"),
-    })
     @ReadPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(value = "/versions", method = RequestMethod.GET)
@@ -81,13 +70,6 @@ public class RepoVersionEndpoint {
         return ResponseEntity.ok(response);
     }
 
-    @ApiResponses({
-        @ApiResponse(code = 201, message = "Create a new version", response = CreateVersionResponse.class),
-    })
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "projectName", value = "The project name", required = true, dataType = "string", paramType = "path"),
-        @ApiImplicitParam(name = "repoName", value = "The repo name", required = true, dataType = "string", paramType = "path"),
-    })
     @WritePermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(value = "/version", method = RequestMethod.POST)
@@ -119,13 +101,6 @@ public class RepoVersionEndpoint {
         return ResponseEntity.created(uri).body(response);
     }
 
-    @ApiResponses({
-        @ApiResponse(code = 200, message = "Find a version by ID or version number", response = GetVersionResponse.class),
-    })
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "projectName", value = "The project name", required = true, dataType = "string", paramType = "path"),
-        @ApiImplicitParam(name = "repoName", value = "The repo name", required = true, dataType = "string", paramType = "path"),
-    })
     @ReadPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(value = "/version/{versionArg:.+}", method = RequestMethod.GET)

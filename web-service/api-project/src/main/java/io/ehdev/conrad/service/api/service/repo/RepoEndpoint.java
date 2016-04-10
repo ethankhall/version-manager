@@ -7,7 +7,6 @@ import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
 import io.ehdev.conrad.database.model.project.DefaultApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.model.commit.CommitIdCollection;
-import io.ehdev.conrad.model.permission.GetTokensResponse;
 import io.ehdev.conrad.model.permission.PermissionGrant;
 import io.ehdev.conrad.model.repository.CreateRepoRequest;
 import io.ehdev.conrad.model.repository.CreateRepoResponse;
@@ -17,10 +16,6 @@ import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -54,14 +49,6 @@ public class RepoEndpoint {
         this.permissionManagementApi = permissionManagementApi;
     }
 
-    @ApiResponses({
-        @ApiResponse(code = 200, message = "Get all Tokens for project", response = GetTokensResponse.class),
-        @ApiResponse(code = 403, message = "You do not have permissions to delete repo")
-    })
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "projectName", value = "The project name", required = true, dataType = "string", paramType = "path"),
-        @ApiImplicitParam(name = "repoName", value = "The repo name", required = true, dataType = "string", paramType = "path"),
-    })
     @AdminPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(method = RequestMethod.DELETE)
@@ -70,14 +57,6 @@ public class RepoEndpoint {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @ApiResponses({
-        @ApiResponse(code = 201, message = "Create project", response = CreateRepoResponse.class),
-        @ApiResponse(code = 403, message = "You do not have permissions to delete repo")
-    })
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "projectName", value = "The project name", required = true, dataType = "string", paramType = "path"),
-        @ApiImplicitParam(name = "repoName", value = "The repo name", required = true, dataType = "string", paramType = "path"),
-    })
     @WritePermissionRequired
     @RepoRequired(exists = false)
     @RequestMapping(method = RequestMethod.POST)
@@ -108,14 +87,6 @@ public class RepoEndpoint {
         return new ResponseEntity<>(model, HttpStatus.CREATED);
     }
 
-    @ApiResponses({
-        @ApiResponse(code = 200, message = "Get repository", response = GetRepoResponse.class),
-        @ApiResponse(code = 403, message = "You do not have permissions to delete repo")
-    })
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "projectName", value = "The project name", required = true, dataType = "string", paramType = "path"),
-        @ApiImplicitParam(name = "repoName", value = "The repo name", required = true, dataType = "string", paramType = "path"),
-    })
     @ReadPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(method = RequestMethod.GET)
@@ -139,15 +110,6 @@ public class RepoEndpoint {
         return ResponseEntity.ok(restRepoModel);
     }
 
-    @ApiResponses({
-        @ApiResponse(code = 200, message = "Found result", response = VersionSearchResponse.class),
-        @ApiResponse(code = 403, message = "You do not have permissions to delete repo"),
-        @ApiResponse(code = 404, message = "Could not find a version for the history"),
-    })
-    @ApiImplicitParams({
-        @ApiImplicitParam(name = "projectName", value = "The project name", required = true, dataType = "string", paramType = "path"),
-        @ApiImplicitParam(name = "repoName", value = "The repo name", required = true, dataType = "string", paramType = "path"),
-    })
     @ReadPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(value = "/search/version", method = RequestMethod.POST)
