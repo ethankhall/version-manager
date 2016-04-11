@@ -1,9 +1,15 @@
 apply plugin: 'maven-publish'
 
 publishing {
+    publications {
+        mainJava(MavenPublication) {
+            from components.java
+        }
+    }
+
     repositories {
         maven {
-            url "s3://ehdev-maven-repo/maven2"
+            url "s3://ehdev-maven-repo/private-maven2"
             credentials(AwsCredentials) {
                 accessKey project.hasProperty("s3.accessKey") ? project.property("s3.accessKey") : ""
                 secretKey project.hasProperty("s3.secretKey") ? project.property("s3.secretKey") : ""

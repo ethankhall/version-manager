@@ -2,7 +2,7 @@ import io.ehdev.conrad.gradle.SpringRestDocPlugin
 
 apply plugin: 'base'
 apply plugin: 'org.asciidoctor.gradle.asciidoctor'
-apply from: "$rootDir/gradle/publishing-base.gradle"
+apply from: "$rootDir/gradle/publishing-private.gradle"
 
 task mergeResults(type: Copy) {
     into "$buildDir/snippits"

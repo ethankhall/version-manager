@@ -1,7 +1,6 @@
 apply plugin: 'groovy'
 apply plugin: 'local-dev'
 apply plugin: io.ehdev.conrad.gradle.SpringRestDocPlugin
-apply from: "$rootDir/gradle/publishing-base.gradle"
 
 dependencies {
     compile project(':api:rest-model')
@@ -42,38 +41,4 @@ dependencies {
     integTestCompile libraries.springBoot
     integTestCompile libraries.springBootTest
     integTestCompile 'javax.transaction:javax.transaction-api:1.2'
-
-    apiTestCompile 'io.springfox:springfox-swagger2:2.4.0',  'io.springfox:springfox-staticdocs:2.4.0'
-    apiTestCompile project(':database:database-impl')
-    apiTestCompile libraries.springBoot
-    apiTestCompile libraries.springBootTest
-    apiTestCompile 'javax.transaction:javax.transaction-api:1.2'
-    apiTestCompile project(':test-utils')
-}
-
-configurations {
-    swagger
-}
-
-def swaggerJson = new File(buildDir, 'swagger.json')
-
-publishing {
-    publications {
-        swaggerDef(MavenPublication) {
-            artifact(swaggerJson) {
-                classifier "swagger"
-            }
-        }
-    }
-}
-
-artifacts {
-    swagger(swaggerJson) {
-        type 'json'
-        builtBy apiTest
-    }
-}
-
-apiTest {
-    systemProperty 'swagger.file', swaggerJson.absolutePath
 }

@@ -15,5 +15,4 @@ class GetRepoResponse(
     fun addPermission(permission: PermissionGrant) {
         permissions.add(permission)
     }
-
 }

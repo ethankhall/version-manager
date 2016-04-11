@@ -1,9 +1,0 @@
-apply from: "$rootDir/gradle/publishing-base.gradle"
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-}
