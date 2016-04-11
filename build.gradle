@@ -1,14 +1,14 @@
 buildscript {
     repositories {
-        maven {
-            url 'https://s3-us-west-1.amazonaws.com/ehdev-maven-repo/maven2'
-        }
         mavenLocal()
         mavenCentral()
         jcenter()
+        maven {
+            url 'http://repo.ehdev.io/maven2'
+        }
     }
     dependencies {
-        //classpath 'io.ehdev.conrad:gradle-plugin:+'
+        classpath 'io.ehdev.conrad.client:gradle-client:+'
         classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.2.0'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.0'
         classpath "org.flywaydb:flyway-gradle-plugin:3.2.1"
@@ -31,16 +31,16 @@ allprojects {
 
 apply from: "gradle/versions.gradle"
 apply from: "gradle/database.gradle"
-//apply plugin: 'version-manager'
+apply plugin: 'version-manager'
 apply plugin: 'base'
 apply plugin: 'jacoco'
 
-//versionManager {
-//    repoName = 'ethankhall'
-//    projectName = 'version-manager'
-//    applicationUrl = 'http://api.ehdev.io'
-////    authToken = ''
-//}
+versionManager {
+    projectName = 'ethankhall'
+    repoName = 'version-manager'
+    authToken = 'eyJ0eXBlIjoiVVNFUiIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiI0YjRjNGU2ZS0zMmRjLTQ3MTMtOTgzNC1jZGEzMTJjYzk2YjMiLCJleHAiOjE0NjA2NDc2NTQsIm5iZiI6MTQ1ODA1NTY1NH0.sCUFw-JGT3yKvwrymkYVuM6o2_URgM6PPZPZeBDacFo'
+    baseUrl = 'http://159.203.226.149:8080'
+}
 
 
 subprojects {
