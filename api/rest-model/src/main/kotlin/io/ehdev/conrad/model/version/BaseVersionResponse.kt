@@ -28,7 +28,7 @@ open class BaseVersionResponse(@JsonProperty("commitId") val commitId: String,
 
         versionParts = ArrayList<String>()
         val splitVersion = subVersion!!.split("\\.".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
-        for (i in 0..splitVersion.size - 1 - 1) {
+        for (i in 0..splitVersion.size - 1) {
             versionParts.add(splitVersion[i])
         }
     }
