@@ -12,10 +12,13 @@ import spock.lang.Specification
 import spock.lang.Unroll
 
 class ForceVersionSquareBracketCommitMatcherTest extends Specification {
+
     def 'can match based on random string'() {
         expect:
         new ForceVersionSquareBracketCommitMatcher(createVersionFactory()).matches('asdfasdf[force version 123]asdfasd')
         new ForceVersionSquareBracketCommitMatcher(createVersionFactory()).matches('asdfasdf[ force version 2.3.4.4.5.6.7.8.9 ]asdfasd')
+        new ForceVersionSquareBracketCommitMatcher(createVersionFactory()).matches('asdfasdf[set version 123]asdfasd')
+        new ForceVersionSquareBracketCommitMatcher(createVersionFactory()).matches('asdfasdf[ set version 2.3.4.4.5.6.7.8.9 ]asdfasd')
         !new ForceVersionSquareBracketCommitMatcher(createVersionFactory()).matches('asdfasdf[bump 124]asdfasd')
     }
 
@@ -29,7 +32,7 @@ class ForceVersionSquareBracketCommitMatcherTest extends Specification {
         where:
         version                                  | _
         SemanticCommitVersion.parse('1.2.3.4.5') | _
-        SemanticCommitVersion.parse('1234')             | _
+        SemanticCommitVersion.parse('1234')      | _
     }
 
     CommitVersionFactory createVersionFactory() {

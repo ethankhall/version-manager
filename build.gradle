@@ -38,8 +38,6 @@ apply plugin: 'jacoco'
 versionManager {
     projectName = 'ethankhall'
     repoName = 'version-manager'
-    authToken = 'eyJ0eXBlIjoiVVNFUiIsImFsZyI6IkhTMjU2In0.eyJzdWIiOiI0YjRjNGU2ZS0zMmRjLTQ3MTMtOTgzNC1jZGEzMTJjYzk2YjMiLCJleHAiOjE0NjA2NDc2NTQsIm5iZiI6MTQ1ODA1NTY1NH0.sCUFw-JGT3yKvwrymkYVuM6o2_URgM6PPZPZeBDacFo'
-    baseUrl = 'http://159.203.226.149:8080'
 }
 
 

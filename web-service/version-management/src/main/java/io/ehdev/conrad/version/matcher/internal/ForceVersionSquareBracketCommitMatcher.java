@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 public class ForceVersionSquareBracketCommitMatcher<T extends CommitVersion> implements GlobalCommitMatcherProvider<T> {
 
-    private final Pattern pattern = Pattern.compile(".*?\\[\\s*force version\\s*(.*?)\\s*\\].*?", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
+    private final Pattern pattern = Pattern.compile(".*?\\[\\s*(?:force|set) version\\s*(.*?)\\s*\\].*?", Pattern.CASE_INSENSITIVE | Pattern.DOTALL);
     private final CommitVersionFactory<T> factory;
     private String version;
 
