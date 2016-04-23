@@ -24,6 +24,10 @@ apply from: "$rootDir/gradle/publishing-private.gradle"
 
 publish.dependsOn assemble
 
+springBoot {
+    executable = true
+}
+
 dependencies {
     compile project(":api:rest-model")
     compile project(":database:database-api")

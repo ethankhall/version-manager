@@ -18,7 +18,6 @@ buildscript {
 allprojects {
     apply plugin: 'idea'
     group = 'io.ehdev.conrad'
-    version = '0.0.1-SNAPSHOT'
 
     repositories {
         mavenCentral()
