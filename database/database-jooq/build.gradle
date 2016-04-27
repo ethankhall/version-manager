@@ -104,3 +104,5 @@ task generateDataModel(type: JavaExec, dependsOn: ['createLibraryXml']) {
     args(createLibraryXml.libraryFile.absolutePath)
     classpath configurations.codegen
 }
+
+build.dependsOn ':database:database-migration:flywayMigrate'
