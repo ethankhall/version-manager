@@ -33,3 +33,5 @@ dependencies {
     integTestCompile libraries.springBoot
     integTestCompile libraries.springBootTest
 }
+
+integTest.dependsOn ':database:database-migration:flywayMigrate'
