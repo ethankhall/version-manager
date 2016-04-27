@@ -104,6 +104,3 @@ task generateDataModel(type: JavaExec, dependsOn: ['createLibraryXml']) {
     args(createLibraryXml.libraryFile.absolutePath)
     classpath configurations.codegen
 }
-
-
-compileJava.dependsOn generateDataModel
