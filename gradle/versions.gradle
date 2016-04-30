@@ -14,7 +14,7 @@ versions.hibernate = '5.0.5.Final'
 versions.jackson = '2.7.2'
 versions.metrics = '3.1.0'
 versions.springSocial = '1.1.4.RELEASE'
-versions.kotlin = '1.0.0'
+versions.kotlin = '1.0.1-2'
 
 // Because spring boot is opinionated, and I don't want their opinions.
 ext['hibernate.version'] = versions.hibernate

@@ -43,7 +43,6 @@ public class ProjectTokenEndpoint {
 
     @LoggedInUserRequired
     @AdminPermissionRequired
-    @RepoRequired(exists = true)
     @RequestMapping(value = "/{tokenId}", method = RequestMethod.DELETE)
     public ResponseEntity deleteToken(ApiParameterContainer repoModel,
                                       @PathVariable("tokenId") String tokenId) {
@@ -53,7 +52,6 @@ public class ProjectTokenEndpoint {
 
     @LoggedInUserRequired
     @AdminPermissionRequired
-    @RepoRequired(exists = true)
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<CreateTokenResponse> createNewToken(ApiParameterContainer repoModel) {
         ApiGeneratedUserToken token = tokenManagementApi.createToken(repoModel.getProjectName(), null);
@@ -72,7 +70,6 @@ public class ProjectTokenEndpoint {
 
     @LoggedInUserRequired
     @AdminPermissionRequired
-    @RepoRequired(exists = true)
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<GetTokensResponse> findAllTokens(ApiParameterContainer repoModel) {
         List<GetTokensResponse.TokenEntryModel> tokens = tokenManagementApi

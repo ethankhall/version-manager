@@ -4,6 +4,9 @@ auth:
         github:
             key: e26002913dce86419723
             secret: c8d18cb9b65212ad8acb3d0603a85f6bc3aa704f
+        google:
+            key: key
+            secret: secret
 
 server:
     port: 8080
@@ -60,6 +63,9 @@ auth:
         github:
             key: ${GITHUB_KEY}
             secret: ${GITHUB_SECRET}
+        google:
+            key: key
+            secret: secret
 server:
     address: ${PUBLIC_ADDRESS}
     port: ${PUBLIC_PORT}

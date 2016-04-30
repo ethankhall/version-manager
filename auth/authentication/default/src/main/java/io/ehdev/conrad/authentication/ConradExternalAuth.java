@@ -4,6 +4,7 @@ import org.pac4j.core.authorization.RequireAnyRoleAuthorizer;
 import org.pac4j.core.client.Clients;
 import org.pac4j.core.config.Config;
 import org.pac4j.oauth.client.GitHubClient;
+import org.pac4j.oauth.client.Google2Client;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +32,13 @@ public class ConradExternalAuth {
     }
 
     @Bean
+    Google2Client google2Client() {
+        return new Google2Client(environment.getRequiredProperty("auth.client.google.key"),
+            environment.getRequiredProperty("auth.client.google.secret"));
+    }
+
+    @Bean
     Clients clients() {
-        return new Clients(String.format("%s/callback", environment.getProperty("auth.callback.url", "http://localhost:8080")), gitHubClient());
+        return new Clients(String.format("%s/callback", environment.getProperty("auth.callback.url", "http://localhost:8080")), gitHubClient(), google2Client());
     }
 }

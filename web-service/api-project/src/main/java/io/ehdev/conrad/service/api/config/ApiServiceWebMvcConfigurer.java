@@ -22,6 +22,14 @@ public class ApiServiceWebMvcConfigurer extends WebMvcConfigurerAdapter {
 
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.defaultContentType(MediaType.APPLICATION_JSON);
+        configurer.favorPathExtension(false)
+            .favorPathExtension(true)
+            .parameterName("mediaType")
+            .ignoreAcceptHeader(true)
+            .useJaf(false)
+            .defaultContentType(MediaType.APPLICATION_JSON)
+            .mediaType("xml", MediaType.APPLICATION_XML)
+            .mediaType("html", MediaType.TEXT_HTML)
+            .mediaType("json", MediaType.APPLICATION_JSON);
     }
 }
