@@ -5,10 +5,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.List;
 
+@EnableWebMvc
 @Configuration
 public class ApiServiceWebMvcConfigurer extends WebMvcConfigurerAdapter {
 
@@ -20,16 +22,4 @@ public class ApiServiceWebMvcConfigurer extends WebMvcConfigurerAdapter {
         argumentResolvers.add(apiParameterContainerResolver);
     }
 
-    @Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.favorPathExtension(false)
-            .favorPathExtension(true)
-            .parameterName("mediaType")
-            .ignoreAcceptHeader(true)
-            .useJaf(false)
-            .defaultContentType(MediaType.APPLICATION_JSON)
-            .mediaType("xml", MediaType.APPLICATION_XML)
-            .mediaType("html", MediaType.TEXT_HTML)
-            .mediaType("json", MediaType.APPLICATION_JSON);
-    }
 }

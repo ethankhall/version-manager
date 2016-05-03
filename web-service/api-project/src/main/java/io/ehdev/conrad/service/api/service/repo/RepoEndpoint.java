@@ -34,7 +34,6 @@ import static io.ehdev.conrad.service.api.service.model.LinkUtilities.*;
 @Service
 @RequestMapping(
     value = "/api/v1/project/{projectName}/repo/{repoName}",
-    consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
 
 public class RepoEndpoint {

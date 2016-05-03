@@ -8,7 +8,6 @@ import io.ehdev.conrad.model.permission.CreateTokenResponse;
 import io.ehdev.conrad.model.permission.GetTokensResponse;
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
-import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -28,7 +27,6 @@ import static io.ehdev.conrad.service.api.service.model.LinkUtilities.toLink;
 @Controller
 @RequestMapping(
     value = "/api/v1/project/{projectName}/token",
-    consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProjectTokenEndpoint {
 

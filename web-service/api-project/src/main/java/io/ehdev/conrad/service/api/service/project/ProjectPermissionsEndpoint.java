@@ -24,7 +24,6 @@ import static io.ehdev.conrad.service.api.service.model.LinkUtilities.toLink;
 @Controller
 @RequestMapping(
     value = "/api/v1/project/{projectName}/permissions",
-    consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProjectPermissionsEndpoint {
 

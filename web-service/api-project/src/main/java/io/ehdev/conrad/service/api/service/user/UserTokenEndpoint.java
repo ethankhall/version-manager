@@ -7,7 +7,6 @@ import io.ehdev.conrad.database.model.user.ApiGeneratedUserToken;
 import io.ehdev.conrad.model.permission.CreateTokenResponse;
 import io.ehdev.conrad.model.permission.GetTokensResponse;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
-import io.swagger.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +20,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Controller
-@Api
 @RequestMapping("/api/v1/user/tokens")
 public class UserTokenEndpoint {
     private final TokenManagementApi tokenManagementApi;

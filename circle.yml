@@ -37,5 +37,10 @@ deployment:
     master:
         branch: master
         commands:
+            - echo $GOOGLE_CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
+            - gcloud --quiet components update
+            - gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
+            - gcloud config set project $GCLOUD_PROJECT
             - ./gradlew claimVersion --refresh-dependencies  --console=plain
-            - ./gradlew publish -Ps3.accessKey=$S3_ACCESS_KEY -Ps3.secretKey=$S3_SECRET_KEY --console=plain
+            - ./gradlew clean publish -Ps3.accessKey=$S3_ACCESS_KEY -Ps3.secretKey=$S3_SECRET_KEY --console=plain
+            - gsutil cp ./build/web-service/webapp/libs/webapp*.jar $GCLOUD_BUCKET

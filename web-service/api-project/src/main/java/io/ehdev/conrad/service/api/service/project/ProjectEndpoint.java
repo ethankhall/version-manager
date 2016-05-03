@@ -28,7 +28,6 @@ import static io.ehdev.conrad.service.api.service.model.LinkUtilities.*;
 @Controller
 @RequestMapping(
     value = "/api/v1/project/{projectName}",
-    consumes = MediaType.APPLICATION_JSON_VALUE,
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProjectEndpoint {
 
