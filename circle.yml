@@ -8,12 +8,11 @@ machine:
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost/circle_test
         SPRING_DATASOURCE_USERNAME: ubuntu
         SPRING_DATASOURCE_PASSWORD:
-    pre:
-        - bin/fix-ci-vm.sh
 
 dependencies:
     override:
         - ./gradlew resolveDependencies --console=plain
+        - bin/fix-ci-vm.sh
 
 database:
     pre:
