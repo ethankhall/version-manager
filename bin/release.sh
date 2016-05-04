@@ -1,7 +1,7 @@
 #!/bin/bash
 
 export BASE_URL=http://api.crom.tech/api/v1/project/ethankhall/repo/version-manager/version
-export CURRENT_VERSION=`curl $BASE_URL/$(git rev-parse HEAD) | jq -r .version'`
+export CURRENT_VERSION=`curl $BASE_URL/$(git rev-parse HEAD) | jq -r .version`
 export CURRENT_POSTFIX=`echo $CURRENT_VERSION | sed 's/\./-/g'`
 
 gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
