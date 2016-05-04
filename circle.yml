@@ -22,12 +22,8 @@ test:
     override:
         - ./gradlew --stop
         - ./gradlew check --console=plain
-        - ./gradlew asciidoctor --console=plain
 
     post:
-        - mkdir -p $CIRCLE_ARTIFACTS/docs
-        - cp -r build/docs/asciidoc/html5 $CIRCLE_ARTIFACTS/docs
-
         - mkdir -p $CIRCLE_TEST_REPORTS/junit
         - find build -maxdepth 5 -name 'TEST-*.xml' -exec cp {} $CIRCLE_TEST_REPORTS/junit/ \;
 
