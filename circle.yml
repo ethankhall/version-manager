@@ -8,6 +8,8 @@ machine:
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost/circle_test
         SPRING_DATASOURCE_USERNAME: ubuntu
         SPRING_DATASOURCE_PASSWORD:
+    pre:
+        - bin/fix-ci-vm.sh
 
 dependencies:
     override:
@@ -38,7 +40,6 @@ deployment:
         branch: master
         commands:
             - echo $GOOGLE_CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
-            - gcloud --quiet components update
             - gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
             - gcloud config set project $GCLOUD_PROJECT
             - ./gradlew claimVersion --refresh-dependencies  --console=plain
