@@ -8,6 +8,8 @@ import io.ehdev.conrad.model.permission.CreateTokenResponse;
 import io.ehdev.conrad.model.permission.GetTokensResponse;
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
+import io.ehdev.conrad.service.api.service.annotation.InternalLink;
+import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,9 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static io.ehdev.conrad.service.api.service.model.LinkUtilities.projectLink;
-import static io.ehdev.conrad.service.api.service.model.LinkUtilities.toLink;
 
 @Controller
 @RequestMapping(
@@ -48,6 +47,9 @@ public class ProjectTokenEndpoint {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @InternalLinks(links = {
+        @InternalLink(name = "project", ref = "/.."),
+    })
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RequestMapping(method = RequestMethod.POST)
@@ -60,9 +62,6 @@ public class ProjectTokenEndpoint {
             token.getCreatedAt(),
             token.getExpiresAt(),
             authToken);
-
-        created.addLink(toLink(projectLink(repoModel, "project")));
-
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
 

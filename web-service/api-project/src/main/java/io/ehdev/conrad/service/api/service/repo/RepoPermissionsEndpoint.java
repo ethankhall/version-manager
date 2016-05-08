@@ -8,6 +8,8 @@ import io.ehdev.conrad.model.permission.PermissionGrant;
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
+import io.ehdev.conrad.service.api.service.annotation.InternalLink;
+import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +33,10 @@ public class RepoPermissionsEndpoint {
         this.permissionManagementApi = permissionManagementApi;
     }
 
+    @InternalLinks(links = {
+        @InternalLink(name = "project", ref = "/../../.."),
+        @InternalLink(name = "repository", ref = "/..")
+    })
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RepoRequired(exists = true)
@@ -47,6 +53,10 @@ public class RepoPermissionsEndpoint {
     }
 
 
+    @InternalLinks(links = {
+        @InternalLink(name = "project", ref = "/../../.."),
+        @InternalLink(name = "repository", ref = "/..")
+    })
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RepoRequired(exists = true)

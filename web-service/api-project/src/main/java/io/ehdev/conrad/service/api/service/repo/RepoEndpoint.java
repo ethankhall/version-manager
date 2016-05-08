@@ -19,7 +19,6 @@ import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
 import io.ehdev.conrad.service.api.service.annotation.InternalLink;
 import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
-import io.ehdev.conrad.service.api.service.annotation.JsonPermissionView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -90,9 +89,10 @@ public class RepoEndpoint {
         return new ResponseEntity<>(model, HttpStatus.CREATED);
     }
 
-    @JsonPermissionView
     @InternalLinks(links = {
+        @InternalLink(name = "project", ref = "/../.."),
         @InternalLink(name = "tokens", ref = "/token", permissions = ApiUserPermission.ADMIN),
+        @InternalLink(name = "permissions", ref = "/permissions", permissions = ApiUserPermission.ADMIN),
         @InternalLink(name = VERSION_REF, ref = "/versions"),
         @InternalLink(name = "latest", ref = "/version/latest")
     })

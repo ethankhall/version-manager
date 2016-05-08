@@ -8,6 +8,8 @@ import io.ehdev.conrad.model.permission.PermissionGrant;
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ProjectRequired;
+import io.ehdev.conrad.service.api.service.annotation.InternalLink;
+import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -17,9 +19,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import static io.ehdev.conrad.service.api.service.model.LinkUtilities.projectLink;
-import static io.ehdev.conrad.service.api.service.model.LinkUtilities.toLink;
 
 @Controller
 @RequestMapping(
@@ -51,6 +50,9 @@ public class ProjectPermissionsEndpoint {
     }
 
     @ProjectRequired
+    @InternalLinks(links = {
+        @InternalLink(name = "project", ref = "/..", permissions = ApiUserPermission.ADMIN)
+    })
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RequestMapping(method = RequestMethod.POST)
@@ -63,8 +65,6 @@ public class ProjectPermissionsEndpoint {
             ApiUserPermission.valueOf(permissionGrant.getPermission().toString()));
 
         PermissionCreateResponse response = new PermissionCreateResponse(created);
-        response.addLink(toLink(projectLink(repoModel, "project")));
-
         return new ResponseEntity<>(response, created ? HttpStatus.CREATED : HttpStatus.FORBIDDEN);
     }
 }

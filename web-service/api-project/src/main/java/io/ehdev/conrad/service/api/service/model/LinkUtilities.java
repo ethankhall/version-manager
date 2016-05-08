@@ -3,9 +3,7 @@ package io.ehdev.conrad.service.api.service.model;
 import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.model.ResourceLink;
 import io.ehdev.conrad.service.api.service.project.ProjectEndpoint;
-import io.ehdev.conrad.service.api.service.project.ProjectTokenEndpoint;
 import io.ehdev.conrad.service.api.service.repo.RepoEndpoint;
-import io.ehdev.conrad.service.api.service.repo.RepoTokenEndpoint;
 import io.ehdev.conrad.service.api.service.repo.RepoVersionEndpoint;
 import org.springframework.hateoas.Link;
 
@@ -19,10 +17,6 @@ public class LinkUtilities {
 
     private LinkUtilities() { }
 
-    public static Link repositorySelfLink(ApiParameterContainer container) {
-        return repositorySelfLink(container, container.getRepoName());
-    }
-
     public static Link repositorySelfLink(ApiParameterContainer container, String repoName) {
         return linkTo(methodOn(RepoEndpoint.class, container.getProjectName(), repoName)
             .getRepoDetails(container)).withRel("self");
@@ -33,16 +27,6 @@ public class LinkUtilities {
             .getRepoDetails(container)).withRel(linkName);
     }
 
-    public static Link repositoryTokenLink(ApiParameterContainer apiParameterContainer, String name) {
-        return linkTo(methodOn(RepoTokenEndpoint.class, apiParameterContainer.getProjectName(), apiParameterContainer.getRepoName())
-            .findAllTokens(apiParameterContainer)).withRel(name);
-    }
-
-    public static Link versionListLink(ApiParameterContainer container, String linkName) {
-        return linkTo(methodOn(RepoVersionEndpoint.class, container.getProjectName(), container.getRepoName())
-            .getAllVersions(container)).withRel(linkName);
-    }
-
     public static Link versionSelfLink(ApiParameterContainer container, String version) {
         return linkTo(methodOn(RepoVersionEndpoint.class, container.getProjectName(), container.getRepoName())
             .findVersion(container, version)).withSelfRel();
@@ -50,14 +34,6 @@ public class LinkUtilities {
 
     public static Link projectSelfLink(ApiParameterContainer apiParameterContainer) {
         return linkTo(methodOn(ProjectEndpoint.class, apiParameterContainer.getProjectName()).getProject(apiParameterContainer)).withSelfRel();
-    }
-
-    public static Link projectLink(ApiParameterContainer apiParameterContainer, String name) {
-        return linkTo(methodOn(ProjectEndpoint.class, apiParameterContainer.getProjectName()).getProject(apiParameterContainer)).withSelfRel();
-    }
-
-    public static Link projectTokenLink(ApiParameterContainer apiParameterContainer, String name) {
-        return linkTo(methodOn(ProjectTokenEndpoint.class, apiParameterContainer.getProjectName()).findAllTokens(apiParameterContainer)).withRel(name);
     }
 
     public static ResourceLink toLink(Link link) {

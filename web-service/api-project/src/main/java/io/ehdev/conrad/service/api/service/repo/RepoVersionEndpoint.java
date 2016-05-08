@@ -12,6 +12,8 @@ import io.ehdev.conrad.model.version.GetVersionResponse;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
+import io.ehdev.conrad.service.api.service.annotation.InternalLink;
+import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
 import io.ehdev.conrad.version.bumper.api.VersionBumperService;
 import io.ehdev.conrad.version.commit.CommitVersion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +46,10 @@ public class RepoVersionEndpoint {
         this.versionBumperService = versionBumperService;
     }
 
+    @InternalLinks(links = {
+        @InternalLink(name = "project", ref = "/../../.."),
+        @InternalLink(name = "repository", ref = "/..")
+    })
     @ReadPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(value = "/versions", method = RequestMethod.GET)
@@ -64,12 +70,14 @@ public class RepoVersionEndpoint {
             response.setLatest(response.getCommits().get(0));
         }
 
-        response.addLink(toLink(repositoryLink(apiParameterContainer, REPOSITORY_REF)));
-        response.addLink(toLink(versionListLink(apiParameterContainer, "self")));
-
         return ResponseEntity.ok(response);
     }
 
+    @InternalLinks(links = {
+        @InternalLink(name = "project", ref = "/../../.."),
+        @InternalLink(name = "versions", ref = "/../versions"),
+        @InternalLink(name = "repository", ref = "/..")
+    })
     @WritePermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(value = "/version", method = RequestMethod.POST)
@@ -101,6 +109,11 @@ public class RepoVersionEndpoint {
         return ResponseEntity.created(uri).body(response);
     }
 
+    @InternalLinks(links = {
+        @InternalLink(name = "project", ref = "/../../../.."),
+        @InternalLink(name = "versions", ref = "/../../versions"),
+        @InternalLink(name = "repository", ref = "/../..")
+    })
     @ReadPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(value = "/version/{versionArg:.+}", method = RequestMethod.GET)
@@ -109,9 +122,6 @@ public class RepoVersionEndpoint {
         Optional<ApiCommitModel> commit = repoManagementApi.findCommit(apiParameterContainer, versionArg);
         if (commit.isPresent()) {
             GetVersionResponse versionResponse = new GetVersionResponse(commit.get().getCommitId(), commit.get().getVersion());
-            versionResponse.addLink(toLink(versionSelfLink(apiParameterContainer, commit.get().getVersion())));
-            versionResponse.addLink(toLink(versionListLink(apiParameterContainer, VERSION_REF)));
-            versionResponse.addLink(toLink(repositoryLink(apiParameterContainer, REPOSITORY_REF)));
             return ResponseEntity.ok(versionResponse);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

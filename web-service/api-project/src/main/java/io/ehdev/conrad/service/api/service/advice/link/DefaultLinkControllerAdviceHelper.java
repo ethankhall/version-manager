@@ -5,8 +5,10 @@ import io.ehdev.conrad.model.DefaultResourceSupport;
 import io.ehdev.conrad.model.ResourceLink;
 import io.ehdev.conrad.service.api.service.annotation.InternalLink;
 import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
+import org.apache.commons.io.FilenameUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.net.URI;
 
 public class DefaultLinkControllerAdviceHelper implements LinkControllerAdviceHelper {
 
@@ -25,13 +27,22 @@ public class DefaultLinkControllerAdviceHelper implements LinkControllerAdviceHe
         resourceSupport.addLink(new ResourceLink("self", fullUrl));
         for (InternalLink internalLink : annotation.links()) {
             if (permission.isHigherOrEqualTo(internalLink.permissions())) {
-                resourceSupport.addLink(new ResourceLink(internalLink.name(), fullUrl + internalLink.ref()));
+                addLink(internalLink);
             }
         }
     }
 
+    private void addLink(InternalLink internalLink) {
+        String href = URI.create(fullUrl + internalLink.ref()).normalize().toString();
+        if(href.endsWith("/")) {
+            href = href.substring(0, href.length() - 1);
+        }
+        ResourceLink resourceLink = new ResourceLink(internalLink.name(), href);
+        resourceSupport.addLink(resourceLink);
+    }
+
     public static String getFullURL(HttpServletRequest request) {
-        StringBuffer requestURL = request.getRequestURL();
+        StringBuilder requestURL = new StringBuilder(FilenameUtils.removeExtension(request.getRequestURL().toString()));
         String queryString = request.getQueryString();
 
         if (queryString == null) {

@@ -13,7 +13,6 @@ import io.ehdev.conrad.service.api.aop.annotation.ProjectRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.service.annotation.InternalLink;
 import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
-import io.ehdev.conrad.service.api.service.annotation.JsonPermissionView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -63,9 +62,9 @@ public class ProjectEndpoint {
 
     @ProjectRequired
     @ReadPermissionRequired
-    @JsonPermissionView
     @InternalLinks(links = {
-        @InternalLink(name = "tokens", ref = "/token", permissions = ApiUserPermission.ADMIN)
+        @InternalLink(name = "tokens", ref = "/token", permissions = ApiUserPermission.ADMIN),
+        @InternalLink(name = "permissions", ref = "/permissions", permissions = ApiUserPermission.ADMIN)
     })
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<GetProjectResponse> getProject(ApiParameterContainer apiParameterContainer) {
