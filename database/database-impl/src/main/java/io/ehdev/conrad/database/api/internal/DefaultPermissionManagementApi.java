@@ -15,17 +15,15 @@ import io.ehdev.conrad.db.tables.pojos.ProjectDetails;
 import io.ehdev.conrad.db.tables.pojos.RepoDetails;
 import io.ehdev.conrad.db.tables.pojos.UserDetails;
 import io.ehdev.conrad.db.tables.records.UserPermissionsRecord;
-import java.util.ArrayList;
 import org.apache.commons.lang3.StringUtils;
 import org.jooq.DSLContext;
 import org.jooq.Record;
 import org.jooq.Record1;
 import org.jooq.Result;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -33,8 +31,6 @@ import java.util.stream.Collectors;
 
 @Service
 public class DefaultPermissionManagementApi implements PermissionManagementApiInternal {
-
-    private static final Logger logger = LoggerFactory.getLogger(DefaultPermissionManagementApi.class);
 
     private final DSLContext dslContext;
     private final UserDetailsDao userDetailsDao;
@@ -50,6 +46,32 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
         this.userDetailsDao = userDetailsDao;
         this.repoManagementApi = repoManagementApi;
         this.projectDetailsDao = projectManagementApi;
+    }
+
+    public ApiUserPermission findHighestUserPermission(ApiTokenAuthentication apiUser, String project, String repoName) {
+        if(apiUser == null) {
+            return ApiUserPermission.NONE;
+        }
+
+        UserPermissionsTable up = Tables.USER_PERMISSIONS.as("up");
+        //@formatter:off
+        Record record = dslContext
+            .select()
+            .from(up)
+            .where(up.PROJECT_NAME.eq(project))
+                .and(repoName != null ? up.REPO_NAME.eq(repoName).or(up.REPO_NAME.isNull()) : up.REPO_NAME.isNull())
+                .and(up.USER_UUID.eq(apiUser.getUuid()))
+            .orderBy(up.PERMISSIONS.desc())
+            .limit(1)
+            .fetchOne();
+        //@formatter:on
+
+        if(record == null) {
+            return ApiUserPermission.NONE;
+        }
+
+        UserPermissionsRecord userPermissionsRecord = record.into(UserPermissionsRecord.class);
+        return ApiUserPermission.findById(userPermissionsRecord.getPermissions());
     }
 
     @Override

@@ -4,12 +4,16 @@ import io.ehdev.conrad.database.api.ProjectManagementApi;
 import io.ehdev.conrad.database.api.exception.ProjectAlreadyExistsException;
 import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.project.ApiProjectDetails;
+import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.model.project.CreateProjectRequest;
 import io.ehdev.conrad.model.project.GetProjectResponse;
 import io.ehdev.conrad.model.project.RepoDefinitionsDetails;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ProjectRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
+import io.ehdev.conrad.service.api.service.annotation.InternalLink;
+import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
+import io.ehdev.conrad.service.api.service.annotation.JsonPermissionView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -41,6 +45,7 @@ public class ProjectEndpoint {
 
     @LoggedInUserRequired
     @ProjectRequired(exists = false)
+    @InternalLinks()
     @RequestMapping(method = RequestMethod.POST)
     public ResponseEntity<CreateProjectRequest> createProject(ApiParameterContainer apiParameterContainer,
                                                               HttpServletRequest request) {
@@ -58,6 +63,10 @@ public class ProjectEndpoint {
 
     @ProjectRequired
     @ReadPermissionRequired
+    @JsonPermissionView
+    @InternalLinks(links = {
+        @InternalLink(name = "tokens", ref = "/token", permissions = ApiUserPermission.ADMIN)
+    })
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<GetProjectResponse> getProject(ApiParameterContainer apiParameterContainer) {
         ApiProjectDetails projectDetails = projectManagementApi.getProjectDetails(apiParameterContainer).get();
@@ -65,8 +74,6 @@ public class ProjectEndpoint {
         List<RepoDefinitionsDetails> details = new ArrayList<>();
 
         GetProjectResponse projectModel = new GetProjectResponse(projectDetails.getName(), details);
-        projectModel.addLink(toLink(projectSelfLink(apiParameterContainer)));
-        projectModel.addLink(toLink(projectTokenLink(apiParameterContainer, "tokens")));
 
         projectDetails.getDetails().forEach(it -> {
             RepoDefinitionsDetails repo = new RepoDefinitionsDetails(it.getName());

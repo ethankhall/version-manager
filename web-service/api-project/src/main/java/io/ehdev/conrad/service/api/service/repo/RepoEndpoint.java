@@ -6,6 +6,7 @@ import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
 import io.ehdev.conrad.database.model.project.DefaultApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
+import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.model.commit.CommitIdCollection;
 import io.ehdev.conrad.model.permission.PermissionGrant;
 import io.ehdev.conrad.model.repository.CreateRepoRequest;
@@ -16,6 +17,9 @@ import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
+import io.ehdev.conrad.service.api.service.annotation.InternalLink;
+import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
+import io.ehdev.conrad.service.api.service.annotation.JsonPermissionView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -56,6 +60,7 @@ public class RepoEndpoint {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @InternalLinks()
     @WritePermissionRequired
     @RepoRequired(exists = false)
     @RequestMapping(method = RequestMethod.POST)
@@ -81,11 +86,16 @@ public class RepoEndpoint {
             repo.getRepo().getProjectName(),
             repo.getRepo().getRepoName(),
             repo.getRepo().getUrl());
-        model.addLink(toLink(repositorySelfLink(apiParameterContainer)));
 
         return new ResponseEntity<>(model, HttpStatus.CREATED);
     }
 
+    @JsonPermissionView
+    @InternalLinks(links = {
+        @InternalLink(name = "tokens", ref = "/token", permissions = ApiUserPermission.ADMIN),
+        @InternalLink(name = VERSION_REF, ref = "/versions"),
+        @InternalLink(name = "latest", ref = "/version/latest")
+    })
     @ReadPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(method = RequestMethod.GET)
@@ -103,9 +113,6 @@ public class RepoEndpoint {
                 new PermissionGrant(it.getUsername(), PermissionGrant.PermissionDefinition.valueOf(it.getPermissions())));
         });
 
-        restRepoModel.addLink(toLink(repositorySelfLink(container)));
-        restRepoModel.addLink(toLink(versionListLink(container, VERSION_REF)));
-        restRepoModel.addLink(toLink(repositoryTokenLink(container, "tokens")));
         return ResponseEntity.ok(restRepoModel);
     }
 

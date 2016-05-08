@@ -27,4 +27,8 @@ public enum ApiUserPermission {
         }
         throw new RuntimeException(id + " is not a known permission level");
     }
+
+    public boolean isHigherOrEqualTo(ApiUserPermission permission) {
+        return this.securityId >= permission.getSecurityId();
+    }
 }

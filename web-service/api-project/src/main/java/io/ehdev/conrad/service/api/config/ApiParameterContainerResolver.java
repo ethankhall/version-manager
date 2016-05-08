@@ -1,9 +1,7 @@
 package io.ehdev.conrad.service.api.config;
 
 import io.ehdev.conrad.database.model.ApiParameterContainer;
-import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
 import org.springframework.core.MethodParameter;
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -28,28 +26,7 @@ public class ApiParameterContainerResolver implements HandlerMethodArgumentResol
                                                  NativeWebRequest webRequest,
                                                  WebDataBinderFactory binderFactory) throws Exception {
 
-        ApiTokenAuthentication user = null;
-        String projectName = null;
-        String repoName = null;
-
-        if (webRequest.getUserPrincipal() instanceof Authentication) {
-            Object principal = ((Authentication) webRequest.getUserPrincipal()).getPrincipal();
-            if (principal instanceof ApiTokenAuthentication) {
-                user = (ApiTokenAuthentication) principal;
-            }
-        }
-
-        Map<String, String> args = getParameters(webRequest);
-
-        if(args.containsKey("projectName")) {
-            projectName = args.get("projectName");
-        }
-
-        if(args.containsKey("repoName")) {
-            repoName = args.get("repoName");
-        }
-
-        return new ApiParameterContainer(user, projectName, repoName);
+        return new ApiParameterContainerBuilder(webRequest.getUserPrincipal(), getParameters(webRequest)).createContainer();
     }
 
     @SuppressWarnings("unchecked")

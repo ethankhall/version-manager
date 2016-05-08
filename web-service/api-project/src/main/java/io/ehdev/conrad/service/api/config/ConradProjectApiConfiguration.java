@@ -13,6 +13,8 @@ public class ConradProjectApiConfiguration {
 
     @Bean
     public Jackson2ObjectMapperBuilder objectMapperBuilder() {
-        return new Jackson2ObjectMapperBuilder().modulesToInstall(new KotlinModule());
+        return new Jackson2ObjectMapperBuilder()
+            .modulesToInstall(new KotlinModule())
+            .defaultViewInclusion(true);
     }
 }

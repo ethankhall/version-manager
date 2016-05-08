@@ -14,5 +14,9 @@ class ApiUserPermissionTest extends Specification{
         ApiUserPermission.NONE < ApiUserPermission.READ
         ApiUserPermission.READ < ApiUserPermission.WRITE
         ApiUserPermission.WRITE < ApiUserPermission.ADMIN
+
+        ApiUserPermission.READ.isHigherOrEqualTo(ApiUserPermission.NONE)
+        ApiUserPermission.WRITE.isHigherOrEqualTo(ApiUserPermission.READ)
+        ApiUserPermission.ADMIN.isHigherOrEqualTo(ApiUserPermission.WRITE)
     }
 }

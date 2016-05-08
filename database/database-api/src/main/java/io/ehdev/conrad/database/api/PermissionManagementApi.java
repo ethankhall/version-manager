@@ -11,6 +11,8 @@ import java.util.List;
 
 public interface PermissionManagementApi {
 
+    ApiUserPermission findHighestUserPermission(ApiTokenAuthentication apiUser, String project, String repoName);
+
     boolean doesUserHavePermission(ApiTokenAuthentication apiUser, String project, String repoName, ApiUserPermission permission);
 
     boolean addPermission(String username, ApiTokenAuthentication authenticatedUser, String projectName, String repoName, ApiUserPermission permission);

@@ -2,8 +2,8 @@
 auth:
     client:
         github:
-            key: e26002913dce86419723
-            secret: c8d18cb9b65212ad8acb3d0603a85f6bc3aa704f
+            key: 429f464a7132f07de230
+            secret: dccb8a804a0da2a623c4a03b650b36b076a8aea1
         google:
             key: key
             secret: secret

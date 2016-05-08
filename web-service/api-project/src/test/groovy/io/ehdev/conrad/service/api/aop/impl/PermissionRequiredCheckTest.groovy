@@ -26,6 +26,11 @@ class PermissionRequiredCheckTest extends Specification {
         permissionManagementApi = new PermissionManagementApi() {
 
             @Override
+            ApiUserPermission findHighestUserPermission(ApiTokenAuthentication apiUser, String project, String repoName) {
+                return ApiUserPermission.ADMIN
+            }
+
+            @Override
             boolean doesUserHavePermission(ApiTokenAuthentication apiUser, String project, String repoName, ApiUserPermission permission) {
                 return ApiUserPermission.valueOf(project.toUpperCase()) >= permission
             }
