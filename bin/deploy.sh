@@ -10,7 +10,7 @@ if [[ "200" == "$RESPONSE" ]]; then
     gcloud alpha compute rolling-updates start --group crom-main-api-group --template instance-template-$POST_FIX --min-instance-update-time 300
 
     gcloud alpha compute rolling-updates list
-    echo "==> Use `gcloud alpha compute rolling-updates list` to show rollout status"
+    echo "==> Use 'gcloud alpha compute rolling-updates list' to show rollout status"
 else
     echo "$NEW_VERSION is not a valid version, please try again."
     exit -1
