@@ -48,7 +48,7 @@ class RepoEndpointTest extends Specification {
         def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model)
 
         then:
-        1 * repoManagementApi.findLatestCommit(_, _) >> Optional.of(new ApiCommitModel('commit', '2.3.4'))
+        1 * repoManagementApi.findLatestCommit(_, _) >> Optional.of(new ApiCommitModel('commit', '2.3.4', null))
 
         history.statusCode == HttpStatus.OK
         history.body.commitId == 'commit'

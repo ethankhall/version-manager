@@ -3,22 +3,27 @@ package io.ehdev.conrad.version.bumper.semver;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.version.commit.CommitVersion;
 import io.ehdev.conrad.version.commit.CommitVersionGroup;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 
 public class SemanticCommitVersion implements CommitVersion<Integer> {
     private final static int[] EMPTY_INT_ARRAY = new int[] {};
 
     private final int[] versionList;
     private final String postFix;
+    private final ZonedDateTime createdAt;
 
     public SemanticCommitVersion(int[] versionList, String postFix) {
         this.versionList = Arrays.copyOf(versionList, Math.max(3, versionList.length));
         this.postFix = postFix;
+        this.createdAt = ZonedDateTime.now(ZoneOffset.UTC);
     }
 
     public static SemanticCommitVersion parse(String version) {
@@ -70,6 +75,11 @@ public class SemanticCommitVersion implements CommitVersion<Integer> {
     @Override
     public String getPostFix() {
         return postFix;
+    }
+
+    @Override
+    public ZonedDateTime getCreatedAt() {
+        return createdAt;
     }
 
     @Override

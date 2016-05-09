@@ -27,11 +27,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static io.ehdev.conrad.service.api.service.model.LinkUtilities.*;
+import static io.ehdev.conrad.service.api.service.model.LinkUtilities.toLink;
+import static io.ehdev.conrad.service.api.service.model.LinkUtilities.versionSelfLink;
 
 @Service
 @RequestMapping("/api/v1/project/{projectName}/repo/{repoName}")
@@ -61,12 +63,14 @@ public class RepoVersionEndpoint {
             .stream()
             .sorted(new ReverseApiCommitComparator())
             .forEach(it -> {
-                GetAllVersionsResponse.CommitModel commit = new GetAllVersionsResponse.CommitModel(it.getCommitId(), it.getVersion());
+                GetAllVersionsResponse.CommitModel commit = new GetAllVersionsResponse.CommitModel(it.getCommitId(),
+                    it.getVersion(),
+                    it.getCreatedAt());
                 commit.addLink(toLink(versionSelfLink(apiParameterContainer, it.getVersion())));
                 response.addCommit(commit);
             });
 
-        if(!response.getCommits().isEmpty()) {
+        if (!response.getCommits().isEmpty()) {
             response.setLatest(response.getCommits().get(0));
         }
 
@@ -97,14 +101,18 @@ public class RepoVersionEndpoint {
             apiParameterContainer,
             versionModel.getCommitId(),
             versionModel.getMessage(),
-            latestCommit.orElse(new ApiCommitModel("<default>", "0.0.0")));
+            latestCommit.orElse(new ApiCommitModel("<default>", "0.0.0", ZonedDateTime.now())));
 
-        ApiCommitModel nextCommit = new ApiCommitModel(versionModel.getCommitId(), nextVersion.toVersionString());
+        ApiCommitModel nextCommit = new ApiCommitModel(versionModel.getCommitId(),
+            nextVersion.toVersionString(),
+            nextVersion.getCreatedAt());
         repoManagementApi.createCommit(apiParameterContainer, nextCommit, latestCommit.orElse(null));
 
         URI uri = URI.create(request.getRequestURL().toString() + "/" + nextCommit.getVersion());
 
-        CreateVersionResponse response = new CreateVersionResponse(versionModel.getCommitId(), nextVersion.toVersionString());
+        CreateVersionResponse response = new CreateVersionResponse(versionModel.getCommitId(),
+            nextVersion.toVersionString(),
+            nextVersion.getCreatedAt());
         response.addLink(toLink(versionSelfLink(apiParameterContainer, nextVersion.toVersionString())));
         return ResponseEntity.created(uri).body(response);
     }
@@ -121,7 +129,10 @@ public class RepoVersionEndpoint {
                                                           @PathVariable("versionArg") String versionArg) {
         Optional<ApiCommitModel> commit = repoManagementApi.findCommit(apiParameterContainer, versionArg);
         if (commit.isPresent()) {
-            GetVersionResponse versionResponse = new GetVersionResponse(commit.get().getCommitId(), commit.get().getVersion());
+            ApiCommitModel apiCommitModel = commit.get();
+            GetVersionResponse versionResponse = new GetVersionResponse(apiCommitModel.getCommitId(),
+                apiCommitModel.getVersion(),
+                apiCommitModel.getCreatedAt());
             return ResponseEntity.ok(versionResponse);
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -129,7 +140,7 @@ public class RepoVersionEndpoint {
     }
 
     private void assertHistoryIsNotMissing(List<ApiCommitModel> commits, Optional<ApiCommitModel> latestCommit) {
-        if(!commits.isEmpty() && !latestCommit.isPresent()) {
+        if (!commits.isEmpty() && !latestCommit.isPresent()) {
             String joinedCommit = commits.stream().map(ApiCommitModel::getCommitId).reduce((t, u) -> t + "," + u).get();
             throw new CommitNotFoundException(joinedCommit);
         }

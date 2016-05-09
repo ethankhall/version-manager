@@ -8,10 +8,11 @@ import io.ehdev.conrad.model.version.CreateVersionRequest
 import io.ehdev.conrad.service.api.service.repo.RepoVersionEndpoint
 import io.ehdev.conrad.version.bumper.api.VersionBumperService
 import io.ehdev.conrad.version.bumper.semver.SemanticCommitVersion
-import io.ehdev.conrad.version.commit.CommitVersion
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletRequest
 import spock.lang.Specification
+
+import java.time.ZonedDateTime
 
 class RepoVersionEndpointTest extends Specification {
 
@@ -31,7 +32,7 @@ class RepoVersionEndpointTest extends Specification {
         def versions = repoEndpoint.getAllVersions(createTestingRepoModel())
 
         then:
-        1 * repoManagementApi.findAllCommits(_) >> [ new ApiCommitModel('abcd1234', '1.2.3')]
+        1 * repoManagementApi.findAllCommits(_) >> [ new ApiCommitModel('abcd1234', '1.2.3', ZonedDateTime.now())]
         versions.getStatusCode() == HttpStatus.OK
         versions.body.commits.size() == 1
         versions.body.commits[0].commitId == 'abcd1234'
@@ -53,7 +54,7 @@ class RepoVersionEndpointTest extends Specification {
 
     def 'can create version'() {
         def versionIds = ['a', 'b', 'c']
-        def lastCommit = new ApiCommitModel('a', '1.2.3')
+        def lastCommit = new ApiCommitModel('a', '1.2.3', null)
 
         when:
         def model = new CreateVersionRequest(versionIds, "Some Message", "f")

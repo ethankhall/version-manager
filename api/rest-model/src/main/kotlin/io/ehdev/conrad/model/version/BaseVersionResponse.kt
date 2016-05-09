@@ -2,10 +2,12 @@ package io.ehdev.conrad.model.version
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.ehdev.conrad.model.DefaultResourceSupport
+import java.time.ZonedDateTime
 import java.util.*
 
 open class BaseVersionResponse(@JsonProperty("commitId") val commitId: String,
-                               @JsonProperty("version") val version: String?) : DefaultResourceSupport() {
+                               @JsonProperty("version") val version: String?,
+                               @JsonProperty("createdAt") val createdAt: ZonedDateTime?) : DefaultResourceSupport() {
 
     @JsonProperty("versionParts")
     val versionParts: MutableList<String>

@@ -75,7 +75,7 @@ public class RepoEndpoint {
         if (createModel.getHistory() != null) {
             ApiCommitModel prev = null;
             for (CreateRepoRequest.CreateHistory it : createModel.getHistory()) {
-                ApiCommitModel nextVersion = new ApiCommitModel(it.getCommitId(), it.getVersion());
+                ApiCommitModel nextVersion = new ApiCommitModel(it.getCommitId(), it.getVersion(), null);
                 repoManagementApi.createCommit(apiParameterContainer, nextVersion, prev);
                 prev = nextVersion;
             }
@@ -108,10 +108,8 @@ public class RepoEndpoint {
             details.getRepo().getUrl()
         );
 
-        permissionManagementApi.getPermissions(container).forEach(it -> {
-            restRepoModel.addPermission(
-                new PermissionGrant(it.getUsername(), PermissionGrant.PermissionDefinition.valueOf(it.getPermissions())));
-        });
+        permissionManagementApi.getPermissions(container).forEach(it -> restRepoModel.addPermission(
+            new PermissionGrant(it.getUsername(), PermissionGrant.PermissionDefinition.valueOf(it.getPermissions()))));
 
         return ResponseEntity.ok(restRepoModel);
     }
@@ -131,7 +129,7 @@ public class RepoEndpoint {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             ApiCommitModel commit = latest.get();
-            VersionSearchResponse body = new VersionSearchResponse(commit.getCommitId(), commit.getVersion());
+            VersionSearchResponse body = new VersionSearchResponse(commit.getCommitId(), commit.getVersion(), commit.getCreatedAt());
             body.addLink(toLink(versionSelfLink(apiParameterContainer, commit.getVersion())));
             return ResponseEntity.ok(body);
         }

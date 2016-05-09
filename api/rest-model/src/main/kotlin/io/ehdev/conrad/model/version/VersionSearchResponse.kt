@@ -1,3 +1,5 @@
 package io.ehdev.conrad.model.version
 
-class VersionSearchResponse(commitId: String, version: String?): BaseVersionResponse(commitId, version){ }
+import java.time.ZonedDateTime
+
+class VersionSearchResponse(commitId: String, version: String?,createdAt: ZonedDateTime?): BaseVersionResponse(commitId, version, createdAt)

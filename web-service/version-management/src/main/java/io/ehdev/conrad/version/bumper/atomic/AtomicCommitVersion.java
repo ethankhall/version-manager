@@ -4,6 +4,8 @@ import io.ehdev.conrad.version.commit.CommitVersion;
 import io.ehdev.conrad.version.commit.CommitVersionGroup;
 import org.jetbrains.annotations.NotNull;
 
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -11,9 +13,11 @@ import java.util.Objects;
 class AtomicCommitVersion implements CommitVersion<Integer> {
 
     private final int version;
+    private final ZonedDateTime createdAt;
 
     AtomicCommitVersion(int version) {
         this.version = version;
+        this.createdAt = ZonedDateTime.now(ZoneOffset.UTC);
     }
 
     public static AtomicCommitVersion parse(String version) {
@@ -47,6 +51,11 @@ class AtomicCommitVersion implements CommitVersion<Integer> {
     @Override
     public String getPostFix() {
         return null;
+    }
+
+    @Override
+    public ZonedDateTime getCreatedAt() {
+        return createdAt;
     }
 
     @Override

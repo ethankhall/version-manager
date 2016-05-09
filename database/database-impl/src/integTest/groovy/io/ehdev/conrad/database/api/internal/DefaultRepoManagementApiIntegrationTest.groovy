@@ -46,7 +46,7 @@ class DefaultRepoManagementApiIntegrationTest extends Specification {
         repo != null
 
         when:
-        repoManagementApi.createCommit(repoModel, new ApiCommitModel('1', '1.2.3'), null)
+        repoManagementApi.createCommit(repoModel, new ApiCommitModel('1', '1.2.3', null), null)
         def foundCommit = repoManagementApi.findLatestCommit(repoModel, [new ApiCommitModel('1')])
 
         then:
@@ -71,7 +71,7 @@ class DefaultRepoManagementApiIntegrationTest extends Specification {
         commits[0].commitId == '1'
 
         when:
-        repoManagementApi.createCommit(repoModel, new ApiCommitModel('2', '1.3.4'), new ApiCommitModel('1'))
+        repoManagementApi.createCommit(repoModel, new ApiCommitModel('2', '1.3.4', null), new ApiCommitModel('1'))
         def allCommits = repoManagementApi.findAllCommits(repoModel)
 
         then:

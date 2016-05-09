@@ -7,6 +7,7 @@ import io.ehdev.conrad.database.model.project.DefaultApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.db.tables.pojos.*;
 
+import java.time.ZoneOffset;
 import java.util.List;
 
 public class ModelConversionUtility {
@@ -29,7 +30,9 @@ public class ModelConversionUtility {
     }
 
     public static ApiCommitModel toApiModel(CommitDetails commitDetails) {
-        return new ApiCommitModel(commitDetails.getCommitId(), commitDetails.getVersion());
+        return new ApiCommitModel(commitDetails.getCommitId(),
+            commitDetails.getVersion(),
+            commitDetails.getCreatedAt().atZone(ZoneOffset.UTC));
     }
 
     public static UserApiAuthentication toApiModel(UserDetails userDetails) {

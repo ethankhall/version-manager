@@ -29,7 +29,7 @@ class DefaultVersionBumperServiceTest extends Specification {
         def apiModel = new DefaultApiRepoModel('project', 'repo')
 
         when:
-        def version = service.findNextVersion(apiModel, 'commitId', 'some message', new ApiCommitModel('foo', '1.2.3'))
+        def version = service.findNextVersion(apiModel, 'commitId', 'some message', new ApiCommitModel('foo', '1.2.3', null))
 
         then:
         repoManagementApi.getDetails(_) >> Optional.of(new ApiRepoDetailsModel(new DefaultApiRepoModel('project', 'repo'), bumperModel))

@@ -38,7 +38,7 @@ class SemanticCommitVersionTest extends Specification {
 
     def 'can parse commit model'() {
         expect:
-        SemanticCommitVersion.parse(new ApiCommitModel('commitId', '1.2.3.4.5.6.7.8.9.0')).toVersionString() == '1.2.3.4.5.6.7.8.9.0'
+        SemanticCommitVersion.parse(new ApiCommitModel('commitId', '1.2.3.4.5.6.7.8.9.0', null)).toVersionString() == '1.2.3.4.5.6.7.8.9.0'
     }
 
     def createCommitVersion(int major, int minor, int patch, String postfix = null) {

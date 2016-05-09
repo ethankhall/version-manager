@@ -9,17 +9,17 @@ class ReverseApiCommitComparatorTest extends Specification {
         def comparator = new ReverseApiCommitComparator()
 
         expect:
-        comparator.compare(new ApiCommitModel('1', '1.0.0'), new ApiCommitModel('2','1.0.0')) == 0
+        comparator.compare(new ApiCommitModel('1', '1.0.0', null), new ApiCommitModel('2','1.0.0', null)) == 0
     }
 
     def 'can order versions'() {
         def list = [
-            new ApiCommitModel('1', '1.2.3'),
-            new ApiCommitModel('1', '1.2.3.1'),
-            new ApiCommitModel('1', '5.0.0'),
-            new ApiCommitModel('1', '1.3.0'),
-            new ApiCommitModel('1', '1.0.0'),
-            new ApiCommitModel('1', '2'),
+            new ApiCommitModel('1', '1.2.3', null),
+            new ApiCommitModel('1', '1.2.3.1', null),
+            new ApiCommitModel('1', '5.0.0', null),
+            new ApiCommitModel('1', '1.3.0', null),
+            new ApiCommitModel('1', '1.0.0', null),
+            new ApiCommitModel('1', '2', null),
         ]
 
         def comparator = new ReverseApiCommitComparator()
@@ -38,8 +38,8 @@ class ReverseApiCommitComparatorTest extends Specification {
 
     def 'test list'() {
         def list = [
-            new ApiCommitModel('1', '1.2.3'),
-            new ApiCommitModel('2', '1.3.4'),
+            new ApiCommitModel('1', '1.2.3', null),
+            new ApiCommitModel('2', '1.3.4', null),
         ]
 
         def comparator = new ReverseApiCommitComparator()
@@ -53,7 +53,7 @@ class ReverseApiCommitComparatorTest extends Specification {
     }
 
     def 'finish out test coverage'() {
-        def same = new ApiCommitModel('1', '1.2.3')
+        def same = new ApiCommitModel('1', '1.2.3', null)
         def comparator = new ReverseApiCommitComparator()
 
         expect:
