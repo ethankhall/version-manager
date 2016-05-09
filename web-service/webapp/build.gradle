@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.4.0.M1'
+        springBootVersion = '1.4.0.M2'
     }
     repositories {
         mavenCentral()
@@ -45,7 +45,7 @@ dependencies {
     compile libraries.springBootWebapp
 
     //Misc
-    compile 'ch.qos.logback:logback-classic:1.1.3'
+    libraries.logback
     compile 'com.google.code.findbugs:jsr305:3.0.1'
     compile libraries.dropwizard
     compile 'org.thymeleaf.extras:thymeleaf-extras-java8time:2.1.0.RELEASE'

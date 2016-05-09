@@ -52,8 +52,6 @@ public class ProjectEndpoint {
             projectManagementApi.createProject(apiParameterContainer);
 
             CreateProjectRequest createProjectModel = new CreateProjectRequest(apiParameterContainer.getProjectName());
-            createProjectModel.addLink(toLink(projectSelfLink(apiParameterContainer)));
-
             return ResponseEntity.created(URI.create(request.getRequestURL().toString())).body(createProjectModel);
         } catch (ProjectAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
