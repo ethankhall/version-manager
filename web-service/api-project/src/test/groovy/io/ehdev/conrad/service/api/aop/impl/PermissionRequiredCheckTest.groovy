@@ -4,7 +4,7 @@ import io.ehdev.conrad.database.api.PermissionManagementApi
 import io.ehdev.conrad.database.model.ApiParameterContainer
 import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication
 import io.ehdev.conrad.database.model.permission.UserApiAuthentication
-import io.ehdev.conrad.database.model.user.ApiRepoUserPermission
+import io.ehdev.conrad.database.model.user.ApiUserPermissionDetails
 import io.ehdev.conrad.database.model.user.ApiUserPermission
 import io.ehdev.conrad.database.model.user.UserPermissionGrants
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired
@@ -46,8 +46,8 @@ class PermissionRequiredCheckTest extends Specification {
             }
 
             @Override
-            List<ApiRepoUserPermission> getPermissions(ApiParameterContainer repoModel) {
-                return new ArrayList<ApiRepoUserPermission>()
+            List<ApiUserPermissionDetails> getPermissions(ApiParameterContainer repoModel) {
+                return new ArrayList<ApiUserPermissionDetails>()
             }
 
             @Override

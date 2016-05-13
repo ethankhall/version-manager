@@ -8,7 +8,7 @@ import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel
 import io.ehdev.conrad.database.model.project.ApiVersionBumperModel
 import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
-import io.ehdev.conrad.database.model.user.ApiRepoUserPermission
+import io.ehdev.conrad.database.model.user.ApiUserPermissionDetails
 import io.ehdev.conrad.model.commit.CommitIdCollection
 import io.ehdev.conrad.service.api.service.repo.RepoEndpoint
 import org.springframework.http.HttpStatus
@@ -63,7 +63,7 @@ class RepoEndpointTest extends Specification {
         details.statusCode == HttpStatus.OK
 
         repoManagementApi.getDetails(_) >> Optional.of(new ApiRepoDetailsModel(new DefaultApiRepoModel("projectName", "repoName"), new ApiVersionBumperModel(' ', ' ', ' ')))
-        permissionManagementApi.getPermissions(_) >> [new ApiRepoUserPermission('bob', 'ADMIN')]
+        permissionManagementApi.getPermissions(_) >> [new ApiUserPermissionDetails('bob', 'ADMIN')]
 
     }
 

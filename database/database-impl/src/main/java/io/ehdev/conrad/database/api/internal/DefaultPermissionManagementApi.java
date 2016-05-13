@@ -4,7 +4,7 @@ import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
 import io.ehdev.conrad.database.model.permission.ProjectApiAuthentication;
 import io.ehdev.conrad.database.model.permission.RepositoryApiAuthentication;
-import io.ehdev.conrad.database.model.user.ApiRepoUserPermission;
+import io.ehdev.conrad.database.model.user.ApiUserPermissionDetails;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.database.model.user.UserPermissionGrants;
 import io.ehdev.conrad.db.Tables;
@@ -157,7 +157,7 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
     }
 
     @Override
-    public List<ApiRepoUserPermission> getPermissions(ApiParameterContainer repoModel) {
+    public List<ApiUserPermissionDetails> getPermissions(ApiParameterContainer repoModel) {
         UserPermissionsTable up = Tables.USER_PERMISSIONS;
 
         //@formatter:off
@@ -198,9 +198,9 @@ public class DefaultPermissionManagementApi implements PermissionManagementApiIn
         return new UserPermissionGrants(projectPermissions, repoPermissions);
     }
 
-    private ApiRepoUserPermission convert(UserPermissionsRecord record) {
+    private ApiUserPermissionDetails convert(UserPermissionsRecord record) {
         UserDetails userDetails = userDetailsDao.fetchOneByUuid(record.getUserUuid());
-        return new ApiRepoUserPermission(userDetails.getUserName(), ApiUserPermission.findById(record.getPermissions()).name());
+        return new ApiUserPermissionDetails(userDetails.getUserName(), ApiUserPermission.findById(record.getPermissions()).name());
     }
 
     private void doInsert(String projectName, UUID projectUUID, String repoName, UUID repoId, UserDetails userDetails, ApiUserPermission permission) {

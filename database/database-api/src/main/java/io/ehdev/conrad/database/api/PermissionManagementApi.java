@@ -3,7 +3,7 @@ package io.ehdev.conrad.database.api;
 
 import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
-import io.ehdev.conrad.database.model.user.ApiRepoUserPermission;
+import io.ehdev.conrad.database.model.user.ApiUserPermissionDetails;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 
 import io.ehdev.conrad.database.model.user.UserPermissionGrants;
@@ -19,7 +19,7 @@ public interface PermissionManagementApi {
 
     boolean forceAddPermission(String username, String projectName, String repoName, ApiUserPermission permission);
 
-    List<ApiRepoUserPermission> getPermissions(ApiParameterContainer repoModel);
+    List<ApiUserPermissionDetails> getPermissions(ApiParameterContainer repoModel);
 
     UserPermissionGrants getUserPermissions(ApiTokenAuthentication authenticatedUser);
 }
