@@ -1,8 +1,7 @@
 package io.ehdev.conrad.service.api.aop.impl;
 
 import io.ehdev.conrad.database.api.PermissionManagementApi;
-import io.ehdev.conrad.database.model.ApiParameterContainer;
-import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
+import io.ehdev.conrad.database.model.repo.RequestDetails;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.service.api.aop.exception.PermissionDeniedException;
 import org.aspectj.lang.JoinPoint;
@@ -13,7 +12,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import static io.ehdev.conrad.service.api.aop.impl.ApiParameterHelper.findApiParameterContainer;
+import static io.ehdev.conrad.service.api.aop.impl.RequestDetailsHelper.findRequestDetails;
 
 @Aspect
 @Service
@@ -48,21 +47,14 @@ public class PermissionRequiredCheck implements Ordered {
             return;
         }
 
-        ApiParameterContainer container = findApiParameterContainer(joinPoint);
+        RequestDetails container = findRequestDetails(joinPoint);
 
-        ApiTokenAuthentication user = container.getUser();
+        if(container.getAuthUserDetails() == null) {
+            throw new PermissionDeniedException("unknown");
+        }
 
-        boolean granted = permissionManagementApi.doesUserHavePermission(user,
-            container.getProjectName(),
-            container.getRepoName(),
-            permission);
-
-        if (!granted) {
-            if (user == null) {
-                throw new PermissionDeniedException("unknown");
-            } else {
-                throw new PermissionDeniedException(user.getNiceName());
-            }
+        if (!container.getAuthUserDetails().getPermission().isHigherOrEqualTo(permission)) {
+            throw new PermissionDeniedException(container.getAuthUserDetails().getName());
         }
     }
 

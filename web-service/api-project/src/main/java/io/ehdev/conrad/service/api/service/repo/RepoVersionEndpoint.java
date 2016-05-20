@@ -2,9 +2,9 @@ package io.ehdev.conrad.service.api.service.repo;
 
 import io.ehdev.conrad.database.api.RepoManagementApi;
 import io.ehdev.conrad.database.api.exception.CommitNotFoundException;
-import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.comparator.ReverseApiCommitComparator;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
+import io.ehdev.conrad.database.model.repo.RequestDetails;
 import io.ehdev.conrad.model.version.CreateVersionRequest;
 import io.ehdev.conrad.model.version.CreateVersionResponse;
 import io.ehdev.conrad.model.version.GetAllVersionsResponse;
@@ -55,18 +55,18 @@ public class RepoVersionEndpoint {
     @ReadPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(value = "/versions", method = RequestMethod.GET)
-    public ResponseEntity<GetAllVersionsResponse> getAllVersions(ApiParameterContainer apiParameterContainer) {
+    public ResponseEntity<GetAllVersionsResponse> getAllVersions(RequestDetails requestDetails) {
         GetAllVersionsResponse response = new GetAllVersionsResponse();
 
         repoManagementApi
-            .findAllCommits(apiParameterContainer)
+            .findAllCommits(requestDetails.getResourceDetails())
             .stream()
             .sorted(new ReverseApiCommitComparator())
             .forEach(it -> {
                 GetAllVersionsResponse.CommitModel commit = new GetAllVersionsResponse.CommitModel(it.getCommitId(),
                     it.getVersion(),
                     it.getCreatedAt());
-                commit.addLink(toLink(versionSelfLink(apiParameterContainer, it.getVersion())));
+                commit.addLink(toLink(versionSelfLink(requestDetails, it.getVersion())));
                 response.addCommit(commit);
             });
 
@@ -85,7 +85,7 @@ public class RepoVersionEndpoint {
     @WritePermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(value = "/version", method = RequestMethod.POST)
-    public ResponseEntity<CreateVersionResponse> createNewVersion(ApiParameterContainer apiParameterContainer,
+    public ResponseEntity<CreateVersionResponse> createNewVersion(RequestDetails requestDetails,
                                                                   @RequestBody CreateVersionRequest versionModel,
                                                                   HttpServletRequest request) {
         List<ApiCommitModel> commits = versionModel.getCommits()
@@ -93,12 +93,12 @@ public class RepoVersionEndpoint {
             .map(ApiCommitModel::new)
             .collect(Collectors.toList());
 
-        Optional<ApiCommitModel> latestCommit = repoManagementApi.findLatestCommit(apiParameterContainer, commits);
+        Optional<ApiCommitModel> latestCommit = repoManagementApi.findLatestCommit(requestDetails.getResourceDetails(), commits);
 
         assertHistoryIsNotMissing(commits, latestCommit);
 
         CommitVersion nextVersion = versionBumperService.findNextVersion(
-            apiParameterContainer,
+            requestDetails.getResourceDetails(),
             versionModel.getCommitId(),
             versionModel.getMessage(),
             latestCommit.orElse(new ApiCommitModel("<default>", "0.0.0", ZonedDateTime.now())));
@@ -106,14 +106,14 @@ public class RepoVersionEndpoint {
         ApiCommitModel nextCommit = new ApiCommitModel(versionModel.getCommitId(),
             nextVersion.toVersionString(),
             nextVersion.getCreatedAt());
-        repoManagementApi.createCommit(apiParameterContainer, nextCommit, latestCommit.orElse(null));
+        repoManagementApi.createCommit(requestDetails.getResourceDetails(), nextCommit, latestCommit.orElse(null));
 
         URI uri = URI.create(request.getRequestURL().toString() + "/" + nextCommit.getVersion());
 
         CreateVersionResponse response = new CreateVersionResponse(versionModel.getCommitId(),
             nextVersion.toVersionString(),
             nextVersion.getCreatedAt());
-        response.addLink(toLink(versionSelfLink(apiParameterContainer, nextVersion.toVersionString())));
+        response.addLink(toLink(versionSelfLink(requestDetails, nextVersion.toVersionString())));
         return ResponseEntity.created(uri).body(response);
     }
 
@@ -125,9 +125,9 @@ public class RepoVersionEndpoint {
     @ReadPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(value = "/version/{versionArg:.+}", method = RequestMethod.GET)
-    public ResponseEntity<GetVersionResponse> findVersion(ApiParameterContainer apiParameterContainer,
+    public ResponseEntity<GetVersionResponse> findVersion(RequestDetails requestDetails,
                                                           @PathVariable("versionArg") String versionArg) {
-        Optional<ApiCommitModel> commit = repoManagementApi.findCommit(apiParameterContainer, versionArg);
+        Optional<ApiCommitModel> commit = repoManagementApi.findCommit(requestDetails.getResourceDetails(), versionArg);
         if (commit.isPresent()) {
             ApiCommitModel apiCommitModel = commit.get();
             GetVersionResponse versionResponse = new GetVersionResponse(apiCommitModel.getCommitId(),

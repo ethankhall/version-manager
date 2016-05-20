@@ -1,15 +1,14 @@
 package io.ehdev.conrad.database.api.internal;
 
+import io.ehdev.conrad.database.api.RepoManagementApi;
 import io.ehdev.conrad.database.api.exception.BumperNotFoundException;
 import io.ehdev.conrad.database.api.exception.ProjectNotFoundException;
 import io.ehdev.conrad.database.api.exception.RepoAlreadyExistsException;
-import io.ehdev.conrad.database.api.exception.RepoDoesNotExistsException;
 import io.ehdev.conrad.database.impl.ModelConversionUtility;
-import io.ehdev.conrad.database.model.ApiParameterContainer;
-import io.ehdev.conrad.database.model.project.ApiFullRepoModel;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
-import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
+import io.ehdev.conrad.database.model.repo.RepoCreateModel;
+import io.ehdev.conrad.database.model.repo.details.ResourceDetails;
 import io.ehdev.conrad.db.Tables;
 import io.ehdev.conrad.db.tables.CommitDetailsTable;
 import io.ehdev.conrad.db.tables.RepoDetailsTable;
@@ -18,7 +17,6 @@ import io.ehdev.conrad.db.tables.daos.ProjectDetailsDao;
 import io.ehdev.conrad.db.tables.daos.RepoDetailsDao;
 import io.ehdev.conrad.db.tables.daos.VersionBumpersDao;
 import io.ehdev.conrad.db.tables.pojos.CommitDetails;
-import io.ehdev.conrad.db.tables.pojos.ProjectDetails;
 import io.ehdev.conrad.db.tables.pojos.RepoDetails;
 import io.ehdev.conrad.db.tables.pojos.VersionBumpers;
 import org.jooq.DSLContext;
@@ -39,80 +37,62 @@ import java.util.stream.Collectors;
 import static io.ehdev.conrad.database.impl.ModelConversionUtility.toApiModel;
 
 @Service
-public class DefaultRepoManagementApi implements RepoManagementApiInternal {
+public class DefaultRepoManagementApi implements RepoManagementApi {
 
     private final DSLContext dslContext;
     private final RepoDetailsDao repoDetailsDao;
-    private final ProjectDetailsDao projectDetailsDao;
     private final VersionBumpersDao versionBumpersDao;
     private final CommitDetailsDao commitDetailsDao;
 
     @Autowired
     public DefaultRepoManagementApi(DSLContext dslContext,
                                     RepoDetailsDao repoDetailsDao,
-                                    ProjectDetailsDao projectDetailsDao,
                                     VersionBumpersDao versionBumpersDao,
                                     CommitDetailsDao commitDetailsDao) {
         this.dslContext = dslContext;
         this.repoDetailsDao = repoDetailsDao;
-        this.projectDetailsDao = projectDetailsDao;
         this.versionBumpersDao = versionBumpersDao;
         this.commitDetailsDao = commitDetailsDao;
     }
 
     @Override
-    public ApiRepoDetailsModel createRepo(ApiFullRepoModel qualifiedRepo, String bumperName, boolean isPublic) {
-        Optional<RepoDetails> exists = findRepository(qualifiedRepo.getProjectName(), qualifiedRepo.getRepoName());
-        if (exists.isPresent()) {
-            throw new RepoAlreadyExistsException(qualifiedRepo);
+    public ApiRepoDetailsModel createRepo(RepoCreateModel repoCreateModel) {
+        ResourceDetails resourceDetails = repoCreateModel.getResourceDetails();
+        if (resourceDetails.getRepoId() != null && resourceDetails.getRepoId().getId() != null) {
+            throw new RepoAlreadyExistsException(resourceDetails);
         }
 
-        VersionBumpers versionBumpers = versionBumpersDao.fetchOneByBumperName(bumperName);
+        VersionBumpers versionBumpers = versionBumpersDao.fetchOneByBumperName(repoCreateModel.getBumperName());
         if (versionBumpers == null) {
-            throw new BumperNotFoundException(bumperName);
+            throw new BumperNotFoundException(repoCreateModel.getBumperName());
         }
 
-        ProjectDetails projectDetails = projectDetailsDao.fetchOneByProjectName(qualifiedRepo.getProjectName());
-        if (projectDetails == null) {
-            throw new ProjectNotFoundException(qualifiedRepo.getProjectName());
+        if (resourceDetails.getProjectId().getId() == null) {
+            throw new ProjectNotFoundException(resourceDetails.getProjectId().getName());
         }
 
         RepoDetails repoDetails = new RepoDetails(null,
-            qualifiedRepo.getProjectName(),
-            qualifiedRepo.getRepoName(),
-            projectDetails.getUuid(),
+            resourceDetails.getRepoId().getName(),
+            resourceDetails.getProjectId().getId(),
             versionBumpers.getUuid(),
-            qualifiedRepo.getUrl(),
-            "",
-            isPublic);
+            repoCreateModel.getUrl(),
+            repoCreateModel.getDescription(),
+            repoCreateModel.isPublic());
 
         repoDetailsDao.insert(repoDetails);
 
         return new ApiRepoDetailsModel(toApiModel(repoDetails), toApiModel(versionBumpers));
     }
 
-    public Optional<RepoDetails> findRepository(String projectName, String repoName) {
-        //@formatter:off
-        return Optional.ofNullable(
-            dslContext
-                    .select()
-                    .from(Tables.REPO_DETAILS)
-                    .where(Tables.REPO_DETAILS.PROJECT_NAME.equal(projectName))
-                        .and(Tables.REPO_DETAILS.REPO_NAME.equal(repoName))
-                    .fetchOne()
-        ).map(it -> it.into(RepoDetails.class));
-        //@formatter:on
+    @Override
+    public Optional<ApiCommitModel> findCommit(ResourceDetails resourceDetails, String apiCommit) {
+        return findCommitInternal(resourceDetails, apiCommit).map(ModelConversionUtility::toApiModel);
     }
 
     @Override
-    public Optional<ApiCommitModel> findCommit(ApiRepoModel repo, String apiCommit) {
-        return findCommitInternal(repo, apiCommit).map(ModelConversionUtility::toApiModel);
-    }
-
-    @Override
-    public Optional<ApiCommitModel> findLatestCommit(ApiRepoModel repo, List<ApiCommitModel> history) {
+    public Optional<ApiCommitModel> findLatestCommit(ResourceDetails resourceDetails, List<ApiCommitModel> history) {
         if (!history.isEmpty() && "latest".equalsIgnoreCase(history.get(0).getCommitId())) {
-            return findCommit(repo, "latest");
+            return findCommit(resourceDetails, "latest");
         }
 
         List<String> commitIds = history.stream().map(ApiCommitModel::getCommitId).collect(Collectors.toList());
@@ -120,7 +100,10 @@ public class DefaultRepoManagementApi implements RepoManagementApiInternal {
         CommitDetailsTable cd = Tables.COMMIT_DETAILS.as("cd");
         RepoDetailsTable rd = Tables.REPO_DETAILS.as("rd");
         //@formatter:off
-        Record record = createQueryForCommitsForRepo(repo, cd, rd)
+        Record record = dslContext
+            .select()
+            .from(cd)
+            .where(cd.REPO_DETAILS_UUID.eq(resourceDetails.getRepoId().getId()))
                 .and(cd.COMMIT_ID.in(commitIds))
             .orderBy(cd.CREATED_AT.desc())
             .limit(1)
@@ -131,18 +114,13 @@ public class DefaultRepoManagementApi implements RepoManagementApiInternal {
     }
 
     @Override
-    public void createCommit(ApiRepoModel apiRepo, @NotNull ApiCommitModel nextVersion, ApiCommitModel history) {
-        Optional<RepoDetails> repository = findRepository(apiRepo.getProjectName(), apiRepo.getRepoName());
-        if(!repository.isPresent()) {
-            throw new RepoDoesNotExistsException(apiRepo);
-        }
-        RepoDetails repoDetails = repository.get();
+    public void createCommit(ResourceDetails resourceDetails, @NotNull ApiCommitModel nextVersion, ApiCommitModel history) {
 
-        Optional<CommitDetails> parentCommit = findCommitInternal(apiRepo, getHistoryOrNull(history));
+        Optional<CommitDetails> parentCommit = findCommitInternal(resourceDetails, getHistoryOrNull(history));
         UUID parentUuid = parentCommit.isPresent() ? parentCommit.get().getUuid() : null;
 
         CommitDetails commitDetails = new CommitDetails(null,
-            repoDetails.getUuid(),
+            resourceDetails.getRepoId().getId(),
             parentUuid,
             nextVersion.getCommitId(),
             nextVersion.getVersion(),
@@ -159,10 +137,13 @@ public class DefaultRepoManagementApi implements RepoManagementApiInternal {
         }
     }
 
-    private Optional<CommitDetails> findCommitInternal(ApiRepoModel repo, String commitId) {
+    private Optional<CommitDetails> findCommitInternal(ResourceDetails resourceDetails, String commitId) {
         CommitDetailsTable cd = Tables.COMMIT_DETAILS.as("cd");
-        RepoDetailsTable rd = Tables.REPO_DETAILS.as("rd");
-        SelectConditionStep<Record> query = createQueryForCommitsForRepo(repo, cd, rd);
+
+        SelectConditionStep<Record> query = dslContext
+            .select()
+            .from(cd)
+            .where(cd.REPO_DETAILS_UUID.eq(resourceDetails.getRepoId().getId()));
 
         Record record;
 
@@ -176,20 +157,6 @@ public class DefaultRepoManagementApi implements RepoManagementApiInternal {
                 .fetchOne();
         }
         return Optional.ofNullable(record).map(it -> it.into(CommitDetails.class));
-    }
-
-    private SelectConditionStep<Record> createQueryForCommitsForRepo(ApiRepoModel repo,
-                                                                     CommitDetailsTable cd,
-                                                                     RepoDetailsTable rd) {
-        //@formatter:on
-        return dslContext
-            .select(cd.fields())
-            .from(cd)
-            .join(rd)
-                .on(cd.REPO_DETAILS_UUID.equal(rd.UUID))
-            .where(rd.PROJECT_NAME.equal(repo.getProjectName()))
-                .and(rd.REPO_NAME.equal(repo.getRepoName()));
-        //@formatter:off
     }
 
     @Override
@@ -207,12 +174,15 @@ public class DefaultRepoManagementApi implements RepoManagementApiInternal {
     }
 
     @Override
-    public List<ApiCommitModel> findAllCommits(ApiRepoModel repo) {
+    public List<ApiCommitModel> findAllCommits(ResourceDetails resourceDetails) {
         CommitDetailsTable cd = Tables.COMMIT_DETAILS.as("cd");
-        RepoDetailsTable rd = Tables.REPO_DETAILS.as("rd");
 
-        SelectConditionStep<Record> query = createQueryForCommitsForRepo(repo, cd, rd);
-        List<CommitDetails> commits = query.fetch().into(CommitDetails.class);
+        List<CommitDetails> commits = dslContext
+            .select()
+            .from(cd)
+            .where(cd.REPO_DETAILS_UUID.eq(resourceDetails.getRepoId().getId()))
+            .fetch()
+            .into(CommitDetails.class);
 
         return commits
             .stream()
@@ -221,10 +191,9 @@ public class DefaultRepoManagementApi implements RepoManagementApiInternal {
     }
 
     @Override
-    public Optional<ApiRepoDetailsModel> getDetails(ApiRepoModel repoModel) {
-        Optional<RepoDetails> details = findRepository(repoModel.getProjectName(), repoModel.getRepoName());
-        if(details.isPresent()) {
-            RepoDetails repoDetails = details.get();
+    public Optional<ApiRepoDetailsModel> getDetails(ResourceDetails resourceDetails) {
+        if(resourceDetails.getRepoId().exists()) {
+            RepoDetails repoDetails = repoDetailsDao.fetchOneByUuid(resourceDetails.getRepoId().getId());
             VersionBumpers versionBumpers = versionBumpersDao.fetchOneByUuid(repoDetails.getVersionBumperUuid());
 
             return Optional.of(new ApiRepoDetailsModel(toApiModel(repoDetails), toApiModel(versionBumpers)));
@@ -234,17 +203,12 @@ public class DefaultRepoManagementApi implements RepoManagementApiInternal {
     }
 
     @Override
-    public boolean doesRepoExist(ApiRepoModel repo) {
-        return findRepository(repo.getProjectName(), repo.getRepoName()).isPresent();
+    public boolean doesRepoExist(ResourceDetails resourceDetails) {
+        return resourceDetails.getRepoId().exists();
     }
 
     @Override
-    public void delete(ApiParameterContainer apiParameterContainer) {
-        Optional<RepoDetails> repository = findRepository(apiParameterContainer.getProjectName(), apiParameterContainer.getRepoName());
-        if(!repository.isPresent()) {
-            return;
-        }
-
-        repoDetailsDao.delete(repository.get());
+    public void delete(ResourceDetails resourceDetails) {
+        repoDetailsDao.deleteById(resourceDetails.getRepoId().getId());
     }
 }

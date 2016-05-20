@@ -1,7 +1,11 @@
 package io.ehdev.conrad.database.api.internal;
 
+import io.ehdev.conrad.database.api.PrimaryKeySearchApi;
 import io.ehdev.conrad.database.api.TokenManagementApi;
+import io.ehdev.conrad.database.model.repo.details.AuthUserDetails;
+import io.ehdev.conrad.database.model.repo.details.ResourceDetails;
 import io.ehdev.conrad.database.api.exception.TokenNotFoundException;
+import io.ehdev.conrad.database.model.PrimaryResourceData;
 import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
 import io.ehdev.conrad.database.model.permission.ProjectApiAuthentication;
 import io.ehdev.conrad.database.model.permission.RepositoryApiAuthentication;
@@ -28,6 +32,7 @@ import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -36,34 +41,28 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
 
     private final DSLContext dslContext;
     private final TokenAuthenticationsDao tokensDao;
-    private final ProjectDetailsDao projectDetailsDao;
-    private final RepoManagementApiInternal repoManagementApiInternal;
     private final TokenJoinDao tokenJoinDao;
-    private final RepoDetailsDao repoDetailsDao;
     private final UserDetailsDao userDetailsDao;
+    private final PrimaryKeySearchApi primaryKeySearchApi;
 
     @Autowired
     public DefaultTokenManagementApi(DSLContext dslContext,
                                      TokenAuthenticationsDao tokensDao,
-                                     ProjectDetailsDao projectDetailsDao,
-                                     RepoManagementApiInternal repoManagementApiInternal,
                                      TokenJoinDao tokenJoinDao,
-                                     RepoDetailsDao repoDetailsDao,
-                                     UserDetailsDao userDetailsDao) {
+                                     UserDetailsDao userDetailsDao,
+                                     PrimaryKeySearchApi primaryKeySearchApi) {
         this.dslContext = dslContext;
         this.tokensDao = tokensDao;
-        this.projectDetailsDao = projectDetailsDao;
-        this.repoManagementApiInternal = repoManagementApiInternal;
         this.tokenJoinDao = tokenJoinDao;
-        this.repoDetailsDao = repoDetailsDao;
         this.userDetailsDao = userDetailsDao;
+        this.primaryKeySearchApi = primaryKeySearchApi;
     }
 
     @Override
     public ApiGeneratedUserToken createToken(ApiTokenAuthentication authentication) {
         Instant now = Instant.now();
 
-        ParsedToken parsedToken = ParsedToken.from(authentication);
+        DefaultTokenManagementApi.ParsedToken parsedToken = DefaultTokenManagementApi.ParsedToken.from(authentication);
 
         TokenAuthentications tokens = createNewToken(now, parsedToken.type);
         tokenJoinDao.insert(new TokenJoin(null, tokens.getUuid(), parsedToken.projectId, parsedToken.repoId, parsedToken.userId));
@@ -73,6 +72,11 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
             ApiTokenType.USER,
             tokens.getCreatedAt().atZone(ZoneOffset.UTC),
             tokens.getExpiresAt().atZone(ZoneOffset.UTC));
+    }
+
+    @Override
+    public ApiGeneratedUserToken createToken(AuthUserDetails authentication) {
+        return createToken(authentication.getTokenAuthentication());
     }
 
     private TokenAuthentications createNewToken(Instant now, TokenType type) {
@@ -86,16 +90,16 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
     }
 
     @Override
-    public ApiGeneratedUserToken createToken(String projectName, String repoName) {
+    public ApiGeneratedUserToken createToken(ResourceDetails resourceDetails) {
         UUID projectId = null;
         UUID repoId = null;
         TokenType type;
 
-        if (repoName != null) {
-            repoId = repoManagementApiInternal.findRepository(projectName, repoName).get().getUuid();
+        if (resourceDetails.getRepoId() != null) {
+            repoId = resourceDetails.getRepoId().getId();
             type = TokenType.REPOSITORY;
         } else {
-            projectId = projectDetailsDao.fetchOneByProjectName(projectName).getUuid();
+            projectId = resourceDetails.getProjectId().getId();
             type = TokenType.PROJECT;
         }
 
@@ -110,22 +114,20 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
     }
 
     @Override
-    public List<RetrievedToken> getTokens(String project, String repo) {
-        ParsedToken parsedToken;
-        if(repo != null) {
-            parsedToken = ParsedToken.withRepository(repoManagementApiInternal.findRepository(project, repo).get().getUuid());
+    public List<RetrievedToken> getTokens(ResourceDetails resourceDetails) {
+        if (resourceDetails.getRepoId() != null) {
+            return getTokens(DefaultTokenManagementApi.ParsedToken.withRepository(resourceDetails.getRepoId().getId()));
         } else {
-            parsedToken = ParsedToken.withProject(projectDetailsDao.fetchOneByProjectName(project).getUuid());
+            return getTokens(DefaultTokenManagementApi.ParsedToken.withProject(resourceDetails.getProjectId().getId()));
         }
-        return getTokens(parsedToken);
     }
 
     @Override
-    public List<RetrievedToken> getTokens(ApiTokenAuthentication authentication) {
-        return getTokens(ParsedToken.from(authentication));
+    public List<RetrievedToken> getTokens(AuthUserDetails authentication) {
+        return getTokens(DefaultTokenManagementApi.ParsedToken.from(authentication.getTokenAuthentication()));
     }
 
-    public List<RetrievedToken> getTokens(ParsedToken parsedToken) {
+    public List<RetrievedToken> getTokens(DefaultTokenManagementApi.ParsedToken parsedToken) {
         TokenAuthenticationsTable ta = Tables.TOKEN_AUTHENTICATIONS.as("ta");
         TokenJoinTable tj = Tables.TOKEN_JOIN.as("tj");
         return dslContext
@@ -133,10 +135,10 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
             .from(ta)
             .join(tj).on(tj.TOKEN.eq(ta.UUID))
             .where(valueOrNull(parsedToken.userId, tj.USER_UUID))
-                .and(valueOrNull(parsedToken.projectId, tj.PROJECT_UUID))
-                .and(valueOrNull(parsedToken.repoId, tj.REPO_UUID))
-                .and(ta.VALID.eq(true))
-                .and(ta.EXPIRES_AT.greaterOrEqual(Clock.systemUTC().instant()))
+            .and(valueOrNull(parsedToken.projectId, tj.PROJECT_UUID))
+            .and(valueOrNull(parsedToken.repoId, tj.REPO_UUID))
+            .and(ta.VALID.eq(true))
+            .and(ta.EXPIRES_AT.greaterOrEqual(Clock.systemUTC().instant()))
             .fetch()
             .stream()
             .map(it -> new RetrievedToken(it.value1(), it.value2().atZone(ZoneOffset.UTC), it.value3().atZone(ZoneOffset.UTC)))
@@ -165,7 +167,7 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
         invalidateTokenValid(tokenJoin.getToken());
     }
 
-    public void invalidateTokenValid(UUID apiToken) {
+    private void invalidateTokenValid(UUID apiToken) {
         TokenAuthentications token = tokensDao.fetchOneByUuid(apiToken);
         if (token == null) {
             throw new TokenNotFoundException(apiToken);
@@ -192,11 +194,13 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
         }
 
         if(tokenMap.getProjectUuid() != null) {
-            ProjectDetails projectDetails = projectDetailsDao.fetchOneByUuid(tokenMap.getProjectUuid());
-            return new ProjectApiAuthentication(projectDetails.getUuid(), projectDetails.getProjectName());
+            Optional<PrimaryResourceData> data = primaryKeySearchApi.findResourceDataByProjectId(tokenMap.getProjectUuid());
+            PrimaryResourceData primaryResourceData = data.get();
+            return new ProjectApiAuthentication(primaryResourceData.getProjectId(), primaryResourceData.getProjectName());
         } else if(tokenMap.getRepoUuid() != null) {
-            RepoDetails repoDetails = repoDetailsDao.fetchOneByUuid(tokenMap.getRepoUuid());
-            return new RepositoryApiAuthentication(repoDetails.getUuid(), repoDetails.getProjectName(), repoDetails.getRepoName());
+            Optional<PrimaryResourceData> data = primaryKeySearchApi.findResourceDataByRepoId(tokenMap.getRepoUuid());
+            PrimaryResourceData resourceData = data.get();
+            return new RepositoryApiAuthentication(resourceData.getRepoId(), resourceData.getProjectName(), resourceData.getRepoName());
         } else {
             UserDetails userDetails = userDetailsDao.fetchOneByUuid(tokenMap.getUserUuid());
             return new UserApiAuthentication(userDetails.getUuid(), userDetails.getUserName(), userDetails.getName(), userDetails.getEmailAddress());
@@ -216,18 +220,18 @@ public class DefaultTokenManagementApi implements TokenManagementApi {
             this.type = type;
         }
 
-        static ParsedToken withUser(UUID userId) {
-            return new ParsedToken(userId, null, null, TokenType.USER);
+        static DefaultTokenManagementApi.ParsedToken withUser(UUID userId) {
+            return new DefaultTokenManagementApi.ParsedToken(userId, null, null, TokenType.USER);
         }
-        static ParsedToken withProject(UUID projectId) {
-            return new ParsedToken(null, projectId, null, TokenType.PROJECT);
-        }
-
-        static ParsedToken withRepository(UUID repoId) {
-            return new ParsedToken(null, null, repoId, TokenType.REPOSITORY);
+        static DefaultTokenManagementApi.ParsedToken withProject(UUID projectId) {
+            return new DefaultTokenManagementApi.ParsedToken(null, projectId, null, TokenType.PROJECT);
         }
 
-        static ParsedToken from(ApiTokenAuthentication authentication) {
+        static DefaultTokenManagementApi.ParsedToken withRepository(UUID repoId) {
+            return new DefaultTokenManagementApi.ParsedToken(null, null, repoId, TokenType.REPOSITORY);
+        }
+
+        static DefaultTokenManagementApi.ParsedToken from(ApiTokenAuthentication authentication) {
             if(authentication instanceof UserApiAuthentication) {
                 return withUser(authentication.getUuid());
             } else if(authentication instanceof ProjectApiAuthentication) {

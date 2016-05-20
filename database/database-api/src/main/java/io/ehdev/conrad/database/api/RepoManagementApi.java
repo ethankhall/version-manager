@@ -1,32 +1,32 @@
 package io.ehdev.conrad.database.api;
 
 
-import io.ehdev.conrad.database.model.ApiParameterContainer;
-import io.ehdev.conrad.database.model.project.ApiFullRepoModel;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
-import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
+import io.ehdev.conrad.database.model.repo.RepoCreateModel;
+import io.ehdev.conrad.database.model.repo.details.ResourceDetails;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 public interface RepoManagementApi {
-    ApiRepoDetailsModel createRepo(ApiFullRepoModel apiParameterContainer, String bumperName, boolean isPublic);
 
-    Optional<ApiCommitModel> findLatestCommit(ApiRepoModel qualifiedRepo, List<ApiCommitModel> history);
+    ApiRepoDetailsModel createRepo(RepoCreateModel repoCreateModel);
 
-    void createCommit(ApiRepoModel qualifiedRepo, ApiCommitModel nextVersion, ApiCommitModel parent);
+    Optional<ApiCommitModel> findLatestCommit(ResourceDetails resourceDetails, List<ApiCommitModel> history);
 
-    Optional<ApiCommitModel> findCommit(ApiRepoModel qualifiedRepo, String apiCommit);
+    void createCommit(ResourceDetails resourceDetails, ApiCommitModel nextVersion, ApiCommitModel parent);
+
+    Optional<ApiCommitModel> findCommit(ResourceDetails resourceDetails, String apiCommit);
 
     Map<String, ApiRepoDetailsModel> getAllRepos();
 
-    List<ApiCommitModel> findAllCommits(ApiRepoModel qualifiedRepo);
+    List<ApiCommitModel> findAllCommits(ResourceDetails resourceDetails);
 
-    Optional<ApiRepoDetailsModel> getDetails(ApiRepoModel qualifiedRepo);
+    Optional<ApiRepoDetailsModel> getDetails(ResourceDetails resourceDetails);
 
-    boolean doesRepoExist(ApiRepoModel qualifiedRepo);
+    boolean doesRepoExist(ResourceDetails resourceDetails);
 
-    void delete(ApiParameterContainer apiParameterContainer);
+    void delete(ResourceDetails resourceDetails);
 }

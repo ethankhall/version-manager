@@ -1,5 +1,7 @@
 package io.ehdev.conrad.database.api;
 
+import io.ehdev.conrad.database.model.repo.details.AuthUserDetails;
+import io.ehdev.conrad.database.model.repo.details.ResourceDetails;
 import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
 import io.ehdev.conrad.database.model.token.RetrievedToken;
 import io.ehdev.conrad.database.model.user.ApiGeneratedUserToken;
@@ -9,13 +11,16 @@ import java.util.List;
 import java.util.UUID;
 
 public interface TokenManagementApi {
+
     ApiGeneratedUserToken createToken(ApiTokenAuthentication authentication);
 
-    ApiGeneratedUserToken createToken(String projectName, String repoName);
+    ApiGeneratedUserToken createToken(AuthUserDetails authentication);
 
-    List<RetrievedToken> getTokens(String project, String repo);
+    ApiGeneratedUserToken createToken(ResourceDetails resourceDetails);
 
-    List<RetrievedToken> getTokens(ApiTokenAuthentication authentication);
+    List<RetrievedToken> getTokens(ResourceDetails resourceDetails);
+
+    List<RetrievedToken> getTokens(AuthUserDetails authentication);
 
     boolean isTokenValid(ApiToken token);
 

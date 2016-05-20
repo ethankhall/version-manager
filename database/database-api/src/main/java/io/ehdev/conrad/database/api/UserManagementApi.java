@@ -1,13 +1,12 @@
 package io.ehdev.conrad.database.api;
 
-import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
+import io.ehdev.conrad.database.model.repo.details.AuthUserDetails;
 import io.ehdev.conrad.database.model.permission.UserApiAuthentication;
-import io.ehdev.conrad.database.model.project.ApiProjectDetails;
-import java.util.List;
-
+import io.ehdev.conrad.database.model.user.UserPermissionGrants;
 
 public interface UserManagementApi {
-    UserApiAuthentication createUser(String userName, String name, String email);
 
-    List<ApiProjectDetails> findProjectsForUser(ApiTokenAuthentication authentication);
+    UserPermissionGrants getUserPermissions(AuthUserDetails authUserDetails);
+
+    UserApiAuthentication createUser(String userName, String name, String email);
 }

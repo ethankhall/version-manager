@@ -14,7 +14,7 @@ public class ModelConversionUtility {
 
     public static DefaultApiRepoModel toApiModel(RepoDetails repo) {
         return new DefaultApiRepoModel(
-            repo.getProjectName(),
+            "",
             repo.getRepoName(),
             repo.getUrl());
     }

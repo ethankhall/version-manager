@@ -1,7 +1,9 @@
 package io.ehdev.conrad.service.api.aop.impl
 
 import io.ehdev.conrad.database.api.RepoManagementApi
-import io.ehdev.conrad.database.model.ApiParameterContainer
+import io.ehdev.conrad.database.model.repo.RequestDetails
+import io.ehdev.conrad.database.model.repo.details.ResourceDetails
+import io.ehdev.conrad.database.model.repo.details.ResourceId
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory
 import org.springframework.core.env.Environment
@@ -28,21 +30,22 @@ class RepoExistenceCheckTest extends Specification {
         FooTestInterface proxy = factory.getProxy()
 
 
-        def successful = new ApiParameterContainer(null, 'project', 'name')
-        def fail = new ApiParameterContainer(null, 'project', 'not')
+        def successful = createResourceDetails('project', 'found')
+        def fail = createResourceDetails('project', 'not-found')
+
         when:
-        proxy.required(successful)
+        proxy.required(new RequestDetails(null, successful))
 
         then:
         1 * repoManagementApi.doesRepoExist(successful) >> true
 
         when:
-        proxy.required(fail)
+        proxy.required(new RequestDetails(null, fail))
 
         then:
         1 * repoManagementApi.doesRepoExist(fail) >> false
         def e = thrown(RuntimeException)
-        e.message == 'Repo (project/not) doesn\'t exist, but it is required.'
+        e.message == 'Repo (not-found) doesn\'t exist, but it is required.'
     }
 
     def 'can match repo that is required to be missing, will throw if exists'() {
@@ -53,36 +56,40 @@ class RepoExistenceCheckTest extends Specification {
         FooTestInterface proxy = factory.getProxy()
 
 
-        def successful = new ApiParameterContainer(null, 'project', 'name')
-        def fail = new ApiParameterContainer(null, 'project', 'not')
+        def successful = createResourceDetails('project', 'found')
+        def fail = createResourceDetails('project', 'not-found')
         when:
-        proxy.missing(successful)
+        proxy.missing(new RequestDetails(null, successful))
 
         then:
         1 * repoManagementApi.doesRepoExist(successful) >> true
         def e = thrown(RuntimeException)
-        e.message == 'Repo (project/name) exists, but it is required not to.'
+        e.message == 'Repo (found) exists, but it is required not to.'
 
         when:
-        proxy.missing(fail)
+        proxy.missing(new RequestDetails(null, fail))
 
         then:
         1 * repoManagementApi.doesRepoExist(fail) >> false
     }
 
+    ResourceDetails createResourceDetails(String projectName, String repoName) {
+        return new ResourceDetails(new ResourceId(projectName, null), new ResourceId(repoName, null))
+    }
+
     private interface FooTestInterface {
-        void required(ApiParameterContainer container)
-        void missing(ApiParameterContainer container)
+        void required(RequestDetails container)
+        void missing(RequestDetails container)
     }
 
     private class FooTestInterfaceImpl implements FooTestInterface {
         @RepoRequired(exists = true)
-        void required(ApiParameterContainer container) {
+        void required(RequestDetails container) {
 
         }
 
         @RepoRequired(exists = false)
-        void missing(ApiParameterContainer container) {
+        void missing(RequestDetails container) {
 
         }
     }

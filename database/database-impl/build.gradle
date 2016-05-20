@@ -18,9 +18,9 @@ dependencies {
     compile libraries.springTx
     compile libraries.springJdbc
 
-    compile 'org.jooq:jooq:3.7.2'
-    compile 'org.jooq:jooq-meta:3.7.2'
-    compile 'org.jooq:jooq-codegen:3.7.2'
+    compile 'org.jooq:jooq:3.8.0'
+    compile 'org.jooq:jooq-meta:3.8.0'
+    compile 'org.jooq:jooq-codegen:3.8.0'
 
     // Tests
     testCompile libraries.groovy

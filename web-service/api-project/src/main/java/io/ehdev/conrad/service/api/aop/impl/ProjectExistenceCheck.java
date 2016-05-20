@@ -1,16 +1,11 @@
 package io.ehdev.conrad.service.api.aop.impl;
 
 import io.ehdev.conrad.database.api.ProjectManagementApi;
-import io.ehdev.conrad.database.api.RepoManagementApi;
-import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.project.ApiProjectDetails;
+import io.ehdev.conrad.database.model.repo.RequestDetails;
 import io.ehdev.conrad.service.api.aop.annotation.ProjectRequired;
-import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.exception.ProjectExistsException;
 import io.ehdev.conrad.service.api.aop.exception.ProjectMissingException;
-import io.ehdev.conrad.service.api.aop.exception.RepositoryExistsException;
-import io.ehdev.conrad.service.api.aop.exception.RepositoryMissingException;
-import java.util.Optional;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
@@ -19,7 +14,9 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import static io.ehdev.conrad.service.api.aop.impl.ApiParameterHelper.findApiParameterContainer;
+import java.util.Optional;
+
+import static io.ehdev.conrad.service.api.aop.impl.RequestDetailsHelper.findRequestDetails;
 
 
 @Aspect
@@ -41,13 +38,13 @@ public class ProjectExistenceCheck implements Ordered {
             return;
         }
 
-        ApiParameterContainer container = findApiParameterContainer(joinPoint);
-        Optional<ApiProjectDetails> projectDetails = projectManagementApi.getProjectDetails(container);
+        RequestDetails container = findRequestDetails(joinPoint);
+        Optional<ApiProjectDetails> projectDetails = projectManagementApi.getProjectDetails(container.getResourceDetails());
 
         if(!projectDetails.isPresent() && projectRequired.exists()) {
-            throw new ProjectMissingException(container);
+            throw new ProjectMissingException(container.getResourceDetails());
         } else if(projectDetails.isPresent() && !projectRequired.exists()) {
-            throw new ProjectExistsException(container);
+            throw new ProjectExistsException(container.getResourceDetails());
         }
     }
 

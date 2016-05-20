@@ -1,7 +1,7 @@
 package io.ehdev.conrad.service.api.service.repo;
 
 import io.ehdev.conrad.database.api.PermissionManagementApi;
-import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.database.model.repo.RequestDetails;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.model.permission.PermissionCreateResponse;
 import io.ehdev.conrad.model.permission.PermissionGrant;
@@ -41,13 +41,9 @@ public class RepoPermissionsEndpoint {
     @AdminPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(value = "/{username}", method = RequestMethod.DELETE)
-    public ResponseEntity deletePermissions(ApiParameterContainer repoModel,
+    public ResponseEntity deletePermissions(RequestDetails requestDetails,
                                             @PathVariable("username") String username) {
-        permissionManagementApi.addPermission(username,
-            repoModel.getUser(),
-            repoModel.getProjectName(),
-            repoModel.getRepoName(),
-            ApiUserPermission.NONE);
+        permissionManagementApi.addPermission(username, requestDetails.getResourceDetails(), ApiUserPermission.NONE);
 
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -61,16 +57,14 @@ public class RepoPermissionsEndpoint {
     @AdminPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<PermissionCreateResponse> addPermission(ApiParameterContainer repoModel,
+    public ResponseEntity<PermissionCreateResponse> addPermission(RequestDetails requestDetails,
                                                                   @RequestBody PermissionGrant permissionGrant) {
         boolean created = permissionManagementApi.addPermission(permissionGrant.getUsername(),
-            repoModel.getUser(),
-            repoModel.getProjectName(),
-            repoModel.getRepoName(),
+            requestDetails.getResourceDetails(),
             ApiUserPermission.valueOf(permissionGrant.getPermission().toString()));
 
         PermissionCreateResponse response = new PermissionCreateResponse(created);
-        response.addLink(toLink(repositoryLink(repoModel, "repository")));
+        response.addLink(toLink(repositoryLink(requestDetails, "repository")));
 
         return new ResponseEntity<>(response, created ? HttpStatus.CREATED : HttpStatus.FORBIDDEN);
     }

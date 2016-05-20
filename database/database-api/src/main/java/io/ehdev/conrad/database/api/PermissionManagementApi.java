@@ -1,25 +1,26 @@
 package io.ehdev.conrad.database.api;
 
 
-import io.ehdev.conrad.database.model.ApiParameterContainer;
-import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
-import io.ehdev.conrad.database.model.user.ApiUserPermissionDetails;
+import io.ehdev.conrad.database.model.repo.details.AuthUserDetails;
+import io.ehdev.conrad.database.model.repo.details.ResourceDetails;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
-
+import io.ehdev.conrad.database.model.user.ApiUserPermissionDetails;
 import io.ehdev.conrad.database.model.user.UserPermissionGrants;
+
 import java.util.List;
+import java.util.UUID;
 
 public interface PermissionManagementApi {
 
-    ApiUserPermission findHighestUserPermission(ApiTokenAuthentication apiUser, String project, String repoName);
+    ApiUserPermission findHighestUserPermission(UUID userId, ResourceDetails resourceDetails);
 
-    boolean doesUserHavePermission(ApiTokenAuthentication apiUser, String project, String repoName, ApiUserPermission permission);
+    ApiUserPermission findHighestUserPermission(AuthUserDetails authUserDetails, ResourceDetails resourceDetails);
 
-    boolean addPermission(String username, ApiTokenAuthentication authenticatedUser, String projectName, String repoName, ApiUserPermission permission);
+    boolean addPermission(AuthUserDetails authUserDetails, ResourceDetails resourceDetails, ApiUserPermission permission);
 
-    boolean forceAddPermission(String username, String projectName, String repoName, ApiUserPermission permission);
+    boolean addPermission(String userName, ResourceDetails resourceDetails, ApiUserPermission permission);
 
-    List<ApiUserPermissionDetails> getPermissions(ApiParameterContainer repoModel);
+    List<ApiUserPermissionDetails> getPermissions(ResourceDetails resourceDetails);
 
-    UserPermissionGrants getUserPermissions(ApiTokenAuthentication authenticatedUser);
+    UserPermissionGrants getPermissions(AuthUserDetails authUserDetails);
 }

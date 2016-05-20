@@ -1,9 +1,12 @@
 package io.ehdev.conrad.service.api.service
 
 import io.ehdev.conrad.database.api.RepoManagementApi
-import io.ehdev.conrad.database.model.ApiParameterContainer
-import io.ehdev.conrad.database.model.project.ApiRepoModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
+import io.ehdev.conrad.database.model.repo.RequestDetails
+import io.ehdev.conrad.database.model.repo.details.AuthUserDetails
+import io.ehdev.conrad.database.model.repo.details.ResourceDetails
+import io.ehdev.conrad.database.model.repo.details.ResourceId
+import io.ehdev.conrad.database.model.user.ApiUserPermission
 import io.ehdev.conrad.model.version.CreateVersionRequest
 import io.ehdev.conrad.service.api.service.repo.RepoVersionEndpoint
 import io.ehdev.conrad.version.bumper.api.VersionBumperService
@@ -62,8 +65,8 @@ class RepoVersionEndpointTest extends Specification {
         def version = repoEndpoint.createNewVersion(createTestingRepoModel(), model, request)
 
         then:
-        1 * repoManagementApi.findLatestCommit(_ as ApiRepoModel, _ as List<ApiCommitModel>) >> Optional.of(lastCommit)
-        1 * versionBumperService.findNextVersion(_ as ApiRepoModel,
+        1 * repoManagementApi.findLatestCommit(_ as ResourceDetails, _ as List<ApiCommitModel>) >> Optional.of(lastCommit)
+        1 * versionBumperService.findNextVersion(_ as ResourceDetails,
             'f', 'Some Message', _ as ApiCommitModel) >> SemanticCommitVersion.parse("1.4.5")
         version.statusCode == HttpStatus.CREATED
         version.body.commitId == 'f'
@@ -71,7 +74,8 @@ class RepoVersionEndpointTest extends Specification {
         version.body.version == '1.4.5'
     }
 
-    ApiParameterContainer createTestingRepoModel() {
-        return new ApiParameterContainer(null, "projectName", "repoName")
+    RequestDetails createTestingRepoModel() {
+        def details = new AuthUserDetails(UUID.randomUUID(), 'user', ApiUserPermission.READ, null)
+        return new RequestDetails(details, new ResourceDetails(new ResourceId("projectName", null), new ResourceId("repoName", null)))
     }
 }

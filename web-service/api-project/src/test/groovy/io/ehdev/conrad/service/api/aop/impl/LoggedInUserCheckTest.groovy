@@ -1,7 +1,8 @@
 package io.ehdev.conrad.service.api.aop.impl
 
-import io.ehdev.conrad.database.model.ApiParameterContainer
-import io.ehdev.conrad.database.model.permission.UserApiAuthentication
+import io.ehdev.conrad.database.model.repo.RequestDetails
+import io.ehdev.conrad.database.model.repo.details.AuthUserDetails
+import io.ehdev.conrad.database.model.user.ApiUserPermission
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired
 import io.ehdev.conrad.service.api.aop.exception.UserNotLoggedInException
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory
@@ -25,27 +26,28 @@ class LoggedInUserCheckTest extends Specification {
         FooTestInterface proxy = factory.getProxy()
 
         when:
-        proxy.doWork(new ApiParameterContainer(null, null, null))
+        proxy.doWork(new RequestDetails(null, null))
+
 
         then:
         thrown(UserNotLoggedInException)
 
         when:
-        proxy.doWork(new ApiParameterContainer(new UserApiAuthentication(UUID.randomUUID(), ' ', ',', ' '), null, null))
+        proxy.doWork(new RequestDetails(new AuthUserDetails(UUID.randomUUID(), ' ', ApiUserPermission.ADMIN, null), null))
 
         then:
         noExceptionThrown()
     }
 
     private interface FooTestInterface {
-        public void doWork(ApiParameterContainer container)
+        public void doWork(RequestDetails container)
     }
 
     private class FooTestInterfaceImpl implements FooTestInterface {
 
         @Override
         @LoggedInUserRequired
-        void doWork(ApiParameterContainer container) {
+        void doWork(RequestDetails container) {
 
         }
     }

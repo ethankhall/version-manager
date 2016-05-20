@@ -2,8 +2,8 @@ package io.ehdev.conrad.version.bumper.api;
 
 import io.ehdev.conrad.database.api.RepoManagementApi;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
-import io.ehdev.conrad.database.model.project.ApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
+import io.ehdev.conrad.database.model.repo.details.ResourceDetails;
 import io.ehdev.conrad.version.bumper.VersionBumper;
 import io.ehdev.conrad.version.commit.CommitVersion;
 import io.ehdev.conrad.version.commit.details.DefaultCommitDetails;
@@ -36,7 +36,7 @@ public class DefaultVersionBumperService implements VersionBumperService {
     }
 
     @Override
-    public CommitVersion findNextVersion(ApiRepoModel repoModel,
+    public CommitVersion findNextVersion(ResourceDetails repoModel,
                                          String commitId,
                                          String message,
                                          ApiCommitModel lastCommit) {

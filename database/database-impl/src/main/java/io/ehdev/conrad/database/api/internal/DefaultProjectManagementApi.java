@@ -1,114 +1,79 @@
 package io.ehdev.conrad.database.api.internal;
 
-import io.ehdev.conrad.database.api.PermissionManagementApi;
 import io.ehdev.conrad.database.api.exception.ProjectAlreadyExistsException;
 import io.ehdev.conrad.database.api.exception.ProjectCreationMustBeDoneByUserException;
-import io.ehdev.conrad.database.impl.ModelConversionUtility;
-import io.ehdev.conrad.database.model.ApiParameterContainer;
-import io.ehdev.conrad.database.model.permission.UserApiAuthentication;
+import io.ehdev.conrad.database.api.PermissionManagementApi;
+import io.ehdev.conrad.database.api.ProjectManagementApi;
+import io.ehdev.conrad.database.model.repo.details.AuthUserDetails;
+import io.ehdev.conrad.database.model.repo.details.ResourceDetails;
+import io.ehdev.conrad.database.model.repo.details.ResourceId;
 import io.ehdev.conrad.database.model.project.ApiProjectDetails;
 import io.ehdev.conrad.database.model.project.ApiProjectRepositoryDetails;
-import io.ehdev.conrad.database.model.project.ApiVersionBumperModel;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.db.Tables;
-import io.ehdev.conrad.db.tables.daos.ProjectDetailsDao;
+import io.ehdev.conrad.db.tables.RepoDetailsTable;
 import io.ehdev.conrad.db.tables.pojos.ProjectDetails;
-import io.ehdev.conrad.db.tables.pojos.VersionBumpers;
-import io.ehdev.conrad.db.tables.records.ProjectDetailsRecord;
 import io.ehdev.conrad.db.tables.records.RepoDetailsRecord;
 import org.jooq.DSLContext;
-import org.jooq.Record;
-import org.jooq.Result;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
-@Transactional
-public class DefaultProjectManagementApi implements ProjectManagementApiInternal {
+public class DefaultProjectManagementApi implements ProjectManagementApi {
 
     private final DSLContext dslContext;
-    private final ProjectDetailsDao projectDetailsDao;
     private final PermissionManagementApi permissionManagementApi;
 
     @Autowired
-    public DefaultProjectManagementApi(ProjectDetailsDao projectDetailsDao,
-                                       DSLContext dslContext,
-                                       PermissionManagementApi permissionManagementApi) {
+    public DefaultProjectManagementApi(DSLContext dslContext, PermissionManagementApi permissionManagementApi) {
         this.dslContext = dslContext;
-        this.projectDetailsDao = projectDetailsDao;
         this.permissionManagementApi = permissionManagementApi;
     }
 
+
     @Override
-    public void createProject(ApiParameterContainer apiParameterContainer) throws ProjectAlreadyExistsException {
-        String projectName = apiParameterContainer.getProjectName();
-        Optional<ProjectDetails> project = findProject(projectName);
-        if(project.isPresent()) {
-            throw new ProjectAlreadyExistsException(projectName);
+    public ResourceId createProject(AuthUserDetails authUserDetails, ResourceDetails resourceDetails) throws ProjectAlreadyExistsException {
+        if(resourceDetails.getProjectId().exists()) {
+            throw new ProjectAlreadyExistsException(resourceDetails.getProjectId().getName());
         }
 
-        if(!(apiParameterContainer.getUser() instanceof UserApiAuthentication)) {
+        if(!authUserDetails.isAuthenticationUser()) {
             throw new ProjectCreationMustBeDoneByUserException();
         }
 
-        dslContext.insertInto(Tables.PROJECT_DETAILS, Tables.PROJECT_DETAILS.PROJECT_NAME)
-            .values(projectName)
+        ProjectDetails into = dslContext.insertInto(Tables.PROJECT_DETAILS, Tables.PROJECT_DETAILS.PROJECT_NAME)
+            .values(resourceDetails.getProjectId().getName())
             .returning(Tables.PROJECT_DETAILS.fields())
             .fetchOne()
             .into(ProjectDetails.class);
 
-        String userName = ((UserApiAuthentication)apiParameterContainer.getUser()).getUserName();
-        permissionManagementApi.forceAddPermission(userName, projectName, null, ApiUserPermission.ADMIN);
+        permissionManagementApi.addPermission(authUserDetails, resourceDetails, ApiUserPermission.ADMIN);
+
+        return new ResourceId(into.getProjectName(), into.getUuid());
     }
 
     @Override
-    public List<ApiVersionBumperModel> findAllVersionBumpers(String projectName) {
-        Result<Record> fetch = dslContext
-            .select()
-            .from(Tables.VERSION_BUMPERS)
-            .fetch();
+    public Optional<ApiProjectDetails> getProjectDetails(ResourceDetails resourceDetails) {
+        RepoDetailsTable repoDetailsTable = Tables.REPO_DETAILS;
 
-        List<VersionBumpers> bumpers = fetch.into(VersionBumpers.class);
-
-        return bumpers
-            .stream()
-            .map(ModelConversionUtility::toApiModel)
-            .collect(Collectors.toList());
-    }
-
-    @Override
-    public Optional<ApiProjectDetails> getProjectDetails(ApiParameterContainer apiParameterContainer) {
-        Record record = dslContext.select()
-            .from(Tables.PROJECT_DETAILS)
-            .where(Tables.PROJECT_DETAILS.PROJECT_NAME.eq(apiParameterContainer.getProjectName()))
-            .fetchOne();
-
-        if(record == null) {
+        ResourceId projectId = resourceDetails.getProjectId();
+        if(!projectId.exists()) {
             return Optional.empty();
         }
 
-        ProjectDetailsRecord projectDetails = record.into(Tables.PROJECT_DETAILS);
-
         List<RepoDetailsRecord> repoDetails = dslContext
             .select()
-            .from(Tables.REPO_DETAILS)
-            .where(Tables.REPO_DETAILS.PROJECT_UUID.eq(projectDetails.getUuid()))
+            .from(repoDetailsTable)
+            .where(repoDetailsTable.PROJECT_UUID.eq(projectId.getId()))
             .fetch()
-            .into(Tables.REPO_DETAILS);
+            .into(repoDetailsTable);
 
-        ApiProjectDetails apiProjectDetails = new ApiProjectDetails(projectDetails.getProjectName());
+        ApiProjectDetails apiProjectDetails = new ApiProjectDetails(projectId.getName());
 
         repoDetails.forEach(it -> apiProjectDetails.addDetails(new ApiProjectRepositoryDetails(it.getRepoName())));
         return Optional.of(apiProjectDetails);
-    }
-
-    @Override
-    public Optional<ProjectDetails> findProject(String projectName) {
-        return Optional.ofNullable(projectDetailsDao.fetchOneByProjectName(projectName));
     }
 }

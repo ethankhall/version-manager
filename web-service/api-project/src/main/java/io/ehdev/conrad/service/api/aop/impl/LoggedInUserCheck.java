@@ -1,7 +1,6 @@
 package io.ehdev.conrad.service.api.aop.impl;
 
-import io.ehdev.conrad.database.model.ApiParameterContainer;
-import io.ehdev.conrad.database.model.permission.UserApiAuthentication;
+import io.ehdev.conrad.database.model.repo.RequestDetails;
 import io.ehdev.conrad.service.api.aop.exception.NonUserNotAllowedException;
 import io.ehdev.conrad.service.api.aop.exception.UserNotLoggedInException;
 import org.aspectj.lang.JoinPoint;
@@ -14,7 +13,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import static io.ehdev.conrad.service.api.aop.impl.ApiParameterHelper.findApiParameterContainer;
+import static io.ehdev.conrad.service.api.aop.impl.RequestDetailsHelper.findRequestDetails;
 
 @Aspect
 @Service
@@ -34,14 +33,14 @@ public class LoggedInUserCheck implements Ordered {
             return;
         }
 
-        ApiParameterContainer container = findApiParameterContainer(joinPoint);
+        RequestDetails container = findRequestDetails(joinPoint);
 
-        if(null == container.getUser()) {
+        if(null == container.getAuthUserDetails()) {
             throw new UserNotLoggedInException();
         }
 
-        logger.debug("Login check for {}, {}", container.getUser(), container.getClass().getSimpleName());
-        if(!(container.getUser() instanceof UserApiAuthentication)) {
+        logger.debug("Login check for {}, {}", container.getAuthUserDetails(), container.getClass().getSimpleName());
+        if(container.getAuthUserDetails().isAuthenticationUser()) {
             throw new NonUserNotAllowedException();
         }
     }

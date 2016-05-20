@@ -2,8 +2,9 @@ package io.ehdev.conrad.service.api.service.project;
 
 import io.ehdev.conrad.database.api.ProjectManagementApi;
 import io.ehdev.conrad.database.api.exception.ProjectAlreadyExistsException;
-import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.project.ApiProjectDetails;
+import io.ehdev.conrad.database.model.repo.RequestDetails;
+import io.ehdev.conrad.database.model.repo.details.ResourceId;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.model.project.CreateProjectRequest;
 import io.ehdev.conrad.model.project.GetProjectResponse;
@@ -26,7 +27,8 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
-import static io.ehdev.conrad.service.api.service.model.LinkUtilities.*;
+import static io.ehdev.conrad.service.api.service.model.LinkUtilities.repositorySelfLink;
+import static io.ehdev.conrad.service.api.service.model.LinkUtilities.toLink;
 
 @Controller
 @RequestMapping(
@@ -46,12 +48,12 @@ public class ProjectEndpoint {
     @ProjectRequired(exists = false)
     @InternalLinks()
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<CreateProjectRequest> createProject(ApiParameterContainer apiParameterContainer,
+    public ResponseEntity<CreateProjectRequest> createProject(RequestDetails container,
                                                               HttpServletRequest request) {
         try {
-            projectManagementApi.createProject(apiParameterContainer);
+            ResourceId project = projectManagementApi.createProject(container.getAuthUserDetails(), container.getResourceDetails());
 
-            CreateProjectRequest createProjectModel = new CreateProjectRequest(apiParameterContainer.getProjectName());
+            CreateProjectRequest createProjectModel = new CreateProjectRequest(project.getName());
             return ResponseEntity.created(URI.create(request.getRequestURL().toString())).body(createProjectModel);
         } catch (ProjectAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
@@ -65,8 +67,8 @@ public class ProjectEndpoint {
         @InternalLink(name = "permissions", ref = "/permissions", permissions = ApiUserPermission.ADMIN)
     })
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<GetProjectResponse> getProject(ApiParameterContainer apiParameterContainer) {
-        ApiProjectDetails projectDetails = projectManagementApi.getProjectDetails(apiParameterContainer).get();
+    public ResponseEntity<GetProjectResponse> getProject(RequestDetails container) {
+        ApiProjectDetails projectDetails = projectManagementApi.getProjectDetails(container.getResourceDetails()).get();
 
         List<RepoDefinitionsDetails> details = new ArrayList<>();
 
@@ -74,7 +76,7 @@ public class ProjectEndpoint {
 
         projectDetails.getDetails().forEach(it -> {
             RepoDefinitionsDetails repo = new RepoDefinitionsDetails(it.getName());
-            repo.addLink(toLink(repositorySelfLink(apiParameterContainer, it.getName())));
+            repo.addLink(toLink(repositorySelfLink(container, it.getName())));
             details.add(repo);
         });
 

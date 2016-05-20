@@ -1,4 +1,4 @@
-package io.ehdev.conrad.database.api.v2.details;
+package io.ehdev.conrad.database.model.repo.details;
 
 import java.util.UUID;
 
@@ -10,6 +10,10 @@ public class ResourceId {
     public ResourceId(String name, UUID id) {
         this.name = name;
         this.id = id;
+    }
+
+    public ResourceId(String name) {
+        this(name, null);
     }
 
     public UUID getId() {

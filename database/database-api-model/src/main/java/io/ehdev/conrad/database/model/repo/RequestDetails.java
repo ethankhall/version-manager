@@ -1,7 +1,7 @@
-package io.ehdev.conrad.database.api.v2;
+package io.ehdev.conrad.database.model.repo;
 
-import io.ehdev.conrad.database.api.v2.details.AuthUserDetails;
-import io.ehdev.conrad.database.api.v2.details.ResourceDetails;
+import io.ehdev.conrad.database.model.repo.details.AuthUserDetails;
+import io.ehdev.conrad.database.model.repo.details.ResourceDetails;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 
 public class RequestDetails {

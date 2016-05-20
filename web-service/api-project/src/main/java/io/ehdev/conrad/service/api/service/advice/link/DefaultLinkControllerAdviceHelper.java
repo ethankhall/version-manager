@@ -42,13 +42,17 @@ public class DefaultLinkControllerAdviceHelper implements LinkControllerAdviceHe
     }
 
     public static String getFullURL(HttpServletRequest request) {
-        StringBuilder requestURL = new StringBuilder(FilenameUtils.removeExtension(request.getRequestURL().toString()));
+        String requestUrlString = request.getRequestURL().toString();
+        if(requestUrlString.endsWith(".xml") || requestUrlString.endsWith(".json")) {
+            requestUrlString = FilenameUtils.removeExtension(requestUrlString);
+        }
+        StringBuilder requestUrl = new StringBuilder(requestUrlString);
         String queryString = request.getQueryString();
 
         if (queryString == null) {
-            return requestURL.toString();
+            return requestUrl.toString();
         } else {
-            return requestURL.append('?').append(queryString).toString();
+            return requestUrl.append('?').append(queryString).toString();
         }
     }
 }

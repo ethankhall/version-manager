@@ -2,7 +2,7 @@ package io.ehdev.conrad.service.api.service.user;
 
 import io.ehdev.conrad.authentication.jwt.JwtManager;
 import io.ehdev.conrad.database.api.TokenManagementApi;
-import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.database.model.repo.RequestDetails;
 import io.ehdev.conrad.database.model.user.ApiGeneratedUserToken;
 import io.ehdev.conrad.model.permission.CreateTokenResponse;
 import io.ehdev.conrad.model.permission.GetTokensResponse;
@@ -33,15 +33,15 @@ public class UserTokenEndpoint {
 
     @LoggedInUserRequired
     @RequestMapping(value = "/{tokenId}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteToken(ApiParameterContainer repoModel, @PathVariable("tokenId") String tokenId) {
+    public ResponseEntity deleteToken(RequestDetails requestDetails, @PathVariable("tokenId") String tokenId) {
         tokenManagementApi.invalidateTokenValidByJoinId(UUID.fromString(tokenId));
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @LoggedInUserRequired
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<CreateTokenResponse> createNewToken(ApiParameterContainer repoModel) {
-        ApiGeneratedUserToken token = tokenManagementApi.createToken(repoModel.getUser());
+    public ResponseEntity<CreateTokenResponse> createNewToken(RequestDetails requestDetails) {
+        ApiGeneratedUserToken token = tokenManagementApi.createToken(requestDetails.getAuthUserDetails());
         String authToken = jwtManager.createToken(token);
 
         CreateTokenResponse created = new CreateTokenResponse(
@@ -55,9 +55,9 @@ public class UserTokenEndpoint {
 
     @LoggedInUserRequired
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<GetTokensResponse> findAllTokens(ApiParameterContainer repoModel) {
+    public ResponseEntity<GetTokensResponse> findAllTokens(RequestDetails requestDetails) {
         List<GetTokensResponse.TokenEntryModel> tokens = tokenManagementApi
-            .getTokens(repoModel.getUser())
+            .getTokens(requestDetails.getAuthUserDetails())
             .stream()
             .map(it -> new GetTokensResponse.TokenEntryModel(it.getId(), it.getCreatedAt(), it.getExpiresAt()))
             .collect(Collectors.toList());

@@ -2,12 +2,15 @@ package io.ehdev.conrad.service.api.service
 
 import io.ehdev.conrad.database.api.PermissionManagementApi
 import io.ehdev.conrad.database.api.RepoManagementApi
-import io.ehdev.conrad.database.model.ApiParameterContainer
-import io.ehdev.conrad.database.model.permission.UserApiAuthentication
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel
 import io.ehdev.conrad.database.model.project.ApiVersionBumperModel
 import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
+import io.ehdev.conrad.database.model.repo.RequestDetails
+import io.ehdev.conrad.database.model.repo.details.AuthUserDetails
+import io.ehdev.conrad.database.model.repo.details.ResourceDetails
+import io.ehdev.conrad.database.model.repo.details.ResourceId
+import io.ehdev.conrad.database.model.user.ApiUserPermission
 import io.ehdev.conrad.database.model.user.ApiUserPermissionDetails
 import io.ehdev.conrad.model.commit.CommitIdCollection
 import io.ehdev.conrad.service.api.service.repo.RepoEndpoint
@@ -67,7 +70,8 @@ class RepoEndpointTest extends Specification {
 
     }
 
-    ApiParameterContainer createTestingRepoModel() {
-        return new ApiParameterContainer(new UserApiAuthentication(UUID.randomUUID(), '','',''), "projectName", "repoName")
+    RequestDetails createTestingRepoModel() {
+        def details = new AuthUserDetails(UUID.randomUUID(), 'user', ApiUserPermission.READ, null)
+        return new RequestDetails(details, new ResourceDetails(new ResourceId("projectName", null), new ResourceId("repoName", null)))
     }
 }

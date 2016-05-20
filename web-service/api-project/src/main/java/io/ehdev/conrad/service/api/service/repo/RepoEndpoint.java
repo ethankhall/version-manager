@@ -2,10 +2,11 @@ package io.ehdev.conrad.service.api.service.repo;
 
 import io.ehdev.conrad.database.api.PermissionManagementApi;
 import io.ehdev.conrad.database.api.RepoManagementApi;
-import io.ehdev.conrad.database.model.ApiParameterContainer;
 import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
-import io.ehdev.conrad.database.model.project.DefaultApiRepoModel;
 import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
+import io.ehdev.conrad.database.model.repo.RepoCreateModel;
+import io.ehdev.conrad.database.model.repo.RequestDetails;
+import io.ehdev.conrad.database.model.repo.details.ResourceDetails;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.model.commit.CommitIdCollection;
 import io.ehdev.conrad.model.permission.PermissionGrant;
@@ -54,7 +55,7 @@ public class RepoEndpoint {
     @AdminPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(method = RequestMethod.DELETE)
-    public ResponseEntity deleteRepo(ApiParameterContainer apiParameterContainer) {
+    public ResponseEntity deleteRepo(ResourceDetails apiParameterContainer) {
         repoManagementApi.delete(apiParameterContainer);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -63,14 +64,15 @@ public class RepoEndpoint {
     @WritePermissionRequired
     @RepoRequired(exists = false)
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<CreateRepoResponse> createRepo(ApiParameterContainer apiParameterContainer,
+    public ResponseEntity<CreateRepoResponse> createRepo(ResourceDetails apiParameterContainer,
                                                          @RequestBody CreateRepoRequest createModel) {
-        DefaultApiRepoModel newModel = new DefaultApiRepoModel(
-            apiParameterContainer.getProjectName(),
-            apiParameterContainer.getRepoName(),
-            createModel.getRepoUrl());
+        RepoCreateModel repoCreateModel = new RepoCreateModel(apiParameterContainer,
+            createModel.getBumperName(),
+            "",
+            createModel.getRepoUrl(),
+            true);
 
-        ApiRepoDetailsModel repo = repoManagementApi.createRepo(newModel, createModel.getBumperName(), true);
+        ApiRepoDetailsModel repo = repoManagementApi.createRepo(repoCreateModel);
 
         if (createModel.getHistory() != null) {
             ApiCommitModel prev = null;
@@ -99,8 +101,8 @@ public class RepoEndpoint {
     @ReadPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<GetRepoResponse> getRepoDetails(ApiParameterContainer container) {
-        ApiRepoDetailsModel details = repoManagementApi.getDetails(container).get();
+    public ResponseEntity<GetRepoResponse> getRepoDetails(RequestDetails requestDetails) {
+        ApiRepoDetailsModel details = repoManagementApi.getDetails(requestDetails.getResourceDetails()).get();
 
         GetRepoResponse restRepoModel = new GetRepoResponse(
             details.getRepo().getProjectName(),
@@ -108,7 +110,7 @@ public class RepoEndpoint {
             details.getRepo().getUrl()
         );
 
-        permissionManagementApi.getPermissions(container).forEach(it -> restRepoModel.addPermission(
+        permissionManagementApi.getPermissions(requestDetails.getResourceDetails()).forEach(it -> restRepoModel.addPermission(
             new PermissionGrant(it.getUsername(), PermissionGrant.PermissionDefinition.valueOf(it.getPermissions()))));
 
         return ResponseEntity.ok(restRepoModel);
@@ -117,20 +119,20 @@ public class RepoEndpoint {
     @ReadPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(value = "/search/version", method = RequestMethod.POST)
-    public ResponseEntity<VersionSearchResponse> searchForVersionInHistory(ApiParameterContainer apiParameterContainer,
+    public ResponseEntity<VersionSearchResponse> searchForVersionInHistory(RequestDetails requestDetails,
                                                                            @RequestBody CommitIdCollection versionModel) {
         List<ApiCommitModel> commits = versionModel.getCommits()
             .stream()
             .map(ApiCommitModel::new)
             .collect(Collectors.toList());
 
-        Optional<ApiCommitModel> latest = repoManagementApi.findLatestCommit(apiParameterContainer, commits);
+        Optional<ApiCommitModel> latest = repoManagementApi.findLatestCommit(requestDetails.getResourceDetails(), commits);
         if (!latest.isPresent()) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
             ApiCommitModel commit = latest.get();
             VersionSearchResponse body = new VersionSearchResponse(commit.getCommitId(), commit.getVersion(), commit.getCreatedAt());
-            body.addLink(toLink(versionSelfLink(apiParameterContainer, commit.getVersion())));
+            body.addLink(toLink(versionSelfLink(requestDetails, commit.getVersion())));
             return ResponseEntity.ok(body);
         }
     }

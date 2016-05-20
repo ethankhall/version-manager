@@ -1,7 +1,7 @@
 package io.ehdev.conrad.service.api.service.project;
 
 import io.ehdev.conrad.database.api.PermissionManagementApi;
-import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.database.model.repo.RequestDetails;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.model.permission.PermissionCreateResponse;
 import io.ehdev.conrad.model.permission.PermissionGrant;
@@ -38,13 +38,9 @@ public class ProjectPermissionsEndpoint {
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RequestMapping(value = "/{username}", method = RequestMethod.DELETE)
-    public ResponseEntity deletePermissions(ApiParameterContainer repoModel,
+    public ResponseEntity deletePermissions(RequestDetails container,
                                             @PathVariable("username") String username) {
-        permissionManagementApi.addPermission(username,
-            repoModel.getUser(),
-            repoModel.getProjectName(),
-            repoModel.getRepoName(),
-            ApiUserPermission.NONE);
+        permissionManagementApi.addPermission(username, container.getResourceDetails(), ApiUserPermission.NONE);
 
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -56,12 +52,10 @@ public class ProjectPermissionsEndpoint {
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<PermissionCreateResponse> addPermission(ApiParameterContainer repoModel,
+    public ResponseEntity<PermissionCreateResponse> addPermission(RequestDetails container,
                                                                   @RequestBody PermissionGrant permissionGrant) {
         boolean created = permissionManagementApi.addPermission(permissionGrant.getUsername(),
-            repoModel.getUser(),
-            repoModel.getProjectName(),
-            repoModel.getRepoName(),
+            container.getResourceDetails(),
             ApiUserPermission.valueOf(permissionGrant.getPermission().toString()));
 
         PermissionCreateResponse response = new PermissionCreateResponse(created);

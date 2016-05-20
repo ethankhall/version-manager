@@ -1,4 +1,4 @@
-package io.ehdev.conrad.database.api.v2.details;
+package io.ehdev.conrad.database.model.repo.details;
 
 public class ResourceDetails {
 

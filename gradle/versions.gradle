@@ -16,10 +16,12 @@ versions.metrics = '3.1.0'
 versions.springSocial = '1.1.4.RELEASE'
 versions.kotlin = '1.0.1-2'
 versions.logback = '1.1.7'
+versions.jooq = '3.8.0'
 
 // Because spring boot is opinionated, and I don't want their opinions.
 ext['hibernate.version'] = versions.hibernate
 ext['jackson.version'] = versions.jackson
+ext['jooq.version'] = versions.jooq
 
 libraries.kotlin = "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
 

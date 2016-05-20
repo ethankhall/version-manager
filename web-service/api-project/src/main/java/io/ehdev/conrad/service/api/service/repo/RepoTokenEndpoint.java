@@ -2,7 +2,7 @@ package io.ehdev.conrad.service.api.service.repo;
 
 import io.ehdev.conrad.authentication.jwt.JwtManager;
 import io.ehdev.conrad.database.api.TokenManagementApi;
-import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.database.model.repo.RequestDetails;
 import io.ehdev.conrad.database.model.user.ApiGeneratedUserToken;
 import io.ehdev.conrad.model.permission.CreateTokenResponse;
 import io.ehdev.conrad.model.permission.GetTokensResponse;
@@ -22,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static io.ehdev.conrad.service.api.service.model.LinkUtilities.*;
 
 @Controller
 @RequestMapping("/api/v1/project/{projectName}/repo/{repoName}/token")
@@ -46,7 +44,7 @@ public class RepoTokenEndpoint {
     @AdminPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(value = "/{tokenId}", method = RequestMethod.DELETE)
-    public ResponseEntity deleteToken(ApiParameterContainer repoModel,
+    public ResponseEntity deleteToken(RequestDetails requestDetails,
                                       @PathVariable("tokenId") String tokenId) {
         tokenManagementApi.invalidateTokenValidByJoinId(UUID.fromString(tokenId));
         return new ResponseEntity(HttpStatus.OK);
@@ -60,8 +58,8 @@ public class RepoTokenEndpoint {
     @AdminPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<CreateTokenResponse> createNewToken(ApiParameterContainer repoModel) {
-        ApiGeneratedUserToken token = tokenManagementApi.createToken(repoModel.getProjectName(), repoModel.getRepoName());
+    public ResponseEntity<CreateTokenResponse> createNewToken(RequestDetails requestDetails) {
+        ApiGeneratedUserToken token = tokenManagementApi.createToken(requestDetails.getResourceDetails());
         String authToken = jwtManager.createToken(token);
 
         CreateTokenResponse created = new CreateTokenResponse(
@@ -69,7 +67,6 @@ public class RepoTokenEndpoint {
             token.getCreatedAt(),
             token.getExpiresAt(),
             authToken);
-        created.addLink(toLink(repositoryLink(repoModel, REPOSITORY_REF)));
 
         return new ResponseEntity<>(created, HttpStatus.CREATED);
     }
@@ -82,9 +79,9 @@ public class RepoTokenEndpoint {
     @AdminPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(method = RequestMethod.GET)
-    public ResponseEntity<GetTokensResponse> findAllTokens(ApiParameterContainer repoModel) {
+    public ResponseEntity<GetTokensResponse> findAllTokens(RequestDetails requestDetails) {
         List<GetTokensResponse.TokenEntryModel> tokens = tokenManagementApi
-            .getTokens(repoModel.getProjectName(), repoModel.getRepoName())
+            .getTokens(requestDetails.getResourceDetails())
             .stream()
             .map(it -> new GetTokensResponse.TokenEntryModel(it.getId(), it.getCreatedAt(), it.getExpiresAt()))
             .collect(Collectors.toList());

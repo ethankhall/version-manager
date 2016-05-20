@@ -1,15 +1,12 @@
 package io.ehdev.conrad.service.api.service.advice;
 
-import io.ehdev.conrad.database.api.PermissionManagementApi;
-import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.database.model.repo.RequestDetails;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.model.AdminView;
 import io.ehdev.conrad.model.DefaultResourceSupport;
-import io.ehdev.conrad.service.api.config.ApiParameterContainerBuilder;
+import io.ehdev.conrad.service.api.config.RequestDetailsParameterResolver;
 import io.ehdev.conrad.service.api.service.advice.link.DefaultLinkControllerAdviceHelper;
 import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -20,48 +17,41 @@ import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.servlet.mvc.method.annotation.AbstractMappingJacksonResponseBodyAdvice;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 import static io.ehdev.conrad.service.api.service.advice.link.DefaultLinkControllerAdviceHelper.getFullURL;
 
 @ControllerAdvice
 public class CustomControllerAdvice extends AbstractMappingJacksonResponseBodyAdvice {
 
-    private static final Logger logger = LoggerFactory.getLogger(CustomControllerAdvice.class);
-
-    private final PermissionManagementApi permissionManagementApi;
+    private final RequestDetailsParameterResolver requestDetailsParameterResolver;
 
     @Autowired
-    public CustomControllerAdvice(PermissionManagementApi permissionManagementApi) {
-        this.permissionManagementApi = permissionManagementApi;
+    public CustomControllerAdvice(RequestDetailsParameterResolver requestDetailsParameterResolver) {
+        this.requestDetailsParameterResolver = requestDetailsParameterResolver;
     }
-
-    @SuppressWarnings("unchecked")
-    private Map<String, String> getParameters(HttpServletRequest servletRequest) {
-        return (Map<String, String>) servletRequest.getAttribute(HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE);
-    }
-
     @Override
     public boolean supports(MethodParameter returnType, Class<? extends HttpMessageConverter<?>> converterType) {
         return super.supports(returnType, converterType) && ResponseEntity.class.isAssignableFrom(returnType.getParameterType());
     }
 
     @Override
-    protected void beforeBodyWriteInternal(MappingJacksonValue bodyContainer, MediaType contentType, MethodParameter returnType, ServerHttpRequest request, ServerHttpResponse response) {
+    protected void beforeBodyWriteInternal(MappingJacksonValue bodyContainer,
+                                           MediaType contentType,
+                                           MethodParameter returnType,
+                                           ServerHttpRequest request,
+                                           ServerHttpResponse response) {
         if(!(bodyContainer.getValue() instanceof DefaultResourceSupport)) {
             return;
         }
 
         DefaultResourceSupport resourceSupport = (DefaultResourceSupport) bodyContainer.getValue();
         HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
-        Map<String, String> parameters = getParameters(servletRequest);
 
-        ApiParameterContainer container = new ApiParameterContainerBuilder(request.getPrincipal(), parameters).createContainer();
-        ApiUserPermission permission = permissionManagementApi.findHighestUserPermission(container.getUser(), container.getProjectName(), container.getRepoName());
+        RequestDetails requestDetails = requestDetailsParameterResolver.createRequestDetails(servletRequest);
+        ApiUserPermission permission = requestDetails.getAuthUserDetails().getPermission();
 
         addLinks(resourceSupport, returnType, servletRequest, permission);
 

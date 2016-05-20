@@ -5,6 +5,6 @@ class ApiRepoDetailsModel(
     val bumper: ApiVersionBumperModel
 ) {
     fun getMergedName(): String {
-        return repo.getMergedName()
+        return repo.mergedName
     }
 }

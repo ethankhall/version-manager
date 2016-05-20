@@ -1,7 +1,7 @@
 package io.ehdev.conrad.service.api.aop.impl;
 
 import io.ehdev.conrad.database.api.RepoManagementApi;
-import io.ehdev.conrad.database.model.ApiParameterContainer;
+import io.ehdev.conrad.database.model.repo.RequestDetails;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.exception.RepositoryExistsException;
 import io.ehdev.conrad.service.api.aop.exception.RepositoryMissingException;
@@ -13,7 +13,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
-import static io.ehdev.conrad.service.api.aop.impl.ApiParameterHelper.findApiParameterContainer;
+import static io.ehdev.conrad.service.api.aop.impl.RequestDetailsHelper.findRequestDetails;
 
 @Aspect
 @Service
@@ -34,15 +34,15 @@ public class RepoExistenceCheck implements Ordered {
             return;
         }
 
-        ApiParameterContainer container = findApiParameterContainer(joinPoint);
+        RequestDetails container = findRequestDetails(joinPoint);
 
-        boolean repoExists = repoManagementApi.doesRepoExist(container);
+        boolean repoExists = repoManagementApi.doesRepoExist(container.getResourceDetails());
         boolean required = repoRequired.exists();
 
         if(required && !repoExists) {
-            throw new RepositoryMissingException(container);
+            throw new RepositoryMissingException(container.getResourceDetails());
         } else if(!required && repoExists) {
-            throw new RepositoryExistsException(container);
+            throw new RepositoryExistsException(container.getResourceDetails());
         }
     }
 
