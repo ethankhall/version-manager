@@ -2,7 +2,7 @@ package io.ehdev.conrad.service.api.service.user;
 
 import io.ehdev.conrad.database.api.PermissionManagementApi;
 import io.ehdev.conrad.database.model.repo.RequestDetails;
-import io.ehdev.conrad.database.model.user.UserPermissionGrants;
+import io.ehdev.conrad.database.model.user.TokenPermissionGrants;
 import io.ehdev.conrad.model.user.GetUserAccessResponse;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +28,7 @@ public class UserEndpoint {
     @LoggedInUserRequired
     @RequestMapping(value = "/access")
     public ResponseEntity<GetUserAccessResponse> findAccess(RequestDetails requestDetails) {
-        UserPermissionGrants userPermissions = permissionManagementApi.getPermissions(requestDetails.getAuthUserDetails());
+        TokenPermissionGrants userPermissions = permissionManagementApi.getPermissions(requestDetails.getAuthUserDetails());
 
         //@formatter:off
         GetUserAccessResponse response = new GetUserAccessResponse(

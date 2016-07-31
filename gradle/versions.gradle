@@ -16,7 +16,7 @@ versions.metrics = '3.1.0'
 versions.springSocial = '1.1.4.RELEASE'
 versions.kotlin = '1.0.1-2'
 versions.logback = '1.1.7'
-versions.jooq = '3.8.0'
+versions.jooq = '3.8.4'
 
 // Because spring boot is opinionated, and I don't want their opinions.
 ext['hibernate.version'] = versions.hibernate
@@ -30,9 +30,12 @@ libraries.springAop = "org.springframework:spring-aop:${versions.spring}"
 libraries.aspectJ = "org.aspectj:aspectjweaver:1.8.8"
 
 libraries.springContext = "org.springframework:spring-context:${versions.spring}"
-libraries.springBoot = [
+libraries.springBootBase = [
     "org.springframework.boot:spring-boot:${versions.springBoot}",
     "org.springframework.boot:spring-boot-autoconfigure:${versions.springBoot}",
+]
+libraries.springBoot = [
+    *libraries.springBootBase,
     "org.springframework.boot:spring-boot-starter-thymeleaf:${versions.springBoot}"
 ]
 
@@ -56,9 +59,19 @@ libraries.springSecurity = [
     "org.springframework.security:spring-security-config:${versions.springSecurity}",
 ]
 
-libraries.springSecurityCore = "org.springframework.security:spring-security-core:${versions.springSecurity}"
+libraries.springSocialSecurity = 'org.springframework.social:spring-social-security:1.1.4.RELEASE'
 
-libraries.hikari = 'com.zaxxer:HikariCP:2.4.1'
+libraries.springSocial = [
+    'org.springframework.social:spring-social-core:1.1.4.RELEASE',
+    'org.springframework.social:spring-social-config:1.1.4.RELEASE',
+    'org.springframework.social:spring-social-google:1.0.0.RELEASE',
+    libraries.springSocialSecurity
+]
+
+libraries.springSecurityCore = "org.springframework.security:spring-security-core:${versions.springSecurity}"
+libraries.springAcl = "org.springframework.security:spring-security-acl:${versions.springSecurity}"
+
+libraries.hikari = ['com.zaxxer:HikariCP:2.4.1']
 
 libraries.springTx = "org.springframework:spring-tx:${versions.spring}"
 libraries.springJdbc = "org.springframework:spring-jdbc:${versions.spring}"
@@ -70,11 +83,12 @@ libraries.spockSpring = "org.spockframework:spock-spring:${versions.spock}"
 
 libraries.commonsLang = 'org.apache.commons:commons-lang3:3.4'
 libraries.commonsIO = 'commons-io:commons-io:2.4'
-libraries.sfl4j = "org.slf4j:slf4j-api:${versions.slf4j}"
+libraries.slf4j = "org.slf4j:slf4j-api:${versions.slf4j}"
 
 libraries.el = 'org.glassfish.web:javax.el:2.2.6'
 libraries.servletApi = 'javax.servlet:javax.servlet-api:3.1.0'
 libraries.jwt = 'io.jsonwebtoken:jjwt:0.6.0'
+libraries.ehcache = 'net.sf.ehcache:ehcache:2.8.3'
 
 libraries.logback = [
     "ch.qos.logback:logback-classic:${versions.logback}"
@@ -110,6 +124,12 @@ libraries.testing = [
     libraries.cglib,
     'org.objenesis:objenesis:2.2',
     'org.ow2.asm:asm:5.0.4'
+]
+
+libraries.database = [
+    'org.flywaydb:flyway-core:3.2.1',
+    'org.postgresql:postgresql:9.4-1203-jdbc42',
+    *libraries.hikari
 ]
 
 libraries.h2 = 'com.h2database:h2:1.4.191'

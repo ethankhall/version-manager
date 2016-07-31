@@ -79,4 +79,11 @@ public class ProjectDetailsDao extends DAOImpl<ProjectDetailsRecord, ProjectDeta
     public ProjectDetails fetchOneByProjectName(String value) {
         return fetchOne(ProjectDetailsTable.PROJECT_DETAILS.PROJECT_NAME, value);
     }
+
+    /**
+     * Fetch records that have <code>security_id IN (values)</code>
+     */
+    public List<ProjectDetails> fetchBySecurityId(Long... values) {
+        return fetch(ProjectDetailsTable.PROJECT_DETAILS.SECURITY_ID, values);
+    }
 }

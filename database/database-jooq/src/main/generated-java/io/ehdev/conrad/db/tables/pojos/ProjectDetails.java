@@ -31,24 +31,28 @@ import javax.validation.constraints.Size;
 @Table(name = "project_details", schema = "public")
 public class ProjectDetails implements Serializable {
 
-    private static final long serialVersionUID = -1728687850;
+    private static final long serialVersionUID = -2029432388;
 
     private UUID   uuid;
     private String projectName;
+    private Long   securityId;
 
     public ProjectDetails() {}
 
     public ProjectDetails(ProjectDetails value) {
         this.uuid = value.uuid;
         this.projectName = value.projectName;
+        this.securityId = value.securityId;
     }
 
     public ProjectDetails(
         UUID   uuid,
-        String projectName
+        String projectName,
+        Long   securityId
     ) {
         this.uuid = uuid;
         this.projectName = projectName;
+        this.securityId = securityId;
     }
 
     @Id
@@ -72,12 +76,22 @@ public class ProjectDetails implements Serializable {
         this.projectName = projectName;
     }
 
+    @Column(name = "security_id", nullable = false, precision = 64)
+    public Long getSecurityId() {
+        return this.securityId;
+    }
+
+    public void setSecurityId(Long securityId) {
+        this.securityId = securityId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("ProjectDetails (");
 
         sb.append(uuid);
         sb.append(", ").append(projectName);
+        sb.append(", ").append(securityId);
 
         sb.append(")");
         return sb.toString();

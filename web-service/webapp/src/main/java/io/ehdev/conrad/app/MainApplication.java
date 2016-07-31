@@ -2,7 +2,6 @@ package io.ehdev.conrad.app;
 
 import com.codahale.metrics.MetricRegistry;
 import com.codahale.metrics.ehcache.InstrumentedEhcache;
-import io.ehdev.conrad.app.config.MetricsConfiguration;
 import io.ehdev.conrad.authentication.config.ConradSecurityConfig;
 import io.ehdev.conrad.database.config.ConradDatabaseConfig;
 import io.ehdev.conrad.service.api.config.ConradProjectApiConfiguration;
@@ -22,7 +21,7 @@ import org.springframework.context.annotation.Import;
 @EnableCaching
 @Configuration
 @Import({
-    ConradDatabaseConfig.class, ConradVersionConfiguration.class, MetricsConfiguration.class,
+    ConradDatabaseConfig.class, ConradVersionConfiguration.class,
     ConradSecurityConfig.class, ConradProjectApiConfiguration.class})
 @ComponentScan("io.ehdev.conrad.app")
 @EnableAutoConfiguration

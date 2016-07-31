@@ -3,17 +3,20 @@ package io.ehdev.conrad.database.api.internal;
 import io.ehdev.conrad.database.api.PermissionManagementApi;
 import io.ehdev.conrad.database.api.PrimaryKeySearchApi;
 import io.ehdev.conrad.database.model.PrimaryResourceData;
+import io.ehdev.conrad.database.model.permission.ApiTokenAuthentication;
+import io.ehdev.conrad.database.model.permission.UserApiAuthentication;
 import io.ehdev.conrad.database.model.repo.details.AuthUserDetails;
 import io.ehdev.conrad.database.model.repo.details.ResourceDetails;
 import io.ehdev.conrad.database.model.repo.details.ResourceId;
 import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.database.model.user.ApiUserPermissionDetails;
-import io.ehdev.conrad.database.model.user.UserPermissionGrants;
+import io.ehdev.conrad.database.model.user.TokenPermissionGrants;
 import io.ehdev.conrad.db.Tables;
 import io.ehdev.conrad.db.tables.UserPermissionsTable;
 import io.ehdev.conrad.db.tables.daos.UserDetailsDao;
 import io.ehdev.conrad.db.tables.pojos.UserDetails;
 import io.ehdev.conrad.db.tables.records.UserPermissionsRecord;
+import org.jetbrains.annotations.NotNull;
 import org.jooq.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -127,34 +130,41 @@ public class DefaultPermissionManagementApi implements PermissionManagementApi {
     }
 
     @Override
-    public UserPermissionGrants getPermissions(AuthUserDetails authUserDetails) {
+    public TokenPermissionGrants getPermissions(ApiTokenAuthentication tokenAuth) {
+        return getUserPermissions((UserApiAuthentication) tokenAuth);
+    }
+
+    @NotNull
+    private TokenPermissionGrants getUserPermissions(UserApiAuthentication tokenAuth) {
         UserPermissionsTable up = Tables.USER_PERMISSIONS;
 
         //@formatter:off
         List<UserPermissionsRecord> fetch = dslContext
             .select()
             .from(up)
-            .where(up.USER_UUID.eq(authUserDetails.getUserId()))
+            .where(up.USER_UUID.eq(tokenAuth.getUuid()))
             .fetch()
             .into(UserPermissionsRecord.class);
         //@formatter:on
 
-        List<UserPermissionGrants.ProjectPermissionDetails> projectPermissionDetails = new ArrayList<>();
-        List<UserPermissionGrants.RepoPermissionDetails> repoPermissionDetails = new ArrayList<>();
+        List<TokenPermissionGrants.ProjectPermissionDetails> projectPermissionDetails = new ArrayList<>();
+        List<TokenPermissionGrants.RepoPermissionDetails> repoPermissionDetails = new ArrayList<>();
 
         fetch.forEach(it -> {
             if(it.getRepoDetailsUuid() == null) {
                 Optional<PrimaryResourceData> optional = primaryKeySearchApi.findResourceDataByProjectId(it.getProjectUuid());
                 String projectName = optional.get().getProjectName();
-                projectPermissionDetails.add(new UserPermissionGrants.ProjectPermissionDetails(projectName, authUserDetails.getPermission()));
+                projectPermissionDetails.add(
+                    new TokenPermissionGrants.ProjectPermissionDetails(projectName, authUserDetails.getPermission()));
             } else {
                 Optional<PrimaryResourceData> optional = primaryKeySearchApi.findResourceDataByRepoId(it.getRepoDetailsUuid());
                 String projectName = optional.get().getProjectName();
                 String repoName = optional.get().getRepoName();
-                repoPermissionDetails.add(new UserPermissionGrants.RepoPermissionDetails(projectName, repoName, authUserDetails.getPermission()));
+                repoPermissionDetails.add(
+                    new TokenPermissionGrants.RepoPermissionDetails(projectName, repoName, authUserDetails.getPermission()));
             }
         });
-        return new UserPermissionGrants(projectPermissionDetails, repoPermissionDetails);
+        return new TokenPermissionGrants(projectPermissionDetails, repoPermissionDetails);
     }
 
     private ApiUserPermissionDetails convert(UserPermissionsRecord record) {

@@ -86,11 +86,4 @@ public class UserDetailsDao extends DAOImpl<UserDetailsRecord, UserDetails, UUID
     public List<UserDetails> fetchByName(String... values) {
         return fetch(UserDetailsTable.USER_DETAILS.NAME, values);
     }
-
-    /**
-     * Fetch records that have <code>email_address IN (values)</code>
-     */
-    public List<UserDetails> fetchByEmailAddress(String... values) {
-        return fetch(UserDetailsTable.USER_DETAILS.EMAIL_ADDRESS, values);
-    }
 }

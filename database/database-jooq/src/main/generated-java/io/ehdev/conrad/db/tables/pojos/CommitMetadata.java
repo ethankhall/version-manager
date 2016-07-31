@@ -35,13 +35,13 @@ import javax.validation.constraints.Size;
 })
 public class CommitMetadata implements Serializable {
 
-    private static final long serialVersionUID = 445413016;
+    private static final long serialVersionUID = -1826391850;
 
     private UUID    uuid;
     private UUID    commitUuid;
     private UUID    repoDetailsUuid;
     private String  name;
-    private String  text;
+    private String  url;
     private Instant createdAt;
     private Instant updatedAt;
 
@@ -52,7 +52,7 @@ public class CommitMetadata implements Serializable {
         this.commitUuid = value.commitUuid;
         this.repoDetailsUuid = value.repoDetailsUuid;
         this.name = value.name;
-        this.text = value.text;
+        this.url = value.url;
         this.createdAt = value.createdAt;
         this.updatedAt = value.updatedAt;
     }
@@ -62,7 +62,7 @@ public class CommitMetadata implements Serializable {
         UUID    commitUuid,
         UUID    repoDetailsUuid,
         String  name,
-        String  text,
+        String  url,
         Instant createdAt,
         Instant updatedAt
     ) {
@@ -70,7 +70,7 @@ public class CommitMetadata implements Serializable {
         this.commitUuid = commitUuid;
         this.repoDetailsUuid = repoDetailsUuid;
         this.name = name;
-        this.text = text;
+        this.url = url;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -114,15 +114,15 @@ public class CommitMetadata implements Serializable {
         this.name = name;
     }
 
-    @Column(name = "text", nullable = false, length = 512)
+    @Column(name = "url", nullable = false, length = 512)
     @NotNull
     @Size(max = 512)
-    public String getText() {
-        return this.text;
+    public String getUrl() {
+        return this.url;
     }
 
-    public void setText(String text) {
-        this.text = text;
+    public void setUrl(String url) {
+        this.url = url;
     }
 
     @Column(name = "created_at", nullable = false)
@@ -153,7 +153,7 @@ public class CommitMetadata implements Serializable {
         sb.append(", ").append(commitUuid);
         sb.append(", ").append(repoDetailsUuid);
         sb.append(", ").append(name);
-        sb.append(", ").append(text);
+        sb.append(", ").append(url);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(updatedAt);
 

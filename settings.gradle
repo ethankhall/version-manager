@@ -1,3 +1,6 @@
+include 'shared-config'
+include 'shared-model'
+
 //web service - api's
 include ':web-service:api-project'
 
@@ -8,16 +11,19 @@ include ':web-service:version-management'
 //database
 include ':database:database-api'
 include ':database:database-impl'
-include ':database:database-test'
+//include ':database:database-test'
 include ':database:database-jooq'
+include ':database:database-v2'
 include ':database:database-migration'
 include ':database:database-api-model'
 
 //security
 //include ':auth:user'
-include ':auth:authentication:default'
-include ':auth:authentication:jwt'
-include ':auth:authentication:core'
+//include ':auth:authentication:default'
+//include ':auth:authentication:jwt'
+//include ':auth:authentication:core'
+include ':auth:authentication'
+include ':auth:authorization'
 
 //Clients
 //include ':clients:gradle-plugin'

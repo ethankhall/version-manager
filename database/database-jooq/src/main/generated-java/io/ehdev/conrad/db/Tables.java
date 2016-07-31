@@ -4,16 +4,19 @@
 package io.ehdev.conrad.db;
 
 
+import io.ehdev.conrad.db.tables.AclClassTable;
+import io.ehdev.conrad.db.tables.AclEntryTable;
+import io.ehdev.conrad.db.tables.AclObjectIdentityTable;
+import io.ehdev.conrad.db.tables.AclSidTable;
 import io.ehdev.conrad.db.tables.CommitDetailsTable;
 import io.ehdev.conrad.db.tables.CommitMetadataTable;
 import io.ehdev.conrad.db.tables.ProjectDetailsTable;
 import io.ehdev.conrad.db.tables.RepoDetailsTable;
+import io.ehdev.conrad.db.tables.RepositoryTokensTable;
 import io.ehdev.conrad.db.tables.ResourceDetailLookupTable;
-import io.ehdev.conrad.db.tables.TokenAuthenticationsTable;
-import io.ehdev.conrad.db.tables.TokenJoinTable;
+import io.ehdev.conrad.db.tables.SsUserconnectionTable;
 import io.ehdev.conrad.db.tables.UserDetailsTable;
-import io.ehdev.conrad.db.tables.UserPermissionsTable;
-import io.ehdev.conrad.db.tables.UserSecurityClientProfileTable;
+import io.ehdev.conrad.db.tables.UserTokensTable;
 import io.ehdev.conrad.db.tables.VersionBumpersTable;
 
 import javax.annotation.Generated;
@@ -31,6 +34,26 @@ import javax.annotation.Generated;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Tables {
+
+    /**
+     * The table <code>public.acl_class</code>.
+     */
+    public static final AclClassTable ACL_CLASS = io.ehdev.conrad.db.tables.AclClassTable.ACL_CLASS;
+
+    /**
+     * The table <code>public.acl_entry</code>.
+     */
+    public static final AclEntryTable ACL_ENTRY = io.ehdev.conrad.db.tables.AclEntryTable.ACL_ENTRY;
+
+    /**
+     * The table <code>public.acl_object_identity</code>.
+     */
+    public static final AclObjectIdentityTable ACL_OBJECT_IDENTITY = io.ehdev.conrad.db.tables.AclObjectIdentityTable.ACL_OBJECT_IDENTITY;
+
+    /**
+     * The table <code>public.acl_sid</code>.
+     */
+    public static final AclSidTable ACL_SID = io.ehdev.conrad.db.tables.AclSidTable.ACL_SID;
 
     /**
      * The table <code>public.commit_details</code>.
@@ -53,19 +76,19 @@ public class Tables {
     public static final RepoDetailsTable REPO_DETAILS = io.ehdev.conrad.db.tables.RepoDetailsTable.REPO_DETAILS;
 
     /**
+     * The table <code>public.repository_tokens</code>.
+     */
+    public static final RepositoryTokensTable REPOSITORY_TOKENS = io.ehdev.conrad.db.tables.RepositoryTokensTable.REPOSITORY_TOKENS;
+
+    /**
      * The table <code>public.resource_detail_lookup</code>.
      */
     public static final ResourceDetailLookupTable RESOURCE_DETAIL_LOOKUP = io.ehdev.conrad.db.tables.ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP;
 
     /**
-     * The table <code>public.token_authentications</code>.
+     * The table <code>public.ss_userconnection</code>.
      */
-    public static final TokenAuthenticationsTable TOKEN_AUTHENTICATIONS = io.ehdev.conrad.db.tables.TokenAuthenticationsTable.TOKEN_AUTHENTICATIONS;
-
-    /**
-     * The table <code>public.token_join</code>.
-     */
-    public static final TokenJoinTable TOKEN_JOIN = io.ehdev.conrad.db.tables.TokenJoinTable.TOKEN_JOIN;
+    public static final SsUserconnectionTable SS_USERCONNECTION = io.ehdev.conrad.db.tables.SsUserconnectionTable.SS_USERCONNECTION;
 
     /**
      * The table <code>public.user_details</code>.
@@ -73,14 +96,9 @@ public class Tables {
     public static final UserDetailsTable USER_DETAILS = io.ehdev.conrad.db.tables.UserDetailsTable.USER_DETAILS;
 
     /**
-     * The table <code>public.user_permissions</code>.
+     * The table <code>public.user_tokens</code>.
      */
-    public static final UserPermissionsTable USER_PERMISSIONS = io.ehdev.conrad.db.tables.UserPermissionsTable.USER_PERMISSIONS;
-
-    /**
-     * The table <code>public.user_security_client_profile</code>.
-     */
-    public static final UserSecurityClientProfileTable USER_SECURITY_CLIENT_PROFILE = io.ehdev.conrad.db.tables.UserSecurityClientProfileTable.USER_SECURITY_CLIENT_PROFILE;
+    public static final UserTokensTable USER_TOKENS = io.ehdev.conrad.db.tables.UserTokensTable.USER_TOKENS;
 
     /**
      * The table <code>public.version_bumpers</code>.

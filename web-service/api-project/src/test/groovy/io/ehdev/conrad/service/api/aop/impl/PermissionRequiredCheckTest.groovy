@@ -7,7 +7,7 @@ import io.ehdev.conrad.database.model.repo.details.AuthUserDetails
 import io.ehdev.conrad.database.model.repo.details.ResourceDetails
 import io.ehdev.conrad.database.model.user.ApiUserPermission
 import io.ehdev.conrad.database.model.user.ApiUserPermissionDetails
-import io.ehdev.conrad.database.model.user.UserPermissionGrants
+import io.ehdev.conrad.database.model.user.TokenPermissionGrants
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired
@@ -51,8 +51,8 @@ class PermissionRequiredCheckTest extends Specification {
             }
 
             @Override
-            UserPermissionGrants getPermissions(AuthUserDetails authUserDetails) {
-                return new UserPermissionGrants([], [])
+            TokenPermissionGrants getPermissions(AuthUserDetails authUserDetails) {
+                return new TokenPermissionGrants([], [])
             }
         }
         environment = new MockEnvironment()

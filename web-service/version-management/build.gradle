@@ -6,7 +6,7 @@ dependencies {
     compile project(':database:database-api')
     compile libraries.springContext
 
-    compile libraries.sfl4j
+    compile libraries.slf4j
     compile libraries.commonsLang
 
     testCompile libraries.groovy

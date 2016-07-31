@@ -1,0 +1,27 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'local-dev'
+apply plugin: 'kotlin'
+
+configurations.integTestCompile.exclude module: 'spring-boot-starter-tomcat'
+
+dependencies {
+    compile libraries.kotlin
+    compile libraries.slf4j
+    compile project(":database:database-api")
+    compile libraries.springSocial
+    compile libraries.springSecurity
+    compile libraries.servletApi
+    compile libraries.jwt
+    compile libraries.springAcl
+    compile project(":shared-config")
+    compile project(":database:database-v2")
+
+    integTestCompile libraries.groovy
+    integTestCompile project(":database:database-impl")
+    integTestCompile project(":database:database-migration")
+    integTestCompile libraries.springBoot
+    integTestCompile("org.springframework.boot:spring-boot-starter-thymeleaf")
+    integTestCompile libraries.springBootWebapp
+    integTestCompile libraries.database
+}

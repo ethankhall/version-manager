@@ -36,7 +36,7 @@ public class ModelConversionUtility {
     }
 
     public static UserApiAuthentication toApiModel(UserDetails userDetails) {
-        return new UserApiAuthentication(userDetails.getUuid(), userDetails.getUserName(), userDetails.getName(), userDetails.getEmailAddress());
+        return new UserApiAuthentication(userDetails.getUuid(), userDetails.getUserName(), userDetails.getName(), "");
     }
 
 }

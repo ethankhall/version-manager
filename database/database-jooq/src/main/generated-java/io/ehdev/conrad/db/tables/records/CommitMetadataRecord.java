@@ -42,7 +42,7 @@ import org.jooq.impl.UpdatableRecordImpl;
 })
 public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataRecord> implements Record7<UUID, UUID, UUID, String, String, Instant, Instant> {
 
-    private static final long serialVersionUID = 359807462;
+    private static final long serialVersionUID = 1012514620;
 
     /**
      * Setter for <code>public.commit_metadata.uuid</code>.
@@ -108,19 +108,19 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
     }
 
     /**
-     * Setter for <code>public.commit_metadata.text</code>.
+     * Setter for <code>public.commit_metadata.url</code>.
      */
-    public void setText(String value) {
+    public void setUrl(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>public.commit_metadata.text</code>.
+     * Getter for <code>public.commit_metadata.url</code>.
      */
-    @Column(name = "text", nullable = false, length = 512)
+    @Column(name = "url", nullable = false, length = 512)
     @NotNull
     @Size(max = 512)
-    public String getText() {
+    public String getUrl() {
         return (String) get(4);
     }
 
@@ -225,7 +225,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      */
     @Override
     public Field<String> field5() {
-        return CommitMetadataTable.COMMIT_METADATA.TEXT;
+        return CommitMetadataTable.COMMIT_METADATA.URL;
     }
 
     /**
@@ -281,7 +281,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      */
     @Override
     public String value5() {
-        return getText();
+        return getUrl();
     }
 
     /**
@@ -341,7 +341,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      */
     @Override
     public CommitMetadataRecord value5(String value) {
-        setText(value);
+        setUrl(value);
         return this;
     }
 
@@ -392,14 +392,14 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
     /**
      * Create a detached, initialised CommitMetadataRecord
      */
-    public CommitMetadataRecord(UUID uuid, UUID commitUuid, UUID repoDetailsUuid, String name, String text, Instant createdAt, Instant updatedAt) {
+    public CommitMetadataRecord(UUID uuid, UUID commitUuid, UUID repoDetailsUuid, String name, String url, Instant createdAt, Instant updatedAt) {
         super(CommitMetadataTable.COMMIT_METADATA);
 
         set(0, uuid);
         set(1, commitUuid);
         set(2, repoDetailsUuid);
         set(3, name);
-        set(4, text);
+        set(4, url);
         set(5, createdAt);
         set(6, updatedAt);
     }

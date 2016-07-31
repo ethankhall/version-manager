@@ -31,7 +31,7 @@ import javax.validation.constraints.Size;
 @Table(name = "repo_details", schema = "public")
 public class RepoDetails implements Serializable {
 
-    private static final long serialVersionUID = -1780767173;
+    private static final long serialVersionUID = 665506603;
 
     private UUID    uuid;
     private String  repoName;
@@ -40,6 +40,7 @@ public class RepoDetails implements Serializable {
     private String  url;
     private String  description;
     private Boolean public_;
+    private Long    securityId;
 
     public RepoDetails() {}
 
@@ -51,6 +52,7 @@ public class RepoDetails implements Serializable {
         this.url = value.url;
         this.description = value.description;
         this.public_ = value.public_;
+        this.securityId = value.securityId;
     }
 
     public RepoDetails(
@@ -60,7 +62,8 @@ public class RepoDetails implements Serializable {
         UUID    versionBumperUuid,
         String  url,
         String  description,
-        Boolean public_
+        Boolean public_,
+        Long    securityId
     ) {
         this.uuid = uuid;
         this.repoName = repoName;
@@ -69,6 +72,7 @@ public class RepoDetails implements Serializable {
         this.url = url;
         this.description = description;
         this.public_ = public_;
+        this.securityId = securityId;
     }
 
     @Id
@@ -139,6 +143,15 @@ public class RepoDetails implements Serializable {
         this.public_ = public_;
     }
 
+    @Column(name = "security_id", nullable = false, precision = 64)
+    public Long getSecurityId() {
+        return this.securityId;
+    }
+
+    public void setSecurityId(Long securityId) {
+        this.securityId = securityId;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("RepoDetails (");
@@ -150,6 +163,7 @@ public class RepoDetails implements Serializable {
         sb.append(", ").append(url);
         sb.append(", ").append(description);
         sb.append(", ").append(public_);
+        sb.append(", ").append(securityId);
 
         sb.append(")");
         return sb.toString();

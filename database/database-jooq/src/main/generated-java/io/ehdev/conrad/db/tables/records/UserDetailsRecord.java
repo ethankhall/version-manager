@@ -18,8 +18,8 @@ import javax.validation.constraints.Size;
 
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record4;
-import org.jooq.Row4;
+import org.jooq.Record3;
+import org.jooq.Row3;
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -36,9 +36,9 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
 @Table(name = "user_details", schema = "public")
-public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> implements Record4<UUID, String, String, String> {
+public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> implements Record3<UUID, String, String> {
 
-    private static final long serialVersionUID = 332711412;
+    private static final long serialVersionUID = -1531979593;
 
     /**
      * Setter for <code>public.user_details.uuid</code>.
@@ -90,22 +90,6 @@ public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> im
         return (String) get(2);
     }
 
-    /**
-     * Setter for <code>public.user_details.email_address</code>.
-     */
-    public void setEmailAddress(String value) {
-        set(3, value);
-    }
-
-    /**
-     * Getter for <code>public.user_details.email_address</code>.
-     */
-    @Column(name = "email_address", length = 256)
-    @Size(max = 256)
-    public String getEmailAddress() {
-        return (String) get(3);
-    }
-
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -119,23 +103,23 @@ public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> im
     }
 
     // -------------------------------------------------------------------------
-    // Record4 type implementation
+    // Record3 type implementation
     // -------------------------------------------------------------------------
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Row4<UUID, String, String, String> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row3<UUID, String, String> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Row4<UUID, String, String, String> valuesRow() {
-        return (Row4) super.valuesRow();
+    public Row3<UUID, String, String> valuesRow() {
+        return (Row3) super.valuesRow();
     }
 
     /**
@@ -166,14 +150,6 @@ public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> im
      * {@inheritDoc}
      */
     @Override
-    public Field<String> field4() {
-        return UserDetailsTable.USER_DETAILS.EMAIL_ADDRESS;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public UUID value1() {
         return getUuid();
     }
@@ -192,14 +168,6 @@ public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> im
     @Override
     public String value3() {
         return getName();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String value4() {
-        return getEmailAddress();
     }
 
     /**
@@ -233,20 +201,10 @@ public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> im
      * {@inheritDoc}
      */
     @Override
-    public UserDetailsRecord value4(String value) {
-        setEmailAddress(value);
-        return this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public UserDetailsRecord values(UUID value1, String value2, String value3, String value4) {
+    public UserDetailsRecord values(UUID value1, String value2, String value3) {
         value1(value1);
         value2(value2);
         value3(value3);
-        value4(value4);
         return this;
     }
 
@@ -264,12 +222,11 @@ public class UserDetailsRecord extends UpdatableRecordImpl<UserDetailsRecord> im
     /**
      * Create a detached, initialised UserDetailsRecord
      */
-    public UserDetailsRecord(UUID uuid, String userName, String name, String emailAddress) {
+    public UserDetailsRecord(UUID uuid, String userName, String name) {
         super(UserDetailsTable.USER_DETAILS);
 
         set(0, uuid);
         set(1, userName);
         set(2, name);
-        set(3, emailAddress);
     }
 }

@@ -15,6 +15,7 @@ import java.util.UUID;
 import javax.annotation.Generated;
 
 import org.jooq.Field;
+import org.jooq.Identity;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -35,7 +36,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProjectDetailsTable extends TableImpl<ProjectDetailsRecord> {
 
-    private static final long serialVersionUID = 765531245;
+    private static final long serialVersionUID = -325182551;
 
     /**
      * The reference instance of <code>public.project_details</code>
@@ -59,6 +60,11 @@ public class ProjectDetailsTable extends TableImpl<ProjectDetailsRecord> {
      * The column <code>public.project_details.project_name</code>.
      */
     public final TableField<ProjectDetailsRecord, String> PROJECT_NAME = createField("project_name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false), this, "");
+
+    /**
+     * The column <code>public.project_details.security_id</code>.
+     */
+    public final TableField<ProjectDetailsRecord, Long> SECURITY_ID = createField("security_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('token_auth_security_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
 
     /**
      * Create a <code>public.project_details</code> table reference
@@ -88,6 +94,14 @@ public class ProjectDetailsTable extends TableImpl<ProjectDetailsRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<ProjectDetailsRecord, Long> getIdentity() {
+        return Keys.IDENTITY_PROJECT_DETAILS;
     }
 
     /**

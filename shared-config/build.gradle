@@ -1,0 +1,14 @@
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+
+dependencies {
+    compile project(':shared-model')
+    compile libraries.kotlin
+    compile libraries.slf4j
+    compile libraries.springContext
+    compile libraries.dropwizard
+    compile libraries.ehcache
+    compile libraries.springContextSupport
+    compile libraries.springBootBase
+}
