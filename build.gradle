@@ -24,6 +24,9 @@ allprojects {
         maven {
             url 'http://repo.spring.io/milestone'
         }
+        maven {
+            url "http://repository.jetbrains.com/all"
+        }
     }
 }
 

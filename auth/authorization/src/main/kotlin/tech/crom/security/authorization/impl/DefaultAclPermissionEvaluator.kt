@@ -11,7 +11,7 @@ import org.springframework.security.acls.model.ObjectIdentity
 import org.springframework.security.acls.model.Permission
 import org.springframework.security.core.Authentication
 import org.springframework.stereotype.Service
-import tech.crom.logger.logger
+import tech.crom.logger.getLogger
 import java.io.Serializable
 import java.util.*
 
@@ -19,7 +19,7 @@ import java.util.*
 class DefaultAclPermissionEvaluator @Autowired constructor(
     val aclService: MutableAclService) : PermissionEvaluator {
 
-    private val log by logger()
+    private val log by getLogger()
 
     private val objectIdentityRetrievalStrategy = ObjectIdentityRetrievalStrategyImpl();
     private val objectIdentityGenerator = ObjectIdentityRetrievalStrategyImpl();

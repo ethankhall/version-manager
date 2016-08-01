@@ -11,4 +11,9 @@ dependencies {
     compile libraries.ehcache
     compile libraries.springContextSupport
     compile libraries.springBootBase
+    compile libraries.hikari
+    compile libraries.jooq
+    compile libraries.springJdbc
+    compile libraries.springJdbc
+    compile libraries.springTx
 }

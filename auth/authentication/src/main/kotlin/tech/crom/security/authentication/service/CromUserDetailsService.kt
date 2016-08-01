@@ -8,13 +8,13 @@ import org.springframework.social.security.SocialUserDetails
 import org.springframework.social.security.SocialUserDetailsService
 import org.springframework.stereotype.Service
 import tech.crom.database.api.UserManager
-import tech.crom.logger.logger
+import tech.crom.logger.getLogger
 import tech.crom.model.security.authentication.CromUserAuthentication
 import java.util.*
 
 @Service
 class CromUserDetailsService @Autowired constructor(val userManager: UserManager): UserDetailsService, SocialUserDetailsService {
-    val log by logger()
+    val log by getLogger()
 
     override fun loadUserByUserId(userId: String?): SocialUserDetails {
         val user = userManager.findUserDetails(UUID.fromString(userId)) ?: throw UsernameNotFoundException("User $userId not found")

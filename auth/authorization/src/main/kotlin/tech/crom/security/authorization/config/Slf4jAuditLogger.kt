@@ -4,11 +4,11 @@ import org.springframework.security.acls.domain.AuditLogger
 import org.springframework.security.acls.model.AccessControlEntry
 import org.springframework.security.acls.model.AuditableAccessControlEntry
 import org.springframework.util.Assert
-import tech.crom.logger.logger
+import tech.crom.logger.getLogger
 
 class Slf4jAuditLogger : AuditLogger {
 
-    val log by logger()
+    val log by getLogger()
 
     override fun logIfNeeded(granted: Boolean, ace: AccessControlEntry?) {
         Assert.notNull(ace, "AccessControlEntry required")

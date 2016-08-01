@@ -10,4 +10,13 @@ dependencies {
     compile libraries.springAcl
     compile project(":database:database-jooq")
     compile project(":shared-model")
+    compile libraries.hikari
+
+    testCompile libraries.spek
+
+    integTestCompile libraries.groovy
+    integTestCompile libraries.spock
+    integTestCompile libraries.springTest
+    integTestCompile libraries.springBootTest
+    integTestCompile project(":shared-config")
 }

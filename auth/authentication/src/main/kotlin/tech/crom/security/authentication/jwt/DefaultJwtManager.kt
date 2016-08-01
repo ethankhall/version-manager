@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
 import tech.crom.database.api.TokenManager
-import tech.crom.logger.logger
+import tech.crom.logger.getLogger
 import tech.crom.model.repository.CromRepo
 import tech.crom.model.user.CromUser
 import java.time.Clock
@@ -23,7 +23,7 @@ class DefaultJwtManager @Autowired constructor(
     environment: Environment,
     val tokenManager: TokenManager) : JwtManager {
 
-    private val log by logger()
+    private val log by getLogger()
 
     private val TOKEN_TYPE = "type"
     private val key: ByteArray
