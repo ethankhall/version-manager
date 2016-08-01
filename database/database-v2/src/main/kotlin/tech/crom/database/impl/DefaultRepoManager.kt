@@ -23,7 +23,7 @@ class DefaultRepoManager @Autowired constructor(
             .selectCount()
             .from(repoDetails)
             .where(repoDetails.PROJECT_UUID.eq(cromProject.projectUid)).and(repoDetails.REPO_NAME.eq(repoName))
-            .execute() == 1
+            .fetchOne(0, Int::class.java) == 1
     }
 
     override fun deleteRepo(cromRepo: CromRepo) = repoDetailsDao.deleteById(cromRepo.repoUid)

@@ -23,8 +23,7 @@ class DefaultProjectManager @Autowired constructor(
     override fun createProject(name: String): CromProject {
         val projectDetails = Tables.PROJECT_DETAILS
         val record = dslContext
-            .insertInto(projectDetails)
-            .columns(projectDetails.PROJECT_NAME)
+            .insertInto(projectDetails, projectDetails.PROJECT_NAME)
             .values(name)
             .returning(projectDetails.fields().toList())
             .fetchOne()

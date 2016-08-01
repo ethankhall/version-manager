@@ -26,7 +26,7 @@ class DefaultUserManager @Autowired constructor(
             .selectCount()
             .from(userDetails)
             .where(userDetails.USER_NAME.eq(userName))
-            .execute()
+            .fetchOne(0, Int::class.java)
         return count != 0
     }
 
@@ -37,8 +37,7 @@ class DefaultUserManager @Autowired constructor(
 
         val userDetails = Tables.USER_DETAILS
         val user = dslContext
-            .insertInto(userDetails)
-            .columns(userDetails.USER_NAME, userDetails.NAME)
+            .insertInto(userDetails, userDetails.USER_NAME, userDetails.NAME)
             .values(userName, displayName)
             .returning(userDetails.fields().toList())
             .fetchOne()

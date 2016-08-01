@@ -13,6 +13,7 @@ dependencies {
     compile libraries.hikari
 
     testCompile libraries.spek
+    testCompile libraries.logback
 
     integTestCompile libraries.groovy
     integTestCompile libraries.spock
