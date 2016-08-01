@@ -27,6 +27,7 @@ class UserManagerIntegrationTest extends Specification {
         then:
         userManager.userNameExists('userName')
         userManager.findUserDetails('userName') == user
+        userManager.findUserDetails(user.userUid) == user
 
         when:
         userManager.createUser('displayName1', 'userName')
@@ -39,5 +40,19 @@ class UserManagerIntegrationTest extends Specification {
 
         then:
         noExceptionThrown()
+
+        when:
+        userManager.changeUserName(user, 'userName1')
+
+        then:
+        thrown(UserManager.UsernameAlreadyExists)
+
+        when:
+        def newUserName = userManager.changeUserName(user, 'newUserName')
+
+        then:
+        noExceptionThrown()
+        newUserName.userName == 'newUserName'
+        newUserName.userUid == user.userUid
     }
 }
