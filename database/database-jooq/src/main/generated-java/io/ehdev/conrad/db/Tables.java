@@ -13,7 +13,6 @@ import io.ehdev.conrad.db.tables.CommitMetadataTable;
 import io.ehdev.conrad.db.tables.ProjectDetailsTable;
 import io.ehdev.conrad.db.tables.RepoDetailsTable;
 import io.ehdev.conrad.db.tables.RepositoryTokensTable;
-import io.ehdev.conrad.db.tables.ResourceDetailLookupTable;
 import io.ehdev.conrad.db.tables.SsUserconnectionTable;
 import io.ehdev.conrad.db.tables.UserDetailsTable;
 import io.ehdev.conrad.db.tables.UserTokensTable;
@@ -79,11 +78,6 @@ public class Tables {
      * The table <code>public.repository_tokens</code>.
      */
     public static final RepositoryTokensTable REPOSITORY_TOKENS = io.ehdev.conrad.db.tables.RepositoryTokensTable.REPOSITORY_TOKENS;
-
-    /**
-     * The table <code>public.resource_detail_lookup</code>.
-     */
-    public static final ResourceDetailLookupTable RESOURCE_DETAIL_LOOKUP = io.ehdev.conrad.db.tables.ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP;
 
     /**
      * The table <code>public.ss_userconnection</code>.

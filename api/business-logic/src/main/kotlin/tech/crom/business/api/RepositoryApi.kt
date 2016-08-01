@@ -1,21 +1,11 @@
-package tech.crom.database.api
+package tech.crom.business.api
 
 import tech.crom.model.bumper.CromVersionBumper
 import tech.crom.model.project.CromProject
 import tech.crom.model.repository.CromRepo
-import java.util.*
 
-interface RepoManager {
-
-    fun findRepo(uuid: UUID): CromRepo?
-
-    fun findRepo(cromProject: CromProject, repoName: String): CromRepo?
-
+interface RepositoryApi {
     fun findRepo(cromProject: CromProject): Collection<CromRepo>
-
-    fun doesRepoExist(cromProject: CromProject, repoName: String): Boolean
-
-    fun deleteRepo(cromRepo: CromRepo)
 
     fun createRepo(cromProject: CromProject,
                    repoName: String,

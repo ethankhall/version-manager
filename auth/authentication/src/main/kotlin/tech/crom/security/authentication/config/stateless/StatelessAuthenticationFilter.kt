@@ -40,7 +40,8 @@ class StatelessAuthenticationFilter @Autowired constructor(
                 val user = userManager.findUserDetails(token.userUuid) ?: return
                 SecurityContextHolder.getContext().authentication = CromUserAuthentication(user)
             } else if (token is JwtTokenAuthentication.RepoJwtTokenAuthentication) {
-                SecurityContextHolder.getContext().authentication = CromRepositoryAuthentication(repoManager.getRepoDetails(token.repoUuid))
+                val repo = repoManager.findRepo(token.repoUuid) ?: return
+                SecurityContextHolder.getContext().authentication = CromRepositoryAuthentication(repo)
             }
         }
     }

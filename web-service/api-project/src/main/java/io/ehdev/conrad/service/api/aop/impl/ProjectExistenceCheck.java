@@ -1,7 +1,5 @@
 package io.ehdev.conrad.service.api.aop.impl;
 
-import io.ehdev.conrad.database.api.ProjectManagementApi;
-import io.ehdev.conrad.database.model.project.ApiProjectDetails;
 import io.ehdev.conrad.database.model.repo.RequestDetails;
 import io.ehdev.conrad.service.api.aop.annotation.ProjectRequired;
 import io.ehdev.conrad.service.api.aop.exception.ProjectExistsException;
@@ -13,8 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
+import tech.crom.business.api.ProjectApi;
 
 import static io.ehdev.conrad.service.api.aop.impl.RequestDetailsHelper.findRequestDetails;
 
@@ -24,12 +21,12 @@ import static io.ehdev.conrad.service.api.aop.impl.RequestDetailsHelper.findRequ
 public class ProjectExistenceCheck implements Ordered {
 
     private final Environment env;
-    private final ProjectManagementApi projectManagementApi;
+    private final ProjectApi projectApi;
 
     @Autowired
-    public ProjectExistenceCheck(Environment env, ProjectManagementApi projectManagementApi) {
+    public ProjectExistenceCheck(Environment env, ProjectApi projectApi) {
         this.env = env;
-        this.projectManagementApi = projectManagementApi;
+        this.projectApi = projectApi;
     }
 
     @Before(value = "@annotation(projectRequired)", argNames = "joinPoint,projectRequired")
@@ -39,11 +36,11 @@ public class ProjectExistenceCheck implements Ordered {
         }
 
         RequestDetails container = findRequestDetails(joinPoint);
-        Optional<ApiProjectDetails> projectDetails = projectManagementApi.getProjectDetails(container.getResourceDetails());
 
-        if(!projectDetails.isPresent() && projectRequired.exists()) {
+        boolean projectExists = projectApi.projectExists(container.getResourceDetails().getProjectId().getName());
+        if(!projectExists && projectRequired.exists()) {
             throw new ProjectMissingException(container.getResourceDetails());
-        } else if(projectDetails.isPresent() && !projectRequired.exists()) {
+        } else if(projectExists && !projectRequired.exists()) {
             throw new ProjectExistsException(container.getResourceDetails());
         }
     }

@@ -30,8 +30,8 @@ springBoot {
 
 dependencies {
     compile project(":api:rest-model")
-    compile project(":database:database-api")
-    compile project(":database:database-impl")
+    compile project(":database:database-v2")
+//    compile project(":database:database-impl")
     compile project(":web-service:version-management")
     compile project(":web-service:api-project")
 //    compile project(":auth:authentication:default")

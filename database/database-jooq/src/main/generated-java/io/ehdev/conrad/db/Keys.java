@@ -13,7 +13,6 @@ import io.ehdev.conrad.db.tables.CommitMetadataTable;
 import io.ehdev.conrad.db.tables.ProjectDetailsTable;
 import io.ehdev.conrad.db.tables.RepoDetailsTable;
 import io.ehdev.conrad.db.tables.RepositoryTokensTable;
-import io.ehdev.conrad.db.tables.ResourceDetailLookupTable;
 import io.ehdev.conrad.db.tables.SsUserconnectionTable;
 import io.ehdev.conrad.db.tables.UserDetailsTable;
 import io.ehdev.conrad.db.tables.UserTokensTable;
@@ -27,7 +26,6 @@ import io.ehdev.conrad.db.tables.records.CommitMetadataRecord;
 import io.ehdev.conrad.db.tables.records.ProjectDetailsRecord;
 import io.ehdev.conrad.db.tables.records.RepoDetailsRecord;
 import io.ehdev.conrad.db.tables.records.RepositoryTokensRecord;
-import io.ehdev.conrad.db.tables.records.ResourceDetailLookupRecord;
 import io.ehdev.conrad.db.tables.records.SsUserconnectionRecord;
 import io.ehdev.conrad.db.tables.records.UserDetailsRecord;
 import io.ehdev.conrad.db.tables.records.UserTokensRecord;
@@ -87,10 +85,6 @@ public class Keys {
     public static final UniqueKey<ProjectDetailsRecord> PROJECT_DETAILS_PROJECT_NAME_KEY = UniqueKeys0.PROJECT_DETAILS_PROJECT_NAME_KEY;
     public static final UniqueKey<RepoDetailsRecord> REPO_DETAILS_PKEY = UniqueKeys0.REPO_DETAILS_PKEY;
     public static final UniqueKey<RepositoryTokensRecord> REPOSITORY_TOKENS_PKEY = UniqueKeys0.REPOSITORY_TOKENS_PKEY;
-    public static final UniqueKey<ResourceDetailLookupRecord> RESOURCE_DETAIL_LOOKUP_PKEY = UniqueKeys0.RESOURCE_DETAIL_LOOKUP_PKEY;
-    public static final UniqueKey<ResourceDetailLookupRecord> RESOURCE_DETAIL_LOOKUP_PROJECT_NAME_REPO_NAME_KEY = UniqueKeys0.RESOURCE_DETAIL_LOOKUP_PROJECT_NAME_REPO_NAME_KEY;
-    public static final UniqueKey<ResourceDetailLookupRecord> RESOURCE_DETAIL_LOOKUP_PROJECT_UUID_REPO_UUID_KEY = UniqueKeys0.RESOURCE_DETAIL_LOOKUP_PROJECT_UUID_REPO_UUID_KEY;
-    public static final UniqueKey<ResourceDetailLookupRecord> RESOURCE_DETAIL_LOOKUP_REPO_UUID_KEY = UniqueKeys0.RESOURCE_DETAIL_LOOKUP_REPO_UUID_KEY;
     public static final UniqueKey<SsUserconnectionRecord> SS_USERCONNECTION_PKEY = UniqueKeys0.SS_USERCONNECTION_PKEY;
     public static final UniqueKey<UserDetailsRecord> USER_DETAILS_PKEY = UniqueKeys0.USER_DETAILS_PKEY;
     public static final UniqueKey<UserDetailsRecord> USER_DETAILS_USER_NAME_KEY = UniqueKeys0.USER_DETAILS_USER_NAME_KEY;
@@ -115,8 +109,6 @@ public class Keys {
     public static final ForeignKey<RepoDetailsRecord, ProjectDetailsRecord> REPO_DETAILS__REPO_DETAILS_PROJECT_UUID_FKEY = ForeignKeys0.REPO_DETAILS__REPO_DETAILS_PROJECT_UUID_FKEY;
     public static final ForeignKey<RepoDetailsRecord, VersionBumpersRecord> REPO_DETAILS__REPO_DETAILS_VERSION_BUMPER_UUID_FKEY = ForeignKeys0.REPO_DETAILS__REPO_DETAILS_VERSION_BUMPER_UUID_FKEY;
     public static final ForeignKey<RepositoryTokensRecord, RepoDetailsRecord> REPOSITORY_TOKENS__REPOSITORY_TOKENS_REPO_UUID_FKEY = ForeignKeys0.REPOSITORY_TOKENS__REPOSITORY_TOKENS_REPO_UUID_FKEY;
-    public static final ForeignKey<ResourceDetailLookupRecord, ProjectDetailsRecord> RESOURCE_DETAIL_LOOKUP__RESOURCE_DETAIL_LOOKUP_PROJECT_UUID_FKEY = ForeignKeys0.RESOURCE_DETAIL_LOOKUP__RESOURCE_DETAIL_LOOKUP_PROJECT_UUID_FKEY;
-    public static final ForeignKey<ResourceDetailLookupRecord, RepoDetailsRecord> RESOURCE_DETAIL_LOOKUP__RESOURCE_DETAIL_LOOKUP_REPO_UUID_FKEY = ForeignKeys0.RESOURCE_DETAIL_LOOKUP__RESOURCE_DETAIL_LOOKUP_REPO_UUID_FKEY;
     public static final ForeignKey<UserTokensRecord, UserDetailsRecord> USER_TOKENS__USER_TOKENS_USER_UUID_FKEY = ForeignKeys0.USER_TOKENS__USER_TOKENS_USER_UUID_FKEY;
 
     // -------------------------------------------------------------------------
@@ -150,10 +142,6 @@ public class Keys {
         public static final UniqueKey<ProjectDetailsRecord> PROJECT_DETAILS_PROJECT_NAME_KEY = createUniqueKey(ProjectDetailsTable.PROJECT_DETAILS, "project_details_project_name_key", ProjectDetailsTable.PROJECT_DETAILS.PROJECT_NAME);
         public static final UniqueKey<RepoDetailsRecord> REPO_DETAILS_PKEY = createUniqueKey(RepoDetailsTable.REPO_DETAILS, "repo_details_pkey", RepoDetailsTable.REPO_DETAILS.UUID);
         public static final UniqueKey<RepositoryTokensRecord> REPOSITORY_TOKENS_PKEY = createUniqueKey(RepositoryTokensTable.REPOSITORY_TOKENS, "repository_tokens_pkey", RepositoryTokensTable.REPOSITORY_TOKENS.UUID);
-        public static final UniqueKey<ResourceDetailLookupRecord> RESOURCE_DETAIL_LOOKUP_PKEY = createUniqueKey(ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP, "resource_detail_lookup_pkey", ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP.UUID);
-        public static final UniqueKey<ResourceDetailLookupRecord> RESOURCE_DETAIL_LOOKUP_PROJECT_NAME_REPO_NAME_KEY = createUniqueKey(ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP, "resource_detail_lookup_project_name_repo_name_key", ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP.PROJECT_NAME, ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP.REPO_NAME);
-        public static final UniqueKey<ResourceDetailLookupRecord> RESOURCE_DETAIL_LOOKUP_PROJECT_UUID_REPO_UUID_KEY = createUniqueKey(ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP, "resource_detail_lookup_project_uuid_repo_uuid_key", ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP.PROJECT_UUID, ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP.REPO_UUID);
-        public static final UniqueKey<ResourceDetailLookupRecord> RESOURCE_DETAIL_LOOKUP_REPO_UUID_KEY = createUniqueKey(ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP, "resource_detail_lookup_repo_uuid_key", ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP.REPO_UUID);
         public static final UniqueKey<SsUserconnectionRecord> SS_USERCONNECTION_PKEY = createUniqueKey(SsUserconnectionTable.SS_USERCONNECTION, "ss_userconnection_pkey", SsUserconnectionTable.SS_USERCONNECTION.USERID, SsUserconnectionTable.SS_USERCONNECTION.PROVIDERID, SsUserconnectionTable.SS_USERCONNECTION.PROVIDERUSERID);
         public static final UniqueKey<UserDetailsRecord> USER_DETAILS_PKEY = createUniqueKey(UserDetailsTable.USER_DETAILS, "user_details_pkey", UserDetailsTable.USER_DETAILS.UUID);
         public static final UniqueKey<UserDetailsRecord> USER_DETAILS_USER_NAME_KEY = createUniqueKey(UserDetailsTable.USER_DETAILS, "user_details_user_name_key", UserDetailsTable.USER_DETAILS.USER_NAME);
@@ -176,8 +164,6 @@ public class Keys {
         public static final ForeignKey<RepoDetailsRecord, ProjectDetailsRecord> REPO_DETAILS__REPO_DETAILS_PROJECT_UUID_FKEY = createForeignKey(io.ehdev.conrad.db.Keys.PROJECT_DETAILS_PKEY, RepoDetailsTable.REPO_DETAILS, "repo_details__repo_details_project_uuid_fkey", RepoDetailsTable.REPO_DETAILS.PROJECT_UUID);
         public static final ForeignKey<RepoDetailsRecord, VersionBumpersRecord> REPO_DETAILS__REPO_DETAILS_VERSION_BUMPER_UUID_FKEY = createForeignKey(io.ehdev.conrad.db.Keys.VERSION_BUMPERS_PKEY, RepoDetailsTable.REPO_DETAILS, "repo_details__repo_details_version_bumper_uuid_fkey", RepoDetailsTable.REPO_DETAILS.VERSION_BUMPER_UUID);
         public static final ForeignKey<RepositoryTokensRecord, RepoDetailsRecord> REPOSITORY_TOKENS__REPOSITORY_TOKENS_REPO_UUID_FKEY = createForeignKey(io.ehdev.conrad.db.Keys.REPO_DETAILS_PKEY, RepositoryTokensTable.REPOSITORY_TOKENS, "repository_tokens__repository_tokens_repo_uuid_fkey", RepositoryTokensTable.REPOSITORY_TOKENS.REPO_UUID);
-        public static final ForeignKey<ResourceDetailLookupRecord, ProjectDetailsRecord> RESOURCE_DETAIL_LOOKUP__RESOURCE_DETAIL_LOOKUP_PROJECT_UUID_FKEY = createForeignKey(io.ehdev.conrad.db.Keys.PROJECT_DETAILS_PKEY, ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP, "resource_detail_lookup__resource_detail_lookup_project_uuid_fkey", ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP.PROJECT_UUID);
-        public static final ForeignKey<ResourceDetailLookupRecord, RepoDetailsRecord> RESOURCE_DETAIL_LOOKUP__RESOURCE_DETAIL_LOOKUP_REPO_UUID_FKEY = createForeignKey(io.ehdev.conrad.db.Keys.REPO_DETAILS_PKEY, ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP, "resource_detail_lookup__resource_detail_lookup_repo_uuid_fkey", ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP.REPO_UUID);
         public static final ForeignKey<UserTokensRecord, UserDetailsRecord> USER_TOKENS__USER_TOKENS_USER_UUID_FKEY = createForeignKey(io.ehdev.conrad.db.Keys.USER_DETAILS_PKEY, UserTokensTable.USER_TOKENS, "user_tokens__user_tokens_user_uuid_fkey", UserTokensTable.USER_TOKENS.USER_UUID);
     }
 }

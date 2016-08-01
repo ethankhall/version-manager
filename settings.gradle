@@ -9,8 +9,8 @@ include ':web-service:webapp'
 include ':web-service:version-management'
 
 //database
-include ':database:database-api'
-include ':database:database-impl'
+//include ':database:database-api'
+//include ':database:database-impl'
 //include ':database:database-test'
 include ':database:database-jooq'
 include ':database:database-v2'
@@ -31,6 +31,7 @@ include ':auth:authorization'
 
 //api model
 include ':api:rest-model'
+include ':api:business-logic'
 
 //Tests
 include ':test-utils'

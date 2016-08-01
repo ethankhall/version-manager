@@ -35,6 +35,7 @@ ALTER TABLE project_details
 DROP TABLE user_permissions;
 DROP TABLE token_join;
 DROP TABLE token_authentications;
+DROP TABLE resource_detail_lookup;
 
 DROP TYPE token_type;
 

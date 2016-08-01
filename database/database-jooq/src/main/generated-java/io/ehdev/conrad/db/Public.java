@@ -13,7 +13,6 @@ import io.ehdev.conrad.db.tables.CommitMetadataTable;
 import io.ehdev.conrad.db.tables.ProjectDetailsTable;
 import io.ehdev.conrad.db.tables.RepoDetailsTable;
 import io.ehdev.conrad.db.tables.RepositoryTokensTable;
-import io.ehdev.conrad.db.tables.ResourceDetailLookupTable;
 import io.ehdev.conrad.db.tables.SsUserconnectionTable;
 import io.ehdev.conrad.db.tables.UserDetailsTable;
 import io.ehdev.conrad.db.tables.UserTokensTable;
@@ -44,7 +43,7 @@ import org.jooq.impl.SchemaImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class Public extends SchemaImpl {
 
-    private static final long serialVersionUID = 583263658;
+    private static final long serialVersionUID = -1266626394;
 
     /**
      * The reference instance of <code>public</code>
@@ -95,11 +94,6 @@ public class Public extends SchemaImpl {
      * The table <code>public.repository_tokens</code>.
      */
     public final RepositoryTokensTable REPOSITORY_TOKENS = io.ehdev.conrad.db.tables.RepositoryTokensTable.REPOSITORY_TOKENS;
-
-    /**
-     * The table <code>public.resource_detail_lookup</code>.
-     */
-    public final ResourceDetailLookupTable RESOURCE_DETAIL_LOOKUP = io.ehdev.conrad.db.tables.ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP;
 
     /**
      * The table <code>public.ss_userconnection</code>.
@@ -171,7 +165,6 @@ public class Public extends SchemaImpl {
             ProjectDetailsTable.PROJECT_DETAILS,
             RepoDetailsTable.REPO_DETAILS,
             RepositoryTokensTable.REPOSITORY_TOKENS,
-            ResourceDetailLookupTable.RESOURCE_DETAIL_LOOKUP,
             SsUserconnectionTable.SS_USERCONNECTION,
             UserDetailsTable.USER_DETAILS,
             UserTokensTable.USER_TOKENS,

@@ -14,7 +14,7 @@ data class CromRepositoryAuthentication(val source: CromRepo): Authentication {
         securityRepo = SecurityCromRepo(source)
     }
 
-    override fun getName(): String = source.displayName
+    override fun getName(): String = source.repoName
 
     override fun setAuthenticated(isAuthenticated: Boolean) { }
 
@@ -30,7 +30,7 @@ data class CromRepositoryAuthentication(val source: CromRepo): Authentication {
 
     data class SecurityCromRepo(val cromRepo: CromRepo): UserDetails {
 
-        override fun getUsername(): String = cromRepo.displayName
+        override fun getUsername(): String = cromRepo.repoName
 
         override fun isCredentialsNonExpired(): Boolean = true
 

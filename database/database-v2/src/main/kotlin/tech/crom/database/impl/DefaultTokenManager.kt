@@ -42,8 +42,8 @@ class DefaultTokenManager @Autowired constructor(
     override fun generateUserToken(cromUser: CromUser, expirationDate: LocalDateTime): TokenManager.GeneratedToken {
         val userTokens = Tables.USER_TOKENS
         val result = dslContext
-            .insertInto(userTokens, userTokens.USER_UUID, userTokens.SECURITY_ID, userTokens.EXPIRES_AT)
-            .values(cromUser.userUid, cromUser.securityId, expirationDate.toInstant(ZoneOffset.UTC))
+            .insertInto(userTokens, userTokens.USER_UUID, userTokens.EXPIRES_AT)
+            .values(cromUser.userUid, expirationDate.toInstant(ZoneOffset.UTC))
             .returning(userTokens.fields().toList())
             .fetchOne()
             .into(userTokens)
@@ -58,8 +58,8 @@ class DefaultTokenManager @Autowired constructor(
     override fun generateRepoToken(cromRepo: CromRepo, expirationDate: LocalDateTime): TokenManager.GeneratedToken {
         val repoTokens = Tables.REPOSITORY_TOKENS
         val result = dslContext
-            .insertInto(repoTokens, repoTokens.REPO_UUID, repoTokens.SECURITY_ID, repoTokens.EXPIRES_AT)
-            .values(cromRepo.repoUid, cromRepo.securityId, expirationDate.toInstant(ZoneOffset.UTC))
+            .insertInto(repoTokens, repoTokens.REPO_UUID, repoTokens.EXPIRES_AT)
+            .values(cromRepo.repoUid, expirationDate.toInstant(ZoneOffset.UTC))
             .returning(repoTokens.fields().toList())
             .fetchOne()
             .into(repoTokens)

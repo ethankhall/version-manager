@@ -5,7 +5,9 @@ apply plugin: io.ehdev.conrad.gradle.SpringRestDocPlugin
 dependencies {
     compile project(':api:rest-model')
     //compile project(':auth:authentication:jwt')
-    compile project(':database:database-api')
+//    compile project(':database:database-api')
+    compile project(':database:database-v2')
+    compile project(':api:business-logic')
     compile project(':web-service:version-management')
 
     compile libraries.cglib
@@ -37,7 +39,7 @@ dependencies {
     testCompile libraries.testing
 
 
-    integTestCompile project(':database:database-impl')
+//    integTestCompile project(':database:database-impl')
     integTestCompile libraries.springBoot
     integTestCompile libraries.springBootTest
     integTestCompile 'javax.transaction:javax.transaction-api:1.2'
