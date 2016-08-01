@@ -2,6 +2,7 @@ package tech.crom.database.api
 
 import tech.crom.model.commit.CromCommitDetails
 import tech.crom.model.repository.CromRepo
+import java.time.Instant
 
 interface CommitManager {
     fun findLatestCommit(cromRepo: CromRepo, history: List<CommitSearch>): CromCommitDetails?
@@ -13,5 +14,5 @@ interface CommitManager {
     fun findAllCommits(cromRepo: CromRepo): List<CromCommitDetails>
 
     data class CommitSearch(val commitId: String)
-    data class NextCommitVersion(val commitId: String, val version: String)
+    data class NextCommitVersion(val commitId: String, val version: String, val createdAt: Instant? = null)
 }

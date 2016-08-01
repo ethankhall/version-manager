@@ -8,23 +8,26 @@ import org.springframework.stereotype.Service
 import tech.crom.database.api.CommitManager
 import tech.crom.model.commit.CromCommitDetails
 import tech.crom.model.repository.CromRepo
+import java.time.Clock
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 @Service
 class DefaultCommitManager @Autowired constructor(
-    val dslContext: DSLContext
+    val dslContext: DSLContext,
+    val clock: Clock
 ) : CommitManager {
 
     override fun createCommit(cromRepo: CromRepo,
                               nextVersion: CommitManager.NextCommitVersion,
                               parent: List<CommitManager.CommitSearch>): CromCommitDetails {
 
-        val findLatestCommit = findLatestCommit(cromRepo, parent)
+        val commit = findLatestCommit(cromRepo, parent)
         val cd = Tables.COMMIT_DETAILS
+
         val record = dslContext
-            .insertInto(cd, cd.REPO_DETAILS_UUID, cd.PARENT_COMMIT_UUID, cd.COMMIT_ID, cd.VERSION)
-            .values(cromRepo.repoUid, findLatestCommit?.commitUid, nextVersion.commitId, nextVersion.version)
+            .insertInto(cd, cd.REPO_DETAILS_UUID, cd.PARENT_COMMIT_UUID, cd.COMMIT_ID, cd.CREATED_AT, cd.VERSION)
+            .values(cromRepo.repoUid, commit?.commitUid, nextVersion.commitId, nextVersion.createdAt ?: clock.instant(), nextVersion.version)
             .returning(cd.fields().toList())
             .fetchOne()
             .into(cd)

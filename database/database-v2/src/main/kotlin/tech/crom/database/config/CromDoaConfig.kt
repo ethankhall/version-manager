@@ -6,34 +6,27 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 open class CromDoaConfig {
+    @Bean
+    open fun commitDetailsDao(config: org.jooq.Configuration): CommitDetailsDao = CommitDetailsDao(config)
 
     @Bean
-    open fun commitDetailsDao(configuration: org.jooq.Configuration): CommitDetailsDao {
-        return CommitDetailsDao(configuration);
-    }
+    open fun commitMetadataDao(config: org.jooq.Configuration): CommitMetadataDao = CommitMetadataDao(config)
 
     @Bean
-    open fun commitMetadataDao(configuration: org.jooq.Configuration): CommitMetadataDao {
-        return CommitMetadataDao(configuration);
-    }
+    open fun projectDetailsDao(config: org.jooq.Configuration): ProjectDetailsDao = ProjectDetailsDao(config)
 
     @Bean
-    open fun projectDetailsDao(configuration: org.jooq.Configuration): ProjectDetailsDao {
-        return ProjectDetailsDao(configuration);
-    }
+    open fun repoDetailsDao(config: org.jooq.Configuration): RepoDetailsDao = RepoDetailsDao(config)
 
     @Bean
-    open fun repoDetailsDao(configuration: org.jooq.Configuration): RepoDetailsDao {
-        return RepoDetailsDao(configuration);
-    }
+    open fun userDetailsDao(config: org.jooq.Configuration): UserDetailsDao = UserDetailsDao(config)
 
     @Bean
-    open fun userDetailsDao(configuration: org.jooq.Configuration): UserDetailsDao {
-        return UserDetailsDao(configuration);
-    }
+    open fun versionBumperDao(config: org.jooq.Configuration): VersionBumpersDao = VersionBumpersDao(config)
 
     @Bean
-    open fun versionBumperDao(configuration: org.jooq.Configuration): VersionBumpersDao {
-        return VersionBumpersDao(configuration);
-    }
+    open fun userTokensDao(config: org.jooq.Configuration): UserTokensDao = UserTokensDao(config)
+
+    @Bean
+    open fun repositoryTokensDao(config: org.jooq.Configuration): RepositoryTokensDao = RepositoryTokensDao(config)
 }

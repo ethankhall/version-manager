@@ -18,5 +18,8 @@ dependencies {
     integTestCompile libraries.spock
     integTestCompile libraries.springTest
     integTestCompile libraries.springBootTest
+    integTestCompile libraries.spockSpring
     integTestCompile project(":shared-config")
 }
+
+integTest.dependsOn ':database:database-migration:flywayMigrate'
