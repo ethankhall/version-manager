@@ -90,6 +90,9 @@ libraries.groovy = "org.codehaus.groovy:groovy-all:2.4.5"
 libraries.spock = "org.spockframework:spock-core:${versions.spock}"
 libraries.spockSpring = "org.spockframework:spock-spring:${versions.spock}"
 
+libraries.mockito = [group: 'org.mockito', name: 'mockito-core', version: '1.10.19']
+libraries.mockitoKotlin = "com.nhaarman:mockito-kotlin:0.5.2"
+
 libraries.commonsLang = 'org.apache.commons:commons-lang3:3.4'
 libraries.commonsIO = 'commons-io:commons-io:2.4'
 libraries.slf4j = "org.slf4j:slf4j-api:${versions.slf4j}"

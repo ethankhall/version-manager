@@ -13,6 +13,6 @@ interface JwtManager {
 
     fun createToken(token: TokenManager.GeneratedToken): String
 
-    fun parseToken(token: String): JwtTokenAuthentication?
+    fun parseToken(token: String?): JwtTokenAuthentication?
 
 }

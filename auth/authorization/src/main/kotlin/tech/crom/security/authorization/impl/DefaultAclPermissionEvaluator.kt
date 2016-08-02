@@ -47,7 +47,7 @@ class DefaultAclPermissionEvaluator @Autowired constructor(
 
         try {
             if (acl.isGranted(requiredPermission, sids, false)) {
-                log.debug("Access is granted");
+                log.debug("Access is granted")
                 return true;
             } else {
                 log.debug("Returning false - ACLs returned, but insufficient permissions for this principal")
@@ -59,6 +59,7 @@ class DefaultAclPermissionEvaluator @Autowired constructor(
         return false
     }
 
+    @Suppress("UNCHECKED_CAST")
     private fun resolvePermission(permission: Any?): List<Permission> {
         permission ?: return emptyList()
 

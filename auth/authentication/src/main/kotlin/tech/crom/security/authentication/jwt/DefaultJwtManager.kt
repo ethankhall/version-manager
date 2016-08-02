@@ -3,7 +3,6 @@ package tech.crom.security.authentication.jwt
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
 import io.jsonwebtoken.SignatureAlgorithm
-import org.apache.commons.lang3.StringUtils
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
@@ -33,12 +32,12 @@ class DefaultJwtManager @Autowired constructor(
     }
 
     override fun createUserToken(user: CromUser): String {
-        val token = tokenManager.generateUserToken(user, LocalDateTime.from(clock.instant()))
+        val token = tokenManager.generateUserToken(user, LocalDateTime.now(clock))
         return createToken(token)
     }
 
     override fun createRepoToken(repo: CromRepo): String {
-        val token = tokenManager.generateRepoToken(repo, LocalDateTime.from(clock.instant()))
+        val token = tokenManager.generateRepoToken(repo, LocalDateTime.now(clock))
         return createToken(token)
     }
 
@@ -58,8 +57,8 @@ class DefaultJwtManager @Autowired constructor(
             .compact()
     }
 
-    override fun parseToken(token: String): JwtTokenAuthentication? {
-        if (StringUtils.isBlank(token)) {
+    override fun parseToken(token: String?): JwtTokenAuthentication? {
+        if (token == null || token.isBlank()) {
             log.debug("Token was blank")
             return null
         }
@@ -75,7 +74,7 @@ class DefaultJwtManager @Autowired constructor(
             val tokenString: String = parsed[TOKEN_TYPE] as String? ?: return null
             val tokenType = TokenManager.TokenType.valueOf(tokenString)
 
-            val tokenUid = UUID.fromString(parsed.id)
+            val tokenUid = UUID.fromString(parsed.subject)
             val tokenData = tokenManager.getTokenData(tokenUid, tokenType) ?: return null
 
             if (tokenData.tokenType == TokenManager.TokenType.REPOSITORY) {

@@ -11,7 +11,7 @@ import java.util.*
 @Service
 class CromConnectionSignupService @Autowired constructor(val userManager: UserManager): ConnectionSignUp {
 
-    val randomNumber = Random()
+    internal val randomNumber = Random()
 
     override fun execute(connection: Connection<*>): String {
         var publicUserName: String
@@ -19,7 +19,7 @@ class CromConnectionSignupService @Autowired constructor(val userManager: UserMa
         do {
             val defaultUserId = randomNumber.nextInt(1000000)
             publicUserName = "user$defaultUserId"
-        } while (!userManager.userNameExists(publicUserName))
+        } while (userManager.userNameExists(publicUserName))
 
         val user = userManager.createUser(publicUserName, connection.fetchUserProfile().name)
         return user.userUid.toString()

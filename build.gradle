@@ -21,6 +21,7 @@ allprojects {
 
     repositories {
         mavenCentral()
+        jcenter()
         maven {
             url 'http://repo.spring.io/milestone'
         }

@@ -17,6 +17,11 @@ dependencies {
     compile project(":shared-config")
     compile project(":database:database-v2")
 
+    testCompile libraries.spek
+    testCompile libraries.logback
+    testCompile libraries.springTest
+    testCompile libraries.mockito, libraries.mockitoKotlin
+
     integTestCompile libraries.groovy
 //    integTestCompile project(":database:database-impl")
     integTestCompile project(":database:database-migration")

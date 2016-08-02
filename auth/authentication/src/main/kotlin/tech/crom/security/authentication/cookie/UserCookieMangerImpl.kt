@@ -19,7 +19,7 @@ class UserCookieMangerImpl : UserCookieManger {
     }
 
     override fun removeCookie(response: HttpServletResponse) {
-        userCookieGenerator.addCookie(response, "")
+        userCookieGenerator.removeCookie(response)
     }
 
     override fun readCookieValue(request: HttpServletRequest): String? {
