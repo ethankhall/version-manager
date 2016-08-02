@@ -4,7 +4,7 @@ ext {
 }
 
 
-versions.springBoot = '1.4.0.M2'
+versions.springBoot = '1.4.0.RELEASE'
 versions.spring = '4.2.5.RELEASE'
 versions.springSecurity = '4.0.3.RELEASE'
 versions.springSecutityOAuth = '2.0.8.RELEASE'

@@ -56,9 +56,9 @@ while [ -h "$PRG" ] ; do
     fi
 done
 SAVED="`pwd`"
-cd "`dirname \"$PRG\"`/" >&-
+cd "`dirname \"$PRG\"`/" >/dev/null
 APP_HOME="`pwd -P`"
-cd "$SAVED" >&-
+cd "$SAVED" >/dev/null
 
 CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
 
@@ -130,9 +130,9 @@ if $cygwin ; then
         CHECK2=`echo "$arg"|egrep -c "^-"`                                 ### Determine if an option
 
         if [ $CHECK -ne 0 ] && [ $CHECK2 -eq 0 ] ; then                    ### Added a condition
-            eval `echo parameters$i`=`cygpath --path --ignore --mixed "$arg"`
+            eval `echo args$i`=`cygpath --path --ignore --mixed "$arg"`
         else
-            eval `echo parameters$i`="\"$arg\""
+            eval `echo args$i`="\"$arg\""
         fi
         i=$((i+1))
     done
