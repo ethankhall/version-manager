@@ -2,6 +2,7 @@ package tech.crom.version.bumper.impl.semver
 
 import de.svenjacobs.loremipsum.LoremIpsum
 import org.jetbrains.spek.api.Spek
+import tech.crom.version.bumper.impl.semver.recognizer.WildcardMessageRecognizer
 import tech.crom.version.bumper.model.ReservedVersionModel
 import java.time.LocalDateTime
 import kotlin.test.assertEquals

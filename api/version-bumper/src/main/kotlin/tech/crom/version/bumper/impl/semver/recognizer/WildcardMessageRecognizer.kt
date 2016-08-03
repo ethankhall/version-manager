@@ -1,6 +1,7 @@
-package tech.crom.version.bumper.impl.semver
+package tech.crom.version.bumper.impl.semver.recognizer
 
 import tech.crom.version.bumper.impl.MessageRecognizer
+import tech.crom.version.bumper.impl.semver.recognizer.GroupBasedVersionCreator
 import tech.crom.version.bumper.model.ReservedVersionModel
 
 class WildcardMessageRecognizer: MessageRecognizer {

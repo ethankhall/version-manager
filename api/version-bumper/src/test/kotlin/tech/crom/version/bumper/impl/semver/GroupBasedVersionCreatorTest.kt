@@ -1,6 +1,7 @@
 package tech.crom.version.bumper.impl.semver
 
 import org.jetbrains.spek.api.Spek
+import tech.crom.version.bumper.impl.semver.recognizer.GroupBasedVersionCreator
 import tech.crom.version.bumper.model.ReservedVersionModel
 import java.time.LocalDateTime
 import kotlin.test.assertEquals

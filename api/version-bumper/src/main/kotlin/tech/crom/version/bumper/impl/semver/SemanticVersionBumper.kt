@@ -5,7 +5,7 @@ import tech.crom.version.bumper.model.CommitModel
 import tech.crom.version.bumper.model.ReservedVersionModel
 
 class SemanticVersionBumper: VersionBumper {
-    override fun calculateNextVersion(commitModel: CommitModel, lastCommit: ReservedVersionModel): ReservedVersionModel {
+    override fun calculateNextVersion(commitModel: CommitModel, lastCommit: ReservedVersionModel?): ReservedVersionModel {
         throw RuntimeException()
     }
 }
