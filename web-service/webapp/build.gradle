@@ -51,7 +51,6 @@ dependencies {
     compile 'org.thymeleaf.extras:thymeleaf-extras-java8time:2.1.0.RELEASE'
     compile 'org.thymeleaf.extras:thymeleaf-extras-springsecurity4:2.1.2.RELEASE'
 
-    testCompile project(":test-utils")
     testCompile libraries.groovy
     testCompile libraries.spock
     testCompile libraries.spockSpring

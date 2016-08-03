@@ -1,6 +1,5 @@
 package io.ehdev.conrad.version.bumper.semver;
 
-import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
 import io.ehdev.conrad.version.commit.CommitVersion;
 import io.ehdev.conrad.version.commit.CommitVersionGroup;
 import org.apache.commons.lang3.ArrayUtils;
@@ -42,10 +41,6 @@ public class SemanticCommitVersion implements CommitVersion<Integer> {
         }
 
         return new SemanticCommitVersion(versionList, postfix);
-    }
-
-    public static SemanticCommitVersion parse(ApiCommitModel version) {
-        return parse(version.getVersion());
     }
 
     @Override

@@ -1,0 +1,16 @@
+apply plugin: "kotlin"
+apply plugin: "groovy"
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://repository.jetbrains.com/all"
+    }
+}
+
+dependencies {
+    compile libraries.kotlin
+
+    testCompile 'de.sven-jacobs:loremipsum:1.0'
+    testCompile libraries.spek
+}
