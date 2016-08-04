@@ -1,17 +1,15 @@
-package tech.crom.version.bumper.impl.semver
+package tech.crom.version.bumper.impl.semver.recognizer
 
 import de.svenjacobs.loremipsum.LoremIpsum
 import org.jetbrains.spek.api.Spek
-import tech.crom.version.bumper.impl.semver.recognizer.ForceVersionMessageRecognizer
-import tech.crom.version.bumper.model.ReservedVersionModel
-import java.time.LocalDateTime
+import tech.crom.version.bumper.impl.createReservedVersionModel
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class ForceVersionMessageRecognizerTest: Spek({
     val ipsum = LoremIpsum()
     on("versions that should be forced") {
-        val currentVersion = ReservedVersionModel("", "1.2.3", LocalDateTime.now())
+        val currentVersion = createReservedVersionModel()
 
         it("should work with short message") {
             val recognizer = ForceVersionMessageRecognizer().produce(currentVersion, "[force version 1.2.4]")

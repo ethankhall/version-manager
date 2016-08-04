@@ -11,7 +11,7 @@ class ForceVersionMessageRecognizer() : MessageRecognizer {
             setOf(RegexOption.IGNORE_CASE, RegexOption.DOT_MATCHES_ALL))
     }
 
-    override fun produce(currentVersion: ReservedVersionModel, message: String): ForceVersionCreator? {
+    override fun produce(currentVersion: ReservedVersionModel?, message: String): ForceVersionCreator? {
         val result = searchString.find(message) ?: return null
         val versionString = result.groups[1]?.value ?: return null
         return ForceVersionCreator(versionString)
