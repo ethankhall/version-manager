@@ -4,10 +4,7 @@ include 'shared-model'
 
 //web service - api's
 include ':web-service:api-project'
-
-// Web services
 include ':web-service:webapp'
-include ':web-service:version-management'
 
 //database
 include ':database:database-jooq'
