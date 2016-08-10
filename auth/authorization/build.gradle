@@ -8,7 +8,19 @@ dependencies {
     compile libraries.slf4j
     compile libraries.springSecurity
     compile libraries.springAcl
+    compile libraries.jsr205
     compile project(":shared-config")
     compile project(":shared-model")
     compile project(":database:database-v2")
+
+    testCompile libraries.spek
+
+    integTestCompile libraries.servletApi
+    integTestCompile libraries.spock
+    integTestCompile libraries.logback
+    integTestCompile libraries.springBootTest
+    integTestCompile libraries.spockSpring
+    integTestCompile libraries.springSecurityTest
 }
+
+tasks.integTest.dependsOn ':database:database-migration:flywayMigrate'

@@ -47,7 +47,6 @@ open class SpringSocialConfig @Autowired constructor(val ds: DataSource, val sig
     class UserNameIdSource: UserIdSource {
         override fun getUserId(): String {
             val authentication = SecurityContextHolder.getContext().authentication ?: throw IllegalStateException("No user signed in")
-
             return authentication.name
         }
     }

@@ -1,6 +1,6 @@
 package tech.crom.security.authorization.config
 
-import net.sf.ehcache.Ehcache
+import org.springframework.cache.ehcache.EhCacheCacheManager
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Import
@@ -13,20 +13,22 @@ import org.springframework.security.acls.jdbc.JdbcMutableAclService
 import org.springframework.security.acls.jdbc.LookupStrategy
 import org.springframework.security.acls.model.AclCache
 import org.springframework.security.acls.model.MutableAclService
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import tech.crom.config.SharedMasterConfig
 import javax.sql.DataSource
 
 @Configuration
 @Import(SharedMasterConfig::class)
+@EnableGlobalMethodSecurity(prePostEnabled = true, jsr250Enabled = true)
 open class AclSpringConfig {
 
     @Bean
     open fun aclService(dataSource: DataSource, lookupStrategy: LookupStrategy, aclCache: AclCache): MutableAclService {
-        //select currval(pg_get_serial_sequence('acl_class', 'id'))
-        //select currval(pg_get_serial_sequence('acl_sid', 'id'))
-
-        return JdbcMutableAclService(dataSource, lookupStrategy, aclCache)
+        val jdbcMutableAclService = JdbcMutableAclService(dataSource, lookupStrategy, aclCache)
+        jdbcMutableAclService.setClassIdentityQuery("select currval(pg_get_serial_sequence('acl_class', 'id'))")
+        jdbcMutableAclService.setSidIdentityQuery("select currval(pg_get_serial_sequence('acl_sid', 'id'))")
+        return jdbcMutableAclService
     }
 
     @Bean
@@ -45,9 +47,9 @@ open class AclSpringConfig {
     }
 
     @Bean
-    open fun aclCache(ehCache: Ehcache): AclCache {
+    open fun aclCache(ehCacheManager: EhCacheCacheManager): AclCache {
         val grantingStrategy = DefaultPermissionGrantingStrategy(slf4jAuditLogger())
-        return EhCacheBasedAclCache(ehCache, grantingStrategy, aclAuthorizationStrategyAclAdmin())
+        return EhCacheBasedAclCache(ehCacheManager.cacheManager.getEhcache("aclCache"), grantingStrategy, aclAuthorizationStrategyAclAdmin())
     }
 
     @Bean

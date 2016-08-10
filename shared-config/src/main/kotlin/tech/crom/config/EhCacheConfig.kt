@@ -46,7 +46,7 @@ open class EhCacheConfig() {
     }
 
     @Bean
-    open fun cacheManager(ehCacheManager: net.sf.ehcache.CacheManager): CacheManager {
+    open fun cacheManager(ehCacheManager: net.sf.ehcache.CacheManager): EhCacheCacheManager {
         return EhCacheCacheManager(ehCacheManager)
     }
 }

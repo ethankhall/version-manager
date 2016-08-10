@@ -1,8 +1,5 @@
 package io.ehdev.conrad.service.api.aop.impl;
 
-import io.ehdev.conrad.database.api.PermissionManagementApi;
-import io.ehdev.conrad.database.model.repo.RequestDetails;
-import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.service.api.aop.exception.PermissionDeniedException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -10,7 +7,11 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import tech.crom.model.security.authentication.CromRepositoryAuthentication;
+import tech.crom.model.security.authorization.CromPermission;
+import tech.crom.web.api.model.RequestDetails;
 
 import static io.ehdev.conrad.service.api.aop.impl.RequestDetailsHelper.findRequestDetails;
 
@@ -18,40 +19,38 @@ import static io.ehdev.conrad.service.api.aop.impl.RequestDetailsHelper.findRequ
 @Service
 public class PermissionRequiredCheck implements Ordered {
 
-    private final PermissionManagementApi permissionManagementApi;
     private final Environment env;
 
     @Autowired
-    public PermissionRequiredCheck(PermissionManagementApi permissionManagementApi, Environment env) {
-        this.permissionManagementApi = permissionManagementApi;
+    public PermissionRequiredCheck(Environment env) {
         this.env = env;
     }
 
     @Before(value = "@annotation(io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired)")
     public void readPermissionRequired(JoinPoint joinPoint) {
-        checkPermission(joinPoint, ApiUserPermission.READ);
+        checkPermission(joinPoint, CromPermission.READ);
     }
 
     @Before(value = "@annotation(io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired)")
     public void writePermissionRequired(JoinPoint joinPoint) {
-        checkPermission(joinPoint, ApiUserPermission.WRITE);
+        checkPermission(joinPoint, CromPermission.WRITE);
     }
 
     @Before(value = "@annotation(io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired)")
     public void adminPermissionRequired(JoinPoint joinPoint) {
-        checkPermission(joinPoint, ApiUserPermission.ADMIN);
+        checkPermission(joinPoint, CromPermission.ADMIN);
     }
 
-    private void checkPermission(JoinPoint joinPoint, ApiUserPermission permission) {
+    private void checkPermission(JoinPoint joinPoint, CromPermission permission) {
         if (!env.getProperty("api.verification", Boolean.class, true)) {
             return;
         }
 
-        RequestDetails container = findRequestDetails(joinPoint);
-
-        if(container.getAuthUserDetails() == null) {
-            throw new PermissionDeniedException("unknown");
+        if(SecurityContextHolder.getContext().getAuthentication() == null) {
+            throw new PermissionDeniedException("unknown user");
         }
+
+        RequestDetails container = findRequestDetails(joinPoint);
 
         if (!container.getAuthUserDetails().getPermission().isHigherOrEqualTo(permission)) {
             throw new PermissionDeniedException(container.getAuthUserDetails().getName());

@@ -80,10 +80,10 @@ Version transitions can only be made by users with write access to the repositor
 |====
 
 [[repository-permissions]]
-=== Permissions
+=== CromPermission
 
 [[repository-permissions-user]]
-.User Repository Permissions
+.User Repository CromPermission
 [cols="1s,2,2", options="header"]
 |===
 | Name

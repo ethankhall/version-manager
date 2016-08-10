@@ -1,4 +1,5 @@
 apply plugin: 'groovy'
+apply plugin: 'kotlin'
 apply plugin: 'local-dev'
 apply plugin: io.ehdev.conrad.gradle.SpringRestDocPlugin
 
@@ -6,6 +7,7 @@ dependencies {
     compile project(':api:rest-model')
     compile project(':database:database-v2')
     compile project(':api:business-logic')
+    compile project(':web-service:models')
 
     compile libraries.cglib
     compile libraries.springWeb

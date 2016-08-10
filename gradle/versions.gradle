@@ -8,7 +8,7 @@ versions.springBoot = '1.4.0.RELEASE'
 versions.spring = '4.2.5.RELEASE'
 versions.springSecurity = '4.0.3.RELEASE'
 versions.springSecutityOAuth = '2.0.8.RELEASE'
-versions.spock = '1.0-groovy-2.4'
+versions.spock = '1.1-groovy-2.4-rc-1'
 versions.slf4j = '1.7.12'
 versions.hibernate = '5.0.5.Final'
 versions.jackson = '2.7.2'
@@ -35,6 +35,7 @@ libraries.kotlin = "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
 libraries.springTest = "org.springframework:spring-test:${versions.spring}"
 libraries.springAop = "org.springframework:spring-aop:${versions.spring}"
 libraries.aspectJ = "org.aspectj:aspectjweaver:1.8.8"
+libraries.springSecurityTest = [group: 'org.springframework.security', name: 'spring-security-test', version: versions.springSecurity]
 
 libraries.springContext = "org.springframework:spring-context:${versions.spring}"
 libraries.springBootBase = [
@@ -145,6 +146,8 @@ libraries.database = [
 ]
 
 libraries.h2 = 'com.h2database:h2:1.4.191'
+libraries.hsqldb = [group: 'org.hsqldb', name: 'hsqldb', version: '2.3.4']
+libraries.jsr205 = [group: 'javax.annotation', name: 'jsr250-api', version: '1.0']
 
 libraries.dropwizard = [
     "io.dropwizard.metrics:metrics-core:${versions.metrics}",
