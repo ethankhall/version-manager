@@ -88,4 +88,62 @@ class DefaultPermissionServiceTest extends Specification {
         !permissionService.hasAccessTo(repo, CromPermission.READ)
         !permissionService.hasAccessTo(repo, CromPermission.WRITE)
     }
+
+    @WithMockCromUser
+    def 'can grant new permissions to user'() {
+        when:
+        def project = projectManager.createProject('testProject')
+        permissionService.registerProject(project)
+
+        def bumper = versionBumperManager.findBumper("semver")
+        def repo = repoManager.createRepo(project, "name", bumper, "", "", true)
+        permissionService.registerRepository(repo)
+
+        def newUser = new CromUser(UUID.randomUUID(), '', '')
+
+        then:
+        !permissionService.hasAccessTo(newUser, project, CromPermission.ADMIN)
+        !permissionService.hasAccessTo(newUser, project, CromPermission.READ)
+        !permissionService.hasAccessTo(newUser, project, CromPermission.WRITE)
+
+        !permissionService.hasAccessTo(newUser, repo, CromPermission.ADMIN)
+        !permissionService.hasAccessTo(newUser, repo, CromPermission.WRITE)
+        !permissionService.hasAccessTo(newUser, repo, CromPermission.READ)
+
+        when:
+        permissionService.grantPermission(newUser, repo, CromPermission.WRITE)
+
+        then:
+        !permissionService.hasAccessTo(newUser, project, CromPermission.ADMIN)
+        !permissionService.hasAccessTo(newUser, project, CromPermission.READ)
+        !permissionService.hasAccessTo(newUser, project, CromPermission.WRITE)
+
+        !permissionService.hasAccessTo(newUser, repo, CromPermission.ADMIN)
+        permissionService.hasAccessTo(newUser, repo, CromPermission.WRITE)
+        permissionService.hasAccessTo(newUser, repo, CromPermission.READ)
+
+        when:
+        permissionService.grantPermission(newUser, project, CromPermission.READ)
+
+        then:
+        !permissionService.hasAccessTo(newUser, project, CromPermission.ADMIN)
+        !permissionService.hasAccessTo(newUser, project, CromPermission.WRITE)
+        permissionService.hasAccessTo(newUser, project, CromPermission.READ)
+
+        !permissionService.hasAccessTo(newUser, repo, CromPermission.ADMIN)
+        permissionService.hasAccessTo(newUser, repo, CromPermission.WRITE)
+        permissionService.hasAccessTo(newUser, repo, CromPermission.READ)
+
+        when:
+        permissionService.grantPermission(newUser, project, CromPermission.ADMIN)
+
+        then:
+        permissionService.hasAccessTo(newUser, project, CromPermission.ADMIN)
+        permissionService.hasAccessTo(newUser, project, CromPermission.WRITE)
+        permissionService.hasAccessTo(newUser, project, CromPermission.READ)
+
+        permissionService.hasAccessTo(newUser, repo, CromPermission.ADMIN)
+        permissionService.hasAccessTo(newUser, repo, CromPermission.WRITE)
+        permissionService.hasAccessTo(newUser, repo, CromPermission.READ)
+    }
 }

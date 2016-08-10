@@ -5,12 +5,15 @@ import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.acls.domain.ObjectIdentityImpl
 import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.model.*
+import org.springframework.security.core.Authentication
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import tech.crom.database.api.ProjectManager
 import tech.crom.logger.getLogger
 import tech.crom.model.project.CromProject
 import tech.crom.model.repository.CromRepo
+import tech.crom.model.security.authentication.CromUserAuthentication
+import tech.crom.model.security.authorization.AuthorizedObject
 import tech.crom.model.security.authorization.CromPermission
 import tech.crom.model.user.CromUser
 import tech.crom.security.authorization.api.PermissionService
@@ -25,33 +28,37 @@ class DefaultPermissionService @Autowired constructor(
         val logger by getLogger()
     }
 
-    internal fun convertPermissionLevel(permissionLevel: CromPermission): Permission {
-        return when (permissionLevel) {
-            CromPermission.ADMIN -> BasePermission.ADMINISTRATION
-            CromPermission.READ -> BasePermission.READ
-            CromPermission.WRITE -> BasePermission.WRITE
+    override fun grantPermission(cromUser: CromUser, authorizedObject: AuthorizedObject, accessLevel: CromPermission) {
+        val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
+
+        val acl = aclService.readAclById(oi) as MutableAcl
+
+        val sid = PrincipalSid(CromUserAuthentication(cromUser))
+
+        createPermissionGrantList(accessLevel).forEach { permission ->
+            acl.insertAce(acl.entries.size, permission, sid, true)
         }
+        aclService.updateAcl(acl)
     }
 
-    override fun hasAccessTo(cromRepo: CromRepo, accessLevel: CromPermission): Boolean {
-        val oi = ObjectIdentityImpl(CromRepo::class.java, cromRepo.securityId)
-        return validatePermissions(accessLevel, oi)
+    override fun hasAccessTo(cromUser: CromUser, authorizedObject: AuthorizedObject, accessLevel: CromPermission): Boolean {
+        val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
+        return validatePermissions(CromUserAuthentication(cromUser), accessLevel, oi)
     }
 
-    override fun hasAccessTo(cromProject: CromProject, accessLevel: CromPermission): Boolean {
-        val oi = ObjectIdentityImpl(CromProject::class.java, cromProject.securityId)
-        return validatePermissions(accessLevel, oi)
+    override fun hasAccessTo(authorizedObject: AuthorizedObject, accessLevel: CromPermission): Boolean {
+        val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
+        return validatePermissions(SecurityContextHolder.getContext().authentication, accessLevel, oi)
     }
 
-    private fun validatePermissions(accessLevel: CromPermission, oi: ObjectIdentityImpl): Boolean {
-        val permission = convertPermissionLevel(accessLevel)
+    private fun validatePermissions(auth: Authentication, accessLevel: CromPermission, oi: ObjectIdentityImpl): Boolean {
+        val permission = createPermissionValidateList(accessLevel)
 
-        val auth = SecurityContextHolder.getContext().authentication
         val sid = PrincipalSid(auth)
 
         val acl: Acl = aclService.readAclById(oi)
         try {
-            return acl.isGranted(listOf(permission), listOf(sid), false)
+            return acl.isGranted(permission, listOf(sid), false)
         } catch (nfe: NotFoundException) {
             return false
         }
@@ -92,5 +99,21 @@ class DefaultPermissionService @Autowired constructor(
         acl.insertAce(acl.entries.size, BasePermission.WRITE, sid, true)
         acl.insertAce(acl.entries.size, BasePermission.READ, sid, true)
         aclService.updateAcl(acl)
+    }
+
+    internal fun createPermissionGrantList(permissionLevel: CromPermission): List<Permission> {
+        return when (permissionLevel) {
+            CromPermission.ADMIN -> listOf(BasePermission.ADMINISTRATION, BasePermission.WRITE, BasePermission.READ)
+            CromPermission.WRITE -> listOf(BasePermission.READ, BasePermission.WRITE)
+            CromPermission.READ -> listOf(BasePermission.READ)
+        }
+    }
+
+    internal fun createPermissionValidateList(permissionLevel: CromPermission): List<Permission> {
+        return when (permissionLevel) {
+            CromPermission.ADMIN -> listOf(BasePermission.ADMINISTRATION)
+            CromPermission.WRITE -> listOf(BasePermission.ADMINISTRATION, BasePermission.WRITE)
+            CromPermission.READ -> listOf(BasePermission.ADMINISTRATION, BasePermission.WRITE, BasePermission.READ)
+        }
     }
 }
