@@ -17,4 +17,8 @@ interface PermissionService {
     fun hasAccessTo(cromUser: CromUser, authorizedObject: AuthorizedObject, accessLevel: CromPermission): Boolean
 
     fun grantPermission(cromUser: CromUser, authorizedObject: AuthorizedObject, accessLevel: CromPermission)
+
+    fun revokePermission(cromUser: CromUser, authorizedObject: AuthorizedObject, accessLevel: CromPermission)
+
+    fun findHighestPermission(authorizedObject: AuthorizedObject): CromPermission
 }

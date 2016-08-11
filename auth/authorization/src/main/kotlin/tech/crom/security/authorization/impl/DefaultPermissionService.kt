@@ -28,7 +28,43 @@ class DefaultPermissionService @Autowired constructor(
         val logger by getLogger()
     }
 
+    override fun findHighestPermission(authorizedObject: AuthorizedObject): CromPermission {
+        logger.info("Finding highest permission for on ${authorizedObject.getId()}")
+        val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
+
+        val permissions = mutableListOf<CromPermission>()
+        val sid = PrincipalSid(SecurityContextHolder.getContext().authentication)
+        var acl: Acl? = aclService.readAclById(oi, listOf(sid))
+
+        while(acl != null) {
+            permissions.addAll(acl.entries.map { permissionToCromPermission(it.permission) })
+            acl = acl.parentAcl
+        }
+
+        return permissions
+            .sortedByDescending { it.permissionLevel }
+            .firstOrNull() ?: CromPermission.NONE
+    }
+
+    override fun revokePermission(cromUser: CromUser, authorizedObject: AuthorizedObject, accessLevel: CromPermission) {
+        logger.info("Revoking $accessLevel from ${cromUser.userUid} on ${authorizedObject.getId()}")
+        val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
+
+        val sid = PrincipalSid(CromUserAuthentication(cromUser))
+        val acl = aclService.readAclById(oi, listOf(sid)) as MutableAcl
+
+        createPermissionGrantList(accessLevel).forEach { permission ->
+            acl.entries.mapIndexed { index, accessControlEntry ->
+                if (accessControlEntry.permission == permission && accessControlEntry.sid == sid) index else null
+            }.filterNotNull().sortedDescending().forEach {
+                acl.deleteAce(it)
+            }
+        }
+        aclService.updateAcl(acl)
+    }
+
     override fun grantPermission(cromUser: CromUser, authorizedObject: AuthorizedObject, accessLevel: CromPermission) {
+        logger.info("Grating $accessLevel from ${cromUser.userUid} on ${authorizedObject.getId()}")
         val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
 
         val acl = aclService.readAclById(oi) as MutableAcl
@@ -65,6 +101,7 @@ class DefaultPermissionService @Autowired constructor(
     }
 
     override fun registerRepository(cromRepo: CromRepo) {
+        logger.info("Registering repo ${cromRepo.repoUid} with security id ${cromRepo.securityId}")
         val oi = ObjectIdentityImpl(CromRepo::class.java, cromRepo.securityId)
 
         val acl: MutableAcl
@@ -83,6 +120,7 @@ class DefaultPermissionService @Autowired constructor(
     }
 
     override fun registerProject(cromProject: CromProject) {
+        logger.info("Registering project ${cromProject.projectUid} with security id ${cromProject.securityId}")
         val oi = ObjectIdentityImpl(CromProject::class.java, cromProject.securityId)
 
         val acl: MutableAcl
@@ -101,11 +139,21 @@ class DefaultPermissionService @Autowired constructor(
         aclService.updateAcl(acl)
     }
 
+    internal fun permissionToCromPermission(permission: Permission): CromPermission {
+        return when (permission) {
+            BasePermission.ADMINISTRATION -> CromPermission.ADMIN
+            BasePermission.WRITE -> CromPermission.WRITE
+            BasePermission.READ -> CromPermission.READ
+            else -> CromPermission.NONE
+        }
+    }
+
     internal fun createPermissionGrantList(permissionLevel: CromPermission): List<Permission> {
         return when (permissionLevel) {
             CromPermission.ADMIN -> listOf(BasePermission.ADMINISTRATION, BasePermission.WRITE, BasePermission.READ)
             CromPermission.WRITE -> listOf(BasePermission.READ, BasePermission.WRITE)
             CromPermission.READ -> listOf(BasePermission.READ)
+            CromPermission.NONE -> listOf()
         }
     }
 
@@ -114,6 +162,7 @@ class DefaultPermissionService @Autowired constructor(
             CromPermission.ADMIN -> listOf(BasePermission.ADMINISTRATION)
             CromPermission.WRITE -> listOf(BasePermission.ADMINISTRATION, BasePermission.WRITE)
             CromPermission.READ -> listOf(BasePermission.ADMINISTRATION, BasePermission.WRITE, BasePermission.READ)
+            CromPermission.NONE -> listOf()
         }
     }
 }

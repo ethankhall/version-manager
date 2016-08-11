@@ -62,6 +62,7 @@ class DefaultPermissionServiceTest extends Specification {
         permissionService.registerRepository(repo)
 
         then:
+        permissionService.findHighestPermission(repo) == CromPermission.ADMIN
         permissionService.hasAccessTo(repo, CromPermission.ADMIN)
         permissionService.hasAccessTo(repo, CromPermission.READ)
         permissionService.hasAccessTo(repo, CromPermission.WRITE)
@@ -143,6 +144,18 @@ class DefaultPermissionServiceTest extends Specification {
         permissionService.hasAccessTo(newUser, project, CromPermission.READ)
 
         permissionService.hasAccessTo(newUser, repo, CromPermission.ADMIN)
+        permissionService.hasAccessTo(newUser, repo, CromPermission.WRITE)
+        permissionService.hasAccessTo(newUser, repo, CromPermission.READ)
+
+        when:
+        permissionService.revokePermission(newUser, project, CromPermission.ADMIN)
+
+        then:
+        !permissionService.hasAccessTo(newUser, project, CromPermission.ADMIN)
+        !permissionService.hasAccessTo(newUser, project, CromPermission.WRITE)
+        !permissionService.hasAccessTo(newUser, project, CromPermission.READ)
+
+        !permissionService.hasAccessTo(newUser, repo, CromPermission.ADMIN)
         permissionService.hasAccessTo(newUser, repo, CromPermission.WRITE)
         permissionService.hasAccessTo(newUser, repo, CromPermission.READ)
     }

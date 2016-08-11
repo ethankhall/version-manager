@@ -9,8 +9,9 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import tech.crom.model.security.authentication.CromRepositoryAuthentication;
+import tech.crom.model.security.authorization.AuthorizedObject;
 import tech.crom.model.security.authorization.CromPermission;
+import tech.crom.security.authorization.api.PermissionService;
 import tech.crom.web.api.model.RequestDetails;
 
 import static io.ehdev.conrad.service.api.aop.impl.RequestDetailsHelper.findRequestDetails;
@@ -20,10 +21,12 @@ import static io.ehdev.conrad.service.api.aop.impl.RequestDetailsHelper.findRequ
 public class PermissionRequiredCheck implements Ordered {
 
     private final Environment env;
+    private final PermissionService permissionService;
 
     @Autowired
-    public PermissionRequiredCheck(Environment env) {
+    public PermissionRequiredCheck(Environment env, PermissionService permissionService) {
         this.env = env;
+        this.permissionService = permissionService;
     }
 
     @Before(value = "@annotation(io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired)")
@@ -46,14 +49,23 @@ public class PermissionRequiredCheck implements Ordered {
             return;
         }
 
-        if(SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (SecurityContextHolder.getContext().getAuthentication() == null) {
             throw new PermissionDeniedException("unknown user");
         }
 
         RequestDetails container = findRequestDetails(joinPoint);
 
-        if (!container.getAuthUserDetails().getPermission().isHigherOrEqualTo(permission)) {
-            throw new PermissionDeniedException(container.getAuthUserDetails().getName());
+        AuthorizedObject authorizedObject;
+        if (container.getCromRepo() != null) {
+            authorizedObject = container.getCromRepo();
+        } else if (container.getCromProject() != null) {
+            authorizedObject = container.getCromProject();
+        } else {
+            throw new RuntimeException("Unable to find project or repo to authenticate against");
+        }
+
+        if (!permissionService.hasAccessTo(authorizedObject, permission)) {
+            throw new PermissionDeniedException(SecurityContextHolder.getContext().getAuthentication().getName());
         }
     }
 

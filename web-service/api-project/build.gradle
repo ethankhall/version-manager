@@ -18,6 +18,7 @@ dependencies {
     compile libraries.springSecurityCore
     compile libraries.servletApi
     compile libraries.jackson
+    compile libraries.commonsIO
 
     compile 'io.swagger:swagger-annotations:1.5.8'
 
