@@ -1,13 +1,16 @@
 package tech.crom.business.api
 
-import tech.crom.model.commit.CommitDetails
 import tech.crom.model.commit.CommitIdContainer
+import tech.crom.model.commit.impl.PersistedCommit
+import tech.crom.model.commit.impl.RequestedCommit
 import tech.crom.model.repository.CromRepo
 
 interface CommitApi {
     fun createCommit(cromRepo: CromRepo,
-                     commitModel: CommitDetails.RequestedCommit,
-                     commitList: List<CommitIdContainer>): CommitDetails.PersistedCommit
+                     commitModel: RequestedCommit,
+                     commitList: List<CommitIdContainer>): PersistedCommit
 
-    fun findAllCommits(cromRepo: CromRepo): List<CommitDetails.PersistedCommit>
+    fun findCommit(cromRepo: CromRepo, commitIdContainer: CommitIdContainer): PersistedCommit?
+
+    fun findAllCommits(cromRepo: CromRepo): List<PersistedCommit>
 }

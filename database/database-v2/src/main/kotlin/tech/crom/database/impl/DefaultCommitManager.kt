@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service
 import tech.crom.database.api.CommitManager
 import tech.crom.model.commit.CommitDetails
 import tech.crom.model.commit.CommitIdContainer
+import tech.crom.model.commit.impl.PersistedCommit
+import tech.crom.model.commit.impl.RealizedCommit
 import tech.crom.model.repository.CromRepo
 import tech.crom.toZonedDateTime
 import java.time.Clock
@@ -19,8 +21,8 @@ class DefaultCommitManager @Autowired constructor(
 ) : CommitManager {
 
     override fun createCommit(cromRepo: CromRepo,
-                              generatedVersion: CommitDetails.RealizedCommit,
-                              parent: List<CommitIdContainer>): CommitDetails.PersistedCommit {
+                              generatedVersion: RealizedCommit,
+                              parent: List<CommitIdContainer>): PersistedCommit {
 
         val parentCommit = findLatestCommit(cromRepo, parent)
         val cd = Tables.COMMIT_DETAILS
@@ -33,10 +35,10 @@ class DefaultCommitManager @Autowired constructor(
             .fetchOne()
             .into(cd)
 
-        return CommitDetails.PersistedCommit(record.uuid, record.commitId, record.version, createdAt.toZonedDateTime())
+        return PersistedCommit(record.uuid, record.commitId, record.version, createdAt.toZonedDateTime())
     }
 
-    override fun findCommit(cromRepo: CromRepo, apiCommit: CommitIdContainer): CommitDetails.PersistedCommit? {
+    override fun findCommit(cromRepo: CromRepo, apiCommit: CommitIdContainer): PersistedCommit? {
         val cd = Tables.COMMIT_DETAILS.`as`("cd")
 
         val query = dslContext
@@ -54,13 +56,13 @@ class DefaultCommitManager @Autowired constructor(
 
         val detailsRecord = record.into(cd)
 
-        return CommitDetails.PersistedCommit(detailsRecord.uuid,
+        return PersistedCommit(detailsRecord.uuid,
             detailsRecord.commitId,
             detailsRecord.version,
             detailsRecord.createdAt.toZonedDateTime())
     }
 
-    override fun findAllCommits(cromRepo: CromRepo): List<CommitDetails.PersistedCommit> {
+    override fun findAllCommits(cromRepo: CromRepo): List<PersistedCommit> {
         val cd = Tables.COMMIT_DETAILS
 
         val commits = dslContext
@@ -70,11 +72,11 @@ class DefaultCommitManager @Autowired constructor(
             .fetch()
             .into(cd)
         return commits.map {
-            CommitDetails.PersistedCommit(it.uuid, it.commitId, it.version, it.createdAt.toZonedDateTime())
+            PersistedCommit(it.uuid, it.commitId, it.version, it.createdAt.toZonedDateTime())
         }
     }
 
-    override fun findLatestCommit(cromRepo: CromRepo, history: List<CommitIdContainer>): CommitDetails.PersistedCommit? {
+    override fun findLatestCommit(cromRepo: CromRepo, history: List<CommitIdContainer>): PersistedCommit? {
         if (!history.isEmpty() && "latest".equals(history[0].commitId, ignoreCase = true)) {
             return findCommit(cromRepo, CommitIdContainer("latest"))
         }
@@ -92,6 +94,6 @@ class DefaultCommitManager @Autowired constructor(
             .fetchOne() ?: return null
 
         val details = record.into(cd)
-        return CommitDetails.PersistedCommit(details.uuid, details.commitId, details.version, details.createdAt.toZonedDateTime())
+        return PersistedCommit(details.uuid, details.commitId, details.version, details.createdAt.toZonedDateTime())
     }
 }

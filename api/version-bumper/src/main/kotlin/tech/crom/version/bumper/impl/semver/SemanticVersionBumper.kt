@@ -1,6 +1,8 @@
 package tech.crom.version.bumper.impl.semver
 
 import tech.crom.model.commit.CommitDetails
+import tech.crom.model.commit.impl.RealizedCommit
+import tech.crom.model.commit.impl.RequestedCommit
 import tech.crom.model.commit.VersionDetails
 import tech.crom.version.bumper.VersionBumper
 import tech.crom.version.bumper.impl.MessageRecognizer
@@ -24,13 +26,13 @@ class SemanticVersionBumper : VersionBumper {
         )
     }
 
-    override fun calculateNextVersion(commitModel: CommitDetails.RequestedCommit, lastVersion: VersionDetails?): CommitDetails.RealizedCommit {
+    override fun calculateNextVersion(commitModel: RequestedCommit, lastVersion: VersionDetails?): RealizedCommit {
         val versionCreator = findVersionCreator(commitModel, lastVersion)
         val nextVersion = if(versionCreator != null) versionCreator.nextVersion() else bumpLowestPart(lastVersion)
-        return CommitDetails.RealizedCommit(commitModel.commitId, VersionDetails(nextVersion))
+        return RealizedCommit(commitModel.commitId, VersionDetails(nextVersion))
     }
 
-    internal fun findVersionCreator(commitModel: CommitDetails.RequestedCommit, lastVersion: VersionDetails?): VersionCreator? {
+    internal fun findVersionCreator(commitModel: RequestedCommit, lastVersion: VersionDetails?): VersionCreator? {
         recognizers.forEach {
             val versionCreator = it.produce(lastVersion, commitModel.message)
             if(versionCreator != null) {

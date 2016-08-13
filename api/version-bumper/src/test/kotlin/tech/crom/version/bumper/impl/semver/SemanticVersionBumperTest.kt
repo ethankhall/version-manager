@@ -3,6 +3,7 @@ package tech.crom.version.bumper.impl.semver
 import de.svenjacobs.loremipsum.LoremIpsum
 import org.jetbrains.spek.api.Spek
 import tech.crom.model.commit.CommitDetails
+import tech.crom.model.commit.impl.RequestedCommit
 import tech.crom.version.bumper.impl.createVersionDetails
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -10,7 +11,7 @@ import kotlin.test.assertNotNull
 class SemanticVersionBumperTest : Spek({
     val semanticVersionBumper = SemanticVersionBumper()
     val previousVersion = createVersionDetails()
-    val commitModelCreator: (String) -> CommitDetails.RequestedCommit = { message -> CommitDetails.RequestedCommit("123", message) }
+    val commitModelCreator: (String) -> RequestedCommit = { message -> RequestedCommit("123", message) }
 
     on("force version") {
         val commitModel = commitModelCreator("[force version 1.2.3.4]")

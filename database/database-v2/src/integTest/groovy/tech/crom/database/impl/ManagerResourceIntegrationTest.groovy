@@ -12,8 +12,8 @@ import tech.crom.database.api.ProjectManager
 import tech.crom.database.api.RepoManager
 import tech.crom.database.api.VersionBumperManager
 import tech.crom.database.config.CromDoaConfig
-import tech.crom.model.commit.CommitDetails
 import tech.crom.model.commit.CommitIdContainer
+import tech.crom.model.commit.impl.RealizedCommit
 
 @Transactional
 @ContextConfiguration(classes = [DatabaseConfig, ClockConfig, CromDoaConfig], loader = SpringApplicationContextLoader.class)
@@ -76,7 +76,7 @@ class ManagerResourceIntegrationTest extends Specification {
         commitManager.findAllCommits(repo1).isEmpty()
 
         when:
-        def commit1 = commitManager.createCommit(repo1, new CommitDetails.RealizedCommit('1', '1.0.0', null), [])
+        def commit1 = commitManager.createCommit(repo1, new RealizedCommit('1', '1.0.0', null), [])
 
         then:
         commit1
@@ -85,7 +85,7 @@ class ManagerResourceIntegrationTest extends Specification {
 
         when:
         def commit2 = commitManager.createCommit(repo1,
-            new CommitDetails.RealizedCommit('2', '1.0.1', null),
+            new RealizedCommit('2', '1.0.1', null),
             [new CommitIdContainer('1')])
 
         then:

@@ -1,17 +1,17 @@
 package tech.crom.service.api
 
-import tech.crom.model.commit.CromCommitDetails
+import tech.crom.model.commit.VersionCommitDetails
 import java.util.*
 
-class ReverseApiCommitComparator : Comparator<CromCommitDetails> {
+class ReverseApiCommitComparator : Comparator<VersionCommitDetails> {
 
-    override fun compare(o1: CromCommitDetails, o2: CromCommitDetails): Int {
+    override fun compare(o1: VersionCommitDetails, o2: VersionCommitDetails): Int {
         if (o1 == o2) {
             return 0
         }
 
-        val split1 = o1.version.split("\\.".toRegex()).toTypedArray()
-        val split2 = o2.version.split("\\.".toRegex()).toTypedArray()
+        val split1 = o1.version.versionString.split("\\.".toRegex()).toTypedArray()
+        val split2 = o2.version.versionString.split("\\.".toRegex()).toTypedArray()
         val sharedParts = Math.min(split1.size, split2.size)
         for (i in 0..sharedParts - 1) {
             if (split1[i].compareTo(split2[i]) != 0) {
