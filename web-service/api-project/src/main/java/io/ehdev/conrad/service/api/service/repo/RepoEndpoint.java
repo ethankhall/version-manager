@@ -1,13 +1,5 @@
 package io.ehdev.conrad.service.api.service.repo;
 
-import io.ehdev.conrad.database.api.PermissionManagementApi;
-import io.ehdev.conrad.database.api.RepoManagementApi;
-import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel;
-import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
-import io.ehdev.conrad.database.model.repo.RepoCreateModel;
-import io.ehdev.conrad.database.model.repo.RequestDetails;
-import io.ehdev.conrad.database.model.repo.details.ResourceDetails;
-import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.model.commit.CommitIdCollection;
 import io.ehdev.conrad.model.permission.PermissionGrant;
 import io.ehdev.conrad.model.repository.CreateRepoRequest;
@@ -28,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import tech.crom.web.api.model.RequestDetails;
 
 import java.util.List;
 import java.util.Optional;

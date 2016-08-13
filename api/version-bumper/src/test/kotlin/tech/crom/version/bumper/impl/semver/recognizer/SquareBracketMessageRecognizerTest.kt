@@ -2,7 +2,7 @@ package tech.crom.version.bumper.impl.semver.recognizer
 
 import de.svenjacobs.loremipsum.LoremIpsum
 import org.jetbrains.spek.api.Spek
-import tech.crom.version.bumper.impl.createReservedVersionModel
+import tech.crom.version.bumper.impl.createVersionDetails
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -12,7 +12,7 @@ class SquareBracketMessageRecognizerTest : Spek({
         return loremIpsum.getParagraphs(3) + message + loremIpsum.getParagraphs(2)
     }
 
-    val currentVersion = createReservedVersionModel()
+    val currentVersion = createVersionDetails()
     on("simple square bracket search") {
 
         it("will be able to search for any string") {

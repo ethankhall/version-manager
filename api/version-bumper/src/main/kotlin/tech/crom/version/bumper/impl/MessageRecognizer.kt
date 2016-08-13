@@ -1,8 +1,7 @@
 package tech.crom.version.bumper.impl
 
-import tech.crom.version.bumper.model.ReservedVersionModel
+import tech.crom.model.commit.VersionDetails
 
 interface MessageRecognizer {
-    fun produce(currentVersion: ReservedVersionModel?, message: String): VersionCreator?
-
+    fun produce(lastVersion: VersionDetails?, message: String): VersionCreator?
 }

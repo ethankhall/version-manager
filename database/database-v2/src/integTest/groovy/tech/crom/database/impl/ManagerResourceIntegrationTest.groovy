@@ -12,6 +12,8 @@ import tech.crom.database.api.ProjectManager
 import tech.crom.database.api.RepoManager
 import tech.crom.database.api.VersionBumperManager
 import tech.crom.database.config.CromDoaConfig
+import tech.crom.model.commit.CommitDetails
+import tech.crom.model.commit.CommitIdContainer
 
 @Transactional
 @ContextConfiguration(classes = [DatabaseConfig, ClockConfig, CromDoaConfig], loader = SpringApplicationContextLoader.class)
@@ -74,22 +76,22 @@ class ManagerResourceIntegrationTest extends Specification {
         commitManager.findAllCommits(repo1).isEmpty()
 
         when:
-        def commit1 = commitManager.createCommit(repo1, new CommitManager.NextCommitVersion('1', '1.0.0', null), [])
+        def commit1 = commitManager.createCommit(repo1, new CommitDetails.RealizedCommit('1', '1.0.0', null), [])
 
         then:
         commit1
-        commit1.version == '1.0.0'
-        commitManager.findCommit(repo1, new CommitManager.CommitSearch(commit1.commitId)) == commit1
+        commit1.version.versionString == '1.0.0'
+        commitManager.findCommit(repo1, new CommitIdContainer(commit1.commitId)) == commit1
 
         when:
         def commit2 = commitManager.createCommit(repo1,
-            new CommitManager.NextCommitVersion('2', '1.0.1', null),
-            [new CommitManager.CommitSearch('1')])
+            new CommitDetails.RealizedCommit('2', '1.0.1', null),
+            [new CommitIdContainer('1')])
 
         then:
         commit2
-        commit2.version == '1.0.1'
-        commitManager.findCommit(repo1, new CommitManager.CommitSearch(commit2.commitId)) == commit2
+        commit2.version.versionString == '1.0.1'
+        commitManager.findCommit(repo1, new CommitIdContainer(commit2.commitId)) == commit2
 
         expect:
         commitManager.findAllCommits(repo1) as Set == [commit1, commit2] as Set

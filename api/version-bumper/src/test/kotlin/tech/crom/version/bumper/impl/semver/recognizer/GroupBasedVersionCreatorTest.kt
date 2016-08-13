@@ -1,13 +1,13 @@
 package tech.crom.version.bumper.impl.semver.recognizer
 
 import org.jetbrains.spek.api.Spek
-import tech.crom.version.bumper.impl.createReservedVersionModel
+import tech.crom.version.bumper.impl.createVersionDetails
 import kotlin.test.assertEquals
 
 
 class GroupBasedVersionCreatorTest : Spek({
     on("expanding versions") {
-        val currentVersion = createReservedVersionModel()
+        val currentVersion = createVersionDetails()
 
         it("will update major version") {
             val versionCreator = GroupBasedVersionCreator(currentVersion, 0)

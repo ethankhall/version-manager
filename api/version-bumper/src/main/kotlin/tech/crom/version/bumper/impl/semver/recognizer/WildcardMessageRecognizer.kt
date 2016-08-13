@@ -1,7 +1,7 @@
 package tech.crom.version.bumper.impl.semver.recognizer
 
 import tech.crom.version.bumper.impl.MessageRecognizer
-import tech.crom.version.bumper.model.ReservedVersionModel
+import tech.crom.model.commit.VersionDetails
 
 class WildcardMessageRecognizer: MessageRecognizer {
 
@@ -11,10 +11,10 @@ class WildcardMessageRecognizer: MessageRecognizer {
         wildcardSearchPattern = ".*?\\[\\s*bump group (\\d+)\\s*\\].*?".toRegex()
     }
 
-    override fun produce(currentVersion: ReservedVersionModel?, message: String): GroupBasedVersionCreator? {
+    override fun produce(lastVersion: VersionDetails?, message: String): GroupBasedVersionCreator? {
         val result = wildcardSearchPattern.find(message) ?: return null
         val group = result.groups[1]?.value?.toInt() ?: return null
-        return GroupBasedVersionCreator(currentVersion, group)
+        return GroupBasedVersionCreator(lastVersion, group)
     }
 
 }

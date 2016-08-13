@@ -1,16 +1,16 @@
-package tech.crom.version.bumper.model
+package tech.crom.model.commit
 
-data class VersionDetails(val version: String) {
+data class VersionDetails(val versionString: String) {
     val versionParts: List<Int>
     val postFix: String?
 
     init {
-        var splitPart: String = version
-        val dashIndex = version.indexOf("-")
+        var splitPart: String = versionString
+        val dashIndex = versionString.indexOf("-")
         var tempPostFix: String?
         if (dashIndex >= 0) {
-            tempPostFix = version.substring(dashIndex + 1)
-            splitPart = version.substring(0, dashIndex)
+            tempPostFix = versionString.substring(dashIndex + 1)
+            splitPart = versionString.substring(0, dashIndex)
         } else {
             tempPostFix = null
         }
@@ -33,7 +33,7 @@ data class VersionDetails(val version: String) {
         versionParts = versionPartsBuilder.toList()
         postFix = tempPostFix
         if (versionParts.isEmpty()) {
-            throw RuntimeException("$version is not a valid version")
+            throw RuntimeException("$versionString is not a valid version")
         }
     }
 

@@ -1,7 +1,5 @@
 package io.ehdev.conrad.service.api.service.project;
 
-import io.ehdev.conrad.database.model.repo.RequestDetails;
-import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.model.project.CreateProjectRequest;
 import io.ehdev.conrad.model.project.GetProjectResponse;
 import io.ehdev.conrad.model.project.RepoDefinitionsDetails;
@@ -22,6 +20,8 @@ import tech.crom.business.api.RepositoryApi;
 import tech.crom.database.api.ProjectManager;
 import tech.crom.model.project.CromProject;
 import tech.crom.model.repository.CromRepo;
+import tech.crom.model.security.authorization.CromPermission;
+import tech.crom.web.api.model.RequestDetails;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -55,7 +55,7 @@ public class ProjectEndpoint {
     public ResponseEntity<CreateProjectRequest> createProject(RequestDetails container,
                                                               HttpServletRequest request) {
         try {
-            CromProject project = projectManager.createProject(container.getResourceDetails().getProjectId().getName());
+            CromProject project = projectManager.createProject(container.getRawRequest().getProjectName());
 
             CreateProjectRequest createProjectModel = new CreateProjectRequest(project.getProjectName());
             return ResponseEntity.created(URI.create(request.getRequestURL().toString())).body(createProjectModel);
@@ -67,17 +67,16 @@ public class ProjectEndpoint {
     @ProjectRequired
     @ReadPermissionRequired
     @InternalLinks(links = {
-        @InternalLink(name = "tokens", ref = "/token", permissions = ApiUserPermission.ADMIN),
-        @InternalLink(name = "permissions", ref = "/permissions", permissions = ApiUserPermission.ADMIN)
+        @InternalLink(name = "tokens", ref = "/token", permissions = CromPermission.ADMIN),
+        @InternalLink(name = "permissions", ref = "/permissions", permissions = CromPermission.ADMIN)
     })
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<GetProjectResponse> getProject(RequestDetails container) {
-        CromProject project = projectManager.findProject(container.getResourceDetails().getProjectId().getName());
-        Collection<CromRepo> repos = repositoryApi.findRepo(project);
+        Collection<CromRepo> repos = repositoryApi.findRepo(container.getCromProject());
 
         List<RepoDefinitionsDetails> details = new ArrayList<>();
 
-        GetProjectResponse projectModel = new GetProjectResponse(project.getProjectName(), details);
+        GetProjectResponse projectModel = new GetProjectResponse(container.getCromProject().getProjectName(), details);
 
         repos.forEach(it -> {
             RepoDefinitionsDetails repo = new RepoDefinitionsDetails(it.getRepoName());

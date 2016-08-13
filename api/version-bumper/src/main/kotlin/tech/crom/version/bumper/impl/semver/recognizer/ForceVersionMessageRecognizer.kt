@@ -2,7 +2,7 @@ package tech.crom.version.bumper.impl.semver.recognizer
 
 import tech.crom.version.bumper.impl.MessageRecognizer
 import tech.crom.version.bumper.impl.VersionCreator
-import tech.crom.version.bumper.model.ReservedVersionModel
+import tech.crom.model.commit.VersionDetails
 
 class ForceVersionMessageRecognizer() : MessageRecognizer {
 
@@ -11,7 +11,7 @@ class ForceVersionMessageRecognizer() : MessageRecognizer {
             setOf(RegexOption.IGNORE_CASE, RegexOption.DOT_MATCHES_ALL))
     }
 
-    override fun produce(currentVersion: ReservedVersionModel?, message: String): ForceVersionCreator? {
+    override fun produce(lastVersion: VersionDetails?, message: String): ForceVersionCreator? {
         val result = searchString.find(message) ?: return null
         val versionString = result.groups[1]?.value ?: return null
         return ForceVersionCreator(versionString)

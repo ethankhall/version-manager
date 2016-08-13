@@ -1,12 +1,12 @@
 package tech.crom.version.bumper.impl.semver.recognizer
 
 import tech.crom.version.bumper.impl.VersionCreator
-import tech.crom.version.bumper.model.ReservedVersionModel
+import tech.crom.model.commit.VersionDetails
 
-class GroupBasedVersionCreator(val currentVersion: ReservedVersionModel?, val groupNumber: Int) : VersionCreator {
+class GroupBasedVersionCreator(val lastVersion: VersionDetails?, val groupNumber: Int) : VersionCreator {
     override fun nextVersion(): String {
-        currentVersion ?: return "0.0.1"
-        val versionSplit = currentVersion.version.versionParts.toMutableList()
+        lastVersion ?: return "0.0.1"
+        val versionSplit = lastVersion.versionParts.toMutableList()
         if (versionSplit.size <= groupNumber) {
             for (i in versionSplit.size..groupNumber) {
                 versionSplit.add(0)

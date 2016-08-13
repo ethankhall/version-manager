@@ -1,15 +1,13 @@
 package tech.crom.version.bumper.impl.semver
 
+import tech.crom.model.commit.CommitDetails
+import tech.crom.model.commit.VersionDetails
 import tech.crom.version.bumper.VersionBumper
 import tech.crom.version.bumper.impl.MessageRecognizer
 import tech.crom.version.bumper.impl.VersionCreator
 import tech.crom.version.bumper.impl.semver.recognizer.ForceVersionMessageRecognizer
 import tech.crom.version.bumper.impl.semver.recognizer.SquareBracketMessageRecognizer
 import tech.crom.version.bumper.impl.semver.recognizer.WildcardMessageRecognizer
-import tech.crom.version.bumper.model.CommitModel
-import tech.crom.version.bumper.model.ReservedVersionModel
-import tech.crom.version.bumper.model.VersionDetails
-import java.time.LocalDateTime
 
 class SemanticVersionBumper : VersionBumper {
 
@@ -26,15 +24,15 @@ class SemanticVersionBumper : VersionBumper {
         )
     }
 
-    override fun calculateNextVersion(commitModel: CommitModel, lastCommit: ReservedVersionModel?): ReservedVersionModel {
-        var versionCreator = findVersionCreator(commitModel, lastCommit)
-        val nextVersion = if(versionCreator != null) versionCreator.nextVersion() else bumpLowestPart(lastCommit)
-        return ReservedVersionModel(commitModel.commitId, VersionDetails(nextVersion), LocalDateTime.now())
+    override fun calculateNextVersion(commitModel: CommitDetails.RequestedCommit, lastVersion: VersionDetails?): CommitDetails.RealizedCommit {
+        val versionCreator = findVersionCreator(commitModel, lastVersion)
+        val nextVersion = if(versionCreator != null) versionCreator.nextVersion() else bumpLowestPart(lastVersion)
+        return CommitDetails.RealizedCommit(commitModel.commitId, VersionDetails(nextVersion))
     }
 
-    internal fun findVersionCreator(commitModel: CommitModel, lastCommit: ReservedVersionModel?): VersionCreator? {
+    internal fun findVersionCreator(commitModel: CommitDetails.RequestedCommit, lastVersion: VersionDetails?): VersionCreator? {
         recognizers.forEach {
-            val versionCreator =it.produce(lastCommit, commitModel.message)
+            val versionCreator = it.produce(lastVersion, commitModel.message)
             if(versionCreator != null) {
                 return versionCreator
             }
@@ -42,12 +40,12 @@ class SemanticVersionBumper : VersionBumper {
         return null
     }
 
-    internal fun bumpLowestPart(lastCommit: ReservedVersionModel?): String {
+    internal fun bumpLowestPart(lastCommit: VersionDetails?): String {
         if(lastCommit == null) {
             return "0.0.1"
         }
 
-        val list = lastCommit.version.versionParts.toMutableList()
+        val list = lastCommit.versionParts.toMutableList()
         list[list.size - 1] = list[list.size - 1] + 1
 
         return list.joinToString(".")

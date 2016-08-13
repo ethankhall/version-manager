@@ -2,16 +2,15 @@ package tech.crom.version.bumper.impl.semver
 
 import de.svenjacobs.loremipsum.LoremIpsum
 import org.jetbrains.spek.api.Spek
-import tech.crom.version.bumper.impl.createReservedVersionModel
-import tech.crom.version.bumper.model.CommitModel
-import java.time.LocalDateTime
+import tech.crom.model.commit.CommitDetails
+import tech.crom.version.bumper.impl.createVersionDetails
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class SemanticVersionBumperTest : Spek({
     val semanticVersionBumper = SemanticVersionBumper()
-    val previousVersion = createReservedVersionModel()
-    val commitModelCreator: (String) -> CommitModel = { message -> CommitModel("123", message, LocalDateTime.now()) }
+    val previousVersion = createVersionDetails()
+    val commitModelCreator: (String) -> CommitDetails.RequestedCommit = { message -> CommitDetails.RequestedCommit("123", message) }
 
     on("force version") {
         val commitModel = commitModelCreator("[force version 1.2.3.4]")
@@ -19,14 +18,14 @@ class SemanticVersionBumperTest : Spek({
             val versionModel = semanticVersionBumper.calculateNextVersion(commitModel, null)
             assertNotNull(versionModel)
             assertEquals("123", versionModel.commitId)
-            assertEquals("1.2.3.4", versionModel.version.version)
+            assertEquals("1.2.3.4", versionModel.version.versionString)
         }
 
         it("will not care about previous version") {
             val versionModel = semanticVersionBumper.calculateNextVersion(commitModel, previousVersion)
             assertNotNull(versionModel)
             assertEquals(versionModel.commitId, "123")
-            assertEquals(versionModel.version.version, "1.2.3.4")
+            assertEquals(versionModel.version.versionString, "1.2.3.4")
         }
     }
 
@@ -37,14 +36,14 @@ class SemanticVersionBumperTest : Spek({
                 val versionModel = semanticVersionBumper.calculateNextVersion(commitModel, null)
                 assertNotNull(versionModel)
                 assertEquals("123", versionModel.commitId)
-                assertEquals("0.0.1", versionModel.version.version)
+                assertEquals("0.0.1", versionModel.version.versionString)
             }
 
             it("will use previous major version") {
                 val versionModel = semanticVersionBumper.calculateNextVersion(commitModel, previousVersion)
                 assertNotNull(versionModel)
                 assertEquals("123", versionModel.commitId)
-                assertEquals("2.0.0", versionModel.version.version)
+                assertEquals("2.0.0", versionModel.version.versionString)
             }
         }
 
@@ -54,14 +53,14 @@ class SemanticVersionBumperTest : Spek({
                 val versionModel = semanticVersionBumper.calculateNextVersion(commitModel, null)
                 assertNotNull(versionModel)
                 assertEquals("123", versionModel.commitId)
-                assertEquals("0.0.1", versionModel.version.version)
+                assertEquals("0.0.1", versionModel.version.versionString)
             }
 
             it("will use previous minor version") {
                 val versionModel = semanticVersionBumper.calculateNextVersion(commitModel, previousVersion)
                 assertNotNull(versionModel)
                 assertEquals("123", versionModel.commitId)
-                assertEquals("1.3.0", versionModel.version.version)
+                assertEquals("1.3.0", versionModel.version.versionString)
             }
         }
 
@@ -71,14 +70,14 @@ class SemanticVersionBumperTest : Spek({
                 val versionModel = semanticVersionBumper.calculateNextVersion(commitModel, null)
                 assertNotNull(versionModel)
                 assertEquals("123", versionModel.commitId)
-                assertEquals("0.0.1", versionModel.version.version)
+                assertEquals("0.0.1", versionModel.version.versionString)
             }
 
             it("will use previous patch version") {
                 val versionModel = semanticVersionBumper.calculateNextVersion(commitModel, previousVersion)
                 assertNotNull(versionModel)
                 assertEquals("123", versionModel.commitId)
-                assertEquals("1.2.4", versionModel.version.version)
+                assertEquals("1.2.4", versionModel.version.versionString)
             }
         }
 
@@ -88,14 +87,14 @@ class SemanticVersionBumperTest : Spek({
                 val versionModel = semanticVersionBumper.calculateNextVersion(commitModel, null)
                 assertNotNull(versionModel)
                 assertEquals("123", versionModel.commitId)
-                assertEquals("0.0.1", versionModel.version.version)
+                assertEquals("0.0.1", versionModel.version.versionString)
             }
 
             it("will use previous build version") {
                 val versionModel = semanticVersionBumper.calculateNextVersion(commitModel, previousVersion)
                 assertNotNull(versionModel)
                 assertEquals("123", versionModel.commitId)
-                assertEquals("1.2.3.1", versionModel.version.version)
+                assertEquals("1.2.3.1", versionModel.version.versionString)
             }
         }
     }
@@ -107,7 +106,7 @@ class SemanticVersionBumperTest : Spek({
                 val versionModel = semanticVersionBumper.calculateNextVersion(commitModel, null)
                 assertNotNull(versionModel)
                 assertEquals("123", versionModel.commitId)
-                assertEquals("0.0.1", versionModel.version.version)
+                assertEquals("0.0.1", versionModel.version.versionString)
             }
         }
 
@@ -117,7 +116,7 @@ class SemanticVersionBumperTest : Spek({
                 val versionModel = semanticVersionBumper.calculateNextVersion(commitModel, previousVersion)
                 assertNotNull(versionModel)
                 assertEquals("123", versionModel.commitId)
-                assertEquals("1.2.4", versionModel.version.version)
+                assertEquals("1.2.4", versionModel.version.versionString)
             }
         }
     }

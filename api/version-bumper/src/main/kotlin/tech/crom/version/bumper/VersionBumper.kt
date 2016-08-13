@@ -1,8 +1,8 @@
 package tech.crom.version.bumper
 
-import tech.crom.version.bumper.model.CommitModel
-import tech.crom.version.bumper.model.ReservedVersionModel
+import tech.crom.model.commit.CommitDetails
+import tech.crom.model.commit.VersionDetails
 
 interface VersionBumper {
-    fun calculateNextVersion(commitModel: CommitModel, lastCommit: ReservedVersionModel?): ReservedVersionModel
+    fun calculateNextVersion(commitModel: CommitDetails.RequestedCommit, lastVersion: VersionDetails?): CommitDetails.RealizedCommit
 }

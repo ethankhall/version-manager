@@ -6,11 +6,11 @@ import org.jooq.Record
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import tech.crom.database.api.CommitManager
-import tech.crom.model.commit.CromCommitDetails
+import tech.crom.model.commit.CommitDetails
+import tech.crom.model.commit.CommitIdContainer
 import tech.crom.model.repository.CromRepo
+import tech.crom.toZonedDateTime
 import java.time.Clock
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 @Service
 class DefaultCommitManager @Autowired constructor(
@@ -19,23 +19,24 @@ class DefaultCommitManager @Autowired constructor(
 ) : CommitManager {
 
     override fun createCommit(cromRepo: CromRepo,
-                              nextVersion: CommitManager.NextCommitVersion,
-                              parent: List<CommitManager.CommitSearch>): CromCommitDetails {
+                              generatedVersion: CommitDetails.RealizedCommit,
+                              parent: List<CommitIdContainer>): CommitDetails.PersistedCommit {
 
-        val commit = findLatestCommit(cromRepo, parent)
+        val parentCommit = findLatestCommit(cromRepo, parent)
         val cd = Tables.COMMIT_DETAILS
 
+        val createdAt = generatedVersion.createdAt?.toInstant() ?: clock.instant()
         val record = dslContext
             .insertInto(cd, cd.REPO_DETAILS_UUID, cd.PARENT_COMMIT_UUID, cd.COMMIT_ID, cd.CREATED_AT, cd.VERSION)
-            .values(cromRepo.repoUid, commit?.commitUid, nextVersion.commitId, nextVersion.createdAt ?: clock.instant(), nextVersion.version)
+            .values(cromRepo.repoUid, parentCommit?.commitUid, generatedVersion.commitId, createdAt, generatedVersion.version.versionString)
             .returning(cd.fields().toList())
             .fetchOne()
             .into(cd)
 
-        return CromCommitDetails(record.uuid, record.commitId, record.version, LocalDateTime.ofInstant(record.createdAt, ZoneOffset.UTC))
+        return CommitDetails.PersistedCommit(record.uuid, record.commitId, record.version, createdAt.toZonedDateTime())
     }
 
-    override fun findCommit(cromRepo: CromRepo, apiCommit: CommitManager.CommitSearch): CromCommitDetails? {
+    override fun findCommit(cromRepo: CromRepo, apiCommit: CommitIdContainer): CommitDetails.PersistedCommit? {
         val cd = Tables.COMMIT_DETAILS.`as`("cd")
 
         val query = dslContext
@@ -52,12 +53,14 @@ class DefaultCommitManager @Autowired constructor(
         }
 
         val detailsRecord = record.into(cd)
-        val createdAt = LocalDateTime.ofInstant(detailsRecord.createdAt, ZoneOffset.UTC)
 
-        return CromCommitDetails(detailsRecord.uuid, detailsRecord.commitId, detailsRecord.version, createdAt)
+        return CommitDetails.PersistedCommit(detailsRecord.uuid,
+            detailsRecord.commitId,
+            detailsRecord.version,
+            detailsRecord.createdAt.toZonedDateTime())
     }
 
-    override fun findAllCommits(cromRepo: CromRepo): List<CromCommitDetails> {
+    override fun findAllCommits(cromRepo: CromRepo): List<CommitDetails.PersistedCommit> {
         val cd = Tables.COMMIT_DETAILS
 
         val commits = dslContext
@@ -67,13 +70,13 @@ class DefaultCommitManager @Autowired constructor(
             .fetch()
             .into(cd)
         return commits.map {
-            CromCommitDetails(it.uuid, it.commitId, it.version, LocalDateTime.ofInstant(it.createdAt, ZoneOffset.UTC))
+            CommitDetails.PersistedCommit(it.uuid, it.commitId, it.version, it.createdAt.toZonedDateTime())
         }
     }
 
-    override fun findLatestCommit(cromRepo: CromRepo, history: List<CommitManager.CommitSearch>): CromCommitDetails? {
+    override fun findLatestCommit(cromRepo: CromRepo, history: List<CommitIdContainer>): CommitDetails.PersistedCommit? {
         if (!history.isEmpty() && "latest".equals(history[0].commitId, ignoreCase = true)) {
-            return findCommit(cromRepo, CommitManager.CommitSearch("latest"))
+            return findCommit(cromRepo, CommitIdContainer("latest"))
         }
 
         val commitIds = history.map { it.commitId }.toList()
@@ -89,7 +92,6 @@ class DefaultCommitManager @Autowired constructor(
             .fetchOne() ?: return null
 
         val details = record.into(cd)
-        val createdAt = LocalDateTime.ofInstant(details.createdAt, ZoneOffset.UTC)
-        return CromCommitDetails(details.uuid, details.commitId, details.version, createdAt)
+        return CommitDetails.PersistedCommit(details.uuid, details.commitId, details.version, details.createdAt.toZonedDateTime())
     }
 }

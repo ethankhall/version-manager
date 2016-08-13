@@ -1,10 +1,5 @@
 package io.ehdev.conrad.service.api.service.repo;
 
-import io.ehdev.conrad.database.api.RepoManagementApi;
-import io.ehdev.conrad.database.api.exception.CommitNotFoundException;
-import io.ehdev.conrad.database.model.comparator.ReverseApiCommitComparator;
-import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
-import io.ehdev.conrad.database.model.repo.RequestDetails;
 import io.ehdev.conrad.model.version.CreateVersionRequest;
 import io.ehdev.conrad.model.version.CreateVersionResponse;
 import io.ehdev.conrad.model.version.GetAllVersionsResponse;
@@ -14,8 +9,6 @@ import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
 import io.ehdev.conrad.service.api.service.annotation.InternalLink;
 import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
-import io.ehdev.conrad.version.bumper.api.VersionBumperService;
-import io.ehdev.conrad.version.commit.CommitVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +17,21 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import tech.crom.business.api.CommitApi;
+import tech.crom.business.api.VersionBumperApi;
+import tech.crom.database.api.CommitManager;
+import tech.crom.database.api.RepoManager;
+import tech.crom.model.commit.CommitIdContainer;
+import tech.crom.model.commit.CromCommitDetails;
+import tech.crom.service.api.ReverseApiCommitComparator;
+import tech.crom.version.bumper.model.CommitModel;
+import tech.crom.version.bumper.model.ReservedVersionModel;
+import tech.crom.model.commit.VersionDetails;
+import tech.crom.web.api.model.RequestDetails;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -39,13 +44,15 @@ import static io.ehdev.conrad.service.api.service.model.LinkUtilities.versionSel
 @RequestMapping("/api/v1/project/{projectName}/repo/{repoName}")
 public class RepoVersionEndpoint {
 
-    private final RepoManagementApi repoManagementApi;
-    private final VersionBumperService versionBumperService;
+    private final CommitApi commitApi;
+    private final RepoManager repoManager;
+    private final VersionBumperApi versionBumperApi;
 
     @Autowired
-    public RepoVersionEndpoint(RepoManagementApi repoManagementApi, VersionBumperService versionBumperService) {
-        this.repoManagementApi = repoManagementApi;
-        this.versionBumperService = versionBumperService;
+    public RepoVersionEndpoint(CommitApi commitApi, RepoManager repoManager, VersionBumperApi versionBumperManager) {
+        this.commitApi = commitApi;
+        this.repoManager = repoManager;
+        this.versionBumperApi = versionBumperManager;
     }
 
     @InternalLinks(links = {
@@ -58,8 +65,7 @@ public class RepoVersionEndpoint {
     public ResponseEntity<GetAllVersionsResponse> getAllVersions(RequestDetails requestDetails) {
         GetAllVersionsResponse response = new GetAllVersionsResponse();
 
-        repoManagementApi
-            .findAllCommits(requestDetails.getResourceDetails())
+        commitApi.findAllCommits(requestDetails.getCromRepo())
             .stream()
             .sorted(new ReverseApiCommitComparator())
             .forEach(it -> {
@@ -88,16 +94,23 @@ public class RepoVersionEndpoint {
     public ResponseEntity<CreateVersionResponse> createNewVersion(RequestDetails requestDetails,
                                                                   @RequestBody CreateVersionRequest versionModel,
                                                                   HttpServletRequest request) {
-        List<ApiCommitModel> commits = versionModel.getCommits()
+        List<CommitIdContainer> commits = versionModel.getCommits()
             .stream()
-            .map(ApiCommitModel::new)
+            .map(CommitIdContainer::new)
             .collect(Collectors.toList());
 
-        Optional<ApiCommitModel> latestCommit = repoManagementApi.findLatestCommit(requestDetails.getResourceDetails(), commits);
+
+        CromCommitDetails latestCommit = commitApi.findLatestCommit(requestDetails.getCromRepo(), commits);
 
         assertHistoryIsNotMissing(commits, latestCommit);
 
-        CommitVersion nextVersion = versionBumperService.findNextVersion(
+        CommitModel commitModel = new CommitModel(versionModel.getCommitId(), versionModel.getMessage(), ZonedDateTime.now(ZoneOffset.UTC));
+        ReservedVersionModel reservedVersionModel = versionBumperApi
+            .findVersionBumper(requestDetails.getCromRepo())
+            .calculateNextVersion(commitModel, latestCommit == null ? null : new VersionDetails(latestCommit.getVersion()));
+
+        commitApi.createCommit()
+        CommitVersion nextVersion = versionBumperApi.findNextVersion(
             requestDetails.getResourceDetails(),
             versionModel.getCommitId(),
             versionModel.getMessage(),
@@ -106,7 +119,7 @@ public class RepoVersionEndpoint {
         ApiCommitModel nextCommit = new ApiCommitModel(versionModel.getCommitId(),
             nextVersion.toVersionString(),
             nextVersion.getCreatedAt());
-        repoManagementApi.createCommit(requestDetails.getResourceDetails(), nextCommit, latestCommit.orElse(null));
+        repoManager.createCommit(requestDetails.getResourceDetails(), nextCommit, latestCommit.orElse(null));
 
         URI uri = URI.create(request.getRequestURL().toString() + "/" + nextCommit.getVersion());
 
@@ -127,7 +140,7 @@ public class RepoVersionEndpoint {
     @RequestMapping(value = "/version/{versionArg:.+}", method = RequestMethod.GET)
     public ResponseEntity<GetVersionResponse> findVersion(RequestDetails requestDetails,
                                                           @PathVariable("versionArg") String versionArg) {
-        Optional<ApiCommitModel> commit = repoManagementApi.findCommit(requestDetails.getResourceDetails(), versionArg);
+        Optional<ApiCommitModel> commit = repoManager.findCommit(requestDetails.getResourceDetails(), versionArg);
         if (commit.isPresent()) {
             ApiCommitModel apiCommitModel = commit.get();
             GetVersionResponse versionResponse = new GetVersionResponse(apiCommitModel.getCommitId(),
@@ -139,10 +152,16 @@ public class RepoVersionEndpoint {
         }
     }
 
-    private void assertHistoryIsNotMissing(List<ApiCommitModel> commits, Optional<ApiCommitModel> latestCommit) {
-        if (!commits.isEmpty() && !latestCommit.isPresent()) {
-            String joinedCommit = commits.stream().map(ApiCommitModel::getCommitId).reduce((t, u) -> t + "," + u).get();
+    private void assertHistoryIsNotMissing(List<CommitManager.CommitSearch> commits, CromCommitDetails latestCommit) {
+        if (!commits.isEmpty() && latestCommit != null) {
+            String joinedCommit = commits.stream().map(CommitManager.CommitSearch::getCommitId).collect(Collectors.joining(", "));
             throw new CommitNotFoundException(joinedCommit);
+        }
+    }
+
+    private class CommitNotFoundException extends RuntimeException {
+        public CommitNotFoundException(String joinedCommit) {
+            super(joinedCommit);
         }
     }
 }
