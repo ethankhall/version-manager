@@ -15,6 +15,7 @@ dependencies {
 
     testCompile libraries.spek
 
+    integTestCompile project(":api:version-bumper")
     integTestCompile libraries.servletApi
     integTestCompile libraries.spock
     integTestCompile libraries.logback

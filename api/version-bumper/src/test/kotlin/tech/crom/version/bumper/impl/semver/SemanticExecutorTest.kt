@@ -8,7 +8,7 @@ import tech.crom.version.bumper.impl.createVersionDetails
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class SemanticVersionBumperTest : Spek({
+class SemanticExecutorTest : Spek({
     val semanticVersionBumper = SemanticVersionBumper()
     val previousVersion = createVersionDetails()
     val commitModelCreator: (String) -> RequestedCommit = { message -> RequestedCommit("123", message) }

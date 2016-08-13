@@ -21,6 +21,7 @@ dependencies {
     integTestCompile libraries.springBootTest
     integTestCompile libraries.spockSpring
     integTestCompile project(":shared-config")
+    integTestCompile project(":api:version-bumper")
 }
 
 integTest.dependsOn ':database:database-migration:flywayMigrate'

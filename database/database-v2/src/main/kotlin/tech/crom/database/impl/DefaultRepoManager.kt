@@ -48,29 +48,29 @@ class DefaultRepoManager @Autowired constructor(
             .fetchOne()
             .into(repoDetails)
 
-        return CromRepo(record.uuid, record.securityId, record.projectUuid, record.repoName)
+        return CromRepo(record.uuid, record.securityId, record.projectUuid, record.repoName, record.versionBumperUuid)
     }
 
     override fun findRepo(cromProject: CromProject, repoName: String): CromRepo? {
         val repoDetails = Tables.REPO_DETAILS
-        val detailLookup = dslContext
+        val record = dslContext
             .select(repoDetails.fields().toList())
             .from(repoDetails)
             .where(repoDetails.REPO_NAME.eq(repoName)).and(repoDetails.PROJECT_UUID.eq(cromProject.projectUid))
             .fetchOne()
             ?.into(repoDetails) ?: return null
 
-        return CromRepo(detailLookup.uuid, detailLookup.securityId, detailLookup.projectUuid, detailLookup.repoName)
+        return CromRepo(record.uuid, record.securityId, record.projectUuid, record.repoName, record.versionBumperUuid)
     }
 
     override fun findRepo(cromProject: CromProject): Collection<CromRepo> {
         return repoDetailsDao.fetchByProjectUuid(cromProject.projectUid).map {
-            CromRepo(it.uuid, it.securityId, it.projectUuid, it.repoName)
+            CromRepo(it.uuid, it.securityId, it.projectUuid, it.repoName, it.versionBumperUuid)
         }
     }
 
     override fun findRepo(uuid: UUID): CromRepo? {
         val repo = repoDetailsDao.fetchOneByUuid(uuid) ?: return null
-        return CromRepo(repo.uuid, repo.securityId, repo.projectUuid, repo.repoName)
+        return CromRepo(repo.uuid, repo.securityId, repo.projectUuid, repo.repoName, repo.versionBumperUuid)
     }
 }

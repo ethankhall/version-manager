@@ -21,4 +21,6 @@ interface PermissionService {
     fun revokePermission(cromUser: CromUser, authorizedObject: AuthorizedObject, accessLevel: CromPermission)
 
     fun findHighestPermission(authorizedObject: AuthorizedObject): CromPermission
+
+    fun remove(authorizedObject: AuthorizedObject)
 }

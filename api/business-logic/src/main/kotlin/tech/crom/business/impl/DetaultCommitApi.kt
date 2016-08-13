@@ -29,6 +29,7 @@ class DetaultCommitApi @Autowired constructor(
         val latestCommit = commitManager.findLatestCommit(cromRepo, commitList)
         val nextVersion = versionBumperApi
             .findVersionBumper(cromRepo)
+            .executor
             .calculateNextVersion(commitModel, latestCommit.toVersionDetails())
         return commitManager.createCommit(cromRepo, nextVersion, commitList)
     }

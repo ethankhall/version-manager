@@ -5,7 +5,10 @@ import tech.crom.model.project.CromProject
 import tech.crom.model.repository.CromRepo
 
 interface RepositoryApi {
+
     fun findRepo(cromProject: CromProject): Collection<CromRepo>
+
+    fun deleteRepo(cromRepo: CromRepo)
 
     fun createRepo(cromProject: CromProject,
                    repoName: String,

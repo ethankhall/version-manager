@@ -6,7 +6,7 @@ import tech.crom.model.commit.impl.RequestedCommit
 import tech.crom.version.bumper.impl.createVersionDetails
 import kotlin.test.assertEquals
 
-class AtomicVersionBumperTest : Spek({
+class AtomicExecutorTest : Spek({
     on("an atomic bumper") {
         val atomicBumper = AtomicVersionBumper()
         it("will produce a version from none") {

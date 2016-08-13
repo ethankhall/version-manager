@@ -47,7 +47,7 @@ class DefaultJwtManagerTest: Spek({
             val tokenManager: TokenManager = mock()
             val jwtManager = DefaultJwtManager(clock, env, tokenManager)
 
-            val cromRepo = CromRepo(UUID.randomUUID(), 1, UUID.randomUUID(), "repoName")
+            val cromRepo = CromRepo(UUID.randomUUID(), 1, UUID.randomUUID(), "repoName", UUID.randomUUID())
             val createdToken = createGeneratedToken(TokenManager.TokenType.REPOSITORY)
             val underlyingToken = TokenManager.UderlyingTokenDetails(cromRepo.repoUid, TokenManager.TokenType.REPOSITORY)
 

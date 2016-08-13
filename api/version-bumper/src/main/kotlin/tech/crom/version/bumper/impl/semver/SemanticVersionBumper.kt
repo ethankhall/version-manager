@@ -1,17 +1,16 @@
 package tech.crom.version.bumper.impl.semver
 
-import tech.crom.model.commit.CommitDetails
+import tech.crom.model.bumper.CromVersionBumper
+import tech.crom.model.commit.VersionDetails
 import tech.crom.model.commit.impl.RealizedCommit
 import tech.crom.model.commit.impl.RequestedCommit
-import tech.crom.model.commit.VersionDetails
-import tech.crom.version.bumper.VersionBumper
 import tech.crom.version.bumper.impl.MessageRecognizer
 import tech.crom.version.bumper.impl.VersionCreator
 import tech.crom.version.bumper.impl.semver.recognizer.ForceVersionMessageRecognizer
 import tech.crom.version.bumper.impl.semver.recognizer.SquareBracketMessageRecognizer
 import tech.crom.version.bumper.impl.semver.recognizer.WildcardMessageRecognizer
 
-class SemanticVersionBumper : VersionBumper {
+class SemanticVersionBumper : CromVersionBumper.Executor {
 
     val recognizers: List<MessageRecognizer>
 

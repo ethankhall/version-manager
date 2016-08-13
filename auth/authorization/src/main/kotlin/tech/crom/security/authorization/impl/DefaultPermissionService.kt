@@ -28,6 +28,11 @@ class DefaultPermissionService @Autowired constructor(
         val logger by getLogger()
     }
 
+    override fun remove(authorizedObject: AuthorizedObject) {
+        val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
+        aclService.deleteAcl(oi, true)
+    }
+
     override fun findHighestPermission(authorizedObject: AuthorizedObject): CromPermission {
         logger.info("Finding highest permission for on ${authorizedObject.getId()}")
         val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
