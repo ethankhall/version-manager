@@ -10,6 +10,7 @@ import org.springframework.web.method.support.ModelAndViewContainer
 import org.springframework.web.servlet.HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE
 import tech.crom.database.api.ProjectManager
 import tech.crom.database.api.RepoManager
+import tech.crom.findCromUser
 import tech.crom.security.authorization.api.PermissionService
 import tech.crom.web.api.model.RequestDetails
 import javax.servlet.http.HttpServletRequest
@@ -29,7 +30,8 @@ class RequestDetailsParameterResolver @Autowired constructor(
 
     fun createRequestDetails(httpServletRequest: HttpServletRequest): RequestDetails {
         val rawRequest = RequestDetails.RawRequestDetails(httpServletRequest.pathInfo, getParameters(httpServletRequest))
-        var requestPermissions = RequestDetails.RequestPermissions(null, null)
+        val cromUser = findCromUser()
+        var requestPermissions = RequestDetails.RequestPermissions(null, null, cromUser)
 
         val projectName = rawRequest.getProjectName() ?: return RequestDetails(null, null, requestPermissions, rawRequest)
         val cromProject = projectManager.findProject(projectName) ?: return RequestDetails(null, null, requestPermissions, rawRequest)

@@ -3,6 +3,7 @@ package tech.crom.web.api.model
 import tech.crom.model.project.CromProject
 import tech.crom.model.repository.CromRepo
 import tech.crom.model.security.authorization.CromPermission
+import tech.crom.model.user.CromUser
 
 data class RequestDetails(val cromProject: CromProject?,
                           val cromRepo: CromRepo?,
@@ -14,7 +15,12 @@ data class RequestDetails(val cromProject: CromProject?,
         fun getRepoName(): String? = requestParameters["repoName"]
     }
 
-    data class RequestPermissions(val projectPermission: CromPermission?, val repoPermission: CromPermission?) {
+    data class RequestPermissions(val projectPermission: CromPermission?,
+                                  val repoPermission: CromPermission?,
+                                  val cromUser: CromUser?) {
+
+        fun findUserName(): String? = cromUser?.userName
+
         fun findHighestPermission(): CromPermission {
             if(projectPermission == null) {
                 return CromPermission.NONE

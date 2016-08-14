@@ -1,13 +1,13 @@
 package io.ehdev.conrad.service.api.aop.impl
 
-import io.ehdev.conrad.database.model.repo.RequestDetails
-import io.ehdev.conrad.database.model.repo.details.AuthUserDetails
-import io.ehdev.conrad.database.model.user.ApiUserPermission
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired
-import io.ehdev.conrad.service.api.aop.exception.UserNotLoggedInException
+import io.ehdev.conrad.service.api.aop.exception.NonUserNotAllowedException
 import org.springframework.aop.aspectj.annotation.AspectJProxyFactory
 import org.springframework.mock.env.MockEnvironment
 import spock.lang.Specification
+import tech.crom.model.security.authorization.CromPermission
+import tech.crom.model.user.CromUser
+import tech.crom.web.api.model.RequestDetails
 
 class LoggedInUserCheckTest extends Specification {
 
@@ -26,14 +26,17 @@ class LoggedInUserCheckTest extends Specification {
         FooTestInterface proxy = factory.getProxy()
 
         when:
-        proxy.doWork(new RequestDetails(null, null))
+        def permissions = new RequestDetails.RequestPermissions(CromPermission.NONE, CromPermission.NONE, null)
+        proxy.doWork(new RequestDetails(null, null, permissions, new RequestDetails.RawRequestDetails('', [:])))
 
 
         then:
-        thrown(UserNotLoggedInException)
+        thrown(NonUserNotAllowedException)
 
         when:
-        proxy.doWork(new RequestDetails(new AuthUserDetails(UUID.randomUUID(), ' ', ApiUserPermission.ADMIN, null), null))
+        def user = new CromUser(UUID.randomUUID(), 'username', 'display')
+        permissions = new RequestDetails.RequestPermissions(CromPermission.NONE, CromPermission.ADMIN, user)
+        proxy.doWork(new RequestDetails(null, null, permissions, new RequestDetails.RawRequestDetails('', [:])))
 
         then:
         noExceptionThrown()

@@ -2,6 +2,8 @@ package tech.crom
 
 import org.springframework.security.core.context.SecurityContextHolder
 import tech.crom.model.security.authentication.CromAuthentication
+import tech.crom.model.security.authentication.CromUserAuthentication
+import tech.crom.model.user.CromUser
 import java.time.Instant
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -14,4 +16,9 @@ fun getCromAuthentication(): CromAuthentication {
         is CromAuthentication -> authentication
         else -> throw RuntimeException("Authentication could not be found.")
     }
+}
+
+fun findCromUser(): CromUser? {
+    val authentication = SecurityContextHolder.getContext().authentication
+    return if (authentication is CromUserAuthentication) authentication.user else null
 }

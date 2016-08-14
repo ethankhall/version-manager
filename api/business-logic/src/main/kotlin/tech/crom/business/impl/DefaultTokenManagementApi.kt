@@ -8,6 +8,7 @@ import tech.crom.model.repository.CromRepo
 import tech.crom.model.token.GeneratedTokenDetails
 import tech.crom.model.token.RetrievedTokenDetails
 import tech.crom.model.token.TokenType
+import tech.crom.model.user.CromUser
 import tech.crom.security.authentication.jwt.JwtManager
 import java.time.ZonedDateTime
 import java.util.*
@@ -22,6 +23,15 @@ class DefaultTokenManagementApi @Autowired constructor(
         tokenManager.invalidateToken(id, tokenType)
     }
 
+    override fun createToken(cromUser: CromUser, expiresAt: ZonedDateTime): GeneratedTokenDetails {
+        val generateRepoToken = tokenManager.generateUserToken(cromUser, expiresAt)
+        val token = jwtManager.createToken(generateRepoToken)
+        return GeneratedTokenDetails(generateRepoToken.uuid,
+            generateRepoToken.createDate,
+            generateRepoToken.expiresAt,
+            token)
+    }
+
     override fun createToken(cromRepo: CromRepo, expiresAt: ZonedDateTime): GeneratedTokenDetails {
         val generateRepoToken = tokenManager.generateRepoToken(cromRepo, expiresAt)
         val token = jwtManager.createToken(generateRepoToken)
@@ -34,6 +44,12 @@ class DefaultTokenManagementApi @Autowired constructor(
     override fun getTokens(cromRepo: CromRepo): List<RetrievedTokenDetails> {
         return tokenManager
             .findTokens(cromRepo.repoUid, TokenType.REPOSITORY)
+            .map { RetrievedTokenDetails(it.uuid, it.createDate, it.expiresAt) }
+    }
+
+    override fun getTokens(cromUser: CromUser): List<RetrievedTokenDetails> {
+        return tokenManager
+            .findTokens(cromUser.userUid, TokenType.USER)
             .map { RetrievedTokenDetails(it.uuid, it.createDate, it.expiresAt) }
     }
 }

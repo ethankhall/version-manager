@@ -1,6 +1,7 @@
 package io.ehdev.conrad.service.api.aop.impl;
 
 import io.ehdev.conrad.service.api.aop.exception.NonUserNotAllowedException;
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.slf4j.Logger;
@@ -10,8 +11,9 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import tech.crom.model.security.authentication.CromRepositoryAuthentication;
-import tech.crom.model.security.authentication.CromUserAuthentication;
+import tech.crom.web.api.model.RequestDetails;
+
+import static io.ehdev.conrad.service.api.aop.impl.RequestDetailsHelper.findRequestDetails;
 
 @Aspect
 @Service
@@ -26,17 +28,14 @@ public class LoggedInUserCheck implements Ordered {
     }
 
     @Before(value = "@annotation(io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired)")
-    public void verifyUserIsLoggedIn() {
+    public void verifyUserIsLoggedIn(JoinPoint joinPoint) {
         if ("false".equalsIgnoreCase(env.getProperty("api.verification", "true"))) {
             return;
         }
 
-        if(SecurityContextHolder.getContext().getAuthentication() instanceof CromRepositoryAuthentication) {
-            logger.info("User is api user, forbidden from accessing private apis: {}", SecurityContextHolder.getContext().getAuthentication());
-            throw new NonUserNotAllowedException();
-        }
+        RequestDetails container = findRequestDetails(joinPoint);
 
-        if(!(SecurityContextHolder.getContext().getAuthentication() instanceof CromUserAuthentication)) {
+        if(container.getRequestPermission().getCromUser() == null) {
             logger.info("Not authorized user, forbidden from accessing private apis: {}", SecurityContextHolder.getContext().getAuthentication());
             throw new NonUserNotAllowedException();
         }

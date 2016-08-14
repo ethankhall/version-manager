@@ -7,7 +7,6 @@ import org.aspectj.lang.annotation.Before;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import tech.crom.model.security.authorization.CromPermission;
 import tech.crom.security.authorization.api.PermissionService;
@@ -48,16 +47,12 @@ public class PermissionRequiredCheck implements Ordered {
             return;
         }
 
-        if (SecurityContextHolder.getContext().getAuthentication() == null) {
-            throw new PermissionDeniedException("unknown user");
-        }
-
         RequestDetails container = findRequestDetails(joinPoint);
 
         CromPermission highestPermission = container.getRequestPermission().findHighestPermission();
 
-        if (highestPermission.isHigherOrEqualThan(permission)) {
-            throw new PermissionDeniedException(SecurityContextHolder.getContext().getAuthentication().getName());
+        if (!highestPermission.isHigherOrEqualThan(permission)) {
+            throw new PermissionDeniedException(container.getRequestPermission().findUserName());
         }
     }
 

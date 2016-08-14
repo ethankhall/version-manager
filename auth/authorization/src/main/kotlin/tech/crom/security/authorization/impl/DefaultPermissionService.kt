@@ -41,7 +41,7 @@ class DefaultPermissionService @Autowired constructor(
         val sid = getCromAuthentication().toSid()
         var acl: Acl? = aclService.readAclById(oi, listOf(sid))
 
-        while(acl != null) {
+        while (acl != null) {
             permissions.addAll(acl.entries.map { permissionToCromPermission(it.permission) })
             acl = acl.parentAcl
         }
@@ -145,11 +145,18 @@ class DefaultPermissionService @Autowired constructor(
 
     override fun retrieveAllPermissions(authorizedObject: AuthorizedObject): List<PermissionService.PermissionPair> {
         val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
-        val readAclById = aclService.readAclById(oi)
-        val list = readAclById
-            .entries
-            .map { PermissionService.PermissionPair((it.sid as PrincipalSid).principal, permissionToCromPermission(it.permission)) }
-            .toList()
+        var readAclById = aclService.readAclById(oi)
+
+        val list = mutableListOf<PermissionService.PermissionPair>()
+        while (readAclById != null) {
+
+            list.addAll(readAclById
+                .entries
+                .map { PermissionService.PermissionPair((it.sid as PrincipalSid).principal, permissionToCromPermission(it.permission)) }
+                .toList())
+
+            readAclById = readAclById.parentAcl
+        }
 
         return list
     }
