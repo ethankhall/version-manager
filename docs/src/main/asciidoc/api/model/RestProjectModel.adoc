@@ -27,13 +27,13 @@ a| <<model-rest-repo-model,RestRepoModel>>[]
       "projectName" : "bigFuzzyDice",
       "repoName" : "smallDice",
       "scmUrl" : null,
-      "url": "http://foo/bar/api/v1/bigFuzzyDice/repository/largeDice"
+      "url": "http://foo/bar/api/v1/bigFuzzyDice/tokenType/largeDice"
     },
     {
       "projectName" : "bigFuzzyDice",
       "repoName" : "largeDice",
       "scmUrl" : null,
-      "url": "http://foo/bar/api/v1/bigFuzzyDice/repository/largeDice"
+      "url": "http://foo/bar/api/v1/bigFuzzyDice/tokenType/largeDice"
     }
   ]
 }

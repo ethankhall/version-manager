@@ -1,4 +1,4 @@
-[[resource-repository-create]]
+[[resource-tokenType-create]]
 === Create new Repository
 A `POST` request lists all of the service's people.
 

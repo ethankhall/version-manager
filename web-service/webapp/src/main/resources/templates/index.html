@@ -5,7 +5,7 @@
 
 <div th:switch="${#authorization.expression('isAuthenticated()')}">
     <p th:case="${true}">Welcome <span th:text="${#authentication.principal.getNiceName()}"></span></p>
-    <p th:case="${false}"><a th:href="@{https://github.com/login/oauth/authorize(scope='user:email',client_id=${token})}">Login with GitHub</a></p>
+    <p th:case="${false}"><a th:href="@{https://github.com/login/oauth/authorize(scope='user:email',client_id=${tokenDetails})}">Login with GitHub</a></p>
 </div>
 <br />
 <br />

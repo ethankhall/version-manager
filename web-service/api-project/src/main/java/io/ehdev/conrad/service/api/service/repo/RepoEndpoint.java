@@ -109,7 +109,7 @@ public class RepoEndpoint {
 
     @InternalLinks(links = {
         @InternalLink(name = "project", ref = "/../.."),
-        @InternalLink(name = "tokens", ref = "/token", permissions = CromPermission.ADMIN),
+        @InternalLink(name = "tokens", ref = "/tokenDetails", permissions = CromPermission.ADMIN),
         @InternalLink(name = "permissions", ref = "/permissions", permissions = CromPermission.ADMIN),
         @InternalLink(name = VERSION_REF, ref = "/versions"),
         @InternalLink(name = "latest", ref = "/version/latest")

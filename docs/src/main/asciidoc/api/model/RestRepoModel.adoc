@@ -9,11 +9,11 @@
 
 | projectName
 | String
-| Name of the project containing this repository.
+| Name of the project containing this tokenType.
 
 | repoName
 | String
-| The name of this repository.
+| The name of this tokenType.
 
 | scmUrl
 | String
@@ -21,7 +21,7 @@
 
 | url
 | String
-| URL to access the repository
+| URL to access the tokenType
 |===
 
 
@@ -32,6 +32,6 @@
   "projectName" : "bigFuzzyDice",
   "repoName" : "largeDice",
   "scmUrl" : null,
-  "url": "http://foo/bar/api/v1/bigFuzzyDice/repository/largeDice"
+  "url": "http://foo/bar/api/v1/bigFuzzyDice/tokenType/largeDice"
 }
 ----

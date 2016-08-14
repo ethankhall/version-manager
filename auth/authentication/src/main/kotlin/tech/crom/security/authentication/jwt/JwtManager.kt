@@ -11,7 +11,7 @@ interface JwtManager {
 
     fun createRepoToken(repo: CromRepo): String
 
-    fun createToken(token: TokenManager.GeneratedToken): String
+    fun createToken(tokenDetails: TokenManager.TokenDetails): String
 
     fun parseToken(token: String?): JwtTokenAuthentication?
 

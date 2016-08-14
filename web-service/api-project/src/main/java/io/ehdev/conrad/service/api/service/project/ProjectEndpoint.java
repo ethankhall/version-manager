@@ -67,7 +67,7 @@ public class ProjectEndpoint {
     @ProjectRequired
     @ReadPermissionRequired
     @InternalLinks(links = {
-        @InternalLink(name = "tokens", ref = "/token", permissions = CromPermission.ADMIN),
+        @InternalLink(name = "tokens", ref = "/tokenDetails", permissions = CromPermission.ADMIN),
         @InternalLink(name = "permissions", ref = "/permissions", permissions = CromPermission.ADMIN)
     })
     @RequestMapping(method = RequestMethod.GET)

@@ -15,7 +15,7 @@ public class RootPageController {
 
     @RequestMapping("/")
     public Object testHomePage(Model model) {
-        model.addAttribute("token", environment.getRequiredProperty("auth.client.github.key"));
+        model.addAttribute("tokenDetails", environment.getRequiredProperty("auth.client.github.key"));
         return "index";
     }
 }

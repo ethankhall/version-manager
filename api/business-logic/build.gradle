@@ -6,6 +6,7 @@ dependencies {
     compile libraries.kotlin
     compile libraries.slf4j
     compile project(":auth:authorization")
+    compile project(":auth:authentication")
     compile project(":database:database-v2")
     compile project(":api:version-bumper")
 }

@@ -45,7 +45,7 @@ public class RepoVersionEndpoint {
 
     @InternalLinks(links = {
         @InternalLink(name = "project", ref = "/../../.."),
-        @InternalLink(name = "repository", ref = "/..")
+        @InternalLink(name = "tokenType", ref = "/..")
     })
     @ReadPermissionRequired
     @RepoRequired(exists = true)
@@ -74,7 +74,7 @@ public class RepoVersionEndpoint {
     @InternalLinks(links = {
         @InternalLink(name = "project", ref = "/../../.."),
         @InternalLink(name = "versions", ref = "/../versions"),
-        @InternalLink(name = "repository", ref = "/..")
+        @InternalLink(name = "tokenType", ref = "/..")
     })
     @WritePermissionRequired
     @RepoRequired(exists = true)
@@ -102,7 +102,7 @@ public class RepoVersionEndpoint {
     @InternalLinks(links = {
         @InternalLink(name = "project", ref = "/../../../.."),
         @InternalLink(name = "versions", ref = "/../../versions"),
-        @InternalLink(name = "repository", ref = "/../..")
+        @InternalLink(name = "tokenType", ref = "/../..")
     })
     @ReadPermissionRequired
     @RepoRequired(exists = true)

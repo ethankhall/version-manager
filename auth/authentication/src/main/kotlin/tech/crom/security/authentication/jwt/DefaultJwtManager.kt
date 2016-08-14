@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service
 import tech.crom.database.api.TokenManager
 import tech.crom.logger.getLogger
 import tech.crom.model.repository.CromRepo
+import tech.crom.model.token.TokenType
 import tech.crom.model.user.CromUser
 import java.time.Clock
-import java.time.LocalDateTime
-import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.util.*
 import javax.crypto.spec.SecretKeySpec
 
@@ -32,23 +32,23 @@ class DefaultJwtManager @Autowired constructor(
     }
 
     override fun createUserToken(user: CromUser): String {
-        val token = tokenManager.generateUserToken(user, LocalDateTime.now(clock))
+        val token = tokenManager.generateUserToken(user, ZonedDateTime.now(clock))
         return createToken(token)
     }
 
     override fun createRepoToken(repo: CromRepo): String {
-        val token = tokenManager.generateRepoToken(repo, LocalDateTime.now(clock))
+        val token = tokenManager.generateRepoToken(repo, ZonedDateTime.now(clock))
         return createToken(token)
     }
 
-    override fun createToken(token: TokenManager.GeneratedToken): String {
+    override fun createToken(tokenDetails: TokenManager.TokenDetails): String {
         val claims = Jwts
             .claims()
-            .setSubject(token.uuid.toString())
-            .setExpiration(Date.from(token.expirationDate.toInstant(ZoneOffset.UTC)))
-            .setNotBefore(Date.from(token.createDate.toInstant(ZoneOffset.UTC)))
+            .setSubject(tokenDetails.uuid.toString())
+            .setExpiration(Date.from(tokenDetails.expiresAt.toInstant()))
+            .setNotBefore(Date.from(tokenDetails.createDate.toInstant()))
 
-        claims.put(TOKEN_TYPE, token.tokenType.name)
+        claims.put(TOKEN_TYPE, tokenDetails.tokenType.name)
 
         return Jwts
             .builder()
@@ -72,12 +72,12 @@ class DefaultJwtManager @Autowired constructor(
             val parsed = claimsJws.body
 
             val tokenString: String = parsed[TOKEN_TYPE] as String? ?: return null
-            val tokenType = TokenManager.TokenType.valueOf(tokenString)
+            val tokenType = TokenType.valueOf(tokenString)
 
             val tokenUid = UUID.fromString(parsed.subject)
             val tokenData = tokenManager.getTokenData(tokenUid, tokenType) ?: return null
 
-            if (tokenData.tokenType == TokenManager.TokenType.REPOSITORY) {
+            if (tokenData.tokenType == TokenType.REPOSITORY) {
                 return JwtTokenAuthentication.RepoJwtTokenAuthentication(tokenData.linkedUid, tokenUid)
             } else {
                 return JwtTokenAuthentication.UserJwtTokenAuthentication(tokenData.linkedUid, tokenUid)

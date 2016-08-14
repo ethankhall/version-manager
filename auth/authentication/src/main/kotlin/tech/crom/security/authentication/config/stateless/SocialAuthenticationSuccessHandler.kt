@@ -9,6 +9,7 @@ import tech.crom.database.api.UserManager
 import tech.crom.security.authentication.cookie.UserCookieManger
 import tech.crom.security.authentication.jwt.JwtManager
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
@@ -29,7 +30,7 @@ class SocialAuthenticationSuccessHandler @Autowired constructor(
 
     private fun addAuthToRequest(auth: Authentication, response: HttpServletResponse) {
         val user = userManager.findUserDetails(auth.name)
-        val token = tokenManager.generateUserToken(user!!, LocalDateTime.now().plusDays(60))
+        val token = tokenManager.generateUserToken(user!!, ZonedDateTime.now().plusDays(60))
         val jwtToken = jwtManager.createToken(token)
 
         userCookieManger.addCookie(jwtToken, response)

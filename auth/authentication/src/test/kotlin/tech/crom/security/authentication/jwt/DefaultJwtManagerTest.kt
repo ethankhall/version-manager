@@ -7,6 +7,7 @@ import org.jetbrains.spek.api.Spek
 import org.springframework.mock.env.MockEnvironment
 import tech.crom.database.api.TokenManager
 import tech.crom.model.repository.CromRepo
+import tech.crom.model.token.TokenType
 import tech.crom.model.user.CromUser
 import tech.crom.security.authentication.createGeneratedToken
 import java.time.Clock
@@ -22,14 +23,14 @@ class DefaultJwtManagerTest: Spek({
     val env = MockEnvironment()
     env.setProperty("jwt.signing.key", "simple")
 
-    on("create new token") {
-        it("should return a user token") {
+    on("create new tokenDetails") {
+        it("should return a user tokenDetails") {
             val tokenManager: TokenManager = mock()
             val jwtManager = DefaultJwtManager(clock, env, tokenManager)
 
             val cromUser = CromUser(UUID.randomUUID(), "username", "displayName")
-            val createdToken = createGeneratedToken(TokenManager.TokenType.USER)
-            val underlyingToken = TokenManager.UderlyingTokenDetails(cromUser.userUid, TokenManager.TokenType.USER)
+            val createdToken = createGeneratedToken(TokenType.USER)
+            val underlyingToken = TokenManager.UderlyingTokenDetails(cromUser.userUid, TokenType.USER)
 
             whenever(tokenManager.generateUserToken(any(), any())).thenReturn(createdToken)
             whenever(tokenManager.getTokenData(any(), any())).thenReturn(underlyingToken)
@@ -43,13 +44,13 @@ class DefaultJwtManagerTest: Spek({
             assertEquals(parsedToken.userTokenUid, createdToken.uuid)
         }
 
-        it("should return a repo token") {
+        it("should return a repo tokenDetails") {
             val tokenManager: TokenManager = mock()
             val jwtManager = DefaultJwtManager(clock, env, tokenManager)
 
             val cromRepo = CromRepo(UUID.randomUUID(), 1, UUID.randomUUID(), "repoName", UUID.randomUUID())
-            val createdToken = createGeneratedToken(TokenManager.TokenType.REPOSITORY)
-            val underlyingToken = TokenManager.UderlyingTokenDetails(cromRepo.repoUid, TokenManager.TokenType.REPOSITORY)
+            val createdToken = createGeneratedToken(TokenType.REPOSITORY)
+            val underlyingToken = TokenManager.UderlyingTokenDetails(cromRepo.repoUid, TokenType.REPOSITORY)
 
             whenever(tokenManager.generateRepoToken(any(), any())).thenReturn(createdToken)
             whenever(tokenManager.getTokenData(any(), any())).thenReturn(underlyingToken)
@@ -63,12 +64,12 @@ class DefaultJwtManagerTest: Spek({
             assertEquals(parsedToken.repoTokenUid, createdToken.uuid)
         }
 
-        it("should return null when a token is bad") {
+        it("should return null when a tokenDetails is bad") {
             val tokenManager: TokenManager = mock()
             val jwtManager = DefaultJwtManager(clock, env, tokenManager)
 
-            assertNull(jwtManager.parseToken("token.token.token"))
-            assertNull(jwtManager.parseToken("token"))
+            assertNull(jwtManager.parseToken("tokenDetails.tokenDetails.tokenDetails"))
+            assertNull(jwtManager.parseToken("tokenDetails"))
             assertNull(jwtManager.parseToken(""))
             assertNull(jwtManager.parseToken(null))
         }

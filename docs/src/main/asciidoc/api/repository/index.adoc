@@ -4,7 +4,7 @@ This API uses the standard REST verbs and response codes, but for more details a
 
 Some requests require link:../authentication/index.html[authentication]. Each describe the required authentication and what the result of a request will be when not authenticated.
 
-Given a repository, a sub-resource are versions. For details about the version sub-resource, in the link:version/index.html[Version API docs].
+Given a tokenType, a sub-resource are versions. For details about the version sub-resource, in the link:version/index.html[Version API docs].
 
 [shared-objects]
 == Shared Objects
