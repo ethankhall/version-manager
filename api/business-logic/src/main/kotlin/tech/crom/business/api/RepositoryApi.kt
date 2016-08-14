@@ -3,6 +3,7 @@ package tech.crom.business.api
 import tech.crom.model.bumper.CromVersionBumper
 import tech.crom.model.project.CromProject
 import tech.crom.model.repository.CromRepo
+import tech.crom.model.repository.CromRepoDetails
 
 interface RepositoryApi {
 
@@ -16,4 +17,6 @@ interface RepositoryApi {
                    checkoutUrl: String?,
                    description: String?,
                    isRepoPublic: Boolean): CromRepo
+
+    fun getRepoDetails(cromRepo: CromRepo): CromRepoDetails
 }

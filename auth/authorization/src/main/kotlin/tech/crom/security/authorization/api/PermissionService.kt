@@ -23,4 +23,8 @@ interface PermissionService {
     fun findHighestPermission(authorizedObject: AuthorizedObject): CromPermission
 
     fun remove(authorizedObject: AuthorizedObject)
+
+    fun retrieveAllPermissions(authorizedObject: AuthorizedObject): List<PermissionPair>
+
+    data class PermissionPair(val userId: String, val permission: CromPermission)
 }

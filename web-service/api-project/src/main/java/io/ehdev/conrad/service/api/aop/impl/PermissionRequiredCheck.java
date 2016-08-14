@@ -9,7 +9,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import tech.crom.model.security.authorization.AuthorizedObject;
 import tech.crom.model.security.authorization.CromPermission;
 import tech.crom.security.authorization.api.PermissionService;
 import tech.crom.web.api.model.RequestDetails;
@@ -55,16 +54,9 @@ public class PermissionRequiredCheck implements Ordered {
 
         RequestDetails container = findRequestDetails(joinPoint);
 
-        AuthorizedObject authorizedObject;
-        if (container.getCromRepo() != null) {
-            authorizedObject = container.getCromRepo();
-        } else if (container.getCromProject() != null) {
-            authorizedObject = container.getCromProject();
-        } else {
-            throw new RuntimeException("Unable to find project or repo to authenticate against");
-        }
+        CromPermission highestPermission = container.getRequestPermission().findHighestPermission();
 
-        if (!permissionService.hasAccessTo(authorizedObject, permission)) {
+        if (highestPermission.isHigherOrEqualThan(permission)) {
             throw new PermissionDeniedException(SecurityContextHolder.getContext().getAuthentication().getName());
         }
     }

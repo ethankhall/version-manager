@@ -73,4 +73,9 @@ class DefaultRepoManager @Autowired constructor(
         val repo = repoDetailsDao.fetchOneByUuid(uuid) ?: return null
         return CromRepo(repo.uuid, repo.securityId, repo.projectUuid, repo.repoName, repo.versionBumperUuid)
     }
+
+    override fun getDetails(cromRepo: CromRepo): RepoManager.CromRepoDetails {
+        val repo = repoDetailsDao.fetchOneByUuid(cromRepo.repoUid)
+        return RepoManager.CromRepoDetails(cromRepo, repo.versionBumperUuid, repo.public, repo.url, repo.description)
+    }
 }

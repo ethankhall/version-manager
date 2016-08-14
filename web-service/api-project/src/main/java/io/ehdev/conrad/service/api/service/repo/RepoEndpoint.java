@@ -29,12 +29,12 @@ import tech.crom.model.commit.CommitIdContainer;
 import tech.crom.model.commit.impl.PersistedCommit;
 import tech.crom.model.commit.impl.RequestedCommit;
 import tech.crom.model.repository.CromRepo;
+import tech.crom.model.repository.CromRepoDetails;
 import tech.crom.model.security.authorization.CromPermission;
 import tech.crom.web.api.model.RequestDetails;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static io.ehdev.conrad.service.api.service.model.LinkUtilities.*;
@@ -62,8 +62,8 @@ public class RepoEndpoint {
         this.commitApi = commitApi;
     }
 
+    @RepoRequired
     @AdminPermissionRequired
-    @RepoRequired(exists = true)
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity deleteRepo(RequestDetails requestDetails) {
         repositoryApi.deleteRepo(requestDetails.getCromRepo());
@@ -93,7 +93,7 @@ public class RepoEndpoint {
                 .collect(Collectors.toList());
 
             CommitIdContainer commitIdContainer = null;
-            for(RequestedCommit requestedCommit: requestedCommits) {
+            for (RequestedCommit requestedCommit : requestedCommits) {
                 PersistedCommit commit = commitApi.createCommit(repo, requestedCommit, Collections.singletonList(commitIdContainer));
                 commitIdContainer = new CommitIdContainer(commit.getCommitId());
             }
@@ -114,41 +114,43 @@ public class RepoEndpoint {
         @InternalLink(name = VERSION_REF, ref = "/versions"),
         @InternalLink(name = "latest", ref = "/version/latest")
     })
+    @RepoRequired
     @ReadPermissionRequired
-    @RepoRequired(exists = true)
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<GetRepoResponse> getRepoDetails(RequestDetails requestDetails) {
-        ApiRepoDetailsModel details = repositoryApi.getDetails(requestDetails.getResourceDetails()).get();
+        CromRepoDetails repoDetails = repositoryApi.getRepoDetails(requestDetails.getCromRepo());
 
         GetRepoResponse restRepoModel = new GetRepoResponse(
-            details.getRepo().getProjectName(),
-            details.getRepo().getRepoName(),
-            details.getRepo().getUrl()
+            requestDetails.getCromProject().getProjectName(),
+            requestDetails.getCromRepo().getRepoName(),
+            repoDetails.getCheckoutUrl()
         );
 
-        permissionApi.getPermissions(requestDetails.getResourceDetails()).forEach(it -> restRepoModel.addPermission(
-            new PermissionGrant(it.getUsername(), PermissionGrant.PermissionDefinition.valueOf(it.getPermissions()))));
+        permissionApi.getPermissions(repoDetails.getCromRepo()).forEach(it -> {
+            restRepoModel.addPermission(
+                new PermissionGrant(it.getCromUser().getUserName(),
+                    PermissionGrant.PermissionDefinition.valueOf(it.getCromPermission().name())));
+        });
 
         return ResponseEntity.ok(restRepoModel);
     }
 
+    @RepoRequired
     @ReadPermissionRequired
-    @RepoRequired(exists = true)
     @RequestMapping(value = "/search/version", method = RequestMethod.POST)
     public ResponseEntity<VersionSearchResponse> searchForVersionInHistory(RequestDetails requestDetails,
                                                                            @RequestBody CommitIdCollection versionModel) {
-        List<ApiCommitModel> commits = versionModel.getCommits()
-            .stream()
-            .map(ApiCommitModel::new)
-            .collect(Collectors.toList());
 
-        Optional<ApiCommitModel> latest = repositoryApi.findLatestCommit(requestDetails.getResourceDetails(), commits);
-        if (!latest.isPresent()) {
+        List<CommitIdContainer> commits = versionModel.getCommits().stream().map(CommitIdContainer::new).collect(Collectors.toList());
+        PersistedCommit latestCommit = commitApi.findLatestCommit(requestDetails.getCromRepo(), commits);
+
+        if (latestCommit == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } else {
-            ApiCommitModel commit = latest.get();
-            VersionSearchResponse body = new VersionSearchResponse(commit.getCommitId(), commit.getVersion(), commit.getCreatedAt());
-            body.addLink(toLink(versionSelfLink(requestDetails, commit.getVersion())));
+            VersionSearchResponse body = new VersionSearchResponse(latestCommit.getCommitId(),
+                latestCommit.getVersion().getVersionString(),
+                latestCommit.getCreatedAt());
+            body.addLink(toLink(versionSelfLink(requestDetails, latestCommit.getVersion().getVersionString())));
             return ResponseEntity.ok(body);
         }
     }

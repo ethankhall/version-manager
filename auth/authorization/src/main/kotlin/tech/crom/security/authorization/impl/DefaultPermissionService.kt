@@ -5,13 +5,13 @@ import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.acls.domain.ObjectIdentityImpl
 import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.model.*
-import org.springframework.security.core.Authentication
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import tech.crom.database.api.ProjectManager
+import tech.crom.getCromAuthentication
 import tech.crom.logger.getLogger
 import tech.crom.model.project.CromProject
 import tech.crom.model.repository.CromRepo
+import tech.crom.model.security.authentication.CromAuthentication
 import tech.crom.model.security.authentication.CromUserAuthentication
 import tech.crom.model.security.authorization.AuthorizedObject
 import tech.crom.model.security.authorization.CromPermission
@@ -38,7 +38,7 @@ class DefaultPermissionService @Autowired constructor(
         val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
 
         val permissions = mutableListOf<CromPermission>()
-        val sid = PrincipalSid(SecurityContextHolder.getContext().authentication)
+        val sid = getCromAuthentication().toSid()
         var acl: Acl? = aclService.readAclById(oi, listOf(sid))
 
         while(acl != null) {
@@ -55,7 +55,7 @@ class DefaultPermissionService @Autowired constructor(
         logger.info("Revoking $accessLevel from ${cromUser.userUid} on ${authorizedObject.getId()}")
         val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
 
-        val sid = PrincipalSid(CromUserAuthentication(cromUser))
+        val sid = CromUserAuthentication(cromUser).toSid()
         val acl = aclService.readAclById(oi, listOf(sid)) as MutableAcl
 
         createPermissionGrantList(accessLevel).forEach { permission ->
@@ -74,7 +74,7 @@ class DefaultPermissionService @Autowired constructor(
 
         val acl = aclService.readAclById(oi) as MutableAcl
 
-        val sid = PrincipalSid(CromUserAuthentication(cromUser))
+        val sid = CromUserAuthentication(cromUser).toSid()
 
         createPermissionGrantList(accessLevel).forEach { permission ->
             acl.insertAce(acl.entries.size, permission, sid, true)
@@ -89,13 +89,13 @@ class DefaultPermissionService @Autowired constructor(
 
     override fun hasAccessTo(authorizedObject: AuthorizedObject, accessLevel: CromPermission): Boolean {
         val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
-        return validatePermissions(SecurityContextHolder.getContext().authentication, accessLevel, oi)
+        return validatePermissions(getCromAuthentication(), accessLevel, oi)
     }
 
-    private fun validatePermissions(auth: Authentication, accessLevel: CromPermission, oi: ObjectIdentityImpl): Boolean {
+    private fun validatePermissions(auth: CromAuthentication, accessLevel: CromPermission, oi: ObjectIdentityImpl): Boolean {
         val permission = createPermissionValidateList(accessLevel)
 
-        val sid = PrincipalSid(auth)
+        val sid = auth.toSid()
 
         val acl: Acl = aclService.readAclById(oi)
         try {
@@ -135,13 +135,23 @@ class DefaultPermissionService @Autowired constructor(
             acl = aclService.createAcl(oi)
         }
 
-        val auth = SecurityContextHolder.getContext().authentication
-        val sid = PrincipalSid(auth)
+        val sid = getCromAuthentication().toSid()
 
         acl.insertAce(acl.entries.size, BasePermission.ADMINISTRATION, sid, true)
         acl.insertAce(acl.entries.size, BasePermission.WRITE, sid, true)
         acl.insertAce(acl.entries.size, BasePermission.READ, sid, true)
         aclService.updateAcl(acl)
+    }
+
+    override fun retrieveAllPermissions(authorizedObject: AuthorizedObject): List<PermissionService.PermissionPair> {
+        val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
+        val readAclById = aclService.readAclById(oi)
+        val list = readAclById
+            .entries
+            .map { PermissionService.PermissionPair((it.sid as PrincipalSid).principal, permissionToCromPermission(it.permission)) }
+            .toList()
+
+        return list
     }
 
     internal fun permissionToCromPermission(permission: Permission): CromPermission {
@@ -170,4 +180,6 @@ class DefaultPermissionService @Autowired constructor(
             CromPermission.NONE -> listOf()
         }
     }
+
+    fun CromAuthentication.toSid(): Sid = PrincipalSid(this.getUniqueId())
 }

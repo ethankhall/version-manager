@@ -18,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import tech.crom.business.api.CommitApi;
-import tech.crom.database.api.RepoManager;
 import tech.crom.model.commit.CommitIdContainer;
 import tech.crom.model.commit.impl.PersistedCommit;
 import tech.crom.model.commit.impl.RequestedCommit;
@@ -38,12 +37,10 @@ import static io.ehdev.conrad.service.api.service.model.LinkUtilities.versionSel
 public class RepoVersionEndpoint {
 
     private final CommitApi commitApi;
-    private final RepoManager repoManager;
 
     @Autowired
-    public RepoVersionEndpoint(CommitApi commitApi, RepoManager repoManager) {
+    public RepoVersionEndpoint(CommitApi commitApi) {
         this.commitApi = commitApi;
-        this.repoManager = repoManager;
     }
 
     @InternalLinks(links = {

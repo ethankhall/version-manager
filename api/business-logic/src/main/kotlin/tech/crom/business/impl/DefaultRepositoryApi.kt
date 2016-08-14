@@ -4,14 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import tech.crom.business.api.RepositoryApi
 import tech.crom.database.api.RepoManager
+import tech.crom.database.api.VersionBumperManager
 import tech.crom.model.bumper.CromVersionBumper
 import tech.crom.model.project.CromProject
 import tech.crom.model.repository.CromRepo
+import tech.crom.model.repository.CromRepoDetails
 import tech.crom.security.authorization.api.PermissionService
 
 @Service
 class DefaultRepositoryApi @Autowired constructor(
     val repoManager: RepoManager,
+    val versionBumperManager: VersionBumperManager,
     val permissionService: PermissionService
 ): RepositoryApi {
 
@@ -34,4 +37,10 @@ class DefaultRepositoryApi @Autowired constructor(
 
     override fun findRepo(cromProject: CromProject): Collection<CromRepo> = repoManager.findRepo(cromProject)
 
+    override fun getRepoDetails(cromRepo: CromRepo): CromRepoDetails {
+        val details = repoManager.getDetails(cromRepo)
+        val bumper = versionBumperManager.getBumper(cromRepo)
+
+        return CromRepoDetails(cromRepo, bumper, details.public, details.checkoutUrl, details.description)
+    }
 }

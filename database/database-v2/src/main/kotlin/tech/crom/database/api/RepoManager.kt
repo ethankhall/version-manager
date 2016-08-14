@@ -23,4 +23,12 @@ interface RepoManager {
                    checkoutUrl: String?,
                    description: String?,
                    isRepoPublic: Boolean): CromRepo
+
+    fun getDetails(cromRepo: CromRepo): CromRepoDetails
+
+    data class CromRepoDetails(val cromRepo: CromRepo,
+                               val cromVersionBumperUid: UUID,
+                               val public: Boolean,
+                               val checkoutUrl: String?,
+                               val description: String?)
 }

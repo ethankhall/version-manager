@@ -22,6 +22,10 @@ class DetaultCommitApi @Autowired constructor(
 
     override fun findAllCommits(cromRepo: CromRepo): List<PersistedCommit> = commitManager.findAllCommits(cromRepo)
 
+    override fun findLatestCommit(cromRepo: CromRepo, commitIdContainer: List<CommitIdContainer>): PersistedCommit? {
+        return commitManager.findLatestCommit(cromRepo, commitIdContainer)
+    }
+
     override fun createCommit(cromRepo: CromRepo,
                               commitModel: RequestedCommit,
                               commitList: List<CommitIdContainer>): PersistedCommit {

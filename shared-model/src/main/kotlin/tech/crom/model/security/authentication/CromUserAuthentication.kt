@@ -1,13 +1,12 @@
 package tech.crom.model.security.authentication
 
-import org.springframework.security.core.Authentication
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.social.security.SocialUserDetails
 import tech.crom.model.user.CromUser
 
-data class CromUserAuthentication(val user: CromUser): Authentication {
+data class CromUserAuthentication(val user: CromUser): CromAuthentication {
 
     val securityUser: SecurityCromUser
 
@@ -28,6 +27,8 @@ data class CromUserAuthentication(val user: CromUser): Authentication {
     override fun getAuthorities(): Collection<GrantedAuthority>? = securityUser.authorities
 
     override fun getPrincipal(): CromUser = user
+
+    override fun getUniqueId(): String = user.userUid.toString()
 
     data class SecurityCromUser(val cromUser: CromUser): UserDetails, SocialUserDetails {
         override fun getUserId(): String = cromUser.userUid.toString()

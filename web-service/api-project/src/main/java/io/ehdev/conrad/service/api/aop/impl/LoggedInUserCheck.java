@@ -11,6 +11,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import tech.crom.model.security.authentication.CromRepositoryAuthentication;
+import tech.crom.model.security.authentication.CromUserAuthentication;
 
 @Aspect
 @Service
@@ -32,6 +33,11 @@ public class LoggedInUserCheck implements Ordered {
 
         if(SecurityContextHolder.getContext().getAuthentication() instanceof CromRepositoryAuthentication) {
             logger.info("User is api user, forbidden from accessing private apis: {}", SecurityContextHolder.getContext().getAuthentication());
+            throw new NonUserNotAllowedException();
+        }
+
+        if(!(SecurityContextHolder.getContext().getAuthentication() instanceof CromUserAuthentication)) {
+            logger.info("Not authorized user, forbidden from accessing private apis: {}", SecurityContextHolder.getContext().getAuthentication());
             throw new NonUserNotAllowedException();
         }
     }
