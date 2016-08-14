@@ -29,13 +29,17 @@ springBoot {
 }
 
 dependencies {
+    compile project(":api:business-logic")
     compile project(":api:rest-model")
+    compile project(":api:version-bumper")
     compile project(":database:database-v2")
+    compile project(":database:database-jooq")
+    compile project(":database:database-migration")
     compile project(":web-service:api-project")
-
-    //Caching
-    compile libraries.springContextSupport
-    compile 'net.sf.ehcache:ehcache:2.8.3'
+    compile project(":shared-config")
+    compile project(":shared-model")
+    compile project(':auth:authentication')
+    compile project(':auth:authorization')
 
     //Spring
     compile libraries.springBootWebapp
@@ -53,8 +57,9 @@ dependencies {
 
     testCompile libraries.springTest
     testCompile libraries.jsonPath
-
     testCompile libraries.testing
+
     integTestCompile libraries.springBoot
     integTestCompile libraries.springBootTest
+    integTestCompile libraries.springSecurityTest
 }

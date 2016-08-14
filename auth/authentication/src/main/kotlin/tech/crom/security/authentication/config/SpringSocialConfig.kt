@@ -6,7 +6,6 @@ import org.springframework.context.annotation.Configuration
 import org.springframework.context.annotation.Scope
 import org.springframework.context.annotation.ScopedProxyMode
 import org.springframework.core.env.Environment
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.security.crypto.encrypt.Encryptors
 import org.springframework.social.UserIdSource
 import org.springframework.social.config.annotation.ConnectionFactoryConfigurer
@@ -19,12 +18,13 @@ import org.springframework.social.connect.UsersConnectionRepository
 import org.springframework.social.connect.jdbc.JdbcUsersConnectionRepository
 import org.springframework.social.google.api.Google
 import org.springframework.social.google.connect.GoogleConnectionFactory
+import org.springframework.social.security.AuthenticationNameUserIdSource
 import tech.crom.security.authentication.service.CromConnectionSignupService
 import javax.sql.DataSource
 
 @EnableSocial
 @Configuration
-open class SpringSocialConfig @Autowired constructor(val ds: DataSource, val signUp: CromConnectionSignupService): SocialConfigurer {
+open class SpringSocialConfig @Autowired constructor(val ds: DataSource, val signUp: CromConnectionSignupService) : SocialConfigurer {
 
     override fun getUsersConnectionRepository(connectionFactoryLocator: ConnectionFactoryLocator?): UsersConnectionRepository? {
         val jdbcUsersConnectionRepository = JdbcUsersConnectionRepository(ds, connectionFactoryLocator, Encryptors.noOpText())
@@ -33,7 +33,7 @@ open class SpringSocialConfig @Autowired constructor(val ds: DataSource, val sig
         return jdbcUsersConnectionRepository
     }
 
-    override fun getUserIdSource(): UserIdSource = UserNameIdSource()
+    override fun getUserIdSource(): UserIdSource = AuthenticationNameUserIdSource()
 
     override fun addConnectionFactories(cfConfigurer: ConnectionFactoryConfigurer, env: Environment) {
         val factory = GoogleConnectionFactory(
@@ -44,15 +44,15 @@ open class SpringSocialConfig @Autowired constructor(val ds: DataSource, val sig
         cfConfigurer.addConnectionFactory(factory)
     }
 
-    class UserNameIdSource: UserIdSource {
-        override fun getUserId(): String {
-            val authentication = SecurityContextHolder.getContext().authentication ?: throw IllegalStateException("No user signed in")
-            return authentication.name
-        }
-    }
+//    class UserNameIdSource : UserIdSource {
+//        override fun getUserId(): String {
+//            val authentication = SecurityContextHolder.getContext().authentication ?: throw IllegalStateException("No user signed in")
+//            return authentication.name
+//        }
+//    }
 
     @Bean
-    @Scope(value="request", proxyMode= ScopedProxyMode.INTERFACES)
+    @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
     open fun google(repository: ConnectionRepository): Google? {
         val connection: Connection<Google>? = repository.findPrimaryConnection(Google::class.java)
         return connection?.api

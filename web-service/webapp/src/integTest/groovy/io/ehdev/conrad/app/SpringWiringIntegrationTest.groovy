@@ -1,22 +1,27 @@
 package io.ehdev.conrad.app
 
-import io.ehdev.conrad.version.bumper.api.VersionBumperService
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.SpringApplicationContextLoader
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.security.test.context.support.WithMockUser
 import org.springframework.test.context.ContextConfiguration
+import org.springframework.test.context.TestPropertySource
 import spock.lang.Specification
+import tech.crom.business.api.VersionBumperApi
 
 import javax.transaction.Transactional
 
+@WithMockUser
 @Transactional
-@ContextConfiguration(classes = [TestWebAppConfiguration.class], loader = SpringApplicationContextLoader.class)
+@ContextConfiguration
+@TestPropertySource("/application-test.yml")
+@SpringBootTest(classes = [TestWebAppConfiguration], webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class SpringWiringIntegrationTest extends Specification {
 
     @Autowired
-    VersionBumperService versionService
+    VersionBumperApi versionBumperApi
 
     def 'wiring is good'() {
         expect:
-        versionService != null
+        versionBumperApi != null
     }
 }

@@ -14,6 +14,6 @@ dependencies {
     compile libraries.hikari
     compile libraries.jooq
     compile libraries.springJdbc
-    compile libraries.springJdbc
     compile libraries.springTx
+    compile libraries.transactionApi
 }

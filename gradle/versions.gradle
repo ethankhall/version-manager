@@ -5,11 +5,11 @@ ext {
 
 
 versions.springBoot = '1.4.0.RELEASE'
-versions.spring = '4.2.5.RELEASE'
-versions.springSecurity = '4.0.3.RELEASE'
+versions.spring = '4.3.2.RELEASE'
+versions.springSecurity = '4.1.1.RELEASE'
 versions.springSecutityOAuth = '2.0.8.RELEASE'
 versions.spock = '1.1-groovy-2.4-rc-1'
-versions.slf4j = '1.7.12'
+versions.slf4j = '1.7.21'
 versions.hibernate = '5.0.5.Final'
 versions.jackson = '2.7.2'
 versions.metrics = '3.1.0'
@@ -60,6 +60,10 @@ libraries.springBootWebapp = [
 libraries.springWeb = [
     "org.springframework:spring-web:${versions.spring}",
     "org.springframework:spring-webmvc:${versions.spring}"
+]
+
+libraries.transactionApi = [
+    group: 'javax.transaction', name: 'javax.transaction-api', version: '1.2'
 ]
 
 libraries.spek = "org.jetbrains.spek:spek:${versions.spek}"
