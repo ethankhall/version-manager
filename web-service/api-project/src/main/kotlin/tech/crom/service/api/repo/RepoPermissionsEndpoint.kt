@@ -21,7 +21,7 @@ import tech.crom.web.api.model.RequestDetails
 
 @Service
 @RequestMapping("/api/v1/project/{projectName}/repo/{repoName}/permissions")
-class RepoPermissionsEndpoint @Autowired constructor(
+open class RepoPermissionsEndpoint @Autowired constructor(
     val permissionApi: PermissionApi
 ){
 
@@ -30,7 +30,7 @@ class RepoPermissionsEndpoint @Autowired constructor(
     @AdminPermissionRequired
     @RequestMapping(value = "/{username}", method = arrayOf(RequestMethod.DELETE))
     @InternalLinks(links = arrayOf(InternalLink(name = "project", ref = "/../../.."), InternalLink(name = "repository", ref = "/..")))
-    fun deletePermissions(container: RequestDetails, @PathVariable("username") username: String): ResponseEntity<Any> {
+    open fun deletePermissions(container: RequestDetails, @PathVariable("username") username: String): ResponseEntity<Any> {
         permissionApi.dropPermission(username, container.cromRepo!!)
         return ResponseEntity(HttpStatus.OK)
     }
@@ -40,7 +40,7 @@ class RepoPermissionsEndpoint @Autowired constructor(
     @AdminPermissionRequired
     @RequestMapping(method = arrayOf(RequestMethod.POST))
     @InternalLinks(links = arrayOf(InternalLink(name = "project", ref = "/../../.."), InternalLink(name = "repository", ref = "/..")))
-    fun addPermission(container: RequestDetails, @RequestBody permissionGrant: PermissionGrant): ResponseEntity<PermissionCreateResponse> {
+    open fun addPermission(container: RequestDetails, @RequestBody permissionGrant: PermissionGrant): ResponseEntity<PermissionCreateResponse> {
         if(permissionApi.grantPermission(permissionGrant.username, container.cromRepo!!, convertType(permissionGrant))) {
             return ResponseEntity(PermissionCreateResponse(true), HttpStatus.CREATED)
         } else {
@@ -56,5 +56,4 @@ class RepoPermissionsEndpoint @Autowired constructor(
             PermissionGrant.PermissionDefinition.ADMIN -> CromPermission.ADMIN
         }
     }
-
 }

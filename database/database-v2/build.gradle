@@ -4,22 +4,17 @@ apply plugin: 'local-dev'
 apply plugin: 'kotlin'
 
 dependencies {
-    compile libraries.kotlin
-    compile libraries.slf4j
-    compile libraries.springSecurity
-    compile libraries.springAcl
     compile project(":database:database-jooq")
     compile project(":shared-model")
-    compile libraries.hikari
+    compile libraries.kotlin
+    compile libraries.logging
+    compile libraries.springSecurity
+    compile libraries.database
 
-    testCompile libraries.spek
-    testCompile libraries.logback
+    testCompile libraries.testingLibraries
 
-    integTestCompile libraries.groovy
-    integTestCompile libraries.spock
     integTestCompile libraries.springTest
     integTestCompile libraries.springBootTest
-    integTestCompile libraries.spockSpring
     integTestCompile project(":shared-config")
     integTestCompile project(":api:version-bumper")
 }

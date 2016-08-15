@@ -72,12 +72,12 @@ class DefaultTokenManager @Autowired constructor(
             TokenType.REPOSITORY)
     }
 
-    override fun findTokens(uid: UUID, tokenType: TokenType): List<TokenManager.TokenDetails> {
+    override fun findTokens(cromRepo: UUID, tokenType: TokenType): List<TokenManager.TokenDetails> {
         if (tokenType == TokenType.REPOSITORY) {
             val tokens = dslContext
                 .select(Tables.REPOSITORY_TOKENS.fields().toList())
                 .from(Tables.REPOSITORY_TOKENS)
-                .where(Tables.REPOSITORY_TOKENS.UUID.eq(uid))
+                .where(Tables.REPOSITORY_TOKENS.REPO_UUID.eq(cromRepo))
                     .and(Tables.REPOSITORY_TOKENS.VALID.eq(true))
                     .and(Tables.REPOSITORY_TOKENS.EXPIRES_AT.greaterOrEqual(Instant.now()))
                     .and(Tables.REPOSITORY_TOKENS.CREATED_AT.lessOrEqual(Instant.now()))
@@ -96,7 +96,7 @@ class DefaultTokenManager @Autowired constructor(
             val tokens = dslContext
                 .select(Tables.USER_TOKENS.fields().toList())
                 .from(Tables.USER_TOKENS)
-                .where(Tables.USER_TOKENS.UUID.eq(uid))
+                .where(Tables.USER_TOKENS.USER_UUID.eq(cromRepo))
                     .and(Tables.USER_TOKENS.VALID.eq(true))
                     .and(Tables.USER_TOKENS.EXPIRES_AT.greaterOrEqual(Instant.now()))
                     .and(Tables.USER_TOKENS.CREATED_AT.lessOrEqual(Instant.now()))

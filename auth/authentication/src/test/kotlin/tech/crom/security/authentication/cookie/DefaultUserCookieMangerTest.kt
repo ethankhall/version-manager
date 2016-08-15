@@ -6,8 +6,8 @@ import org.springframework.mock.web.MockHttpServletResponse
 import javax.servlet.http.Cookie
 import kotlin.test.assertEquals
 
-class UserCookieMangerImplTest: Spek({
-    val cookieManager = UserCookieMangerImpl()
+class DefaultUserCookieMangerTest : Spek({
+    val cookieManager = DefaultUserCookieManger()
     on("cookie manager") {
         it("should add cookie to request when asked") {
             val request = MockHttpServletResponse()

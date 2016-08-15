@@ -3,12 +3,20 @@ apply plugin: 'groovy'
 repositories {
     mavenCentral()
     jcenter()
+    maven {
+        url 'http://repo.spring.io/milestone'
+    }
+    maven {
+        url 'https://repo.spring.io/libs-milestone'
+    }
 }
 
 dependencies {
     compile localGroovy()
     compile gradleApi()
     compile 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.2'
+    compile 'com.netflix.nebula:nebula-dependency-recommender:3.6.3'
+    runtime 'org.springframework.boot:spring-boot-gradle-plugin:1.4.0.RELEASE'
 
     testCompile('org.spockframework:spock-core:1.0-groovy-2.4'){
         exclude group: 'org.codehaus.groovy'

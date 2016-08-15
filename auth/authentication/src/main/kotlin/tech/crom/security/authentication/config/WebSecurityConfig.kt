@@ -41,15 +41,14 @@ open class WebSecurityConfig @Autowired constructor(
                     .deleteCookies("JSESSIONID")
             .and()
                 .authorizeRequests()
-                    .antMatchers(
-                        "/admin/**", "/favicon.ico", "/resources/**", "/signin", "/connect/**", "/auth/**").permitAll()
-                    .antMatchers("/**").authenticated()
+                    .antMatchers("/connect/**", "/auth/**").authenticated()
             .and()
                 .rememberMe()
             .and()
                 .apply(createSocialConfigurer())
             .and()
                 .addFilterBefore(statelessAuthenticationFilter, AbstractPreAuthenticatedProcessingFilter::class.java)
+            .csrf().disable()
         //@formatter:on
     }
 

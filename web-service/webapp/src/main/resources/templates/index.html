@@ -4,7 +4,7 @@
 <h1>Welcome to Conrad Version Management</h1>
 
 <div th:switch="${#authorization.expression('isAuthenticated()')}">
-    <p th:case="${true}">Welcome <span th:text="${#authentication.principal.getNiceName()}"></span></p>
+    <p th:case="${true}">Welcome <span th:text="${#authentication.principal.displayName}"></span></p>
     <p th:case="${false}"><a th:href="@{https://github.com/login/oauth/authorize(scope='user:email',client_id=${tokenDetails})}">Login with GitHub</a></p>
 </div>
 <br />

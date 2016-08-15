@@ -22,7 +22,7 @@ import tech.crom.web.api.model.RequestDetails
 
 @Controller
 @RequestMapping(value = "/api/v1/project/{projectName}/permissions", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-class ProjectPermissionEndpoint @Autowired constructor(
+open class ProjectPermissionEndpoint @Autowired constructor(
     val permissionApi: PermissionApi
 ) {
 
@@ -30,7 +30,7 @@ class ProjectPermissionEndpoint @Autowired constructor(
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RequestMapping(value = "/{username}", method = arrayOf(RequestMethod.DELETE))
-    fun deletePermissions(container: RequestDetails, @PathVariable("username") username: String): ResponseEntity<Any> {
+    open fun deletePermissions(container: RequestDetails, @PathVariable("username") username: String): ResponseEntity<Any> {
         permissionApi.dropPermission(username, container.cromProject!!)
         return ResponseEntity(HttpStatus.OK)
     }
@@ -42,7 +42,7 @@ class ProjectPermissionEndpoint @Autowired constructor(
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RequestMapping(method = arrayOf(RequestMethod.POST))
-    fun addPermission(container: RequestDetails, @RequestBody permissionGrant: PermissionGrant): ResponseEntity<PermissionCreateResponse> {
+    open fun addPermission(container: RequestDetails, @RequestBody permissionGrant: PermissionGrant): ResponseEntity<PermissionCreateResponse> {
         if(permissionApi.grantPermission(permissionGrant.username, container.cromProject!!, convertType(permissionGrant))) {
             return ResponseEntity(PermissionCreateResponse(true), HttpStatus.CREATED)
         } else {

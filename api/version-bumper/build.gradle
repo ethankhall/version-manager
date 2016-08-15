@@ -12,6 +12,5 @@ dependencies {
     compile libraries.kotlin
     compile project(":shared-model")
 
-    testCompile 'de.sven-jacobs:loremipsum:1.0'
-    testCompile libraries.spek
+    testCompile libraries.testingLibraries
 }

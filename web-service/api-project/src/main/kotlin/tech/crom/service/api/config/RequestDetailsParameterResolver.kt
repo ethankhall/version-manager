@@ -29,7 +29,8 @@ class RequestDetailsParameterResolver @Autowired constructor(
     }
 
     fun createRequestDetails(httpServletRequest: HttpServletRequest): RequestDetails {
-        val rawRequest = RequestDetails.RawRequestDetails(httpServletRequest.pathInfo, getParameters(httpServletRequest))
+        val path = httpServletRequest.requestURI.substring(httpServletRequest.contextPath.length)
+        val rawRequest = RequestDetails.RawRequestDetails(path, getParameters(httpServletRequest))
         val cromUser = findCromUser()
         var requestPermissions = RequestDetails.RequestPermissions(null, null, cromUser)
 

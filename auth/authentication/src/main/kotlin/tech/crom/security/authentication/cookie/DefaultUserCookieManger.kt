@@ -6,7 +6,7 @@ import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Service
-class UserCookieMangerImpl : UserCookieManger {
+class DefaultUserCookieManger : UserCookieManger {
 
     private val userCookieGenerator = CookieGenerator()
 

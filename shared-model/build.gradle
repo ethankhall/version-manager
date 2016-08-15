@@ -4,7 +4,7 @@ apply plugin: 'kotlin'
 
 dependencies {
     compile libraries.kotlin
-    compile libraries.slf4j
-    compile libraries.springSecurityCore
-    compile libraries.springSocialSecurity
+    compile libraries.logging
+    compile libraries.springSecurity
+    compile libraries.springSocial
 }

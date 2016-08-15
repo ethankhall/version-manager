@@ -1,159 +1,159 @@
-ext {
-    versions = [:]
-    libraries = [:]
-}
+apply plugin: 'dependency'
 
-
-versions.springBoot = '1.4.0.RELEASE'
-versions.spring = '4.3.2.RELEASE'
-versions.springSecurity = '4.1.1.RELEASE'
-versions.springSecutityOAuth = '2.0.8.RELEASE'
-versions.spock = '1.1-groovy-2.4-rc-1'
-versions.slf4j = '1.7.21'
-versions.hibernate = '5.0.5.Final'
-versions.jackson = '2.7.2'
-versions.metrics = '3.1.0'
-versions.springSocial = '1.1.4.RELEASE'
-versions.kotlin = '1.0.3'
-versions.logback = '1.1.7'
-versions.jooq = '3.8.4'
-versions.spek = '1.0.25'
-
-// Because spring boot is opinionated, and I don't want their opinions.
-ext['hibernate.version'] = versions.hibernate
-ext['jackson.version'] = versions.jackson
-ext['jooq.version'] = versions.jooq
-
-libraries.jooq = [
-    "org.jooq:jooq:${versions.jooq}",
-    "org.jooq:jooq-meta:${versions.jooq}",
-    "org.jooq:jooq-codegen:${versions.jooq}"
-]
-
-libraries.kotlin = "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
-
-libraries.springTest = "org.springframework:spring-test:${versions.spring}"
-libraries.springAop = "org.springframework:spring-aop:${versions.spring}"
-libraries.aspectJ = "org.aspectj:aspectjweaver:1.8.8"
-libraries.springSecurityTest = [group: 'org.springframework.security', name: 'spring-security-test', version: versions.springSecurity]
-
-libraries.springContext = "org.springframework:spring-context:${versions.spring}"
-libraries.springBootBase = [
-    "org.springframework.boot:spring-boot:${versions.springBoot}",
-    "org.springframework.boot:spring-boot-autoconfigure:${versions.springBoot}",
-]
-libraries.springBoot = [
-    *libraries.springBootBase,
-    "org.springframework.boot:spring-boot-starter-thymeleaf:${versions.springBoot}"
-]
-
-libraries.springBootTest = "org.springframework.boot:spring-boot-starter-test:${versions.springBoot}"
-libraries.springContextSupport = "org.springframework:spring-context-support:${versions.spring}"
-
-libraries.springBootWebapp = [
-    dependencies.create("org.springframework.boot:spring-boot-starter-web:${versions.springBoot}") {
-        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
-    },
-    "org.springframework.boot:spring-boot-starter-actuator:${versions.springBoot}",
-    "org.springframework.boot:spring-boot-starter-jetty:${versions.springBoot}"
-]
-libraries.springWeb = [
-    "org.springframework:spring-web:${versions.spring}",
-    "org.springframework:spring-webmvc:${versions.spring}"
-]
-
-libraries.transactionApi = [
-    group: 'javax.transaction', name: 'javax.transaction-api', version: '1.2'
-]
-
-libraries.spek = "org.jetbrains.spek:spek:${versions.spek}"
-
-libraries.springSecurity = [
-    "org.springframework.security:spring-security-web:${versions.springSecurity}",
-    "org.springframework.security:spring-security-config:${versions.springSecurity}",
-]
-
-libraries.springSocialSecurity = 'org.springframework.social:spring-social-security:1.1.4.RELEASE'
-
-libraries.springSocial = [
-    'org.springframework.social:spring-social-core:1.1.4.RELEASE',
-    'org.springframework.social:spring-social-config:1.1.4.RELEASE',
-    'org.springframework.social:spring-social-google:1.0.0.RELEASE',
-    libraries.springSocialSecurity
-]
-
-libraries.springSecurityCore = "org.springframework.security:spring-security-core:${versions.springSecurity}"
-libraries.springAcl = "org.springframework.security:spring-security-acl:${versions.springSecurity}"
-
-libraries.hikari = ['com.zaxxer:HikariCP:2.4.1']
-
-libraries.springTx = "org.springframework:spring-tx:${versions.spring}"
-libraries.springJdbc = "org.springframework:spring-jdbc:${versions.spring}"
-
-libraries.groovy = "org.codehaus.groovy:groovy-all:2.4.5"
-
-libraries.spock = "org.spockframework:spock-core:${versions.spock}"
-libraries.spockSpring = "org.spockframework:spock-spring:${versions.spock}"
-
-libraries.mockito = [group: 'org.mockito', name: 'mockito-core', version: '1.10.19']
-libraries.mockitoKotlin = "com.nhaarman:mockito-kotlin:0.5.2"
-
-libraries.commonsLang = 'org.apache.commons:commons-lang3:3.4'
-libraries.commonsIO = 'commons-io:commons-io:2.4'
-libraries.slf4j = "org.slf4j:slf4j-api:${versions.slf4j}"
-
-libraries.el = 'org.glassfish.web:javax.el:2.2.6'
-libraries.servletApi = 'javax.servlet:javax.servlet-api:3.1.0'
-libraries.jwt = 'io.jsonwebtoken:jjwt:0.6.0'
-libraries.ehcache = 'net.sf.ehcache:ehcache:2.8.3'
-
-libraries.logback = [
-    "ch.qos.logback:logback-classic:${versions.logback}"
-]
-
-libraries.hibernate = ["org.hibernate:hibernate-java8:${versions.hibernate}",
-                       "org.hibernate:hibernate-entitymanager:${versions.hibernate}",
-                       'org.hibernate:hibernate-validator:5.2.1.Final',
-                       'org.hibernate.common:hibernate-commons-annotations:5.0.0.Final',
-                       'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final']
-
-libraries.pac4j = [
-    'org.pac4j:pac4j-oauth:1.8.4',
-    'org.pac4j:spring-webmvc-pac4j:1.0.2',
-    'org.pac4j:spring-security-pac4j:1.4.1',
-    'org.pac4j:pac4j-http:1.8.4',
-    'org.pac4j:pac4j-jwt:1.8.4'
-]
-libraries.httpClient = "org.apache.httpcomponents:httpclient:4.2.2"
-
-libraries.jsonPath = 'com.jayway.jsonpath:json-path:2.0.0'
-
-libraries.jackson = [
-    "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson}",
-    "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}",
-    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${versions.jackson}"
-]
-
-libraries.hibernateCache = ["org.hibernate:hibernate-ehcache:${versions.hibernate}"]
-libraries.cglib = 'cglib:cglib:3.2.0'
-
-libraries.testing = [
-    libraries.cglib,
-    'org.objenesis:objenesis:2.2',
-    'org.ow2.asm:asm:5.0.4'
-]
-
-libraries.database = [
-    'org.flywaydb:flyway-core:3.2.1',
-    'org.postgresql:postgresql:9.4-1203-jdbc42',
-    *libraries.hikari
-]
-
-libraries.h2 = 'com.h2database:h2:1.4.191'
-libraries.hsqldb = [group: 'org.hsqldb', name: 'hsqldb', version: '2.3.4']
-libraries.jsr205 = [group: 'javax.annotation', name: 'jsr250-api', version: '1.0']
-
-libraries.dropwizard = [
-    "io.dropwizard.metrics:metrics-core:${versions.metrics}",
-    "io.dropwizard.metrics:metrics-ehcache:${versions.metrics}"
-]
+//ext {
+//    versions = [:]
+//    libraries = [:]
+//}
+//
+//
+//versions.springBoot = '1.4.0.RELEASE'
+//versions.spring = '4.3.2.RELEASE'
+//versions.springSecurity = '4.1.1.RELEASE'
+//versions.springSecutityOAuth = '2.0.8.RELEASE'
+//versions.spock = '1.1-groovy-2.4-rc-1'
+//versions.slf4j = '1.7.21'
+//versions.hibernate = '5.0.5.Final'
+//versions.jackson = '2.7.5'
+//versions.metrics = '3.1.0'
+//versions.springSocial = '1.1.4.RELEASE'
+//versions.kotlin = '1.0.3'
+//versions.logback = '1.1.7'
+//versions.jooq = '3.8.4'
+//versions.spek = '1.0.25'
+//versions.flyway = '4.0.3'
+//
+//// Because spring boot is opinionated, and I don't want their opinions.
+//ext['hibernate.version'] = versions.hibernate
+//ext['jackson.version'] = versions.jackson
+//ext['jooq.version'] = versions.jooq
+//
+//libraries.jooq = [
+//    "org.jooq:jooq:${versions.jooq}",
+//    "org.jooq:jooq-meta:${versions.jooq}",
+//    "org.jooq:jooq-codegen:${versions.jooq}"
+//]
+//
+//libraries.kotlin = "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
+//
+//libraries.springTest = "org.springframework:spring-test:${versions.spring}"
+//libraries.springAop = "org.springframework:spring-aop:${versions.spring}"
+//libraries.aspectJ = "org.aspectj:aspectjweaver:1.8.8"
+//libraries.springSecurityTest = [group: 'org.springframework.security', name: 'spring-security-test', version: versions.springSecurity]
+//
+//libraries.springContext = "org.springframework:spring-context:${versions.spring}"
+//libraries.springBootBase = [
+//    "org.springframework.boot:spring-boot:${versions.springBoot}",
+//    "org.springframework.boot:spring-boot-autoconfigure:${versions.springBoot}",
+//]
+//libraries.springBoot = [
+//    *libraries.springBootBase,
+//    "org.springframework.boot:spring-boot-starter-thymeleaf:${versions.springBoot}"
+//]
+//
+//libraries.postgres = ['org.postgresql:postgresql:9.4.1207.jre7']
+//
+//libraries.springBootTest = "org.springframework.boot:spring-boot-starter-test:${versions.springBoot}"
+//libraries.springContextSupport = "org.springframework:spring-context-support:${versions.spring}"
+//
+//libraries.springBootWebapp = [
+//    dependencies.create("org.springframework.boot:spring-boot-starter-web:${versions.springBoot}") {
+//        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-tomcat'
+//    },
+//    "org.springframework.boot:spring-boot-starter-actuator:${versions.springBoot}",
+//    "org.springframework.boot:spring-boot-starter-jetty:${versions.springBoot}"
+//]
+//libraries.springWeb = [
+//    "org.springframework:spring-web:${versions.spring}",
+//    "org.springframework:spring-webmvc:${versions.spring}"
+//]
+//
+//libraries.transactionApi = [
+//    group: 'javax.transaction', name: 'javax.transaction-api', version: '1.2'
+//]
+//
+//libraries.spek = "org.jetbrains.spek:spek:${versions.spek}"
+//
+//libraries.springSecurity = [
+//    "org.springframework.security:spring-security-web:${versions.springSecurity}",
+//    "org.springframework.security:spring-security-config:${versions.springSecurity}",
+//]
+//
+//libraries.springSocialSecurity = 'org.springframework.social:spring-social-security:1.1.4.RELEASE'
+//
+//libraries.springSocial = [
+//    'org.springframework.social:spring-social-core:1.1.4.RELEASE',
+//    'org.springframework.social:spring-social-config:1.1.4.RELEASE',
+//    'org.springframework.social:spring-social-google:1.0.0.RELEASE',
+//    libraries.springSocialSecurity
+//]
+//
+//libraries.springSecurityCore = "org.springframework.security:spring-security-core:${versions.springSecurity}"
+//libraries.springAcl = "org.springframework.security:spring-security-acl:${versions.springSecurity}"
+//
+//libraries.hikari = ['com.zaxxer:HikariCP:2.4.1']
+//
+//libraries.springTx = "org.springframework:spring-tx:${versions.spring}"
+//libraries.springJdbc = "org.springframework:spring-jdbc:${versions.spring}"
+//
+//libraries.groovy = "org.codehaus.groovy:groovy-all:2.4.5"
+//
+//libraries.spock = "org.spockframework:spock-core:${versions.spock}"
+//libraries.spockSpring = "org.spockframework:spock-spring:${versions.spock}"
+//
+//libraries.mockito = [group: 'org.mockito', name: 'mockito-core', version: '1.10.19']
+//libraries.mockitoKotlin = "com.nhaarman:mockito-kotlin:0.5.2"
+//
+//libraries.commonsLang = 'org.apache.commons:commons-lang3:3.4'
+//libraries.commonsIO = 'commons-io:commons-io:2.4'
+//libraries.slf4j = "org.slf4j:slf4j-api:${versions.slf4j}"
+//
+//libraries.el = 'org.glassfish.web:javax.el:2.2.6'
+//libraries.servletApi = 'javax.servlet:javax.servlet-api:3.1.0'
+//libraries.jwt = 'io.jsonwebtoken:jjwt:0.6.0'
+//libraries.ehcache = 'net.sf.ehcache:ehcache:2.8.3'
+//
+//libraries.logback = [
+//    "ch.qos.logback:logback-classic:${versions.logback}"
+//]
+//
+//libraries.hibernate = ["org.hibernate:hibernate-java8:${versions.hibernate}",
+//                       "org.hibernate:hibernate-entitymanager:${versions.hibernate}",
+//                       'org.hibernate:hibernate-validator:5.2.1.Final',
+//                       'org.hibernate.common:hibernate-commons-annotations:5.0.0.Final',
+//                       'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final']
+//
+//libraries.httpClient = "org.apache.httpcomponents:httpclient:4.2.2"
+//
+//libraries.jsonPath = 'com.jayway.jsonpath:json-path:2.0.0'
+//
+//libraries.jackson = [
+//    "com.fasterxml.jackson.core:jackson-annotations:${versions.jackson}",
+//    "com.fasterxml.jackson.core:jackson-databind:${versions.jackson}",
+//    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${versions.jackson}"
+//]
+//
+//libraries.hibernateCache = ["org.hibernate:hibernate-ehcache:${versions.hibernate}"]
+//libraries.cglib = 'cglib:cglib:3.2.0'
+//
+//libraries.testing = [
+//    libraries.cglib,
+//    'org.objenesis:objenesis:2.2',
+//    'org.ow2.asm:asm:5.0.4'
+//]
+//
+//libraries.database = [
+//    "org.flywaydb:flyway-core:${versions.flyway}",
+//    *libraries.postgres,
+//    *libraries.hikari
+//]
+//
+//libraries.h2 = 'com.h2database:h2:1.4.191'
+//libraries.hsqldb = [group: 'org.hsqldb', name: 'hsqldb', version: '2.3.4']
+//libraries.jsr205 = [group: 'javax.annotation', name: 'jsr250-api', version: '1.0']
+//
+//libraries.dropwizard = [
+//    "io.dropwizard.metrics:metrics-core:${versions.metrics}",
+//    "io.dropwizard.metrics:metrics-ehcache:${versions.metrics}"
+//]
+//
+//libraries.kotlinSpring = 'com.fasterxml.jackson.module:jackson-module-kotlin:2.7.5'
