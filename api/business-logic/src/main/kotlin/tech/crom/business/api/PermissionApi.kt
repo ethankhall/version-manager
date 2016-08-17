@@ -8,6 +8,8 @@ interface PermissionApi {
     fun grantPermission(userName: String, authorizedObject: AuthorizedObject, permission: CromPermission): Boolean
     fun dropPermission(userName: String, authorizedObject: AuthorizedObject)
     fun getPermissions(authorizedObject: AuthorizedObject): List<PermissionGroup>
+    fun findAllPermissions(authorizedObject: AuthorizedObject): List<PermissionGroup>
 
     data class PermissionGroup(val cromUser: CromUser, val cromPermission: CromPermission)
+
 }

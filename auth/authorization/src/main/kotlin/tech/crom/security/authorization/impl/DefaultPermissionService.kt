@@ -39,7 +39,13 @@ class DefaultPermissionService @Autowired constructor(
 
         val permissions = mutableListOf<CromPermission>()
         val sid = getCromAuthentication().toSid()
-        var acl: Acl? = aclService.readAclById(oi, listOf(sid))
+        var acl: Acl?
+        
+        try {
+            acl = aclService.readAclById(oi, listOf(sid))
+        } catch (nfe: NotFoundException) {
+            return CromPermission.NONE
+        }
 
         while (acl != null) {
             permissions.addAll(acl.entries.map { permissionToCromPermission(it.permission) })

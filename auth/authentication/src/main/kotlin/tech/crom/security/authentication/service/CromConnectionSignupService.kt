@@ -21,7 +21,7 @@ class CromConnectionSignupService @Autowired constructor(val userManager: UserMa
             publicUserName = "user$defaultUserId"
         } while (userManager.userNameExists(publicUserName))
 
-        val user = userManager.createUser(publicUserName, connection.fetchUserProfile().name)
+        val user = userManager.createUser(connection.fetchUserProfile().name, publicUserName)
         return user.userUid.toString()
     }
 }

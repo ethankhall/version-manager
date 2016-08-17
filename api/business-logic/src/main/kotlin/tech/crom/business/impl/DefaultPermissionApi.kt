@@ -24,6 +24,22 @@ class DefaultPermissionApi @Autowired constructor(
         }
     }
 
+    override fun findAllPermissions(authorizedObject: AuthorizedObject): List<PermissionApi.PermissionGroup> {
+        return permissionService
+            .retrieveAllPermissions(authorizedObject)
+            .groupBy { it.userId }
+            .map {
+                val permissions: CromPermission = it
+                    .value
+                    .sortedByDescending { it.permission.permissionLevel }
+                    .firstOrNull()
+                    ?.permission ?: CromPermission.NONE
+
+                val user = userManager.findUserDetails(it.key)!!
+                PermissionApi.PermissionGroup(user, permissions)
+            }
+    }
+
     override fun dropPermission(userName: String, authorizedObject: AuthorizedObject) {
         val cromUser = userManager.findUserDetails(userName) ?: return
         permissionService.revokePermission(cromUser, authorizedObject, CromPermission.ADMIN)

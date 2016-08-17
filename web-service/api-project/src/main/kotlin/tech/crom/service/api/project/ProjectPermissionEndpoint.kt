@@ -36,6 +36,19 @@ open class ProjectPermissionEndpoint @Autowired constructor(
     }
 
     @ProjectRequired
+    @LoggedInUserRequired
+    @AdminPermissionRequired
+    @RequestMapping(method = arrayOf(RequestMethod.GET))
+    open fun findPermissions(container: RequestDetails): ResponseEntity<List<PermissionGrant>> {
+        val permissions = permissionApi
+            .findAllPermissions(container.cromProject!!)
+            .map { PermissionGrant(it.cromUser.userName, convertType(it.cromPermission))}
+            .toList()
+
+        return ResponseEntity(permissions, HttpStatus.OK)
+    }
+
+    @ProjectRequired
     @InternalLinks(links = arrayOf(
         InternalLink(name = "project", ref = "/..")
     ))
@@ -56,6 +69,15 @@ open class ProjectPermissionEndpoint @Autowired constructor(
             PermissionGrant.PermissionDefinition.READ -> CromPermission.READ
             PermissionGrant.PermissionDefinition.WRITE -> CromPermission.WRITE
             PermissionGrant.PermissionDefinition.ADMIN -> CromPermission.ADMIN
+        }
+    }
+
+    private fun convertType(permission: CromPermission): PermissionGrant.PermissionDefinition {
+        return when(permission) {
+            CromPermission.NONE -> PermissionGrant.PermissionDefinition.NONE
+            CromPermission.READ -> PermissionGrant.PermissionDefinition.READ
+            CromPermission.WRITE -> PermissionGrant.PermissionDefinition.WRITE
+            CromPermission.ADMIN -> PermissionGrant.PermissionDefinition.ADMIN
         }
     }
 }

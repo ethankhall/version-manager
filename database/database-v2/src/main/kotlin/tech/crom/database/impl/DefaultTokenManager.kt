@@ -26,11 +26,11 @@ class DefaultTokenManager @Autowired constructor(
 
     override fun getTokenData(uid: UUID, tokenType: TokenType): TokenManager.UderlyingTokenDetails? {
         if (tokenType == TokenType.REPOSITORY) {
-            val repositoryToken = repositoryTokensDao.findById(uid)
+            val repositoryToken = repositoryTokensDao.findById(uid) ?: return null
             if (isTokenValid(repositoryToken.valid, repositoryToken.expiresAt) == false) { return null }
             return TokenManager.UderlyingTokenDetails(repositoryToken.repoUuid, tokenType)
         } else {
-            val userToken = userTokensDao.findById(uid)
+            val userToken = userTokensDao.findById(uid) ?: return null
             if (isTokenValid(userToken.valid, userToken.expiresAt) == false) { return null }
             return TokenManager.UderlyingTokenDetails(userToken.userUuid, tokenType)
         }

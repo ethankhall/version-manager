@@ -7,9 +7,11 @@ import tech.crom.database.api.ProjectManager
 import tech.crom.model.project.CromProject
 import tech.crom.security.authorization.api.PermissionService
 import java.util.*
+import javax.transaction.Transactional
 
 @Service
-class DefaultProjectApi @Autowired constructor(
+@Transactional
+open class DefaultProjectApi @Autowired constructor(
     val projectManager: ProjectManager,
     val permissionService: PermissionService
 ): ProjectApi {

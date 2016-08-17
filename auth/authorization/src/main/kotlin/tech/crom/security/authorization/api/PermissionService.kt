@@ -5,6 +5,7 @@ import tech.crom.model.repository.CromRepo
 import tech.crom.model.security.authorization.AuthorizedObject
 import tech.crom.model.security.authorization.CromPermission
 import tech.crom.model.user.CromUser
+import java.util.*
 
 interface PermissionService {
 
@@ -26,5 +27,7 @@ interface PermissionService {
 
     fun retrieveAllPermissions(authorizedObject: AuthorizedObject): List<PermissionPair>
 
-    data class PermissionPair(val userId: String, val permission: CromPermission)
+    data class PermissionPair(val userId: UUID, val permission: CromPermission) {
+        constructor(userId: String, permission: CromPermission): this(UUID.fromString(userId), permission)
+    }
 }
