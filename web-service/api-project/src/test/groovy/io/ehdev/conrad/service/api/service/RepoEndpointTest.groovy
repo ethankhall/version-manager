@@ -1,17 +1,5 @@
 package io.ehdev.conrad.service.api.service
 
-import io.ehdev.conrad.database.api.PermissionManagementApi
-import io.ehdev.conrad.database.api.RepoManagementApi
-import io.ehdev.conrad.database.model.project.ApiRepoDetailsModel
-import io.ehdev.conrad.database.model.project.ApiVersionBumperModel
-import io.ehdev.conrad.database.model.project.DefaultApiRepoModel
-import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
-import io.ehdev.conrad.database.model.repo.RequestDetails
-import io.ehdev.conrad.database.model.repo.details.AuthUserDetails
-import io.ehdev.conrad.database.model.repo.details.ResourceDetails
-import io.ehdev.conrad.database.model.repo.details.ResourceId
-import io.ehdev.conrad.database.model.user.ApiUserPermission
-import io.ehdev.conrad.database.model.user.ApiUserPermissionDetails
 import io.ehdev.conrad.model.commit.CommitIdCollection
 import io.ehdev.conrad.service.api.service.repo.RepoEndpoint
 import org.springframework.http.HttpStatus
@@ -19,20 +7,37 @@ import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
 import spock.lang.Specification
+import tech.crom.business.api.CommitApi
+import tech.crom.business.api.PermissionApi
+import tech.crom.business.api.RepositoryApi
+import tech.crom.business.api.VersionBumperApi
+import tech.crom.model.bumper.CromVersionBumper
+import tech.crom.model.commit.impl.PersistedCommit
+import tech.crom.model.repository.CromRepoDetails
+import tech.crom.model.security.authorization.CromPermission
+import tech.crom.version.bumper.impl.atomic.AtomicVersionBumper
+
+import java.time.ZonedDateTime
+
+import static io.ehdev.conrad.service.api.service.TestUtils.createTestingRepoModel
 
 class RepoEndpointTest extends Specification {
 
     RepoEndpoint repoEndpoint
-    RepoManagementApi repoManagementApi
-    PermissionManagementApi permissionManagementApi
+    RepositoryApi repositoryApi
+    PermissionApi permissionApi
+    VersionBumperApi versionBumperApi
+    CommitApi commitApi
 
     def setup() {
         MockHttpServletRequest request = new MockHttpServletRequest();
         RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
 
-        repoManagementApi = Mock(RepoManagementApi)
-        permissionManagementApi = Mock(PermissionManagementApi)
-        repoEndpoint = new RepoEndpoint(repoManagementApi, permissionManagementApi)
+        repositoryApi = Mock(RepositoryApi)
+        permissionApi = Mock(PermissionApi)
+        versionBumperApi = Mock(VersionBumperApi)
+        commitApi = Mock(CommitApi)
+        repoEndpoint = new RepoEndpoint(repositoryApi, permissionApi, versionBumperApi, commitApi)
     }
 
     def 'find version finds nothing'() {
@@ -41,7 +46,7 @@ class RepoEndpointTest extends Specification {
         def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model)
 
         then:
-        1 * repoManagementApi.findLatestCommit(_, _) >> Optional.empty()
+        1 * commitApi.findLatestCommit(_, _) >> null
         history.statusCode == HttpStatus.NOT_FOUND
     }
 
@@ -51,7 +56,7 @@ class RepoEndpointTest extends Specification {
         def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model)
 
         then:
-        1 * repoManagementApi.findLatestCommit(_, _) >> Optional.of(new ApiCommitModel('commit', '2.3.4', null))
+        1 * commitApi.findLatestCommit(_, _) >> new PersistedCommit(UUID.randomUUID(), 'commit', '2.3.4', ZonedDateTime.now())
 
         history.statusCode == HttpStatus.OK
         history.body.commitId == 'commit'
@@ -59,19 +64,17 @@ class RepoEndpointTest extends Specification {
     }
 
     def 'can get details for repo'() {
+        def model = createTestingRepoModel()
+        def versionBumper = new CromVersionBumper(UUID.randomUUID(), 'atomic', 'foo', '', new AtomicVersionBumper())
+
         when:
-        def details = repoEndpoint.getRepoDetails(createTestingRepoModel())
+        def details = repoEndpoint.getRepoDetails(model)
 
         then:
         details.statusCode == HttpStatus.OK
 
-        repoManagementApi.getDetails(_) >> Optional.of(new ApiRepoDetailsModel(new DefaultApiRepoModel("projectName", "repoName"), new ApiVersionBumperModel(' ', ' ', ' ')))
-        permissionManagementApi.getPermissions(_) >> [new ApiUserPermissionDetails('bob', 'ADMIN')]
+        repositoryApi.getRepoDetails(_) >> new CromRepoDetails(model.cromRepo, versionBumper, true, null, null)
+        permissionApi.getPermissions(_) >> [new PermissionApi.PermissionGroup(model.requestPermission.cromUser, CromPermission.ADMIN)]
 
-    }
-
-    RequestDetails createTestingRepoModel() {
-        def details = new AuthUserDetails(UUID.randomUUID(), 'user', ApiUserPermission.READ, null)
-        return new RequestDetails(details, new ResourceDetails(new ResourceId("projectName", null), new ResourceId("repoName", null)))
     }
 }

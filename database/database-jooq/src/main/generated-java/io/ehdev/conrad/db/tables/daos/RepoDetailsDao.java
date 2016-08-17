@@ -107,4 +107,11 @@ public class RepoDetailsDao extends DAOImpl<RepoDetailsRecord, RepoDetails, UUID
     public List<RepoDetails> fetchByPublic(Boolean... values) {
         return fetch(RepoDetailsTable.REPO_DETAILS.PUBLIC, values);
     }
+
+    /**
+     * Fetch records that have <code>security_id IN (values)</code>
+     */
+    public List<RepoDetails> fetchBySecurityId(Long... values) {
+        return fetch(RepoDetailsTable.REPO_DETAILS.SECURITY_ID, values);
+    }
 }

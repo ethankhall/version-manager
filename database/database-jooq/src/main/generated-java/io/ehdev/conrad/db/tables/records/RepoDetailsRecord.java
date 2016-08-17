@@ -18,8 +18,8 @@ import javax.validation.constraints.Size;
 
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record7;
-import org.jooq.Row7;
+import org.jooq.Record8;
+import org.jooq.Row8;
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -36,9 +36,9 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
 @Table(name = "repo_details", schema = "public")
-public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> implements Record7<UUID, String, UUID, UUID, String, String, Boolean> {
+public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> implements Record8<UUID, String, UUID, UUID, String, String, Boolean, Long> {
 
-    private static final long serialVersionUID = 1549391390;
+    private static final long serialVersionUID = 1016586707;
 
     /**
      * Setter for <code>public.repo_details.uuid</code>.
@@ -150,6 +150,21 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
         return (Boolean) get(6);
     }
 
+    /**
+     * Setter for <code>public.repo_details.security_id</code>.
+     */
+    public void setSecurityId(Long value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for <code>public.repo_details.security_id</code>.
+     */
+    @Column(name = "security_id", nullable = false, precision = 64)
+    public Long getSecurityId() {
+        return (Long) get(7);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -163,23 +178,23 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
     }
 
     // -------------------------------------------------------------------------
-    // Record7 type implementation
+    // Record8 type implementation
     // -------------------------------------------------------------------------
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Row7<UUID, String, UUID, UUID, String, String, Boolean> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<UUID, String, UUID, UUID, String, String, Boolean, Long> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Row7<UUID, String, UUID, UUID, String, String, Boolean> valuesRow() {
-        return (Row7) super.valuesRow();
+    public Row8<UUID, String, UUID, UUID, String, String, Boolean, Long> valuesRow() {
+        return (Row8) super.valuesRow();
     }
 
     /**
@@ -242,6 +257,14 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
      * {@inheritDoc}
      */
     @Override
+    public Field<Long> field8() {
+        return RepoDetailsTable.REPO_DETAILS.SECURITY_ID;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public UUID value1() {
         return getUuid();
     }
@@ -292,6 +315,14 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
     @Override
     public Boolean value7() {
         return getPublic();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Long value8() {
+        return getSecurityId();
     }
 
     /**
@@ -361,7 +392,16 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
      * {@inheritDoc}
      */
     @Override
-    public RepoDetailsRecord values(UUID value1, String value2, UUID value3, UUID value4, String value5, String value6, Boolean value7) {
+    public RepoDetailsRecord value8(Long value) {
+        setSecurityId(value);
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public RepoDetailsRecord values(UUID value1, String value2, UUID value3, UUID value4, String value5, String value6, Boolean value7, Long value8) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -369,6 +409,7 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
         value5(value5);
         value6(value6);
         value7(value7);
+        value8(value8);
         return this;
     }
 
@@ -386,7 +427,7 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
     /**
      * Create a detached, initialised RepoDetailsRecord
      */
-    public RepoDetailsRecord(UUID uuid, String repoName, UUID projectUuid, UUID versionBumperUuid, String url, String description, Boolean public_) {
+    public RepoDetailsRecord(UUID uuid, String repoName, UUID projectUuid, UUID versionBumperUuid, String url, String description, Boolean public_, Long securityId) {
         super(RepoDetailsTable.REPO_DETAILS);
 
         set(0, uuid);
@@ -396,5 +437,6 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
         set(4, url);
         set(5, description);
         set(6, public_);
+        set(7, securityId);
     }
 }

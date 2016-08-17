@@ -1,23 +1,6 @@
-buildscript {
-    ext {
-        springBootVersion = '1.4.0.M2'
-    }
-    repositories {
-        mavenCentral()
-        maven {
-            url 'http://repo.spring.io/milestone'
-        }
-        maven {
-            url 'https://repo.spring.io/libs-milestone'
-        }
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
-    }
-}
-
 apply plugin: 'java'
 apply plugin: 'groovy'
+apply plugin: 'kotlin'
 apply plugin: 'local-dev'
 apply plugin: 'spring-boot'
 apply from: "$rootDir/gradle/publishing-private.gradle"
@@ -29,37 +12,36 @@ springBoot {
 }
 
 dependencies {
+    compile project(":api:business-logic")
     compile project(":api:rest-model")
-    compile project(":database:database-api")
-    compile project(":database:database-impl")
-    compile project(":web-service:version-management")
+    compile project(":api:version-bumper")
+    compile project(":database:database-v2")
+    compile project(":database:database-jooq")
+    compile project(":database:database-migration")
     compile project(":web-service:api-project")
-    compile project(":auth:authentication:default")
-    compile project(":auth:authentication:core")
-
-    //Caching
-    compile libraries.springContextSupport
-    compile 'net.sf.ehcache:ehcache:2.8.3'
+    compile project(":shared-config")
+    compile project(":shared-model")
+    compile project(':auth:authentication')
+    compile project(':auth:authorization')
+    compile libraries.kotlin
 
     //Spring
-    compile libraries.springBootWebapp
+    compile libraries.springBoot
+    compile 'org.springframework.boot:spring-boot-starter-actuator'
+
+    //database
+    compile libraries.database
 
     //Misc
-    libraries.logback
+    compile libraries.logging
+    compile libraries.thymeleaf
     compile 'com.google.code.findbugs:jsr305:3.0.1'
     compile libraries.dropwizard
-    compile 'org.thymeleaf.extras:thymeleaf-extras-java8time:2.1.0.RELEASE'
-    compile 'org.thymeleaf.extras:thymeleaf-extras-springsecurity4:2.1.2.RELEASE'
 
-    testCompile project(":test-utils")
-    testCompile libraries.groovy
-    testCompile libraries.spock
-    testCompile libraries.spockSpring
-
+    testCompile libraries.testingLibraries
     testCompile libraries.springTest
-    testCompile libraries.jsonPath
 
-    testCompile libraries.testing
     integTestCompile libraries.springBoot
     integTestCompile libraries.springBootTest
+    integTestCompile libraries.springSecurityTest
 }

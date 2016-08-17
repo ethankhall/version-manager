@@ -1,0 +1,12 @@
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+
+dependencies {
+    compile libraries.kotlin
+    compile libraries.logging
+    compile project(":auth:authorization")
+    compile project(":auth:authentication")
+    compile project(":database:database-v2")
+    compile project(":api:version-bumper")
+}

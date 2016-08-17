@@ -16,6 +16,7 @@ import javax.annotation.Generated;
 
 import org.jooq.Field;
 import org.jooq.ForeignKey;
+import org.jooq.Identity;
 import org.jooq.Schema;
 import org.jooq.Table;
 import org.jooq.TableField;
@@ -36,7 +37,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RepoDetailsTable extends TableImpl<RepoDetailsRecord> {
 
-    private static final long serialVersionUID = 623504500;
+    private static final long serialVersionUID = 529121528;
 
     /**
      * The reference instance of <code>public.repo_details</code>
@@ -87,6 +88,11 @@ public class RepoDetailsTable extends TableImpl<RepoDetailsRecord> {
     public final TableField<RepoDetailsRecord, Boolean> PUBLIC = createField("public", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.field("true", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
+     * The column <code>public.repo_details.security_id</code>.
+     */
+    public final TableField<RepoDetailsRecord, Long> SECURITY_ID = createField("security_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("nextval('token_auth_security_id_seq'::regclass)", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+
+    /**
      * Create a <code>public.repo_details</code> table reference
      */
     public RepoDetailsTable() {
@@ -114,6 +120,14 @@ public class RepoDetailsTable extends TableImpl<RepoDetailsRecord> {
     @Override
     public Schema getSchema() {
         return Public.PUBLIC;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Identity<RepoDetailsRecord, Long> getIdentity() {
+        return Keys.IDENTITY_REPO_DETAILS;
     }
 
     /**

@@ -18,8 +18,8 @@ import javax.validation.constraints.Size;
 
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record2;
-import org.jooq.Row2;
+import org.jooq.Record3;
+import org.jooq.Row3;
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -36,9 +36,9 @@ import org.jooq.impl.UpdatableRecordImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
 @Table(name = "project_details", schema = "public")
-public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsRecord> implements Record2<UUID, String> {
+public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsRecord> implements Record3<UUID, String, Long> {
 
-    private static final long serialVersionUID = 329287474;
+    private static final long serialVersionUID = 285616101;
 
     /**
      * Setter for <code>public.project_details.uuid</code>.
@@ -73,6 +73,21 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
         return (String) get(1);
     }
 
+    /**
+     * Setter for <code>public.project_details.security_id</code>.
+     */
+    public void setSecurityId(Long value) {
+        set(2, value);
+    }
+
+    /**
+     * Getter for <code>public.project_details.security_id</code>.
+     */
+    @Column(name = "security_id", nullable = false, precision = 64)
+    public Long getSecurityId() {
+        return (Long) get(2);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -86,23 +101,23 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
     }
 
     // -------------------------------------------------------------------------
-    // Record2 type implementation
+    // Record3 type implementation
     // -------------------------------------------------------------------------
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Row2<UUID, String> fieldsRow() {
-        return (Row2) super.fieldsRow();
+    public Row3<UUID, String, Long> fieldsRow() {
+        return (Row3) super.fieldsRow();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Row2<UUID, String> valuesRow() {
-        return (Row2) super.valuesRow();
+    public Row3<UUID, String, Long> valuesRow() {
+        return (Row3) super.valuesRow();
     }
 
     /**
@@ -125,6 +140,14 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
      * {@inheritDoc}
      */
     @Override
+    public Field<Long> field3() {
+        return ProjectDetailsTable.PROJECT_DETAILS.SECURITY_ID;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public UUID value1() {
         return getUuid();
     }
@@ -135,6 +158,14 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
     @Override
     public String value2() {
         return getProjectName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Long value3() {
+        return getSecurityId();
     }
 
     /**
@@ -159,9 +190,19 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
      * {@inheritDoc}
      */
     @Override
-    public ProjectDetailsRecord values(UUID value1, String value2) {
+    public ProjectDetailsRecord value3(Long value) {
+        setSecurityId(value);
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ProjectDetailsRecord values(UUID value1, String value2, Long value3) {
         value1(value1);
         value2(value2);
+        value3(value3);
         return this;
     }
 
@@ -179,10 +220,11 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
     /**
      * Create a detached, initialised ProjectDetailsRecord
      */
-    public ProjectDetailsRecord(UUID uuid, String projectName) {
+    public ProjectDetailsRecord(UUID uuid, String projectName, Long securityId) {
         super(ProjectDetailsTable.PROJECT_DETAILS);
 
         set(0, uuid);
         set(1, projectName);
+        set(2, securityId);
     }
 }

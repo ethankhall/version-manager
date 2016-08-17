@@ -1,32 +1,25 @@
 package io.ehdev.conrad.service.api.service
 
-import io.ehdev.conrad.database.api.RepoManagementApi
-import io.ehdev.conrad.database.model.project.commit.ApiCommitModel
-import io.ehdev.conrad.database.model.repo.RequestDetails
-import io.ehdev.conrad.database.model.repo.details.AuthUserDetails
-import io.ehdev.conrad.database.model.repo.details.ResourceDetails
-import io.ehdev.conrad.database.model.repo.details.ResourceId
-import io.ehdev.conrad.database.model.user.ApiUserPermission
 import io.ehdev.conrad.model.version.CreateVersionRequest
 import io.ehdev.conrad.service.api.service.repo.RepoVersionEndpoint
-import io.ehdev.conrad.version.bumper.api.VersionBumperService
-import io.ehdev.conrad.version.bumper.semver.SemanticCommitVersion
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletRequest
 import spock.lang.Specification
+import tech.crom.business.api.CommitApi
+import tech.crom.model.commit.impl.PersistedCommit
 
 import java.time.ZonedDateTime
+
+import static io.ehdev.conrad.service.api.service.TestUtils.createTestingRepoModel
 
 class RepoVersionEndpointTest extends Specification {
 
     RepoVersionEndpoint repoEndpoint
-    RepoManagementApi repoManagementApi
-    VersionBumperService versionBumperService
+    CommitApi commitApi
 
     def setup() {
-        repoManagementApi = Mock(RepoManagementApi)
-        versionBumperService = Mock(VersionBumperService)
-        repoEndpoint = new RepoVersionEndpoint(repoManagementApi, versionBumperService)
+        commitApi = Mock(CommitApi)
+        repoEndpoint = new RepoVersionEndpoint(commitApi)
     }
 
     def 'can get all versions'() {
@@ -35,7 +28,7 @@ class RepoVersionEndpointTest extends Specification {
         def versions = repoEndpoint.getAllVersions(createTestingRepoModel())
 
         then:
-        1 * repoManagementApi.findAllCommits(_) >> [ new ApiCommitModel('abcd1234', '1.2.3', ZonedDateTime.now())]
+        1 * commitApi.findAllCommits(_) >> [ new PersistedCommit(UUID.randomUUID(), 'abcd1234', '1.2.3', ZonedDateTime.now())]
         versions.getStatusCode() == HttpStatus.OK
         versions.body.commits.size() == 1
         versions.body.commits[0].commitId == 'abcd1234'
@@ -49,7 +42,7 @@ class RepoVersionEndpointTest extends Specification {
         def versions = repoEndpoint.getAllVersions(createTestingRepoModel())
 
         then:
-        1 * repoManagementApi.findAllCommits(_) >> [ ]
+        1 * commitApi.findAllCommits(_) >> [ ]
         versions.getStatusCode() == HttpStatus.OK
         versions.body.commits.size() == 0
         versions.body.latest == null
@@ -57,7 +50,7 @@ class RepoVersionEndpointTest extends Specification {
 
     def 'can create version'() {
         def versionIds = ['a', 'b', 'c']
-        def lastCommit = new ApiCommitModel('a', '1.2.3', null)
+        def nextCommit = new PersistedCommit(UUID.randomUUID(), 'b', '1.2.4', ZonedDateTime.now())
 
         when:
         def model = new CreateVersionRequest(versionIds, "Some Message", "f")
@@ -65,17 +58,12 @@ class RepoVersionEndpointTest extends Specification {
         def version = repoEndpoint.createNewVersion(createTestingRepoModel(), model, request)
 
         then:
-        1 * repoManagementApi.findLatestCommit(_ as ResourceDetails, _ as List<ApiCommitModel>) >> Optional.of(lastCommit)
-        1 * versionBumperService.findNextVersion(_ as ResourceDetails,
-            'f', 'Some Message', _ as ApiCommitModel) >> SemanticCommitVersion.parse("1.4.5")
+        1 * commitApi.createCommit(_, _, _) >> nextCommit
+
         version.statusCode == HttpStatus.CREATED
         version.body.commitId == 'f'
         version.body.postfix == null
-        version.body.version == '1.4.5'
+        version.body.version == '1.2.4'
     }
 
-    RequestDetails createTestingRepoModel() {
-        def details = new AuthUserDetails(UUID.randomUUID(), 'user', ApiUserPermission.READ, null)
-        return new RequestDetails(details, new ResourceDetails(new ResourceId("projectName", null), new ResourceId("repoName", null)))
-    }
 }

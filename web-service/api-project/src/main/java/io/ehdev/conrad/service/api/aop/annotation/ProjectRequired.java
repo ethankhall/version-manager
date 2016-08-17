@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ProjectRequired {
     /**
-     * When true, the repo must exist, when false it must not exist
+     * When true, the project must exist, when false it must not exist
      */
     boolean exists() default true;
 }

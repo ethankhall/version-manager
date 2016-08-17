@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommitMetadataTable extends TableImpl<CommitMetadataRecord> {
 
-    private static final long serialVersionUID = 1643376314;
+    private static final long serialVersionUID = 978252712;
 
     /**
      * The reference instance of <code>public.commit_metadata</code>
@@ -74,9 +74,9 @@ public class CommitMetadataTable extends TableImpl<CommitMetadataRecord> {
     public final TableField<CommitMetadataRecord, String> NAME = createField("name", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false), this, "");
 
     /**
-     * The column <code>public.commit_metadata.text</code>.
+     * The column <code>public.commit_metadata.url</code>.
      */
-    public final TableField<CommitMetadataRecord, String> TEXT = createField("text", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false), this, "");
+    public final TableField<CommitMetadataRecord, String> URL = createField("url", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false), this, "");
 
     /**
      * The column <code>public.commit_metadata.created_at</code>.

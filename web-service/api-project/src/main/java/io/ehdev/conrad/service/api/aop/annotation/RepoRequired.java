@@ -11,5 +11,5 @@ public @interface RepoRequired {
     /**
      * When true, the repo must exist, when false it must not exist
      */
-    boolean exists();
+    boolean exists() default true;
 }

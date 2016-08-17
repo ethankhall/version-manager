@@ -16,10 +16,7 @@ configurations {
 }
 
 dependencies {
-    codegen 'org.postgresql:postgresql:9.4.1207.jre7'
-    codegen 'org.jooq:jooq:3.8.0'
-    codegen 'org.jooq:jooq-meta:3.8.0'
-    codegen 'org.jooq:jooq-codegen:3.8.0'
+    codegen libraries.database
 
     migration project(':database:database-migration')
 

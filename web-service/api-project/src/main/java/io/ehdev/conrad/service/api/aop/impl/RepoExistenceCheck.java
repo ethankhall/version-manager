@@ -1,7 +1,5 @@
 package io.ehdev.conrad.service.api.aop.impl;
 
-import io.ehdev.conrad.database.api.RepoManagementApi;
-import io.ehdev.conrad.database.model.repo.RequestDetails;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.exception.RepositoryExistsException;
 import io.ehdev.conrad.service.api.aop.exception.RepositoryMissingException;
@@ -12,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
+import tech.crom.web.api.model.RequestDetails;
 
 import static io.ehdev.conrad.service.api.aop.impl.RequestDetailsHelper.findRequestDetails;
 
@@ -20,12 +19,10 @@ import static io.ehdev.conrad.service.api.aop.impl.RequestDetailsHelper.findRequ
 public class RepoExistenceCheck implements Ordered {
 
     private final Environment env;
-    private final RepoManagementApi repoManagementApi;
 
     @Autowired
-    public RepoExistenceCheck(Environment env, RepoManagementApi repoManagementApi) {
+    public RepoExistenceCheck(Environment env) {
         this.env = env;
-        this.repoManagementApi = repoManagementApi;
     }
 
     @Before(value = "@annotation(repoRequired)", argNames = "joinPoint,repoRequired")
@@ -36,13 +33,13 @@ public class RepoExistenceCheck implements Ordered {
 
         RequestDetails container = findRequestDetails(joinPoint);
 
-        boolean repoExists = repoManagementApi.doesRepoExist(container.getResourceDetails());
+        boolean repoExists = container.getCromRepo() != null;
         boolean required = repoRequired.exists();
 
         if(required && !repoExists) {
-            throw new RepositoryMissingException(container.getResourceDetails());
+            throw new RepositoryMissingException(container.getRawRequest().getProjectName(), container.getRawRequest().getRepoName());
         } else if(!required && repoExists) {
-            throw new RepositoryExistsException(container.getResourceDetails());
+            throw new RepositoryExistsException(container.getRawRequest().getProjectName(), container.getRawRequest().getRepoName());
         }
     }
 

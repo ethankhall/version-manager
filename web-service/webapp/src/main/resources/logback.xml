@@ -4,5 +4,5 @@
     <!--<logger name="org.springframework.web" level="DEBUG"/>-->
     <logger name="org.springframework.cache" level="DEBUG"/>
     <logger name="io.ehdev" level="DEBUG"/>
-    <logger name="io.ehdev.conrad.app.config.MetricsConfiguration" level="WARN"/>
+    <logger name="tech.crom.config.MetricsConfiguration" level="WARN"/>
 </configuration>

@@ -89,10 +89,10 @@ public class CommitMetadataDao extends DAOImpl<CommitMetadataRecord, CommitMetad
     }
 
     /**
-     * Fetch records that have <code>text IN (values)</code>
+     * Fetch records that have <code>url IN (values)</code>
      */
-    public List<CommitMetadata> fetchByText(String... values) {
-        return fetch(CommitMetadataTable.COMMIT_METADATA.TEXT, values);
+    public List<CommitMetadata> fetchByUrl(String... values) {
+        return fetch(CommitMetadataTable.COMMIT_METADATA.URL, values);
     }
 
     /**

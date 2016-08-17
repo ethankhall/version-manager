@@ -1,44 +1,31 @@
 apply plugin: 'groovy'
+apply plugin: 'kotlin'
 apply plugin: 'local-dev'
 apply plugin: io.ehdev.conrad.gradle.SpringRestDocPlugin
 
 dependencies {
     compile project(':api:rest-model')
-    compile project(':auth:authentication:jwt')
-    compile project(':database:database-api')
-    compile project(':web-service:version-management')
+    compile project(':database:database-v2')
+    compile project(':api:business-logic')
+    compile project(':web-service:models')
 
-    compile libraries.cglib
     compile libraries.springWeb
-
-    compile libraries.springAop
+    compile libraries.springCore
     compile libraries.aspectJ
 
-    compile libraries.springSecurityCore
-    compile libraries.servletApi
+    compile libraries.springSecurity
+    compile libraries.servletCore
     compile libraries.jackson
+    compile libraries.apacheCommons
 
-    compile 'io.swagger:swagger-annotations:1.5.8'
-
-    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.7.2"
     compile 'javax.validation:validation-api:1.1.0.Final'
     compile 'org.hibernate:hibernate-validator:5.0.1.Final'
     compile 'org.springframework.hateoas:spring-hateoas:0.19.0.RELEASE'
 
-    testCompile project(':database:database-test')
-
     testCompile libraries.groovy
-    testCompile libraries.spock
-    testCompile libraries.spockSpring
-
     testCompile libraries.springTest
-    testCompile libraries.jsonPath
+    testCompile libraries.testingLibraries
 
-    testCompile libraries.testing
-
-
-    integTestCompile project(':database:database-impl')
     integTestCompile libraries.springBoot
     integTestCompile libraries.springBootTest
-    integTestCompile 'javax.transaction:javax.transaction-api:1.2'
 }

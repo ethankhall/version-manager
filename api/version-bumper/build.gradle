@@ -1,0 +1,16 @@
+apply plugin: "kotlin"
+apply plugin: "groovy"
+
+repositories {
+    mavenCentral()
+    maven {
+        url "http://repository.jetbrains.com/all"
+    }
+}
+
+dependencies {
+    compile libraries.kotlin
+    compile project(":shared-model")
+
+    testCompile libraries.testingLibraries
+}

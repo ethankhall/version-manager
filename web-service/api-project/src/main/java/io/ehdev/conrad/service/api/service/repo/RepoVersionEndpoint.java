@@ -1,10 +1,5 @@
 package io.ehdev.conrad.service.api.service.repo;
 
-import io.ehdev.conrad.database.api.RepoManagementApi;
-import io.ehdev.conrad.database.api.exception.CommitNotFoundException;
-import io.ehdev.conrad.database.model.comparator.ReverseApiCommitComparator;
-import io.ehdev.conrad.database.model.project.commit.ApiCommitModel;
-import io.ehdev.conrad.database.model.repo.RequestDetails;
 import io.ehdev.conrad.model.version.CreateVersionRequest;
 import io.ehdev.conrad.model.version.CreateVersionResponse;
 import io.ehdev.conrad.model.version.GetAllVersionsResponse;
@@ -14,8 +9,6 @@ import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
 import io.ehdev.conrad.service.api.service.annotation.InternalLink;
 import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
-import io.ehdev.conrad.version.bumper.api.VersionBumperService;
-import io.ehdev.conrad.version.commit.CommitVersion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +17,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import tech.crom.business.api.CommitApi;
+import tech.crom.model.commit.CommitIdContainer;
+import tech.crom.model.commit.impl.PersistedCommit;
+import tech.crom.model.commit.impl.RequestedCommit;
+import tech.crom.service.api.ReverseApiCommitComparator;
+import tech.crom.web.api.model.RequestDetails;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
-import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static io.ehdev.conrad.service.api.service.model.LinkUtilities.toLink;
@@ -39,18 +36,16 @@ import static io.ehdev.conrad.service.api.service.model.LinkUtilities.versionSel
 @RequestMapping("/api/v1/project/{projectName}/repo/{repoName}")
 public class RepoVersionEndpoint {
 
-    private final RepoManagementApi repoManagementApi;
-    private final VersionBumperService versionBumperService;
+    private final CommitApi commitApi;
 
     @Autowired
-    public RepoVersionEndpoint(RepoManagementApi repoManagementApi, VersionBumperService versionBumperService) {
-        this.repoManagementApi = repoManagementApi;
-        this.versionBumperService = versionBumperService;
+    public RepoVersionEndpoint(CommitApi commitApi) {
+        this.commitApi = commitApi;
     }
 
     @InternalLinks(links = {
         @InternalLink(name = "project", ref = "/../../.."),
-        @InternalLink(name = "repository", ref = "/..")
+        @InternalLink(name = "tokenType", ref = "/..")
     })
     @ReadPermissionRequired
     @RepoRequired(exists = true)
@@ -58,15 +53,14 @@ public class RepoVersionEndpoint {
     public ResponseEntity<GetAllVersionsResponse> getAllVersions(RequestDetails requestDetails) {
         GetAllVersionsResponse response = new GetAllVersionsResponse();
 
-        repoManagementApi
-            .findAllCommits(requestDetails.getResourceDetails())
+        commitApi.findAllCommits(requestDetails.getCromRepo())
             .stream()
             .sorted(new ReverseApiCommitComparator())
             .forEach(it -> {
                 GetAllVersionsResponse.CommitModel commit = new GetAllVersionsResponse.CommitModel(it.getCommitId(),
-                    it.getVersion(),
+                    it.getVersionString(),
                     it.getCreatedAt());
-                commit.addLink(toLink(versionSelfLink(requestDetails, it.getVersion())));
+                commit.addLink(toLink(versionSelfLink(requestDetails, it.getVersionString())));
                 response.addCommit(commit);
             });
 
@@ -80,7 +74,7 @@ public class RepoVersionEndpoint {
     @InternalLinks(links = {
         @InternalLink(name = "project", ref = "/../../.."),
         @InternalLink(name = "versions", ref = "/../versions"),
-        @InternalLink(name = "repository", ref = "/..")
+        @InternalLink(name = "tokenType", ref = "/..")
     })
     @WritePermissionRequired
     @RepoRequired(exists = true)
@@ -88,61 +82,41 @@ public class RepoVersionEndpoint {
     public ResponseEntity<CreateVersionResponse> createNewVersion(RequestDetails requestDetails,
                                                                   @RequestBody CreateVersionRequest versionModel,
                                                                   HttpServletRequest request) {
-        List<ApiCommitModel> commits = versionModel.getCommits()
+        List<CommitIdContainer> commits = versionModel.getCommits()
             .stream()
-            .map(ApiCommitModel::new)
+            .map(CommitIdContainer::new)
             .collect(Collectors.toList());
 
-        Optional<ApiCommitModel> latestCommit = repoManagementApi.findLatestCommit(requestDetails.getResourceDetails(), commits);
+        RequestedCommit commitModel = new RequestedCommit(versionModel.getCommitId(), versionModel.getMessage(), null);
+        PersistedCommit nextCommit = commitApi.createCommit(requestDetails.getCromRepo(), commitModel, commits);
 
-        assertHistoryIsNotMissing(commits, latestCommit);
-
-        CommitVersion nextVersion = versionBumperService.findNextVersion(
-            requestDetails.getResourceDetails(),
-            versionModel.getCommitId(),
-            versionModel.getMessage(),
-            latestCommit.orElse(new ApiCommitModel("<default>", "0.0.0", ZonedDateTime.now())));
-
-        ApiCommitModel nextCommit = new ApiCommitModel(versionModel.getCommitId(),
-            nextVersion.toVersionString(),
-            nextVersion.getCreatedAt());
-        repoManagementApi.createCommit(requestDetails.getResourceDetails(), nextCommit, latestCommit.orElse(null));
-
-        URI uri = URI.create(request.getRequestURL().toString() + "/" + nextCommit.getVersion());
+        URI uri = URI.create(request.getRequestURL().toString() + "/" + nextCommit.getVersionString());
 
         CreateVersionResponse response = new CreateVersionResponse(versionModel.getCommitId(),
-            nextVersion.toVersionString(),
-            nextVersion.getCreatedAt());
-        response.addLink(toLink(versionSelfLink(requestDetails, nextVersion.toVersionString())));
+            nextCommit.getVersionString(),
+            nextCommit.getCreatedAt());
+        response.addLink(toLink(versionSelfLink(requestDetails, nextCommit.getVersionString())));
         return ResponseEntity.created(uri).body(response);
     }
 
     @InternalLinks(links = {
         @InternalLink(name = "project", ref = "/../../../.."),
         @InternalLink(name = "versions", ref = "/../../versions"),
-        @InternalLink(name = "repository", ref = "/../..")
+        @InternalLink(name = "tokenType", ref = "/../..")
     })
     @ReadPermissionRequired
     @RepoRequired(exists = true)
     @RequestMapping(value = "/version/{versionArg:.+}", method = RequestMethod.GET)
     public ResponseEntity<GetVersionResponse> findVersion(RequestDetails requestDetails,
                                                           @PathVariable("versionArg") String versionArg) {
-        Optional<ApiCommitModel> commit = repoManagementApi.findCommit(requestDetails.getResourceDetails(), versionArg);
-        if (commit.isPresent()) {
-            ApiCommitModel apiCommitModel = commit.get();
-            GetVersionResponse versionResponse = new GetVersionResponse(apiCommitModel.getCommitId(),
-                apiCommitModel.getVersion(),
-                apiCommitModel.getCreatedAt());
-            return ResponseEntity.ok(versionResponse);
-        } else {
+        PersistedCommit commit = commitApi.findCommit(requestDetails.getCromRepo(), new CommitIdContainer(versionArg));
+        if(null == commit) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
-    }
 
-    private void assertHistoryIsNotMissing(List<ApiCommitModel> commits, Optional<ApiCommitModel> latestCommit) {
-        if (!commits.isEmpty() && !latestCommit.isPresent()) {
-            String joinedCommit = commits.stream().map(ApiCommitModel::getCommitId).reduce((t, u) -> t + "," + u).get();
-            throw new CommitNotFoundException(joinedCommit);
-        }
+        GetVersionResponse versionResponse = new GetVersionResponse(commit.getCommitId(),
+            commit.getVersionString(),
+            commit.getCreatedAt());
+        return ResponseEntity.ok(versionResponse);
     }
 }

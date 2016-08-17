@@ -12,9 +12,9 @@ class DevelopmentPlugin implements Plugin<Project> {
             apply plugin: 'idea'
             apply plugin: 'jacoco'
 
-            jacoco {
-                toolVersion = "0.7.1.201405082137"
-            }
+//            jacoco {
+//                toolVersion = "0.7.7.201606060606"
+//            }
 
             sourceCompatibility = '1.8'
 

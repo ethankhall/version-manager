@@ -1,13 +1,5 @@
 package io.ehdev.conrad.service.api.aop.impl
 
-import io.ehdev.conrad.database.api.PermissionManagementApi
-import io.ehdev.conrad.database.model.permission.UserApiAuthentication
-import io.ehdev.conrad.database.model.repo.RequestDetails
-import io.ehdev.conrad.database.model.repo.details.AuthUserDetails
-import io.ehdev.conrad.database.model.repo.details.ResourceDetails
-import io.ehdev.conrad.database.model.user.ApiUserPermission
-import io.ehdev.conrad.database.model.user.ApiUserPermissionDetails
-import io.ehdev.conrad.database.model.user.UserPermissionGrants
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired
@@ -16,52 +8,22 @@ import org.springframework.aop.aspectj.annotation.AspectJProxyFactory
 import org.springframework.core.env.Environment
 import org.springframework.mock.env.MockEnvironment
 import spock.lang.Specification
+import tech.crom.model.security.authorization.CromPermission
+import tech.crom.security.authorization.api.PermissionService
+import tech.crom.web.api.model.RequestDetails
+
+import static io.ehdev.conrad.service.api.service.TestUtils.createTestingRepoModel
 
 class PermissionRequiredCheckTest extends Specification {
 
     PermissionRequiredCheck permissionRequiredCheck
-    PermissionManagementApi permissionManagementApi
+    PermissionService permissionService
     Environment environment;
 
     def setup() {
-        permissionManagementApi = new PermissionManagementApi() {
-            @Override
-            ApiUserPermission findHighestUserPermission(UUID userId, ResourceDetails resourceDetails) {
-                return ApiUserPermission.ADMIN
-            }
-
-            @Override
-            ApiUserPermission findHighestUserPermission(AuthUserDetails authUserDetails, ResourceDetails resourceDetails) {
-                return ApiUserPermission.ADMIN
-            }
-
-            @Override
-            boolean addPermission(AuthUserDetails authUserDetails, ResourceDetails resourceDetails, ApiUserPermission permission) {
-                return false
-            }
-
-            @Override
-            boolean addPermission(String userName, ResourceDetails resourceDetails, ApiUserPermission permission) {
-                return false
-            }
-
-            @Override
-            List<ApiUserPermissionDetails> getPermissions(ResourceDetails resourceDetails) {
-                return null
-            }
-
-            @Override
-            UserPermissionGrants getPermissions(AuthUserDetails authUserDetails) {
-                return new UserPermissionGrants([], [])
-            }
-        }
+        permissionService = new PermissionServiceTestDouble()
         environment = new MockEnvironment()
-        permissionRequiredCheck = new PermissionRequiredCheck(permissionManagementApi, environment)
-    }
-
-    RequestDetails createRequestDetails(ApiUserPermission apiUserPermission) {
-        def details = new AuthUserDetails(UUID.randomUUID(), apiUserPermission.toString(), apiUserPermission, null)
-        return new RequestDetails(details, null)
+        permissionRequiredCheck = new PermissionRequiredCheck(environment, permissionService)
     }
 
     def 'admin permissions work'() {
@@ -72,19 +34,19 @@ class PermissionRequiredCheckTest extends Specification {
         FooTestInterface proxy = factory.getProxy()
 
         when:
-        proxy.adminPermissions(createRequestDetails(ApiUserPermission.READ), 'foo')
+        proxy.adminPermissions(createTestingRepoModel(CromPermission.NONE, CromPermission.NONE), 'foo')
 
         then:
         thrown(PermissionDeniedException)
 
         when:
-        proxy.adminPermissions(createRequestDetails(ApiUserPermission.WRITE), 'b')
+        proxy.adminPermissions(createTestingRepoModel(CromPermission.WRITE, CromPermission.WRITE), 'b')
 
         then:
         thrown(PermissionDeniedException)
 
         when:
-        proxy.adminPermissions(createRequestDetails(ApiUserPermission.ADMIN), 'c')
+        proxy.adminPermissions(createTestingRepoModel(CromPermission.ADMIN, CromPermission.ADMIN), 'c')
 
         then:
         noExceptionThrown()
@@ -96,22 +58,21 @@ class PermissionRequiredCheckTest extends Specification {
         AspectJProxyFactory factory = new AspectJProxyFactory(target);
         factory.addAspect(permissionRequiredCheck)
         FooTestInterface proxy = factory.getProxy()
-        def apiUser = new UserApiAuthentication(UUID.randomUUID(), 'username', 'name', 'email')
 
         when:
-        proxy.readPermissions(createRequestDetails(ApiUserPermission.READ))
+        proxy.readPermissions(createTestingRepoModel(CromPermission.READ, CromPermission.READ))
 
         then:
         noExceptionThrown()
 
         when:
-        proxy.readPermissions(createRequestDetails(ApiUserPermission.WRITE))
+        proxy.readPermissions(createTestingRepoModel(CromPermission.WRITE, CromPermission.WRITE))
 
         then:
         noExceptionThrown()
 
         when:
-        proxy.readPermissions(createRequestDetails(ApiUserPermission.ADMIN))
+        proxy.readPermissions(createTestingRepoModel(CromPermission.ADMIN, CromPermission.ADMIN))
 
         then:
         noExceptionThrown()
@@ -123,22 +84,21 @@ class PermissionRequiredCheckTest extends Specification {
         AspectJProxyFactory factory = new AspectJProxyFactory(target);
         factory.addAspect(permissionRequiredCheck)
         FooTestInterface proxy = factory.getProxy()
-        def apiUser = new UserApiAuthentication(UUID.randomUUID(), 'username', 'name', 'email')
 
         when:
-        proxy.writePermissions(createRequestDetails(ApiUserPermission.READ))
+        proxy.writePermissions(createTestingRepoModel(CromPermission.READ, CromPermission.READ))
 
         then:
         thrown(PermissionDeniedException)
 
         when:
-        proxy.writePermissions(createRequestDetails(ApiUserPermission.WRITE))
+        proxy.writePermissions(createTestingRepoModel(CromPermission.WRITE, CromPermission.WRITE))
 
         then:
         noExceptionThrown()
 
         when:
-        proxy.writePermissions(createRequestDetails(ApiUserPermission.ADMIN))
+        proxy.writePermissions(createTestingRepoModel(CromPermission.ADMIN, CromPermission.ADMIN))
 
         then:
         noExceptionThrown()

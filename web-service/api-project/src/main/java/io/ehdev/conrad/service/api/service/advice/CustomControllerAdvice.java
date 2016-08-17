@@ -1,10 +1,7 @@
 package io.ehdev.conrad.service.api.service.advice;
 
-import io.ehdev.conrad.database.model.repo.RequestDetails;
-import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.model.AdminView;
 import io.ehdev.conrad.model.DefaultResourceSupport;
-import io.ehdev.conrad.service.api.config.RequestDetailsParameterResolver;
 import io.ehdev.conrad.service.api.service.advice.link.DefaultLinkControllerAdviceHelper;
 import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +15,9 @@ import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.AbstractMappingJacksonResponseBodyAdvice;
+import tech.crom.model.security.authorization.CromPermission;
+import tech.crom.service.api.config.RequestDetailsParameterResolver;
+import tech.crom.web.api.model.RequestDetails;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -51,18 +51,18 @@ public class CustomControllerAdvice extends AbstractMappingJacksonResponseBodyAd
         HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
 
         RequestDetails requestDetails = requestDetailsParameterResolver.createRequestDetails(servletRequest);
-        ApiUserPermission permission = requestDetails.getAuthUserDetails().getPermission();
+        CromPermission permission = requestDetails.getRequestPermission().findHighestPermission();
 
         addLinks(resourceSupport, returnType, servletRequest, permission);
 
-        if(permission.isHigherOrEqualTo(ApiUserPermission.ADMIN)) {
+        if(permission.isHigherOrEqualThan(CromPermission.ADMIN)) {
             bodyContainer.setSerializationView(AdminView.class);
         } else {
             bodyContainer.setSerializationView(Object.class);
         }
     }
 
-    private void addLinks(DefaultResourceSupport resourceSupport, MethodParameter returnType, HttpServletRequest servletRequest, ApiUserPermission permission) {
+    private void addLinks(DefaultResourceSupport resourceSupport, MethodParameter returnType, HttpServletRequest servletRequest, CromPermission permission) {
         InternalLinks annotation = returnType.getMethodAnnotation(InternalLinks.class);
         if(annotation != null) {
             new DefaultLinkControllerAdviceHelper(resourceSupport, permission, getFullURL(servletRequest)).addLinks(annotation);

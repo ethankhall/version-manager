@@ -10,7 +10,7 @@ Ethan Hall;
 [introduction]
 = Introduction
 
-This provides documentation for Conrad, a project version management API. Conrad uses a project/repository hierarchy allowing to projects to define user(s) that can manage the API but giving the administrators the ability to add users as needed.
+This provides documentation for Conrad, a project version management API. Conrad uses a project/tokenType hierarchy allowing to projects to define user(s) that can manage the API but giving the administrators the ability to add users as needed.
 
 [terminology]
 == Terminology
@@ -26,14 +26,14 @@ This provides documentation for Conrad, a project version management API. Conrad
 | A project contains multiple repositories. The project allows the administrators to define users that have access and give permissions for all of the repositories this project contains.
 
 | Repository
-| A repository is a specific item that wants to be versioned. In most cases this will be a scm repository like git, mercurial, or svn. A repository can have additional users added to it, with their own permissions. Any definition in project overrides a value defined in the repository. Every repository contains Versions.
+| A tokenType is a specific item that wants to be versioned. In most cases this will be a scm tokenType like git, mercurial, or svn. A tokenType can have additional users added to it, with their own permissions. Any definition in project overrides a value defined in the tokenType. Every tokenType contains Versions.
 
 | Version
 | A version is a mapping to commitId (git sha, svn id) to version numbers. These versions are final. You are not able to remove versions once created. Versions contain multiple sub-components that can be updated. Those components are "metadata", and "status".
 
 [[basic-terminology-version-metadata]]
 | Version Metadata
-| A version can contain multiple arbitrary binary blobs. These binary blobs are currently limited to 10Kb and limited to 5 per version under the free projects. A metadata object can be updated once created unless the repository is configured to write only.
+| A version can contain multiple arbitrary binary blobs. These binary blobs are currently limited to 10Kb and limited to 5 per version under the free projects. A metadata object can be updated once created unless the tokenType is configured to write only.
 
 | Version Status
 a| A version can be in one of 4 statuses, Pre-Release, Live, Deprecated, and Removed. For more details on these states and their transitions please read <<version-state-transitions>>
@@ -41,9 +41,9 @@ a| A version can be in one of 4 statuses, Pre-Release, Live, Deprecated, and Rem
 
 
 === Versions States
-A version can be in one of 4 states, each version is independent of all other versions in the repository. The beginning state of any version can be either <<version-state-transitions-pre-release,Pre-Release>> or <<version-state-transitions-live,Live>>. As the version transitions to different states, it will eventually end up in <<version-state-transitions-removed,Removed>>. Once in Removed, the version cannot be moved to another state except by a repository administrator.
+A version can be in one of 4 states, each version is independent of all other versions in the tokenType. The beginning state of any version can be either <<version-state-transitions-pre-release,Pre-Release>> or <<version-state-transitions-live,Live>>. As the version transitions to different states, it will eventually end up in <<version-state-transitions-removed,Removed>>. Once in Removed, the version cannot be moved to another state except by a tokenType administrator.
 
-Version transitions can only be made by users with write access to the repository.
+Version transitions can only be made by users with write access to the tokenType.
 
 [[version-state-transitions]]
 .Version State Transitions
@@ -56,7 +56,7 @@ Version transitions can only be made by users with write access to the repositor
 
 [[version-state-transitions-pre-release]]
 | Pre-Release
-| Implies that someone who consumes this repository should not use this version yet. You might want to use this version when you need to claim a version, but haven't uploaded artifacts yet. When the version API is queried  with "latest", a version in "Pre-Release" status will not be considered by default.
+| Implies that someone who consumes this tokenType should not use this version yet. You might want to use this version when you need to claim a version, but haven't uploaded artifacts yet. When the version API is queried  with "latest", a version in "Pre-Release" status will not be considered by default.
 | Can move into any other state.
 |
 
@@ -76,14 +76,14 @@ Version transitions can only be made by users with write access to the repositor
 | Removed
 | This version is no longer available for use and you must migrate to a different version.
 | None
-| This is a final state and can-not be moved without repository administrator <<repository-permissions-user,permissions>>.
+| This is a final state and can-not be moved without tokenType administrator <<tokenType-permissions-user,permissions>>.
 |====
 
-[[repository-permissions]]
-=== Permissions
+[[tokenType-permissions]]
+=== CromPermission
 
-[[repository-permissions-user]]
-.User Repository Permissions
+[[tokenType-permissions-user]]
+.User Repository CromPermission
 [cols="1s,2,2", options="header"]
 |===
 | Name
@@ -91,16 +91,16 @@ Version transitions can only be made by users with write access to the repositor
 | Notes
 
 | None
-| This is the default permission for every user, depending on the repository configuration this may prevent others from accessing the project entirely.
+| This is the default permission for every user, depending on the tokenType configuration this may prevent others from accessing the project entirely.
 |
 
 | Read
-| This gives the user access to read all information about the repository. This includes <<basic-terminology-version-metadata,metadata>>.
+| This gives the user access to read all information about the tokenType. This includes <<basic-terminology-version-metadata,metadata>>.
 |
 
 | Update
 | This gives the user the ability to write / update states for a version as well as the metadata.
-| In some cases the repository may be configured to allow only writes to the metadata, when this is set, an update will be rejected from the user.
+| In some cases the tokenType may be configured to allow only writes to the metadata, when this is set, an update will be rejected from the user.
 
 | Administrator
 | This user is able to update other user permissions as well as all the previous permissions. This user is allowed to transition a version from <<version-state-transitions-removed,Removed>> to <<version-state-transitions-live,Live>> or <<version-state-transitions-deprecated,Deprecated>>.
@@ -115,14 +115,14 @@ Version transitions can only be made by users with write access to the repositor
 [[resources-project]]
 == Project
 
-The project is the root element that every repository. Check out the API docs link:api/project/index.html[here].
+The project is the root element that every tokenType. Check out the API docs link:api/project/index.html[here].
 
 
-[[resources-repository]]
+[[resources-tokenType]]
 == Repository
 
-A repository contains versions and details about the repository. The API docs are located link:api/repository/index.html[here]
+A tokenType contains versions and details about the tokenType. The API docs are located link:api/tokenType/index.html[here]
 
-[[resources-repository-versions]]
+[[resources-tokenType-versions]]
 === Versions
-Given a repository, a sub-resource are versions. For details about the version sub-resource, in the link:api/repository/version/index.html[Version API docs].
+Given a tokenType, a sub-resource are versions. For details about the version sub-resource, in the link:api/tokenType/version/index.html[Version API docs].

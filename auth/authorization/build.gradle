@@ -1,0 +1,23 @@
+apply plugin: 'java'
+apply plugin: 'groovy'
+apply plugin: 'local-dev'
+apply plugin: 'kotlin'
+
+dependencies {
+    compile project(":shared-config")
+    compile project(":shared-model")
+    compile project(":database:database-v2")
+    compile libraries.kotlin
+    compile libraries.logging
+    compile libraries.springSecurity
+
+    testCompile libraries.testingLibraries
+
+    integTestCompile project(":api:version-bumper")
+    integTestCompile libraries.springTest
+    integTestCompile libraries.servletCore
+    integTestCompile libraries.springBootTest
+    integTestCompile libraries.springSecurityTest
+}
+
+tasks.integTest.dependsOn ':database:database-migration:flywayMigrate'

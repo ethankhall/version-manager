@@ -1,0 +1,10 @@
+auth.client.google.clientId: 501986272416-882h8qm11sherv2m99geckohi2mrmffh.apps.googleusercontent.com
+auth.client.google.clientSecret: qHv-RKsHe5zavBhjWwXmktMr
+
+spring:
+    datasource:
+            url: jdbc:postgresql://172.0.1.100/version_manager_test
+            username: version_manager_test
+            password: password
+
+jwt.signing.key: secret

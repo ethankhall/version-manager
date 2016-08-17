@@ -1,11 +1,11 @@
 package io.ehdev.conrad.service.api.service.advice.link;
 
-import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.model.DefaultResourceSupport;
 import io.ehdev.conrad.model.ResourceLink;
 import io.ehdev.conrad.service.api.service.annotation.InternalLink;
 import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
 import org.apache.commons.io.FilenameUtils;
+import tech.crom.model.security.authorization.CromPermission;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -13,10 +13,10 @@ import java.net.URI;
 public class DefaultLinkControllerAdviceHelper implements LinkControllerAdviceHelper {
 
     private final DefaultResourceSupport resourceSupport;
-    private final ApiUserPermission permission;
+    private final CromPermission permission;
     private final String fullUrl;
 
-    public DefaultLinkControllerAdviceHelper(DefaultResourceSupport resourceSupport, ApiUserPermission permission, String fullUrl) {
+    public DefaultLinkControllerAdviceHelper(DefaultResourceSupport resourceSupport, CromPermission permission, String fullUrl) {
         this.resourceSupport = resourceSupport;
         this.permission = permission;
         this.fullUrl = fullUrl;
@@ -26,7 +26,7 @@ public class DefaultLinkControllerAdviceHelper implements LinkControllerAdviceHe
     public void addLinks(InternalLinks annotation) {
         resourceSupport.addLink(new ResourceLink("self", fullUrl));
         for (InternalLink internalLink : annotation.links()) {
-            if (permission.isHigherOrEqualTo(internalLink.permissions())) {
+            if (permission.isHigherOrEqualThan(internalLink.permissions())) {
                 addLink(internalLink);
             }
         }

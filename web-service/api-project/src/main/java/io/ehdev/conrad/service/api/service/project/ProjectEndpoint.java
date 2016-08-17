@@ -1,11 +1,5 @@
 package io.ehdev.conrad.service.api.service.project;
 
-import io.ehdev.conrad.database.api.ProjectManagementApi;
-import io.ehdev.conrad.database.api.exception.ProjectAlreadyExistsException;
-import io.ehdev.conrad.database.model.project.ApiProjectDetails;
-import io.ehdev.conrad.database.model.repo.RequestDetails;
-import io.ehdev.conrad.database.model.repo.details.ResourceId;
-import io.ehdev.conrad.database.model.user.ApiUserPermission;
 import io.ehdev.conrad.model.project.CreateProjectRequest;
 import io.ehdev.conrad.model.project.GetProjectResponse;
 import io.ehdev.conrad.model.project.RepoDefinitionsDetails;
@@ -21,10 +15,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import tech.crom.business.api.ProjectApi;
+import tech.crom.business.api.RepositoryApi;
+import tech.crom.database.api.ProjectManager;
+import tech.crom.model.project.CromProject;
+import tech.crom.model.repository.CromRepo;
+import tech.crom.model.security.authorization.CromPermission;
+import tech.crom.web.api.model.RequestDetails;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static io.ehdev.conrad.service.api.service.model.LinkUtilities.repositorySelfLink;
@@ -36,11 +38,13 @@ import static io.ehdev.conrad.service.api.service.model.LinkUtilities.toLink;
     produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProjectEndpoint {
 
-    private final ProjectManagementApi projectManagementApi;
+    private final ProjectApi projectManager;
+    private final RepositoryApi repositoryApi;
 
     @Autowired
-    public ProjectEndpoint(ProjectManagementApi projectManagementApi) {
-        this.projectManagementApi = projectManagementApi;
+    public ProjectEndpoint(ProjectApi projectManager, RepositoryApi repositoryApi) {
+        this.projectManager = projectManager;
+        this.repositoryApi = repositoryApi;
     }
 
 
@@ -51,11 +55,11 @@ public class ProjectEndpoint {
     public ResponseEntity<CreateProjectRequest> createProject(RequestDetails container,
                                                               HttpServletRequest request) {
         try {
-            ResourceId project = projectManagementApi.createProject(container.getAuthUserDetails(), container.getResourceDetails());
+            CromProject project = projectManager.createProject(container.getRawRequest().getProjectName());
 
-            CreateProjectRequest createProjectModel = new CreateProjectRequest(project.getName());
+            CreateProjectRequest createProjectModel = new CreateProjectRequest(project.getProjectName());
             return ResponseEntity.created(URI.create(request.getRequestURL().toString())).body(createProjectModel);
-        } catch (ProjectAlreadyExistsException e) {
+        } catch (ProjectManager.ProjectAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         }
     }
@@ -63,20 +67,20 @@ public class ProjectEndpoint {
     @ProjectRequired
     @ReadPermissionRequired
     @InternalLinks(links = {
-        @InternalLink(name = "tokens", ref = "/token", permissions = ApiUserPermission.ADMIN),
-        @InternalLink(name = "permissions", ref = "/permissions", permissions = ApiUserPermission.ADMIN)
+        @InternalLink(name = "tokens", ref = "/tokenDetails", permissions = CromPermission.ADMIN),
+        @InternalLink(name = "permissions", ref = "/permissions", permissions = CromPermission.ADMIN)
     })
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<GetProjectResponse> getProject(RequestDetails container) {
-        ApiProjectDetails projectDetails = projectManagementApi.getProjectDetails(container.getResourceDetails()).get();
+        Collection<CromRepo> repos = repositoryApi.findRepo(container.getCromProject());
 
         List<RepoDefinitionsDetails> details = new ArrayList<>();
 
-        GetProjectResponse projectModel = new GetProjectResponse(projectDetails.getName(), details);
+        GetProjectResponse projectModel = new GetProjectResponse(container.getCromProject().getProjectName(), details);
 
-        projectDetails.getDetails().forEach(it -> {
-            RepoDefinitionsDetails repo = new RepoDefinitionsDetails(it.getName());
-            repo.addLink(toLink(repositorySelfLink(container, it.getName())));
+        repos.forEach(it -> {
+            RepoDefinitionsDetails repo = new RepoDefinitionsDetails(it.getRepoName());
+            repo.addLink(toLink(repositorySelfLink(container, it.getRepoName())));
             details.add(repo);
         });
 

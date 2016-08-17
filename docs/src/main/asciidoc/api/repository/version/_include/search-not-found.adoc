@@ -1,4 +1,4 @@
-[[resource-repository-post-repo-search-not-found]]
+[[resource-tokenType-post-repo-search-not-found]]
 === Get Versions for a Repo
 A `GET` request lists all of the service's people.
 

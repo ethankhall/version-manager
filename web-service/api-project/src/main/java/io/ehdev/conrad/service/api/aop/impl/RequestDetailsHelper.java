@@ -1,7 +1,7 @@
 package io.ehdev.conrad.service.api.aop.impl;
 
-import io.ehdev.conrad.database.model.repo.RequestDetails;
 import org.aspectj.lang.JoinPoint;
+import tech.crom.web.api.model.RequestDetails;
 
 public class RequestDetailsHelper {
 

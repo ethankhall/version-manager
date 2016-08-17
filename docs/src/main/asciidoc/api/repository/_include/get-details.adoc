@@ -1,4 +1,4 @@
-[[resource-repository-get-details]]
+[[resource-tokenType-get-details]]
 === Get Version Details
 A `GET` request lists all of the service's people.
 

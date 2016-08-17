@@ -20,10 +20,10 @@
 | Description
 
 | RP-001
-| The repository you want to act on must not exist, but currently does not.
+| The tokenType you want to act on must not exist, but currently does not.
 
 | RP-002
-| The repository you want to act on must not exist, but currently does.
+| The tokenType you want to act on must not exist, but currently does.
 
 |===
 

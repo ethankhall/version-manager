@@ -10,7 +10,7 @@ buildscript {
     dependencies {
         classpath 'io.ehdev.conrad.client:gradle-client:+'
         classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.2.0'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.1-2'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.3'
         classpath "org.flywaydb:flyway-gradle-plugin:3.2.1"
     }
 }
@@ -21,14 +21,32 @@ allprojects {
 
     repositories {
         mavenCentral()
+        jcenter()
         maven {
             url 'http://repo.spring.io/milestone'
+        }
+        maven {
+            url "http://repository.jetbrains.com/all"
+        }
+    }
+
+    apply from: "$rootDir/gradle/versions.gradle"
+
+    afterEvaluate {
+        configurations.all.each {
+            it.resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+                if (details.requested.group == 'org.springframework') {
+                    details.useVersion(ext.versions.spring)
+                }
+            }
         }
     }
 }
 
+subprojects {
+    task allDeps(type: DependencyReportTask) {}
+}
 
-apply from: "gradle/versions.gradle"
 apply from: "gradle/database.gradle"
 apply plugin: 'version-manager'
 apply plugin: 'base'
@@ -61,8 +79,8 @@ subprojects {
 idea.project.ipr {
     withXml { provider ->
         provider.node.component
-                .find { it.@name == 'VcsDirectoryMappings' }
-                .mapping.@vcs = 'Git'
+            .find { it.@name == 'VcsDirectoryMappings' }
+            .mapping.@vcs = 'Git'
     }
 }
 
