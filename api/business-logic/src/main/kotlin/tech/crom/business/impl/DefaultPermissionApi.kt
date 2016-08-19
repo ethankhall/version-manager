@@ -3,7 +3,10 @@ package tech.crom.business.impl
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import tech.crom.business.api.PermissionApi
+import tech.crom.business.api.RepositoryApi
 import tech.crom.database.api.UserManager
+import tech.crom.model.project.CromProject
+import tech.crom.model.repository.CromRepo
 import tech.crom.model.security.authorization.AuthorizedObject
 import tech.crom.model.security.authorization.CromPermission
 import tech.crom.security.authorization.api.PermissionService
@@ -11,7 +14,8 @@ import tech.crom.security.authorization.api.PermissionService
 @Service
 class DefaultPermissionApi @Autowired constructor(
     val permissionService: PermissionService,
-    val userManager: UserManager
+    val userManager: UserManager,
+    val repositoryApi: RepositoryApi
 ): PermissionApi {
 
     override fun grantPermission(userName: String, authorizedObject: AuthorizedObject, permission: CromPermission): Boolean {
@@ -38,6 +42,24 @@ class DefaultPermissionApi @Autowired constructor(
                 val user = userManager.findUserDetails(it.key)!!
                 PermissionApi.PermissionGroup(user, permissions)
             }
+    }
+
+    override fun findHighestPermission(authorizedObject: AuthorizedObject): CromPermission {
+        val foundPermission = permissionService.findHighestPermission(authorizedObject)
+        if(authorizedObject is CromProject) {
+            return if (foundPermission == CromPermission.NONE) CromPermission.READ else foundPermission
+        }
+
+        if(authorizedObject is CromRepo) {
+            if(foundPermission == CromPermission.NONE) {
+                val repoDetails = repositoryApi.getRepoDetails(authorizedObject)
+                return if (repoDetails.public) CromPermission.READ else foundPermission
+            } else {
+                return foundPermission
+            }
+        }
+
+        return foundPermission
     }
 
     override fun dropPermission(userName: String, authorizedObject: AuthorizedObject) {

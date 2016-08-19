@@ -10,11 +10,11 @@ import java.time.ZonedDateTime
 
 fun Instant.toZonedDateTime(): ZonedDateTime = ZonedDateTime.ofInstant(this, ZoneOffset.UTC)
 
-fun getCromAuthentication(): CromAuthentication {
+fun findCromAuthentication(): CromAuthentication? {
     val authentication = SecurityContextHolder.getContext().authentication
     return when(authentication) {
         is CromAuthentication -> authentication
-        else -> throw RuntimeException("Authentication could not be found.")
+        else -> null
     }
 }
 

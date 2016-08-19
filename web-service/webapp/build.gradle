@@ -41,6 +41,7 @@ dependencies {
     testCompile libraries.testingLibraries
     testCompile libraries.springTest
 
+    integTestCompile group: 'org.apache.httpcomponents', name: 'fluent-hc', version: '4.5.2'
     integTestCompile libraries.springBoot
     integTestCompile libraries.springBootTest
     integTestCompile libraries.springSecurityTest

@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
+import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter
 import org.springframework.social.UserIdSource
@@ -24,8 +25,7 @@ import tech.crom.security.authentication.config.stateless.StatelessAuthenticatio
 open class WebSecurityConfig @Autowired constructor(
     val userDetailsService: UserDetailsService,
     val userIdSource: UserIdSource,
-    val socialAuthenticationSuccessHandler: SocialAuthenticationSuccessHandler,
-    val statelessAuthenticationFilter: StatelessAuthenticationFilter
+    val socialAuthenticationSuccessHandler: SocialAuthenticationSuccessHandler
 ) : WebSecurityConfigurerAdapter() {
 
     override fun configure(http: HttpSecurity) {
@@ -47,7 +47,9 @@ open class WebSecurityConfig @Autowired constructor(
             .and()
                 .apply(createSocialConfigurer())
             .and()
-                .addFilterBefore(statelessAuthenticationFilter, AbstractPreAuthenticatedProcessingFilter::class.java)
+                .sessionManagement()
+                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
             .csrf().disable()
         //@formatter:on
     }

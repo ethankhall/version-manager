@@ -7,7 +7,7 @@ import org.springframework.security.acls.domain.PrincipalSid
 import org.springframework.security.acls.model.*
 import org.springframework.stereotype.Service
 import tech.crom.database.api.ProjectManager
-import tech.crom.getCromAuthentication
+import tech.crom.findCromAuthentication
 import tech.crom.logger.getLogger
 import tech.crom.model.project.CromProject
 import tech.crom.model.repository.CromRepo
@@ -37,24 +37,25 @@ class DefaultPermissionService @Autowired constructor(
         logger.info("Finding highest permission for on ${authorizedObject.getId()}")
         val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
 
-        val permissions = mutableListOf<CromPermission>()
-        val sid = getCromAuthentication().toSid()
-        var acl: Acl?
+        val sid = findCromAuthentication()?.toSid() ?: return CromPermission.NONE
+        val acl: Acl
         
         try {
-            acl = aclService.readAclById(oi, listOf(sid))
+            acl = aclService.readAclById(oi, listOf(sid)) ?: return CromPermission.NONE
         } catch (nfe: NotFoundException) {
             return CromPermission.NONE
         }
 
-        while (acl != null) {
-            permissions.addAll(acl.entries.map { permissionToCromPermission(it.permission) })
-            acl = acl.parentAcl
+        createPermissionGrantList(CromPermission.ADMIN).forEach {
+            try {
+                if(acl.isGranted(listOf(it), listOf(sid), false)) {
+                    return permissionToCromPermission(it)
+                }
+            } catch (nfe: NotFoundException) {
+                //ignored
+            }
         }
-
-        return permissions
-            .sortedByDescending { it.permissionLevel }
-            .firstOrNull() ?: CromPermission.NONE
+        return CromPermission.NONE
     }
 
     override fun revokePermission(cromUser: CromUser, authorizedObject: AuthorizedObject, accessLevel: CromPermission) {
@@ -95,10 +96,14 @@ class DefaultPermissionService @Autowired constructor(
 
     override fun hasAccessTo(authorizedObject: AuthorizedObject, accessLevel: CromPermission): Boolean {
         val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
-        return validatePermissions(getCromAuthentication(), accessLevel, oi)
+        return validatePermissions(findCromAuthentication(), accessLevel, oi)
     }
 
-    private fun validatePermissions(auth: CromAuthentication, accessLevel: CromPermission, oi: ObjectIdentityImpl): Boolean {
+    private fun validatePermissions(auth: CromAuthentication?, accessLevel: CromPermission, oi: ObjectIdentityImpl): Boolean {
+        if(auth == null) {
+            return accessLevel.isHigherOrEqualThan(CromPermission.READ)
+        }
+
         val permission = createPermissionValidateList(accessLevel)
 
         val sid = auth.toSid()
@@ -141,7 +146,7 @@ class DefaultPermissionService @Autowired constructor(
             acl = aclService.createAcl(oi)
         }
 
-        val sid = getCromAuthentication().toSid()
+        val sid = findCromAuthentication()!!.toSid()
 
         acl.insertAce(acl.entries.size, BasePermission.ADMINISTRATION, sid, true)
         acl.insertAce(acl.entries.size, BasePermission.WRITE, sid, true)
@@ -149,6 +154,7 @@ class DefaultPermissionService @Autowired constructor(
         aclService.updateAcl(acl)
     }
 
+    //TODO: This guy needs a good test
     override fun retrieveAllPermissions(authorizedObject: AuthorizedObject): List<PermissionService.PermissionPair> {
         val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
         var readAclById = aclService.readAclById(oi)
