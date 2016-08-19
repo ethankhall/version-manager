@@ -1,5 +1,6 @@
 package tech.crom.service.api.project
 
+import io.ehdev.conrad.model.permission.GetPermissionGranWrapper
 import io.ehdev.conrad.model.permission.PermissionCreateResponse
 import io.ehdev.conrad.model.permission.PermissionGrant
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired
@@ -39,13 +40,13 @@ open class ProjectPermissionEndpoint @Autowired constructor(
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RequestMapping(method = arrayOf(RequestMethod.GET))
-    open fun findPermissions(container: RequestDetails): ResponseEntity<List<PermissionGrant>> {
+    open fun findPermissions(container: RequestDetails): ResponseEntity<GetPermissionGranWrapper> {
         val permissions = permissionApi
             .findAllPermissions(container.cromProject!!)
             .map { PermissionGrant(it.cromUser.userName, convertType(it.cromPermission))}
             .toList()
 
-        return ResponseEntity(permissions, HttpStatus.OK)
+        return ResponseEntity(GetPermissionGranWrapper(permissions), HttpStatus.OK)
     }
 
     @ProjectRequired

@@ -4,6 +4,7 @@ import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import groovy.transform.TupleConstructor
 import io.ehdev.conrad.db.tables.*
+import org.apache.commons.lang3.StringUtils
 import org.apache.http.StatusLine
 import org.apache.http.client.fluent.Request
 import org.apache.http.entity.ContentType
@@ -99,7 +100,6 @@ class LongWindedApiIntegrationTest extends Specification {
         def response = makeRequest('api/v1/project/repoUser1')
 
         then:
-        response
         response.statusLine.statusCode == 404
 
         when:
@@ -107,7 +107,6 @@ class LongWindedApiIntegrationTest extends Specification {
         response = makeRequest("api/v1/project/repoUser1", content, userContainer1)
 
         then:
-        response
         response.statusLine.statusCode == 201
         response.content.name == 'repoUser1'
 
@@ -116,7 +115,6 @@ class LongWindedApiIntegrationTest extends Specification {
         response = makeRequest("api/v1/project/repoUser2", content, userContainer2)
 
         then:
-        response
         response.statusLine.statusCode == 201
         response.content.name == 'repoUser2'
     }
@@ -126,7 +124,6 @@ class LongWindedApiIntegrationTest extends Specification {
         def response = makeRequest('api/v1/project/repoUser1')
 
         then:
-        response
         response.statusLine.statusCode == 200
         response.content.name == 'repoUser1'
         response.content.links.find { it.rel == 'tokens' } == null
@@ -136,7 +133,6 @@ class LongWindedApiIntegrationTest extends Specification {
         response = makeRequest('api/v1/project/repoUser2')
 
         then:
-        response
         response.statusLine.statusCode == 200
         response.content.name == 'repoUser2'
         response.content.links.find { it.rel == 'tokens' } == null
@@ -146,21 +142,170 @@ class LongWindedApiIntegrationTest extends Specification {
         response = makeRequest('api/v1/project/repoUser1', userContainer1)
 
         then:
-        response
         response.statusLine.statusCode == 200
         response.content.name == 'repoUser1'
         response.content.links.find { it.rel == 'tokens' } != null
         response.content.links.find { it.rel == 'permissions' } != null
 
         when:
-        response = makeRequest('api/v1/project/repoUser1', userContainer2)
+        response = makeRequest('api/v1/project/repoUser1', userContainer2) //unapproved user
 
         then:
-        response
         response.statusLine.statusCode == 200
         response.content.name == 'repoUser1'
         response.content.links.find { it.rel == 'tokens' } == null
         response.content.links.find { it.rel == 'permissions' } == null
+
+        when:
+        response = makeRequest('api/v1/project/repoUser2', userContainer2)
+
+        then:
+        response.statusLine.statusCode == 200
+        response.content.name == 'repoUser2'
+        response.content.links.find { it.rel == 'tokens' } != null
+        response.content.links.find { it.rel == 'permissions' } != null
+
+        when:
+        response = makeRequest('api/v1/project/repoUser2', userContainer1) //unapproved user
+
+        then:
+        response.statusLine.statusCode == 200
+        response.content.name == 'repoUser2'
+        response.content.links.find { it.rel == 'tokens' } == null
+        response.content.links.find { it.rel == 'permissions' } == null
+    }
+
+    def 'grant and remove permission to user'() {
+        when:
+        def response = makeRequest('api/v1/project/repoUser1/permissions')
+
+        then:
+        response.statusLine.statusCode == 418
+
+        when:
+        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
+        (response.content.permissions as List)[0] == [username: 'user1', permission: 'ADMIN']
+
+        //======================================
+        //== Give the other user READ permissions
+        //======================================
+        when:
+        def permissionGrant = ["username": "user2", "permission": "READ"]
+        response = makeRequest('api/v1/project/repoUser1/permissions', permissionGrant, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+        response.content.accepted == true
+
+        when:
+        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer1)
+
+        then:
+        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', permission: 'ADMIN']
+        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', permission: 'READ']
+        (response.content.permissions as List).size() == 2
+
+        when:  //user doesn't have enough permissions
+        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer2)
+
+        then:
+        response.statusLine.statusCode == 401
+        response.content.errorCode == 'PD-001'
+        response.content.message == 'user2 does not have access.'
+
+        //======================================
+        //== Give the other user WRITE permissions
+        //======================================
+        when:
+        permissionGrant = ["username": "user2", "permission": "WRITE"]
+        response = makeRequest('api/v1/project/repoUser1/permissions', permissionGrant, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+        response.content.accepted == true
+
+        when:
+        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer1)
+
+        then:
+        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', permission: 'ADMIN']
+        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', permission: 'WRITE']
+        (response.content.permissions as List).size() == 2
+
+        when:  //user doesn't have enough permissions
+        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer2)
+
+        then:
+        response.statusLine.statusCode == 401
+        response.content.errorCode == 'PD-001'
+        response.content.message == 'user2 does not have access.'
+
+        //======================================
+        //== Give the other user READ permissions
+        //======================================
+        when:
+        permissionGrant = ["username": "user2", "permission": "ADMIN"]
+        response = makeRequest('api/v1/project/repoUser1/permissions', permissionGrant, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+        response.content.accepted == true
+
+        when:
+        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer1)
+
+        then:
+        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', permission: 'ADMIN']
+        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', permission: 'ADMIN']
+        (response.content.permissions as List).size() == 2
+
+        when:
+        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer2)
+
+        then:
+        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', permission: 'ADMIN']
+        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', permission: 'ADMIN']
+        (response.content.permissions as List).size() == 2
+
+        //======================================
+        //== Make user delete their own privileges
+        //======================================
+
+        when:
+        response = doDelete('api/v1/project/repoUser1/permissions/user2', userContainer2)
+
+        then:
+        response.statusLine.statusCode == 200
+
+        when:
+        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer1)
+
+        then:
+        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', permission: 'ADMIN']
+        (response.content.permissions as List).size() == 1
+
+        when:  //user doesn't have enough permissions
+        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer2)
+
+        then:
+        response.statusLine.statusCode == 401
+        response.content.errorCode == 'PD-001'
+        response.content.message == 'user2 does not have access.'
+    }
+
+    def doDelete(String endpoint, UserContainer container) {
+        def response = Request
+            .Delete("http://localhost:${environment.getProperty("local.server.port")}/$endpoint")
+            .addHeader("X-AUTH-TOKEN", container.tokenDetails.value)
+            .execute().returnResponse()
+
+        def responseString = response.entity.content.text ?: ""
+        def responseCode = response.statusLine
+
+        return new PostResponse(StringUtils.isEmpty(responseString)? null : (slurper.parseText(responseString) as Map), responseCode)
     }
 
     def makeRequest(String endpoint, UserContainer container = null) {

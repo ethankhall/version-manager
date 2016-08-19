@@ -49,7 +49,7 @@ class DefaultPermissionService @Autowired constructor(
         createPermissionGrantList(CromPermission.ADMIN).forEach {
             try {
                 if(acl.isGranted(listOf(it), listOf(sid), false)) {
-                    return permissionToCromPermission(it)
+                    return convertPermission(it)
                 }
             } catch (nfe: NotFoundException) {
                 //ignored
@@ -65,11 +65,12 @@ class DefaultPermissionService @Autowired constructor(
         val sid = CromUserAuthentication(cromUser).toSid()
         val acl = aclService.readAclById(oi, listOf(sid)) as MutableAcl
 
-        createPermissionGrantList(accessLevel).forEach { permission ->
-            acl.entries.mapIndexed { index, accessControlEntry ->
-                if (accessControlEntry.permission == permission && accessControlEntry.sid == sid) index else null
-            }.filterNotNull().sortedDescending().forEach {
-                acl.deleteAce(it)
+        accessLevel.getSelfAndLower().reversed().forEach { permission ->
+            for(i in acl.entries.size - 1 downTo 0) {
+                val entry = acl.entries[i]
+                if(entry.permission == convertPermission(permission) && entry.sid == sid) {
+                    acl.deleteAce(i)
+                }
             }
         }
         aclService.updateAcl(acl)
@@ -164,7 +165,7 @@ class DefaultPermissionService @Autowired constructor(
 
             list.addAll(readAclById
                 .entries
-                .map { PermissionService.PermissionPair((it.sid as PrincipalSid).principal, permissionToCromPermission(it.permission)) }
+                .map { PermissionService.PermissionPair((it.sid as PrincipalSid).principal, convertPermission(it.permission)) }
                 .toList())
 
             readAclById = readAclById.parentAcl
@@ -173,7 +174,7 @@ class DefaultPermissionService @Autowired constructor(
         return list
     }
 
-    internal fun permissionToCromPermission(permission: Permission): CromPermission {
+    internal fun convertPermission(permission: Permission): CromPermission {
         return when (permission) {
             BasePermission.ADMINISTRATION -> CromPermission.ADMIN
             BasePermission.WRITE -> CromPermission.WRITE
@@ -182,7 +183,17 @@ class DefaultPermissionService @Autowired constructor(
         }
     }
 
+    internal fun convertPermission(permission: CromPermission): Permission {
+        return when (permission) {
+            CromPermission.ADMIN -> BasePermission.ADMINISTRATION
+            CromPermission.WRITE -> BasePermission.WRITE
+            CromPermission.READ -> BasePermission.READ
+            else -> BasePermission.READ
+        }
+    }
+
     internal fun createPermissionGrantList(permissionLevel: CromPermission): List<Permission> {
+        permissionLevel.getSelfAndLower().map { convertPermission(it) }
         return when (permissionLevel) {
             CromPermission.ADMIN -> listOf(BasePermission.ADMINISTRATION, BasePermission.WRITE, BasePermission.READ)
             CromPermission.WRITE -> listOf(BasePermission.READ, BasePermission.WRITE)
@@ -196,6 +207,15 @@ class DefaultPermissionService @Autowired constructor(
             CromPermission.ADMIN -> listOf(BasePermission.ADMINISTRATION)
             CromPermission.WRITE -> listOf(BasePermission.ADMINISTRATION, BasePermission.WRITE)
             CromPermission.READ -> listOf(BasePermission.ADMINISTRATION, BasePermission.WRITE, BasePermission.READ)
+            CromPermission.NONE -> listOf()
+        }
+    }
+
+    fun CromPermission.getSelfAndLower(): List<CromPermission> {
+        return when (this) {
+            CromPermission.ADMIN -> listOf(CromPermission.ADMIN, CromPermission.WRITE, CromPermission.READ)
+            CromPermission.WRITE -> listOf(CromPermission.WRITE, CromPermission.READ)
+            CromPermission.READ -> listOf(CromPermission.READ)
             CromPermission.NONE -> listOf()
         }
     }
