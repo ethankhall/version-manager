@@ -7,6 +7,7 @@ Vagrant.configure(2) do |config|
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
   config.vm.network "private_network", ip: "172.0.1.100"
+  config.ssh.insert_key = false
 
   config.vm.provider "vmware_fusion" do |v|
     v.vmx["memsize"] = "1024"
