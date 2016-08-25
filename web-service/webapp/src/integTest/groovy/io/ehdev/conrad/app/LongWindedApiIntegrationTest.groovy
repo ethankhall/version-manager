@@ -337,6 +337,18 @@ class LongWindedApiIntegrationTest extends Specification {
         then:
         response.content.projectName == 'repoUser1'
         response.content.repoName == 'repo1'
+
+        when:
+        response = doDelete('api/v1/project/repoUser2/repo/repo2', userContainer2)
+
+        then:
+        response.statusLine.statusCode == 200
+
+        when:
+        response = makeRequest("api/v1/project/repoUser2/repo/repo2", null)
+
+        then:
+        response.statusLine.statusCode == 404
     }
 
     def 'handle versions'() {
