@@ -10,9 +10,11 @@ import tech.crom.model.project.CromProject
 import tech.crom.model.repository.CromRepo
 import tech.crom.model.repository.CromRepoDetails
 import tech.crom.security.authorization.api.PermissionService
+import javax.transaction.Transactional
 
 @Service
-class DefaultRepositoryApi @Autowired constructor(
+@Transactional
+open class DefaultRepositoryApi @Autowired constructor(
     val repoManager: RepoManager,
     val versionBumperManager: VersionBumperManager,
     val permissionService: PermissionService

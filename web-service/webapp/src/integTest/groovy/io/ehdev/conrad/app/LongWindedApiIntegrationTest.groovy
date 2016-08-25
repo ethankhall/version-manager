@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.core.env.Environment
 import org.springframework.security.test.context.support.WithMockUser
-import org.springframework.test.annotation.Commit
 import org.springframework.test.context.ContextConfiguration
 import org.springframework.test.context.TestPropertySource
 import spock.lang.Shared
@@ -54,9 +53,13 @@ class LongWindedApiIntegrationTest extends Specification {
     @Shared
     UserContainer userContainer2
 
-    @Commit
     def 'clean up env'() {
+        def datasourceUrl = environment.getProperty('spring.datasource.url')
+
         expect:
+        //Make sure this is only running on local boxes
+        datasourceUrl.startsWith('jdbc:postgresql://172.0.1.100') || datasourceUrl.startsWith('jdbc:postgresql://127.0.0.1')
+
         [AclEntryTable, AclObjectIdentityTable, AclClassTable, AclSidTable].each {
             context.truncate(it.newInstance()).cascade().execute()
         }
@@ -103,16 +106,14 @@ class LongWindedApiIntegrationTest extends Specification {
         response.statusLine.statusCode == 404
 
         when:
-        def content = ["scmUrl": "git@github.com:foo/bar.git", "bumper": "semver"]
-        response = makeRequest("api/v1/project/repoUser1", content, userContainer1)
+        response = makeRequest("api/v1/project/repoUser1", null, userContainer1)
 
         then:
         response.statusLine.statusCode == 201
         response.content.name == 'repoUser1'
 
         when:
-        content = ["scmUrl": "git@github.com:foo/bar.git", "bumper": "semver"]
-        response = makeRequest("api/v1/project/repoUser2", content, userContainer2)
+        response = makeRequest("api/v1/project/repoUser2", null, userContainer2)
 
         then:
         response.statusLine.statusCode == 201
@@ -296,6 +297,123 @@ class LongWindedApiIntegrationTest extends Specification {
         response.content.message == 'user2 does not have access.'
     }
 
+    def 'create a repo for each user'() {
+        when:
+        def response = makeRequest('api/v1/project/repoUser1/repo/repo1')
+
+        then:
+        response.statusLine.statusCode == 404
+
+        when:
+        def content = ["scmUrl": "git@github.com:foo/bar.git", "bumper": "semver"]
+        response = makeRequest("api/v1/project/repoUser1/repo/repo1", content, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+        response.content.projectName == 'repoUser1'
+        response.content.repoName == 'repo1'
+        response.content.url == content.scmUrl
+
+        when:
+        content = ["scmUrl": "git@github.com:foo/bar.git", "bumper": "semver"]
+        response = makeRequest("api/v1/project/repoUser2/repo/repo2", content, userContainer2)
+
+        then:
+        response.statusLine.statusCode == 201
+        response.content.projectName == 'repoUser2'
+        response.content.repoName == 'repo2'
+        response.content.url == content.scmUrl
+
+        when:
+        response = makeRequest("api/v1/project/repoUser2/repo/repo2", null)
+
+        then:
+        response.content.projectName == 'repoUser2'
+        response.content.repoName == 'repo2'
+
+        when:
+        response = makeRequest("api/v1/project/repoUser1/repo/repo1", null)
+
+        then:
+        response.content.projectName == 'repoUser1'
+        response.content.repoName == 'repo1'
+    }
+
+    def 'handle versions'() {
+        when:
+        def body = ["commits": [], "message": "bla", "commitId": "1"]
+        def response = makeRequest('api/v1/project/repoUser1/repo/repo1/version', body, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+        response.content.commitId == '1'
+        response.content.version == '0.0.1'
+
+        when:
+        body = ["commits": ['1'], "message": "bla[bump major]", "commitId": "2"]
+        response = makeRequest('api/v1/project/repoUser1/repo/repo1/version', body, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+        response.content.commitId == '2'
+        response.content.version == '1.0.0'
+
+        when:
+        body = ["commits": ['2', '1'], "message": "bla", "commitId": "3"]
+        response = makeRequest('api/v1/project/repoUser1/repo/repo1/version', body, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+        response.content.commitId == '3'
+        response.content.version == '1.0.1'
+
+        when:
+        // Should fail because user doesn't have permission
+        body = ["commits": ['3', '2', '1'], "message": "bla", "commitId": "4"]
+        response = makeRequest('api/v1/project/repoUser1/repo/repo1/version', body, userContainer2)
+
+        then:
+        response.statusLine.statusCode == 401
+        response.content.errorCode == 'PD-001'
+        response.content.message == 'user2 does not have access.'
+
+        when:
+        //try request as different user
+        response = makeRequest('api/v1/project/repoUser1/repo/repo1/versions', userContainer2)
+
+        then:
+        response.statusLine.statusCode == 200
+        response.content.commits[0].commitId == '3'
+        response.content.commits[0].version == '1.0.1'
+
+        response.content.commits[1].commitId == '2'
+        response.content.commits[1].version == '1.0.0'
+
+        response.content.commits[2].commitId == '1'
+        response.content.commits[2].version == '0.0.1'
+
+        response.content.latest.commitId == '3'
+        response.content.latest.version == '1.0.1'
+    }
+
+    def 'version search'() {
+        when:
+        def response = makeRequest('api/v1/project/repoUser1/repo/repo1/search/version', [commits: ['1', '2', '3']], userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
+        response.content.commitId == '3'
+        response.content.version == '1.0.1'
+
+        when:
+        response = makeRequest('api/v1/project/repoUser1/repo/repo1/search/version', [commits: ['1', '2', '3', '4']], userContainer2)
+
+        then:
+        response.statusLine.statusCode == 200
+        response.content.commitId == '3'
+        response.content.version == '1.0.1'
+    }
+
     def doDelete(String endpoint, UserContainer container) {
         def response = Request
             .Delete("http://localhost:${environment.getProperty("local.server.port")}/$endpoint")
@@ -305,7 +423,7 @@ class LongWindedApiIntegrationTest extends Specification {
         def responseString = response.entity.content.text ?: ""
         def responseCode = response.statusLine
 
-        return new PostResponse(StringUtils.isEmpty(responseString)? null : (slurper.parseText(responseString) as Map), responseCode)
+        return new PostResponse(StringUtils.isEmpty(responseString) ? null : (slurper.parseText(responseString) as Map), responseCode)
     }
 
     def makeRequest(String endpoint, UserContainer container = null) {

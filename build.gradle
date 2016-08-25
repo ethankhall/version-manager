@@ -9,9 +9,8 @@ buildscript {
     }
     dependencies {
         classpath 'io.ehdev.conrad.client:gradle-client:+'
-        classpath 'org.jfrog.buildinfo:build-info-extractor-gradle:3.2.0'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.3'
-        classpath "org.flywaydb:flyway-gradle-plugin:3.2.1"
+        classpath "org.flywaydb:flyway-gradle-plugin:4.0.3"
     }
 }
 
