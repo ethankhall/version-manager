@@ -58,7 +58,7 @@ class LongWindedApiIntegrationTest extends Specification {
 
         expect:
         //Make sure this is only running on local boxes
-        datasourceUrl.startsWith('jdbc:postgresql://172.0.1.100') || datasourceUrl.startsWith('jdbc:postgresql://127.0.0.1')
+        datasourceUrl.startsWith('jdbc:postgresql://172.0.1.100') || datasourceUrl.startsWith('jdbc:postgresql://localhost')
 
         [AclEntryTable, AclObjectIdentityTable, AclClassTable, AclSidTable].each {
             context.truncate(it.newInstance()).cascade().execute()
@@ -412,6 +412,63 @@ class LongWindedApiIntegrationTest extends Specification {
         response.statusLine.statusCode == 200
         response.content.commitId == '3'
         response.content.version == '1.0.1'
+    }
+
+    def 'token changes'() {
+        when:
+        //user without permissions shouldn't be able to look at things
+        def response = makeRequest('api/v1/project/repoUser1/repo/repo1/token', userContainer2)
+
+        then:
+        response.statusLine.statusCode == 401
+        response.content.errorCode == 'PD-001'
+        response.content.message == 'user2 does not have access.'
+
+        when:
+        response = makeRequest('api/v1/project/repoUser1/repo/repo1/token', userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
+        response.content.tokens == null
+
+        when:
+        response = makeRequest('api/v1/project/repoUser1/repo/repo1/token?validFor=1', [:], userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+        response.content.authToken != null
+        ZonedDateTime.parse(response.content.expiresAt as String).isBefore(ZonedDateTime.now().plusDays(1))
+
+        when:
+        // user doesn't have access
+        response = makeRequest('api/v1/project/repoUser1/repo/repo1/token', [:], userContainer2)
+
+        then:
+        response.statusLine.statusCode == 401
+        response.content.errorCode == 'PD-001'
+        response.content.message == 'user2 does not have access.'
+
+        when:
+        response = makeRequest('api/v1/project/repoUser1/repo/repo1/token', userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
+        String id = response.content.tokens[0].id
+        id != null
+
+        when:
+        response = doDelete('api/v1/project/repoUser1/repo/repo1/token/' + id, userContainer2)
+
+        then:
+        response.statusLine.statusCode == 401
+        response.content.errorCode == 'PD-001'
+        response.content.message == 'user2 does not have access.'
+
+        when:
+        response = doDelete('api/v1/project/repoUser1/repo/repo1/token/' + id, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
     }
 
     def doDelete(String endpoint, UserContainer container) {

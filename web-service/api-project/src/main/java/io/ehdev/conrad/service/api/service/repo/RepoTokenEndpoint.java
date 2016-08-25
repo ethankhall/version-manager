@@ -78,9 +78,9 @@ public class RepoTokenEndpoint {
         @InternalLink(name = "project", ref = "/../../.."),
         @InternalLink(name = "tokenType", ref = "/..")
     })
+    @RepoRequired
     @LoggedInUserRequired
     @AdminPermissionRequired
-    @RepoRequired
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<GetTokensResponse> findAllTokens(RequestDetails requestDetails) {
         List<GetTokensResponse.TokenEntryModel> tokens = tokenManagementApi
