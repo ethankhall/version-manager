@@ -6,7 +6,7 @@ import java.time.ZonedDateTime
 import java.util.*
 
 class CreateTokenResponse(
-    @JsonProperty("uuid") val uuid: UUID,
+    @JsonProperty("id") val uuid: UUID,
     @JsonProperty("createdAt") val createdAt: ZonedDateTime,
     @JsonProperty("expiresAt") val expiresAt: ZonedDateTime,
     @JsonProperty("authToken") val authToken: String) : DefaultResourceSupport()

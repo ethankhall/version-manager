@@ -483,6 +483,63 @@ class LongWindedApiIntegrationTest extends Specification {
         response.statusLine.statusCode == 200
     }
 
+    def 'create read and delete user tokens'() {
+        when:
+        //user without permissions shouldn't be able to look at things
+        def response = makeRequest('api/v1/user/tokens')
+
+        then:
+        response.statusLine.statusCode == 418
+        response.content.errorCode == 'UR-002'
+        response.content.message == 'Real user required, not API user.'
+
+        when:
+        response = makeRequest('api/v1/user/tokens', userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
+        (response.content.tokens as List).any { it.id == userContainer1.tokenDetails.id.toString() }
+
+        when:
+        def createdResponse = makeRequest('api/v1/user/tokens', [:], userContainer1)
+
+        then:
+        createdResponse.statusLine.statusCode == 201
+        createdResponse.content.id != null
+
+        when:
+        response = makeRequest('api/v1/user/tokens', userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
+        (response.content.tokens as List).any { it.id == userContainer1.tokenDetails.id.toString() }
+        (response.content.tokens as List).any { it.id == createdResponse.content.id }
+
+        when:
+        response = doDelete('api/v1/user/tokens/' + createdResponse.content.id, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
+
+        when:
+        response = makeRequest('api/v1/user/tokens', userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
+        (response.content.tokens as List).any { it.id == userContainer1.tokenDetails.id.toString() }
+        !(response.content.tokens as List).any { it.id == createdResponse.content.id }
+    }
+
+    def 'gets profile info'() {
+        when:
+        def response = makeRequest('api/v1/user/profile', userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
+        response.content.displayName == 'displayName'
+        response.content.userName == 'user1'
+    }
+
     def doDelete(String endpoint, UserContainer container) {
         def response = Request
             .Delete("http://localhost:${environment.getProperty("local.server.port")}/$endpoint")
