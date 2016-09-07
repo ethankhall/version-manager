@@ -13,7 +13,11 @@ import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
+import org.springframework.web.servlet.resource.GzipResourceResolver
+import org.springframework.web.servlet.resource.PathResourceResolver
+import java.util.concurrent.TimeUnit
 
 @EnableWebMvc
 @Configuration
@@ -38,5 +42,20 @@ open class ServiceApiConfig : WebMvcConfigurerAdapter() {
             .modulesToInstall(KotlinModule(), JavaTimeModule())
             .defaultViewInclusion(true)
         converters.add(MappingJackson2HttpMessageConverter(builder.build()))
+    }
+
+    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
+        registry.addResourceHandler("/webjars/**")
+            .addResourceLocations("classpath:/META-INF/resources/webjars/")
+            .setCachePeriod(TimeUnit.MINUTES.toSeconds(1).toInt())
+            .resourceChain(true)
+            .addResolver(GzipResourceResolver())
+            .addResolver(PathResourceResolver())
+
+        registry.addResourceHandler("/static/**")
+            .addResourceLocations("classpath:/static/")
+            .resourceChain(true)
+            .addResolver(GzipResourceResolver())
+            .addResolver(PathResourceResolver())
     }
 }

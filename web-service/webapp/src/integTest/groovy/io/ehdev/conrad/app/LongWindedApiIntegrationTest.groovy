@@ -465,6 +465,7 @@ class LongWindedApiIntegrationTest extends Specification {
 
         then:
         response.statusLine.statusCode == 200
+        response.content != null
         String id = response.content.tokens[0].id
         id != null
 

@@ -11,6 +11,10 @@ springBoot {
     executable = true
 }
 
+bootRun {
+    addResources = true
+}
+
 dependencies {
     compile project(":api:business-logic")
     compile project(":api:rest-model")
@@ -24,6 +28,12 @@ dependencies {
     compile project(':auth:authentication')
     compile project(':auth:authorization')
     compile libraries.kotlin
+
+    compile 'org.springframework.boot:spring-boot-devtools'
+
+    compile 'org.webjars:webjars-locator:0.30'
+    compile 'org.webjars:bootstrap:3.1.0'
+    compile 'org.webjars:jquery:2.1.1'
 
     //Spring
     compile libraries.springBoot
