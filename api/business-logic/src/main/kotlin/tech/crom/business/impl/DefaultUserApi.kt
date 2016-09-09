@@ -12,7 +12,8 @@ import javax.transaction.Transactional
 @Transactional
 open class DefaultUserApi(
     val userManager: UserManager
-): UserApi{
+): UserApi {
+
     override fun findUserDetails(userName: String): DetailedUser? {
         return userManager.findUserDetails(userName)?.toDetailedUser()
     }
@@ -24,5 +25,4 @@ open class DefaultUserApi(
     fun CromUser.toDetailedUser(): DetailedUser {
         return DetailedUser(this.userName, this.displayName)
     }
-
 }

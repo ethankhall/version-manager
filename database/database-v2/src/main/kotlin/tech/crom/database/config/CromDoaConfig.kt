@@ -29,4 +29,7 @@ open class CromDoaConfig {
 
     @Bean
     open fun repositoryTokensDao(config: org.jooq.Configuration): RepositoryTokensDao = RepositoryTokensDao(config)
+
+    @Bean
+    open fun watcherDao(config: org.jooq.Configuration): WatcherDao = WatcherDao(config)
 }

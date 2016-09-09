@@ -10,8 +10,8 @@ class ReverseApiCommitComparator : Comparator<VersionCommitDetails> {
             return 0
         }
 
-        val split1 = o1.version.versionString.split("\\.".toRegex()).toTypedArray()
-        val split2 = o2.version.versionString.split("\\.".toRegex()).toTypedArray()
+        val split1 = o1.version.versionParts
+        val split2 = o2.version.versionParts
         val sharedParts = Math.min(split1.size, split2.size)
         for (i in 0..sharedParts - 1) {
             if (split1[i].compareTo(split2[i]) != 0) {

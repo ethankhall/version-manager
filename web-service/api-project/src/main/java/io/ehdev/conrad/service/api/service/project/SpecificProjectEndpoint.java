@@ -36,13 +36,13 @@ import static io.ehdev.conrad.service.api.service.model.LinkUtilities.toLink;
 @RequestMapping(
     value = "/api/v1/project/{projectName}",
     produces = MediaType.APPLICATION_JSON_VALUE)
-public class ProjectEndpoint {
+public class SpecificProjectEndpoint {
 
     private final ProjectApi projectApi;
     private final RepositoryApi repositoryApi;
 
     @Autowired
-    public ProjectEndpoint(ProjectApi projectApi, RepositoryApi repositoryApi) {
+    public SpecificProjectEndpoint(ProjectApi projectApi, RepositoryApi repositoryApi) {
         this.projectApi = projectApi;
         this.repositoryApi = repositoryApi;
     }
@@ -55,7 +55,9 @@ public class ProjectEndpoint {
     public ResponseEntity<CreateProjectRequest> createProject(RequestDetails container,
                                                               HttpServletRequest request) {
         try {
-            CromProject project = projectApi.createProject(container.getRawRequest().getProjectName());
+            CromProject project = projectApi.createProject(
+                container.getRequestPermission().getCromUser(),
+                container.getRawRequest().getProjectName());
 
             CreateProjectRequest createProjectModel = new CreateProjectRequest(project.getProjectName());
             return ResponseEntity.created(URI.create(request.getRequestURL().toString())).body(createProjectModel);

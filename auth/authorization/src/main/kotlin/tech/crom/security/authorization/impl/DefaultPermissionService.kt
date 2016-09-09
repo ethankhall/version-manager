@@ -158,7 +158,7 @@ class DefaultPermissionService @Autowired constructor(
     //TODO: This guy needs a good test
     override fun retrieveAllPermissions(authorizedObject: AuthorizedObject): List<PermissionService.PermissionPair> {
         val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
-        var readAclById: Acl
+        var readAclById: Acl?
         try {
             readAclById = aclService.readAclById(oi)
         } catch (nfe: NotFoundException) {

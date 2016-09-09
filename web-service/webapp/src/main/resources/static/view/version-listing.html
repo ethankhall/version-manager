@@ -1,0 +1,17 @@
+<div ng-controller="VersionListing">
+    <h2><a ng-href="#/project/{{projectName}}">{{projectName}}</a> /
+        <a ng-href="#/project/{{projectName}}/repo/{{repoName}}">{{repoName}}</a> /
+        Versions</h2>
+    <div style="padding-left: 0.5em">
+        <h4>All Versions</h4>
+        <ul>
+            <li ng-repeat="commit in versionDetails.commits">
+                <a style="font-family: monospace">{{commit.version}} - {{commit.commitId | limitTo:5 }}{{commit.commitId.length > 20 ? '...' : ''}}</a>
+            </li>
+        </ul>
+    </div>
+    <br />
+    <br />
+    <button class="btn btn-info" ng-click="displayJson = !displayJson">Show/Hide Json</button>
+    <pre ng-hide="!displayJson">{{versionDetails|json}}</pre>
+</div>

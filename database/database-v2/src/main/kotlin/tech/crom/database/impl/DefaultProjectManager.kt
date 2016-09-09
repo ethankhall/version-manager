@@ -1,19 +1,40 @@
 package tech.crom.database.impl
 
 import io.ehdev.conrad.db.Tables
+import io.ehdev.conrad.db.tables.ProjectDetailsTable
 import io.ehdev.conrad.db.tables.daos.ProjectDetailsDao
+import io.ehdev.conrad.db.tables.pojos.ProjectDetails
+import io.ehdev.conrad.db.tables.records.ProjectDetailsRecord
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import tech.crom.database.api.ProjectManager
 import tech.crom.model.project.CromProject
+import tech.crom.model.project.FilteredProjects
+import tech.crom.model.user.CromUser
 import java.util.*
 
 @Service
 class DefaultProjectManager @Autowired constructor(
     val dslContext: DSLContext,
     val projectDetailsDao: ProjectDetailsDao
-): ProjectManager {
+) : ProjectManager {
+
+    override fun findProjects(offset: Int, size: Int): FilteredProjects {
+        val filteredProjects = dslContext.select()
+            .from(ProjectDetailsTable.PROJECT_DETAILS)
+            .offset(offset)
+            .limit(size)
+            .fetch()
+            .into(ProjectDetailsTable.PROJECT_DETAILS)
+            .map { it.toCromProject() }
+
+        val tableSize = dslContext.selectCount()
+            .from(ProjectDetailsTable.PROJECT_DETAILS)
+            .fetchOne(0, Int::class.java)
+
+        return FilteredProjects(filteredProjects, tableSize)
+    }
 
     override fun findProject(projectName: String): CromProject? {
         val projectDetails = projectDetailsDao.fetchOneByProjectName(projectName) ?: return null
@@ -29,11 +50,19 @@ class DefaultProjectManager @Autowired constructor(
             .fetchOne()
             .into(projectDetails)
 
-        return CromProject(record.uuid, record.securityId, record.projectName)
+        return record.toCromProject()
     }
 
     override fun findProject(uid: UUID): CromProject? {
         val projectDetails = projectDetailsDao.fetchOneByUuid(uid) ?: return null
-        return CromProject(projectDetails.uuid, projectDetails.securityId, projectDetails.projectName)
+        return projectDetails.toCromProject()
+    }
+
+    fun ProjectDetails.toCromProject(): CromProject {
+        return CromProject(this.uuid, this.securityId, this.projectName)
+    }
+
+    fun ProjectDetailsRecord.toCromProject(): CromProject {
+        return CromProject(this.uuid, this.securityId, this.projectName)
     }
 }
