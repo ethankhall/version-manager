@@ -21,7 +21,7 @@ import tech.crom.version.bumper.config.VersionBumperConfig;
 @Import({DatabaseConfig.class, ClockConfig.class, SharedMasterConfig.class, SpringTransactionProvider.class,
     VersionBumperConfig.class, BuisnessLogicConfig.class, AuthorizationConfig.class, AuthenticationConfig.class,
     ServiceApiConfig.class})
-@ComponentScan("io.ehdev.conrad.app")
+@ComponentScan({"io.ehdev.conrad.app", "tech.crom.webapp.endpoint"})
 @EnableAutoConfiguration
 public class MainApplication {
 

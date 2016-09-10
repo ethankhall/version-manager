@@ -20,6 +20,7 @@ import tech.crom.model.token.GeneratedTokenDetails;
 import tech.crom.model.token.TokenType;
 import tech.crom.web.api.model.RequestDetails;
 
+import javax.transaction.Transactional;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
@@ -37,6 +38,7 @@ public class RepoTokenEndpoint {
         this.tokenManagementApi = tokenManagementApi;
     }
 
+    @Transactional
     @InternalLinks(links = {
         @InternalLink(name = "project", ref = "/../../.."),
         @InternalLink(name = "tokenType", ref = "/..")
@@ -51,6 +53,7 @@ public class RepoTokenEndpoint {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @Transactional
     @InternalLinks(links = {
         @InternalLink(name = "project", ref = "/../../.."),
         @InternalLink(name = "tokenType", ref = "/..")

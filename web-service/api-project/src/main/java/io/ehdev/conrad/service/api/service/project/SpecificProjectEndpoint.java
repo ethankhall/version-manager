@@ -24,6 +24,7 @@ import tech.crom.model.security.authorization.CromPermission;
 import tech.crom.web.api.model.RequestDetails;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +49,7 @@ public class SpecificProjectEndpoint {
     }
 
 
+    @Transactional
     @InternalLinks
     @LoggedInUserRequired
     @ProjectRequired(exists = false)

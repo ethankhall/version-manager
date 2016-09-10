@@ -5,8 +5,8 @@ import org.jooq.DSLContext
 import org.jooq.Record
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Transactional
 import tech.crom.database.api.CommitManager
-import tech.crom.model.commit.CommitDetails
 import tech.crom.model.commit.CommitIdContainer
 import tech.crom.model.commit.impl.PersistedCommit
 import tech.crom.model.commit.impl.RealizedCommit
@@ -15,7 +15,8 @@ import tech.crom.toZonedDateTime
 import java.time.Clock
 
 @Service
-class DefaultCommitManager @Autowired constructor(
+@Transactional
+open class DefaultCommitManager @Autowired constructor(
     val dslContext: DSLContext,
     val clock: Clock
 ) : CommitManager {

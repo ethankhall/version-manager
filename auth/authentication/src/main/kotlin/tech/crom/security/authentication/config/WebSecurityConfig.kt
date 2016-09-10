@@ -12,12 +12,10 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter
 import org.springframework.security.config.http.SessionCreationPolicy
 import org.springframework.security.core.userdetails.UserDetailsService
-import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter
 import org.springframework.social.UserIdSource
 import org.springframework.social.security.SocialAuthenticationFilter
 import org.springframework.social.security.SpringSocialConfigurer
 import tech.crom.security.authentication.config.stateless.SocialAuthenticationSuccessHandler
-import tech.crom.security.authentication.config.stateless.StatelessAuthenticationFilter
 
 @Configuration
 @EnableWebSecurity
@@ -32,9 +30,8 @@ open class WebSecurityConfig @Autowired constructor(
         //@formatter:off
         http
             .formLogin()
-                .loginPage("/signin")
-                .loginProcessingUrl("/signin/authenticate")
-                .failureUrl("/signin?param.error=bad_credentials")
+                .loginPage("/#/login")
+                .failureUrl("/#/login?param.error=bad_credentials")
             .and()
                 .logout()
                     .logoutUrl("/signout")
@@ -61,6 +58,7 @@ open class WebSecurityConfig @Autowired constructor(
 
         socialConfigurer.addObjectPostProcessor(object : ObjectPostProcessor<SocialAuthenticationFilter> {
             override fun <O : SocialAuthenticationFilter> postProcess(filter: O): O {
+                filter.setSignupUrl(null)
                 filter.setAuthenticationSuccessHandler(socialAuthenticationSuccessHandler)
                 return filter
             }

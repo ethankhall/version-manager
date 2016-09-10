@@ -25,6 +25,7 @@ import tech.crom.service.api.ReverseApiCommitComparator;
 import tech.crom.web.api.model.RequestDetails;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
 import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,6 +72,7 @@ public class RepoVersionEndpoint {
         return ResponseEntity.ok(response);
     }
 
+    @Transactional
     @InternalLinks(links = {
         @InternalLink(name = "project", ref = "/../../.."),
         @InternalLink(name = "versions", ref = "/../versions"),

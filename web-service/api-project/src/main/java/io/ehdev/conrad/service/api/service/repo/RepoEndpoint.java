@@ -33,6 +33,7 @@ import tech.crom.model.repository.CromRepoDetails;
 import tech.crom.model.security.authorization.CromPermission;
 import tech.crom.web.api.model.RequestDetails;
 
+import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -63,6 +64,7 @@ public class RepoEndpoint {
     }
 
     @RepoRequired
+    @Transactional
     @AdminPermissionRequired
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity deleteRepo(RequestDetails requestDetails) {
@@ -70,7 +72,8 @@ public class RepoEndpoint {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @InternalLinks()
+    @InternalLinks
+    @Transactional
     @WritePermissionRequired
     @RepoRequired(exists = false)
     @RequestMapping(method = RequestMethod.POST)
@@ -94,7 +97,8 @@ public class RepoEndpoint {
 
             CommitIdContainer commitIdContainer = null;
             for (RequestedCommit requestedCommit : requestedCommits) {
-                PersistedCommit commit = commitApi.createCommit(repo, requestedCommit, Collections.singletonList(commitIdContainer));
+                List<CommitIdContainer> commitList = commitIdContainer == null ? null : Collections.singletonList(commitIdContainer);
+                PersistedCommit commit = commitApi.createCommit(repo, requestedCommit, commitList);
                 commitIdContainer = new CommitIdContainer(commit.getCommitId());
             }
         }
