@@ -3,6 +3,7 @@ package io.ehdev.conrad.service.api.service.project;
 import io.ehdev.conrad.model.project.CreateProjectRequest;
 import io.ehdev.conrad.model.project.GetProjectResponse;
 import io.ehdev.conrad.model.project.RepoDefinitionsDetails;
+import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ProjectRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
@@ -89,5 +90,18 @@ public class SpecificProjectEndpoint {
         });
 
         return ResponseEntity.ok(projectModel);
+    }
+
+    @Transactional
+    @ProjectRequired
+    @AdminPermissionRequired
+    @RequestMapping(method = RequestMethod.DELETE)
+    public ResponseEntity deleteProject(RequestDetails container) {
+        Collection<CromRepo> repo = repositoryApi.findRepo(container.getCromProject());
+        repo.forEach(repositoryApi::deleteRepo);
+
+        projectApi.deleteProject(container.getCromProject());
+
+        return new ResponseEntity(HttpStatus.OK);
     }
 }

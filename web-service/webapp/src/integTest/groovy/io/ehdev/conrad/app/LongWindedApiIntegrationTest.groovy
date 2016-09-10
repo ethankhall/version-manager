@@ -305,7 +305,18 @@ class LongWindedApiIntegrationTest extends Specification {
         response.statusLine.statusCode == 404
 
         when:
-        def content = ["scmUrl": "git@github.com:foo/bar.git", "bumper": "semver"]
+        def content = ["scmUrl": "git@github.com:foo/bar.git", "bumper": "semver", "history": [
+            [
+                "commitId" : "0",
+                "version"  : "0.0.1"
+
+            ],
+            [
+                "commitId" : "1",
+                "version"  : "1.0.0",
+                "createdAt": "2016-09-10T17:15:30.545Z"
+            ]
+        ]]
         response = makeRequest("api/v1/project/repoUser1/repo/repo1", content, userContainer1)
 
         then:
@@ -353,31 +364,22 @@ class LongWindedApiIntegrationTest extends Specification {
 
     def 'handle versions'() {
         when:
-        def body = ["commits": [], "message": "bla", "commitId": "1"]
+        def body = ["commits": ['1'], "message": "bla", "commitId": "2"]
         def response = makeRequest('api/v1/project/repoUser1/repo/repo1/version', body, userContainer1)
 
         then:
         response.statusLine.statusCode == 201
-        response.content.commitId == '1'
-        response.content.version == '0.0.1'
-
-        when:
-        body = ["commits": ['1'], "message": "bla[bump major]", "commitId": "2"]
-        response = makeRequest('api/v1/project/repoUser1/repo/repo1/version', body, userContainer1)
-
-        then:
-        response.statusLine.statusCode == 201
         response.content.commitId == '2'
-        response.content.version == '1.0.0'
+        response.content.version == '1.0.1'
 
         when:
-        body = ["commits": ['2', '1'], "message": "bla", "commitId": "3"]
+        body = ["commits": ['2', '1', '0'], "message": "bla[bump major]", "commitId": "3"]
         response = makeRequest('api/v1/project/repoUser1/repo/repo1/version', body, userContainer1)
 
         then:
         response.statusLine.statusCode == 201
         response.content.commitId == '3'
-        response.content.version == '1.0.1'
+        response.content.version == '2.0.0'
 
         when:
         // Should fail because user doesn't have permission
@@ -396,16 +398,19 @@ class LongWindedApiIntegrationTest extends Specification {
         then:
         response.statusLine.statusCode == 200
         response.content.commits[0].commitId == '3'
-        response.content.commits[0].version == '1.0.1'
+        response.content.commits[0].version == '2.0.0'
 
         response.content.commits[1].commitId == '2'
-        response.content.commits[1].version == '1.0.0'
+        response.content.commits[1].version == '1.0.1'
 
         response.content.commits[2].commitId == '1'
-        response.content.commits[2].version == '0.0.1'
+        response.content.commits[2].version == '1.0.0'
+
+        response.content.commits[3].commitId == '0'
+        response.content.commits[3].version == '0.0.1'
 
         response.content.latest.commitId == '3'
-        response.content.latest.version == '1.0.1'
+        response.content.latest.version == '2.0.0'
     }
 
     def 'version search'() {
@@ -415,7 +420,7 @@ class LongWindedApiIntegrationTest extends Specification {
         then:
         response.statusLine.statusCode == 200
         response.content.commitId == '3'
-        response.content.version == '1.0.1'
+        response.content.version == '2.0.0'
 
         when:
         response = makeRequest('api/v1/project/repoUser1/repo/repo1/search/version', [commits: ['1', '2', '3', '4']], userContainer2)
@@ -423,7 +428,7 @@ class LongWindedApiIntegrationTest extends Specification {
         then:
         response.statusLine.statusCode == 200
         response.content.commitId == '3'
-        response.content.version == '1.0.1'
+        response.content.version == '2.0.0'
     }
 
     def 'token changes'() {
@@ -479,6 +484,20 @@ class LongWindedApiIntegrationTest extends Specification {
 
         when:
         response = doDelete('api/v1/project/repoUser1/repo/repo1/token/' + id, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
+    }
+
+    def 'can delete repo'() {
+        when:
+        def response = doDelete('api/v1/project/repoUser1/repo/repo1', userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
+
+        when:
+        response = doDelete('api/v1/project/repoUser2', userContainer2)
 
         then:
         response.statusLine.statusCode == 200

@@ -20,6 +20,11 @@ open class DefaultProjectApi @Autowired constructor(
     val watcherManager: WatcherManager
 ) : ProjectApi {
 
+    override fun deleteProject(project: CromProject) {
+        projectManager.deleteProject(project)
+        permissionService.remove(project)
+    }
+
     override fun findProjects(offset: Int, size: Int): FilteredProjects {
         val saneSize = Math.min(size, 100)
         return projectManager.findProjects(offset, saneSize)

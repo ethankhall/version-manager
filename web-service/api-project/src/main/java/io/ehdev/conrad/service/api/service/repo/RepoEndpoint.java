@@ -97,7 +97,7 @@ public class RepoEndpoint {
 
             CommitIdContainer commitIdContainer = null;
             for (RequestedCommit requestedCommit : requestedCommits) {
-                List<CommitIdContainer> commitList = commitIdContainer == null ? null : Collections.singletonList(commitIdContainer);
+                List<CommitIdContainer> commitList = commitIdContainer == null ? Collections.emptyList() : Collections.singletonList(commitIdContainer);
                 PersistedCommit commit = commitApi.createCommit(repo, requestedCommit, commitList);
                 commitIdContainer = new CommitIdContainer(commit.getCommitId());
             }

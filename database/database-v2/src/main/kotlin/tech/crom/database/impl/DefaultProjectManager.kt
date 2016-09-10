@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service
 import tech.crom.database.api.ProjectManager
 import tech.crom.model.project.CromProject
 import tech.crom.model.project.FilteredProjects
-import tech.crom.model.user.CromUser
 import java.util.*
 
 @Service
@@ -19,6 +18,20 @@ class DefaultProjectManager @Autowired constructor(
     val dslContext: DSLContext,
     val projectDetailsDao: ProjectDetailsDao
 ) : ProjectManager {
+
+    override fun deleteProject(project: CromProject) {
+        val watcher = Tables.WATCHER
+        dslContext
+            .deleteFrom(watcher)
+            .where(watcher.PROJECT_DETAILS_UUID.eq(project.projectUid))
+            .execute()
+
+        val details = Tables.PROJECT_DETAILS
+        dslContext
+            .deleteFrom(details)
+            .where(details.UUID.eq(project.projectUid))
+            .execute()
+    }
 
     override fun findProjects(offset: Int, size: Int): FilteredProjects {
         val filteredProjects = dslContext.select()

@@ -15,4 +15,6 @@ interface ProjectApi {
     fun projectExists(projectName: String): Boolean
 
     fun findProjects(offset: Int, size: Int): FilteredProjects
+
+    fun deleteProject(project: CromProject)
 }

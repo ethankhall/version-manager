@@ -26,7 +26,19 @@ class DefaultRepoManager @Autowired constructor(
             .fetchOne(0, Int::class.java) == 1
     }
 
-    override fun deleteRepo(cromRepo: CromRepo) = repoDetailsDao.deleteById(cromRepo.repoUid)
+    override fun deleteRepo(cromRepo: CromRepo) {
+        val tokens = Tables.REPOSITORY_TOKENS
+        dslContext
+            .deleteFrom(tokens)
+            .where(tokens.REPO_UUID.eq(cromRepo.repoUid))
+            .execute()
+
+        val repoDetails = Tables.REPO_DETAILS
+        dslContext
+            .deleteFrom(repoDetails)
+            .where(repoDetails.UUID.eq(cromRepo.repoUid))
+            .execute()
+    }
 
     override fun createRepo(cromProject: CromProject,
                             repoName: String,
