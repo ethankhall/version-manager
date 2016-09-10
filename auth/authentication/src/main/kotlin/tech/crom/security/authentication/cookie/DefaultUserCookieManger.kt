@@ -1,17 +1,23 @@
 package tech.crom.security.authentication.cookie
 
+import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.core.env.Environment
 import org.springframework.stereotype.Service
 import org.springframework.web.util.CookieGenerator
 import javax.servlet.http.HttpServletRequest
 import javax.servlet.http.HttpServletResponse
 
 @Service
-class DefaultUserCookieManger : UserCookieManger {
+open class DefaultUserCookieManger @Autowired constructor(
+    env: Environment
+) : UserCookieManger {
 
     private val userCookieGenerator = CookieGenerator()
+    private val domain: String
 
     init {
         this.userCookieGenerator.cookieName = "crom_cookie"
+        domain = env.getRequiredProperty("auth.domain")
     }
 
     override fun addCookie(contents: String, response: HttpServletResponse) {

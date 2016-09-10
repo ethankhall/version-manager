@@ -1,4 +1,5 @@
 auth:
+    domain: localhost
     client:
         google:
             clientId: 501986272416-882h8qm11sherv2m99geckohi2mrmffh.apps.googleusercontent.com
