@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
 class DefaultUserCookieMangerTest : Spek({
 
     val environment = MockEnvironment()
-    environment.setProperty("auth.domain", "localhost") 
+    environment.setProperty("auth.domain", "localhost")
     val cookieManager = DefaultUserCookieManger(environment)
 
     on("cookie manager") {
