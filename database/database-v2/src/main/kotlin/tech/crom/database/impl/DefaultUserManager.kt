@@ -13,7 +13,16 @@ import java.util.*
 class DefaultUserManager @Autowired constructor(
     val dslContext: DSLContext,
     val userDetailsDao: UserDetailsDao
-): UserManager {
+) : UserManager {
+
+    override fun changeDisplayName(sourceUser: CromUser, displayName: String) {
+        val userDetails = Tables.USER_DETAILS
+        dslContext
+            .update(userDetails)
+            .set(userDetails.NAME, displayName)
+            .where(userDetails.UUID.eq(sourceUser.userUid))
+            .execute()
+    }
 
     override fun findUserDetails(userName: String): CromUser? {
         val user = userDetailsDao.fetchOneByUserName(userName) ?: return null
@@ -47,7 +56,7 @@ class DefaultUserManager @Autowired constructor(
     }
 
     override fun changeUserName(cromUser: CromUser, newUserName: String): CromUser {
-        if (userNameExists(newUserName)) {
+        if (userNameExists(newUserName) && cromUser.userName != newUserName) {
             throw UserManager.UsernameAlreadyExists(newUserName)
         }
 

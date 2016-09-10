@@ -7,10 +7,10 @@ import java.time.Clock;
 public class BaseHttpException extends RuntimeException {
 
     private final HttpStatus httpStatus;
-    private final String errorCode;
+    private final ErrorCode errorCode;
     private final long timestamp;
 
-    public BaseHttpException(HttpStatus httpStatus, String errorCode, String message) {
+    public BaseHttpException(HttpStatus httpStatus, ErrorCode errorCode, String message) {
         super(message);
         this.httpStatus = httpStatus;
         this.errorCode = errorCode;
@@ -22,7 +22,7 @@ public class BaseHttpException extends RuntimeException {
     }
 
     public String getErrorCode() {
-        return errorCode;
+        return errorCode.getErrorCode();
     }
 
     public long getTimestamp() {

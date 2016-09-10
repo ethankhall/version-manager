@@ -17,5 +17,7 @@ interface UserManager {
 
     fun userNameExists(userName: String): Boolean
 
+    fun  changeDisplayName(sourceUser: CromUser, displayName: String)
+
     class UsernameAlreadyExists(newUserName: String): RuntimeException(newUserName)
 }

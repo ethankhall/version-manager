@@ -560,6 +560,32 @@ class LongWindedApiIntegrationTest extends Specification {
         response.content.userName == 'user1'
     }
 
+    def 'update profile info'() {
+        when:
+        def body = [updates: [[field: 'DISPLAY_NAME', value: 'bob burger'], [field: 'USER_NAME', value: 'newUser']]]
+        def response = makeRequest('api/v1/user/profile/update', body, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
+
+        when:
+        response = makeRequest('api/v1/user/profile', userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
+        response.content.displayName == 'bob burger'
+        response.content.userName == 'newUser'
+
+        when:
+        body = [updates: [[field: 'USER_NAME', value: 'newUser']]]
+        response = makeRequest('api/v1/user/profile/update', body, userContainer2)
+
+        then:
+        response.statusLine.statusCode == 406
+        response.content.errorCode == 'UP-002'
+        response.content.message == 'Username already exists.'
+    }
+
     def doDelete(String endpoint, UserContainer container) {
         def response = Request
             .Delete("http://localhost:${environment.getProperty("local.server.port")}/$endpoint")
@@ -591,7 +617,7 @@ class LongWindedApiIntegrationTest extends Specification {
             .addHeader("X-AUTH-TOKEN", container.tokenDetails.value)
             .bodyString(builder.toString(), ContentType.APPLICATION_JSON)
             .execute().returnResponse()
-        def responseString = response.entity.content.text
+        def responseString = response.entity.content.text ?: "{}"
         def responseCode = response.statusLine
 
         return new PostResponse(slurper.parseText(responseString) as Map, responseCode)

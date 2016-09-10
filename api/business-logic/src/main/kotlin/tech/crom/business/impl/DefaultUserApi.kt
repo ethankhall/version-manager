@@ -14,6 +14,18 @@ open class DefaultUserApi(
     val userManager: UserManager
 ): UserApi {
 
+    override fun update(user: CromUser) {
+        val sourceUser = userManager.findUserDetails(user.userUid)!!
+
+        if(user.userName != sourceUser.userName) {
+            userManager.changeUserName(sourceUser, user.userName)
+        }
+
+        if(user.displayName != sourceUser.displayName) {
+            userManager.changeDisplayName(sourceUser, user.displayName)
+        }
+    }
+
     override fun findUserDetails(userName: String): DetailedUser? {
         return userManager.findUserDetails(userName)?.toDetailedUser()
     }
@@ -23,6 +35,6 @@ open class DefaultUserApi(
     }
 
     fun CromUser.toDetailedUser(): DetailedUser {
-        return DetailedUser(this.userName, this.displayName)
+        return DetailedUser(this)
     }
 }
