@@ -1,10 +1,15 @@
 <div ng-controller="RepoListing">
-    <h2><a ng-href="#/project/{{projectName}}">{{projectName}}</a> / {{repoName}}</h2>
+    <h2>
+        <a ng-href="#/project/{{projectName}}">{{projectName}}</a> /
+        <a ng-href="#/project/{{projectName}}/repo/{{repoName}}">{{repoName}}</a>
+    </h2>
     <table class="table table-striped">
-        <tr>
-            <td>Name</td>
-            <td>Description</td>
-        </tr>
+        <thead class="thead-default">
+            <tr>
+                <td>Name</td>
+                <td>Description</td>
+            </tr>
+        </thead>
         <tr ng-repeat="(key, prop) in linkLess(repoDetails) track by key">
             <td>{{key}}</td>
             <td>{{prop}}</td>

@@ -1,5 +1,5 @@
 <div ng-controller="ProjectListing">
-    <h2>Repositories</h2>
+    <h2><a ng-href="#/project/{{projectName}}">{{projectName}}</a></h2>
     <ul>
         <li ng-repeat="repo in projectDetails.repos">
             <a ng-href="#/project/{{projectName}}/repo/{{repo.name}}">{{repo.name}}</a>

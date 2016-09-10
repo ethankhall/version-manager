@@ -1,14 +1,38 @@
 <div ng-controller="VersionListing">
     <h2><a ng-href="#/project/{{projectName}}">{{projectName}}</a> /
         <a ng-href="#/project/{{projectName}}/repo/{{repoName}}">{{repoName}}</a> /
-        Versions</h2>
-    <div style="padding-left: 0.5em">
-        <h4>All Versions</h4>
-        <ul>
-            <li ng-repeat="commit in versionDetails.commits">
-                <a style="font-family: monospace">{{commit.version}} - {{commit.commitId | limitTo:5 }}{{commit.commitId.length > 20 ? '...' : ''}}</a>
-            </li>
-        </ul>
+        versions
+        <span ng-hide="selectedVersion == null" > /
+            <a ng-href="#/project/{{projectName}}/repo/{{repoName}}/version/{{selectedVersion}}">{{versionJson.version}}</a>
+        </span>
+    </h2>
+    <div style="padding-left: 0.5em" class="row">
+        <div class="col-sm-3">
+            <h4>All Versions</h4>
+            <ul ng-show="versionDetails">
+                <li ng-repeat="commit in versionDetails.commits">
+                    <a style="font-family: monospace"
+                       ng-href="#/project/{{projectName}}/repo/{{repoName}}/version/{{commit.commitId}}">{{commit.version}} -
+                        {{commit.commitId | limitTo:5 }}{{commit.commitId.length > 5 ? '...' : ''}}</a>
+                </li>
+            </ul>
+        </div>
+        <div class="col-sm-6">
+            <table ng-hide="selectedVersion == null" class="table table-striped">
+                <thead class="thead-default">
+                    <tr>
+                        <td>Description</td>
+                        <td>Value</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="(key, prop) in linkLess(versionJson) track by key">
+                        <td>{{key}}</td>
+                        <td>{{prop}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
     <br />
     <br />
