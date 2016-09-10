@@ -24,9 +24,7 @@ class DefaultPermissionService @Autowired constructor(
     val projectManager: ProjectManager
 ) : PermissionService {
 
-    companion object {
-        val logger by getLogger()
-    }
+    val logger by getLogger()
 
     override fun remove(authorizedObject: AuthorizedObject) {
         val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
@@ -34,7 +32,7 @@ class DefaultPermissionService @Autowired constructor(
     }
 
     override fun findHighestPermission(authorizedObject: AuthorizedObject): CromPermission {
-        logger.info("Finding highest permission for on ${authorizedObject.getId()}")
+        logger.debug("Finding highest permission for on ${authorizedObject.getId()}")
         val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
 
         val sid = findCromAuthentication()?.toSid() ?: return CromPermission.NONE
