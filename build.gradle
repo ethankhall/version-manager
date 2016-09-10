@@ -63,7 +63,7 @@ subprojects {
 
     task resolveDependencies {
         doLast {
-            configurations.testRuntime.files
+            configurations.each { it.files }
         }
     }
 
