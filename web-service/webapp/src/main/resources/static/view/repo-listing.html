@@ -3,6 +3,7 @@
         <a ng-href="#/project/{{projectName}}">{{projectName}}</a> /
         <a ng-href="#/project/{{projectName}}/repo/{{repoName}}">{{repoName}}</a>
     </h2>
+    <a ng-click="watch(projectName, repoName)" ng-hide="authToken == null">Watch this Repo</a>
     <table class="table table-striped">
         <thead class="thead-default">
             <tr>

@@ -1,5 +1,6 @@
 <div ng-controller="ProjectListing">
     <h2><a ng-href="#/project/{{projectName}}">{{projectName}}</a></h2>
+    <a ng-click="watch(projectName)" ng-hide="authToken == null">Watch this Project</a>
     <ul>
         <li ng-repeat="repo in projectDetails.repos">
             <a ng-href="#/project/{{projectName}}/repo/{{repo.name}}">{{repo.name}}</a>
