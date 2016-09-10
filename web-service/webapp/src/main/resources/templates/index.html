@@ -14,14 +14,14 @@
 <body ng-app="cromApp">
 
 
-<nav ng-controller="LoginController" class="navbar navbar-default">
+<nav ng-controller="NavController" class="navbar navbar-default">
     <div class="container-fluid">
         <div class="navbar-header">
             <a class="navbar-brand" href="/#/">Crom</a>
         </div>
         <div class="navbar-right">
             <p ng-hide="authToken != null"><a ng-href="/#/login">Login!</a></p>
-            <p ng-hide="authToken == null"><a ng-href="/#/login">Log Out</a></p>
+            <p ng-hide="authToken == null"><a ng-click="logout()">Log Out</a></p>
         </div>
     </div>
 </nav>

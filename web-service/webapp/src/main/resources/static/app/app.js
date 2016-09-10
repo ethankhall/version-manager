@@ -15,6 +15,9 @@ cromApp.config(function ($routeProvider) {
         .when('/project/:projectName/repo/:repoName/version/:version?', {
             templateUrl: 'static/view/version-listing.html'
         })
+        .when('/login', {
+            templateUrl: 'static/view/login.html'
+        })
         .otherwise({
             redirectTo: "/"
         });
@@ -55,6 +58,9 @@ cromApp.factory('LoginService', function ($cookies) {
     return {
         auth: function () {
             return authToken;
+        },
+        logout: function() {
+            $cookies.remove('crom_cookie');
         }
     }
 });
@@ -63,6 +69,13 @@ cromApp.controller('LoginController', function ($scope, $cookies, LoginService) 
     $scope.authToken = LoginService.auth();
 });
 
+cromApp.controller('NavController', function ($scope, $cookies, LoginService) {
+    $scope.authToken = LoginService.auth();
+    $scope.logout = function () {
+        LoginService.logout();
+        $scope.authToken = null;
+    };
+});
 
 cromApp.controller('VersionListing', function ($scope, $http, $routeParams, JsonFilterService) {
     var projectName = $routeParams['projectName'];
