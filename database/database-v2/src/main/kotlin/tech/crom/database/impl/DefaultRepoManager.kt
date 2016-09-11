@@ -1,7 +1,8 @@
 package tech.crom.database.impl
 
 import io.ehdev.conrad.db.Tables
-import io.ehdev.conrad.db.tables.daos.RepoDetailsDao
+import io.ehdev.conrad.db.tables.RepoDetailsTable
+import io.ehdev.conrad.db.tables.records.RepoDetailsRecord
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.CacheEvict
@@ -16,8 +17,7 @@ import java.util.*
 
 @Service
 open class DefaultRepoManager @Autowired constructor(
-    val dslContext: DSLContext,
-    val repoDetailsDao: RepoDetailsDao
+    val dslContext: DSLContext
 ) : RepoManager {
 
     override fun doesRepoExist(cromProject: CromProject, repoName: String): Boolean {
@@ -76,8 +76,7 @@ open class DefaultRepoManager @Autowired constructor(
     override fun findRepo(cromProject: CromProject, repoName: String): CromRepo? {
         val repoDetails = Tables.REPO_DETAILS
         val record = dslContext
-            .select(repoDetails.fields().toList())
-            .from(repoDetails)
+            .selectFrom(repoDetails)
             .where(repoDetails.REPO_NAME.eq(repoName)).and(repoDetails.PROJECT_UUID.eq(cromProject.projectUid))
             .fetchOne()
             ?.into(repoDetails) ?: return null
@@ -88,8 +87,7 @@ open class DefaultRepoManager @Autowired constructor(
     override fun findRepo(cromProject: CromProject): Collection<CromRepo> {
         val details = Tables.REPO_DETAILS
         return dslContext
-            .select(details.fields().toList())
-            .from(details)
+            .selectFrom(details)
             .where(details.PROJECT_UUID.eq(cromProject.projectUid))
             .fetch()
             .into(details)
@@ -98,13 +96,21 @@ open class DefaultRepoManager @Autowired constructor(
 
     @Cacheable("repoByUid")
     override fun findRepo(uuid: UUID): CromRepo? {
-        val repo = repoDetailsDao.fetchOneByUuid(uuid) ?: return null
+        val repo = fetchOneRepoDetailsByUid(uuid) ?: return null
         return CromRepo(repo.uuid, repo.securityId, repo.projectUuid, repo.repoName, repo.versionBumperUuid)
     }
 
     @Cacheable("repoDetailsByUid", key="#cromRepo.repoUid")
     override fun getDetails(cromRepo: CromRepo): RepoManager.CromRepoDetails {
-        val repo = repoDetailsDao.fetchOneByUuid(cromRepo.repoUid)
+        val repo = fetchOneRepoDetailsByUid(cromRepo.repoUid)!!
         return RepoManager.CromRepoDetails(cromRepo, repo.versionBumperUuid, repo.public, repo.url, repo.description)
+    }
+
+    private fun fetchOneRepoDetailsByUid(uid: UUID): RepoDetailsRecord? {
+        val details = RepoDetailsTable.REPO_DETAILS
+        return dslContext
+            .selectFrom(details)
+            .where(details.UUID.eq(uid))
+            .fetchOne()?.into(details)
     }
 }

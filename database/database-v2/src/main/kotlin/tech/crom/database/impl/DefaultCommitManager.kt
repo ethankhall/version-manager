@@ -47,8 +47,7 @@ open class DefaultCommitManager @Autowired constructor(
         val cd = Tables.COMMIT_DETAILS.`as`("cd")
 
         val query = dslContext
-            .select()
-            .from(cd)
+            .selectFrom(cd)
             .where(cd.REPO_DETAILS_UUID.eq(cromRepo.repoUid))
 
         val record: Record
@@ -72,8 +71,7 @@ open class DefaultCommitManager @Autowired constructor(
         val cd = Tables.COMMIT_DETAILS
 
         val commits = dslContext
-            .select(cd.fields().toList())
-            .from(cd)
+            .selectFrom(cd)
             .where(cd.REPO_DETAILS_UUID.eq(cromRepo.repoUid))
             .fetch()
             .into(cd)
@@ -92,8 +90,7 @@ open class DefaultCommitManager @Autowired constructor(
         val cd = Tables.COMMIT_DETAILS.`as`("cd")
         //@formatter:off
         val record = dslContext
-            .select()
-            .from(cd)
+            .selectFrom(cd)
             .where(cd.REPO_DETAILS_UUID.eq(cromRepo.repoUid).and(cd.COMMIT_ID.`in`(commitIds)))
             .orderBy(cd.CREATED_AT.desc())
             .limit(1)

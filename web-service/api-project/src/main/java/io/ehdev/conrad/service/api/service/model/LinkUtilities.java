@@ -1,13 +1,8 @@
 package io.ehdev.conrad.service.api.service.model;
 
 import io.ehdev.conrad.model.ResourceLink;
-import io.ehdev.conrad.service.api.service.repo.RepoEndpoint;
-import io.ehdev.conrad.service.api.service.repo.RepoVersionEndpoint;
 import org.springframework.hateoas.Link;
 import tech.crom.web.api.model.RequestDetails;
-
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
-import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 public class LinkUtilities {
 
@@ -15,19 +10,17 @@ public class LinkUtilities {
 
     private LinkUtilities() { }
 
-    public static Link repositorySelfLink(RequestDetails container, String repoName) {
-        return linkTo(methodOn(RepoEndpoint.class, container.getRawRequest().getProjectName(), repoName)
-            .getRepoDetails(container)).withRel("self");
+    public static ResourceLink repositorySelfLink(RequestDetails container) {
+        return new ResourceLink("self", container.getRawRequest().getRequestPath());
     }
 
-    public static Link repositoryLink(RequestDetails container, String linkName) {
-        return linkTo(methodOn(RepoEndpoint.class, container.getRawRequest().getProjectName(), container.getRawRequest().getRepoName())
-            .getRepoDetails(container)).withRel(linkName);
-    }
+    public static ResourceLink versionSelfLink(RequestDetails container, String version) {
+        String url = "/api/v1/project/" +
+            container.getCromProject().getProjectName() +
+            "/repo/" + container.getCromRepo().getRepoName() +
+            "/version/" + version;
 
-    public static Link versionSelfLink(RequestDetails container, String version) {
-        return linkTo(methodOn(RepoVersionEndpoint.class, container.getRawRequest().getProjectName(), container.getRawRequest().getRepoName())
-            .findVersion(container, version)).withSelfRel();
+        return new ResourceLink("self", url);
     }
 
     public static ResourceLink toLink(Link link) {

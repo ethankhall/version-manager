@@ -1,7 +1,7 @@
 package tech.crom.database.impl
 
 import io.ehdev.conrad.db.Tables
-import io.ehdev.conrad.db.tables.daos.UserDetailsDao
+import io.ehdev.conrad.db.tables.UserDetailsTable
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.CacheEvict
@@ -13,8 +13,7 @@ import java.util.*
 
 @Service
 open class DefaultUserManager @Autowired constructor(
-    val dslContext: DSLContext,
-    val userDetailsDao: UserDetailsDao
+    val dslContext: DSLContext
 ) : UserManager {
 
     @CacheEvict("userById", key = "#sourceUser.userUid.toString()")
@@ -28,7 +27,11 @@ open class DefaultUserManager @Autowired constructor(
     }
 
     override fun findUserDetails(userName: String): CromUser? {
-        val user = userDetailsDao.fetchOneByUserName(userName) ?: return null
+        val details = UserDetailsTable.USER_DETAILS
+        val user = dslContext
+            .selectFrom(details)
+            .where(details.USER_NAME.eq(userName))
+            .fetchOne()?.into(details) ?: return null
         return CromUser(user.uuid, user.userName, user.name)
     }
 
@@ -78,7 +81,11 @@ open class DefaultUserManager @Autowired constructor(
 
     @Cacheable("userById", key = "#uuid.toString()")
     override fun findUserDetails(uuid: UUID): CromUser? {
-        val user = userDetailsDao.fetchOneByUuid(uuid) ?: return null
+        val details = UserDetailsTable.USER_DETAILS
+        val user = dslContext
+            .selectFrom(details)
+            .where(details.UUID.eq(uuid))
+            .fetchOne()?.into(details) ?: return null
         return CromUser(user.uuid, user.userName, user.name)
     }
 }

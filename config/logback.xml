@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <appender name="metrics-file" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>log/metrics.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>log/metrics.%d{yyyy-MM-dd}.log</fileNamePattern>
+
+            <maxHistory>2</maxHistory>
+            <totalSizeCap>10MB</totalSizeCap>
+
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>[%d] %msg%n</pattern>
+        </encoder>
+    </appender> 
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+    <!--<logger name="org.springframework.web" level="DEBUG"/>-->
+    <!--<logger name="org.springframework.cache" level="DEBUG"/>-->
+    <logger name="io.ehdev" level="INFO"/>
+    <logger name="tech.crom" level="INFO"/>
+    <logger name="tech.crom.config.MetricsConfiguration" level="INFO" additivity="false">
+         <appender-ref ref="metrics-file" />
+    </logger>
+    <logger name="org.jooq" level="INFO"/>
+</configuration>
+

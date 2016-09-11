@@ -2,8 +2,6 @@ package tech.crom.database.impl
 
 import io.ehdev.conrad.db.Tables
 import io.ehdev.conrad.db.tables.ProjectDetailsTable
-import io.ehdev.conrad.db.tables.daos.ProjectDetailsDao
-import io.ehdev.conrad.db.tables.pojos.ProjectDetails
 import io.ehdev.conrad.db.tables.records.ProjectDetailsRecord
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
@@ -18,8 +16,7 @@ import java.util.*
 
 @Service
 open class DefaultProjectManager @Autowired constructor(
-    val dslContext: DSLContext,
-    val projectDetailsDao: ProjectDetailsDao
+    val dslContext: DSLContext
 ) : ProjectManager {
 
     @Caching(evict = arrayOf(
@@ -41,8 +38,7 @@ open class DefaultProjectManager @Autowired constructor(
     }
 
     override fun findProjects(offset: Int, size: Int): FilteredProjects {
-        val filteredProjects = dslContext.select()
-            .from(ProjectDetailsTable.PROJECT_DETAILS)
+        val filteredProjects = dslContext.selectFrom(ProjectDetailsTable.PROJECT_DETAILS)
             .offset(offset)
             .limit(size)
             .fetch()
@@ -58,7 +54,12 @@ open class DefaultProjectManager @Autowired constructor(
 
     @Cacheable("projectByName")
     override fun findProject(projectName: String): CromProject? {
-        val projectDetails = projectDetailsDao.fetchOneByProjectName(projectName) ?: return null
+        val details = ProjectDetailsTable.PROJECT_DETAILS
+        val projectDetails = dslContext
+            .selectFrom(details)
+            .where(details.PROJECT_NAME.eq(projectName))
+            .fetchOne()?.into(details) ?: return null
+
         return CromProject(projectDetails.uuid, projectDetails.securityId, projectDetails.projectName)
     }
 
@@ -80,12 +81,13 @@ open class DefaultProjectManager @Autowired constructor(
 
     @Cacheable("projectById", key="#uid.toString()")
     override fun findProject(uid: UUID): CromProject? {
-        val projectDetails = projectDetailsDao.fetchOneByUuid(uid) ?: return null
-        return projectDetails.toCromProject()
-    }
+        val details = ProjectDetailsTable.PROJECT_DETAILS
+        val projectDetails = dslContext
+            .selectFrom(details)
+            .where(details.UUID.eq(uid))
+            .fetchOne()?.into(details) ?: return null
 
-    fun ProjectDetails.toCromProject(): CromProject {
-        return CromProject(this.uuid, this.securityId, this.projectName)
+        return projectDetails.toCromProject()
     }
 
     fun ProjectDetailsRecord.toCromProject(): CromProject {

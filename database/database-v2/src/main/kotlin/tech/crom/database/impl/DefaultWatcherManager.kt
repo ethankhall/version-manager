@@ -1,7 +1,6 @@
 package tech.crom.database.impl
 
 import io.ehdev.conrad.db.tables.WatcherTable
-import io.ehdev.conrad.db.tables.daos.WatcherDao
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
@@ -12,8 +11,7 @@ import tech.crom.model.user.CromUser
 
 @Service
 open class DefaultWatcherManager @Autowired constructor(
-    val dslContext: DSLContext,
-    val watcherDao: WatcherDao
+    val dslContext: DSLContext
 ) : WatcherManager {
 
     override fun addWatch(cromUser: CromUser, cromProject: CromProject) {
@@ -69,7 +67,13 @@ open class DefaultWatcherManager @Autowired constructor(
     }
 
     override fun getWatches(cromUser: CromUser): List<WatcherManager.UserWatch> {
-        return watcherDao.fetchByUserUuid(cromUser.userUid).map { WatcherManager.UserWatch(it.projectDetailsUuid, it.repoDetailsUuid) }
+        val watcher = WatcherTable.WATCHER
+        return dslContext
+            .selectFrom(watcher)
+            .where(watcher.USER_UUID.eq(cromUser.userUid))
+            .fetch()
+            .into(watcher)
+            .map { WatcherManager.UserWatch(it.projectDetailsUuid, it.repoDetailsUuid) }
     }
 
 }

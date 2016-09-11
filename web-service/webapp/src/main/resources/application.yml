@@ -16,14 +16,6 @@ jwt:
     signing:
         key: secret
 
-logging:
-    level:
-        io:
-            ehdev: DEBUG
-        org:
-            pac4j: DEBUG
-            jooq: DEBUG
-
 flyway:
     out-of-order: true
 

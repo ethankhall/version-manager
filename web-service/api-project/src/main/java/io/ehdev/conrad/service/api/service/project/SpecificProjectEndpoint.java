@@ -32,7 +32,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static io.ehdev.conrad.service.api.service.model.LinkUtilities.repositorySelfLink;
-import static io.ehdev.conrad.service.api.service.model.LinkUtilities.toLink;
 
 @Controller
 @RequestMapping(
@@ -85,7 +84,7 @@ public class SpecificProjectEndpoint {
 
         repos.forEach(it -> {
             RepoDefinitionsDetails repo = new RepoDefinitionsDetails(it.getRepoName());
-            repo.addLink(toLink(repositorySelfLink(container, it.getRepoName())));
+            repo.addLink(repositorySelfLink(container));
             details.add(repo);
         });
 

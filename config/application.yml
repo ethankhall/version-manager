@@ -1,0 +1,28 @@
+auth:
+    domain: 'localhost'
+    client:
+        google:
+            clientId: 501986272416-882h8qm11sherv2m99geckohi2mrmffh.apps.googleusercontent.com
+            clientSecret: qHv-RKsHe5zavBhjWwXmktMr
+
+server:
+    port: 8080
+
+management:
+    context-path: /admin
+    port: 8081
+
+jwt:
+    signing:
+        key: secret
+
+flyway:
+    out-of-order: true
+
+spring:
+    datasource:
+        url: jdbc:postgresql://172.0.1.100/version_manager
+        username: version
+        password: password
+    jpa:
+        show-sql: true

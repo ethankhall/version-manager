@@ -1,7 +1,9 @@
 package tech.crom.database.impl
 
-import io.ehdev.conrad.db.tables.daos.VersionBumpersDao
+import io.ehdev.conrad.db.tables.VersionBumpersTable
+import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import tech.crom.database.api.VersionBumperManager
 import tech.crom.model.bumper.CromVersionBumper
@@ -9,17 +11,27 @@ import tech.crom.model.repository.CromRepo
 import java.util.*
 
 @Service
-class DefaultVersionBumperManager @Autowired constructor(
-    val versionBumpersDao: VersionBumpersDao
+open class DefaultVersionBumperManager @Autowired constructor(
+    val dslContext: DSLContext
 ): VersionBumperManager {
 
+    @Cacheable("versionBumperByName")
     override fun findBumper(name: String): CromVersionBumper? {
-        val b = versionBumpersDao.fetchOneByBumperName(name) ?: return null
+        val details = VersionBumpersTable.VERSION_BUMPERS
+        val b = dslContext
+            .selectFrom(details)
+            .where(details.BUMPER_NAME.eq(name))
+            .fetchOne()?.into(details) ?: return null
         return CromVersionBumper(b.uuid, b.bumperName, b.className, b.description, createExecutorInstance(b.className))
     }
 
+    @Cacheable("versionBumperByRepo", key = "#cromRepo.repoUid.toString()")
     override fun getBumper(cromRepo: CromRepo): CromVersionBumper {
-        val b = versionBumpersDao.fetchOneByUuid(cromRepo.versionBumperUid) ?: throw BumperNotFoundException(cromRepo.versionBumperUid)
+        val details = VersionBumpersTable.VERSION_BUMPERS
+        val b = dslContext
+            .selectFrom(details)
+            .where(details.UUID.eq(cromRepo.versionBumperUid))
+            .fetchOne()?.into(details) ?: throw BumperNotFoundException(cromRepo.versionBumperUid)
         return CromVersionBumper(b.uuid, b.bumperName, b.className, b.description, createExecutorInstance(b.className))
     }
 

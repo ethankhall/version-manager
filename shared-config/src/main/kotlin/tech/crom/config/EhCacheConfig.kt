@@ -30,6 +30,8 @@ open class EhCacheConfig() {
         cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("projectById", 30)))
         cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("allCommitsByRepo", 30)))
         cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("commitById", 30)))
+        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("versionBumperByName")))
+        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("versionBumperByRepo")))
 
         return cacheManager
     }

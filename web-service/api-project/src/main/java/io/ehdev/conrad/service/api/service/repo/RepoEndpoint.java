@@ -154,7 +154,7 @@ public class RepoEndpoint {
             VersionSearchResponse body = new VersionSearchResponse(latestCommit.getCommitId(),
                 latestCommit.getVersion().getVersionString(),
                 latestCommit.getCreatedAt());
-            body.addLink(toLink(versionSelfLink(requestDetails, latestCommit.getVersion().getVersionString())));
+            body.addLink(versionSelfLink(requestDetails, latestCommit.getVersion().getVersionString()));
             return ResponseEntity.ok(body);
         }
     }

@@ -1,11 +1,18 @@
 package io.ehdev.conrad.app;
 
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.util.thread.QueuedThreadPool;
+import org.springframework.beans.factory.config.CustomScopeConfigurer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.context.support.SimpleThreadScope;
+import org.springframework.core.env.Environment;
 import tech.crom.business.config.BuisnessLogicConfig;
 import tech.crom.config.ClockConfig;
 import tech.crom.config.DatabaseConfig;
@@ -15,6 +22,9 @@ import tech.crom.security.authentication.config.AuthenticationConfig;
 import tech.crom.security.authorization.config.AuthorizationConfig;
 import tech.crom.service.api.config.ServiceApiConfig;
 import tech.crom.version.bumper.config.VersionBumperConfig;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @EnableCaching
 @Configuration
@@ -26,6 +36,32 @@ import tech.crom.version.bumper.config.VersionBumperConfig;
 public class MainApplication {
 
     public static void main(String[] args) throws Exception {
-        SpringApplication.run(MainApplication.class, args);
+        SpringApplication.run(new Object[]{MainApplication.class, CromWebApplicationInitializer.class}, args);
+    }
+
+    @Bean
+    public JettyEmbeddedServletContainerFactory jettyEmbeddedServletContainerFactory(Environment env) {
+        Integer port = Integer.parseInt(env.getProperty("server.port"));
+        Integer maxThreads = Integer.parseInt(env.getProperty("jetty.threadPool.maxThreads", "40"));
+        Integer minThreads = Integer.parseInt(env.getProperty("jetty.threadPool.minThreads", "4"));
+        Integer idleTimeout = Integer.parseInt(env.getProperty("jetty.threadPool.idleTimeout", "60000"));
+        final JettyEmbeddedServletContainerFactory factory = new JettyEmbeddedServletContainerFactory(port);
+        factory.addServerCustomizers((Server server) -> {
+            final QueuedThreadPool threadPool = server.getBean(QueuedThreadPool.class);
+            threadPool.setMinThreads(minThreads);
+            threadPool.setMaxThreads(maxThreads);
+            threadPool.setIdleTimeout(idleTimeout);
+        });
+        return factory;
+    }
+
+    @Bean
+    public CustomScopeConfigurer customScope () {
+        CustomScopeConfigurer configurer = new CustomScopeConfigurer ();
+        Map<String, Object> workflowScope = new HashMap<>();
+        workflowScope.put("thread", new SimpleThreadScope());
+        configurer.setScopes(workflowScope);
+
+        return configurer;
     }
 }

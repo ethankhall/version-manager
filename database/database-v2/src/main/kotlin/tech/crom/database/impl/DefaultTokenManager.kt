@@ -7,6 +7,7 @@ import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.cache.annotation.Caching
 import org.springframework.stereotype.Service
+import org.springframework.web.context.annotation.RequestScope
 import tech.crom.database.api.TokenManager
 import tech.crom.model.repository.CromRepo
 import tech.crom.model.token.TokenType
@@ -18,6 +19,7 @@ import java.time.ZonedDateTime
 import java.util.*
 
 @Service
+@RequestScope
 open class DefaultTokenManager @Autowired constructor(
     val clock: Clock,
     val dslContext: DSLContext
@@ -28,8 +30,7 @@ open class DefaultTokenManager @Autowired constructor(
         if (tokenType == TokenType.REPOSITORY) {
             val tokensTable = Tables.REPOSITORY_TOKENS
             val repositoryToken = dslContext
-                .select(tokensTable.fields().toList())
-                .from(tokensTable)
+                .selectFrom(tokensTable)
                 .where(tokensTable.UUID.eq(tokenUid))
                 .fetchOne()?.into(tokensTable)
 
@@ -38,8 +39,7 @@ open class DefaultTokenManager @Autowired constructor(
         } else {
             val userTokens = Tables.USER_TOKENS
             val userToken = dslContext
-                .select(userTokens.fields().toList())
-                .from(userTokens)
+                .selectFrom(userTokens)
                 .where(userTokens.UUID.eq(tokenUid))
                 .fetchOne()?.into(userTokens)
             if (userToken == null || isTokenValid(userToken.valid, userToken.expiresAt) == false) { return null }
@@ -95,8 +95,7 @@ open class DefaultTokenManager @Autowired constructor(
     override fun findTokens(resourceUid: UUID, tokenType: TokenType): List<TokenManager.TokenDetails> {
         if (tokenType == TokenType.REPOSITORY) {
             val tokens = dslContext
-                .select(Tables.REPOSITORY_TOKENS.fields().toList())
-                .from(Tables.REPOSITORY_TOKENS)
+                .selectFrom(Tables.REPOSITORY_TOKENS)
                 .where(Tables.REPOSITORY_TOKENS.REPO_UUID.eq(resourceUid))
                     .and(Tables.REPOSITORY_TOKENS.VALID.eq(true))
                     .and(Tables.REPOSITORY_TOKENS.EXPIRES_AT.greaterOrEqual(Instant.now()))
@@ -114,8 +113,7 @@ open class DefaultTokenManager @Autowired constructor(
                 .toList()
         } else {
             val tokens = dslContext
-                .select(Tables.USER_TOKENS.fields().toList())
-                .from(Tables.USER_TOKENS)
+                .selectFrom(Tables.USER_TOKENS)
                 .where(Tables.USER_TOKENS.USER_UUID.eq(resourceUid))
                     .and(Tables.USER_TOKENS.VALID.eq(true))
                     .and(Tables.USER_TOKENS.EXPIRES_AT.greaterOrEqual(Instant.now()))
