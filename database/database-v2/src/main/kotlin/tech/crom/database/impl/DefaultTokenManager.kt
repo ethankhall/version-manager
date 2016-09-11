@@ -1,10 +1,10 @@
 package tech.crom.database.impl
 
 import io.ehdev.conrad.db.Tables
-import io.ehdev.conrad.db.tables.daos.RepositoryTokensDao
-import io.ehdev.conrad.db.tables.daos.UserTokensDao
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import tech.crom.database.api.TokenManager
 import tech.crom.model.repository.CromRepo
@@ -17,21 +17,31 @@ import java.time.ZonedDateTime
 import java.util.*
 
 @Service
-class DefaultTokenManager @Autowired constructor(
+open class DefaultTokenManager @Autowired constructor(
     val clock: Clock,
-    val dslContext: DSLContext,
-    val userTokensDao: UserTokensDao,
-    val repositoryTokensDao: RepositoryTokensDao
+    val dslContext: DSLContext
 ) : TokenManager {
 
-    override fun getTokenData(uid: UUID, tokenType: TokenType): TokenManager.UderlyingTokenDetails? {
+    @Cacheable("tokensById")
+    override fun getTokenData(tokenUid: UUID, tokenType: TokenType): TokenManager.UderlyingTokenDetails? {
         if (tokenType == TokenType.REPOSITORY) {
-            val repositoryToken = repositoryTokensDao.findById(uid) ?: return null
-            if (isTokenValid(repositoryToken.valid, repositoryToken.expiresAt) == false) { return null }
+            val tokensTable = Tables.REPOSITORY_TOKENS
+            val repositoryToken = dslContext
+                .select(tokensTable.fields().toList())
+                .from(tokensTable)
+                .where(tokensTable.UUID.eq(tokenUid))
+                .fetchOne()?.into(tokensTable)
+
+            if (repositoryToken == null || isTokenValid(repositoryToken.valid, repositoryToken.expiresAt) == false) { return null }
             return TokenManager.UderlyingTokenDetails(repositoryToken.repoUuid, tokenType)
         } else {
-            val userToken = userTokensDao.findById(uid) ?: return null
-            if (isTokenValid(userToken.valid, userToken.expiresAt) == false) { return null }
+            val userTokens = Tables.USER_TOKENS
+            val userToken = dslContext
+                .select(userTokens.fields().toList())
+                .from(userTokens)
+                .where(userTokens.UUID.eq(tokenUid))
+                .fetchOne()?.into(userTokens)
+            if (userToken == null || isTokenValid(userToken.valid, userToken.expiresAt) == false) { return null }
             return TokenManager.UderlyingTokenDetails(userToken.userUuid, tokenType)
         }
     }
@@ -72,12 +82,13 @@ class DefaultTokenManager @Autowired constructor(
             TokenType.REPOSITORY)
     }
 
-    override fun findTokens(cromRepo: UUID, tokenType: TokenType): List<TokenManager.TokenDetails> {
+    @Cacheable("tokensByResource")
+    override fun findTokens(resourceUid: UUID, tokenType: TokenType): List<TokenManager.TokenDetails> {
         if (tokenType == TokenType.REPOSITORY) {
             val tokens = dslContext
                 .select(Tables.REPOSITORY_TOKENS.fields().toList())
                 .from(Tables.REPOSITORY_TOKENS)
-                .where(Tables.REPOSITORY_TOKENS.REPO_UUID.eq(cromRepo))
+                .where(Tables.REPOSITORY_TOKENS.REPO_UUID.eq(resourceUid))
                     .and(Tables.REPOSITORY_TOKENS.VALID.eq(true))
                     .and(Tables.REPOSITORY_TOKENS.EXPIRES_AT.greaterOrEqual(Instant.now()))
                     .and(Tables.REPOSITORY_TOKENS.CREATED_AT.lessOrEqual(Instant.now()))
@@ -96,7 +107,7 @@ class DefaultTokenManager @Autowired constructor(
             val tokens = dslContext
                 .select(Tables.USER_TOKENS.fields().toList())
                 .from(Tables.USER_TOKENS)
-                .where(Tables.USER_TOKENS.USER_UUID.eq(cromRepo))
+                .where(Tables.USER_TOKENS.USER_UUID.eq(resourceUid))
                     .and(Tables.USER_TOKENS.VALID.eq(true))
                     .and(Tables.USER_TOKENS.EXPIRES_AT.greaterOrEqual(Instant.now()))
                     .and(Tables.USER_TOKENS.CREATED_AT.lessOrEqual(Instant.now()))
@@ -114,6 +125,7 @@ class DefaultTokenManager @Autowired constructor(
         }
     }
 
+    @CacheEvict("tokensById")
     override fun invalidateToken(uid: UUID, tokenType: TokenType) {
         if (tokenType == TokenType.REPOSITORY) {
             dslContext

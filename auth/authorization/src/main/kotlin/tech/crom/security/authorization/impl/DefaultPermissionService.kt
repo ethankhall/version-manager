@@ -32,7 +32,6 @@ class DefaultPermissionService @Autowired constructor(
     }
 
     override fun findHighestPermission(authorizedObject: AuthorizedObject): CromPermission {
-        logger.debug("Finding highest permission for on ${authorizedObject.getId()}")
         val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
 
         val sid = findCromAuthentication()?.toSid() ?: return CromPermission.NONE

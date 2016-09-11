@@ -21,14 +21,14 @@ interface TokenManager {
     /**
      * is token valid
      */
-    fun getTokenData(uid: UUID, tokenType: TokenType): UderlyingTokenDetails?
+    fun getTokenData(tokenUid: UUID, tokenType: TokenType): UderlyingTokenDetails?
 
     /**
      * Kill a token
      */
     fun invalidateToken(uid: UUID, tokenType: TokenType)
 
-    fun findTokens(cromRepo: UUID, tokenType: TokenType): List<TokenDetails>
+    fun findTokens(resourceUid: UUID, tokenType: TokenType): List<TokenDetails>
 
     data class UderlyingTokenDetails(val linkedUid: UUID, val tokenType: TokenType)
 

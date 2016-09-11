@@ -7,6 +7,9 @@ import io.ehdev.conrad.db.tables.pojos.ProjectDetails
 import io.ehdev.conrad.db.tables.records.ProjectDetailsRecord
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
+import org.springframework.cache.annotation.Caching
 import org.springframework.stereotype.Service
 import tech.crom.database.api.ProjectManager
 import tech.crom.model.project.CromProject
@@ -14,11 +17,15 @@ import tech.crom.model.project.FilteredProjects
 import java.util.*
 
 @Service
-class DefaultProjectManager @Autowired constructor(
+open class DefaultProjectManager @Autowired constructor(
     val dslContext: DSLContext,
     val projectDetailsDao: ProjectDetailsDao
 ) : ProjectManager {
 
+    @Caching(evict = arrayOf(
+        CacheEvict("projectByName", key="#project.projectName"),
+        CacheEvict("projectById", key="#project.projectUid.toString()")
+    ))
     override fun deleteProject(project: CromProject) {
         val watcher = Tables.WATCHER
         dslContext
@@ -49,6 +56,7 @@ class DefaultProjectManager @Autowired constructor(
         return FilteredProjects(filteredProjects, tableSize)
     }
 
+    @Cacheable("projectByName")
     override fun findProject(projectName: String): CromProject? {
         val projectDetails = projectDetailsDao.fetchOneByProjectName(projectName) ?: return null
         return CromProject(projectDetails.uuid, projectDetails.securityId, projectDetails.projectName)
@@ -66,6 +74,7 @@ class DefaultProjectManager @Autowired constructor(
         return record.toCromProject()
     }
 
+    @Cacheable("projectById", key="#uid.toString()")
     override fun findProject(uid: UUID): CromProject? {
         val projectDetails = projectDetailsDao.fetchOneByUuid(uid) ?: return null
         return projectDetails.toCromProject()

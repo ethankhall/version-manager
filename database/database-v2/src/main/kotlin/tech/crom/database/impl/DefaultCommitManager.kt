@@ -4,6 +4,8 @@ import io.ehdev.conrad.db.Tables
 import org.jooq.DSLContext
 import org.jooq.Record
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import tech.crom.database.api.CommitManager
@@ -21,6 +23,7 @@ open class DefaultCommitManager @Autowired constructor(
     val clock: Clock
 ) : CommitManager {
 
+    @CacheEvict("allCommitsByRepo", key="#cromRepo.repoUid.toString()")
     override fun createCommit(cromRepo: CromRepo,
                               generatedVersion: RealizedCommit,
                               parent: List<CommitIdContainer>): PersistedCommit {
@@ -39,6 +42,7 @@ open class DefaultCommitManager @Autowired constructor(
         return PersistedCommit(record.uuid, record.commitId, record.version, createdAt.toZonedDateTime())
     }
 
+    @Cacheable("commitById", key="#cromRepo.repoUid.toString() + #apiCommit.commitId")
     override fun findCommit(cromRepo: CromRepo, apiCommit: CommitIdContainer): PersistedCommit? {
         val cd = Tables.COMMIT_DETAILS.`as`("cd")
 
@@ -63,6 +67,7 @@ open class DefaultCommitManager @Autowired constructor(
             detailsRecord.createdAt.toZonedDateTime())
     }
 
+    @Cacheable("allCommitsByRepo", key="#cromRepo.repoUid.toString()")
     override fun findAllCommits(cromRepo: CromRepo): List<PersistedCommit> {
         val cd = Tables.COMMIT_DETAILS
 

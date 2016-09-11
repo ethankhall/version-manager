@@ -4,7 +4,6 @@ import com.codahale.metrics.MetricRegistry
 import com.codahale.metrics.ehcache.InstrumentedEhcache
 import net.sf.ehcache.Cache
 import net.sf.ehcache.config.CacheConfiguration
-import org.springframework.cache.CacheManager
 import org.springframework.cache.annotation.EnableCaching
 import org.springframework.cache.ehcache.EhCacheCacheManager
 import org.springframework.context.annotation.Bean
@@ -20,28 +19,30 @@ open class EhCacheConfig() {
     open fun ehCacheManager(metricRegistry: MetricRegistry): net.sf.ehcache.CacheManager {
         val cacheManager = net.sf.ehcache.CacheManager.create()
 
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, versionForRepoCacheConfig()))
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, aclCacheConfig()))
+        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("versionsForRepo", 10)))
+        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("aclCache")))
+        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("tokensById", 10)))
+        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("tokensByResource", 10)))
+        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("userById", 30)))
+        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("repoDetailsByUid", 30)))
+        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("repoByProjectAndName", 30)))
+        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("projectByName", 30)))
+        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("projectById", 30)))
+        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("allCommitsByRepo", 30)))
+        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("commitById", 30)))
 
         return cacheManager
     }
 
-    private fun versionForRepoCacheConfig(): Cache {
+    private fun createCache(name: String, ttl: Long? = null, maxEntries: Long = 5000, policy: String = "LRU"): Cache {
         val cacheConfiguration = CacheConfiguration()
-        cacheConfiguration.setTimeToLiveSeconds(10)
-        cacheConfiguration.setName("versionsForRepo")
-        cacheConfiguration.setMaxEntriesLocalHeap(5000)
-        cacheConfiguration.setMaxEntriesLocalDisk(0)
-        cacheConfiguration.setMemoryStoreEvictionPolicy("LRU")
-        return Cache(cacheConfiguration)
-    }
-
-    private fun aclCacheConfig(): Cache {
-        val cacheConfiguration = CacheConfiguration()
-        cacheConfiguration.setName("aclCache")
-        cacheConfiguration.setMaxEntriesLocalHeap(5000)
-        cacheConfiguration.setMaxEntriesLocalDisk(0)
-        cacheConfiguration.setMemoryStoreEvictionPolicy("LRU")
+        if(ttl != null) {
+            cacheConfiguration.timeToLiveSeconds = ttl
+        }
+        cacheConfiguration.name = name
+        cacheConfiguration.maxEntriesLocalHeap = maxEntries
+        cacheConfiguration.maxEntriesLocalDisk = 0
+        cacheConfiguration.setMemoryStoreEvictionPolicy(policy)
         return Cache(cacheConfiguration)
     }
 

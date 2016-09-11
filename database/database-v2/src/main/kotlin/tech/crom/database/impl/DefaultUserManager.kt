@@ -4,17 +4,20 @@ import io.ehdev.conrad.db.Tables
 import io.ehdev.conrad.db.tables.daos.UserDetailsDao
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
+import org.springframework.cache.annotation.CacheEvict
+import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import tech.crom.database.api.UserManager
 import tech.crom.model.user.CromUser
 import java.util.*
 
 @Service
-class DefaultUserManager @Autowired constructor(
+open class DefaultUserManager @Autowired constructor(
     val dslContext: DSLContext,
     val userDetailsDao: UserDetailsDao
 ) : UserManager {
 
+    @CacheEvict("userById", key = "sourceUser.userUid")
     override fun changeDisplayName(sourceUser: CromUser, displayName: String) {
         val userDetails = Tables.USER_DETAILS
         dslContext
@@ -55,6 +58,7 @@ class DefaultUserManager @Autowired constructor(
         return CromUser(user.uuid, user.userName, user.name)
     }
 
+    @CacheEvict("userById", key = "cromUser.userUid")
     override fun changeUserName(cromUser: CromUser, newUserName: String): CromUser {
         if (userNameExists(newUserName) && cromUser.userName != newUserName) {
             throw UserManager.UsernameAlreadyExists(newUserName)
@@ -72,6 +76,7 @@ class DefaultUserManager @Autowired constructor(
         return CromUser(user.uuid, user.userName, user.name)
     }
 
+    @Cacheable("userById")
     override fun findUserDetails(uuid: UUID): CromUser? {
         val user = userDetailsDao.fetchOneByUuid(uuid) ?: return null
         return CromUser(user.uuid, user.userName, user.name)
