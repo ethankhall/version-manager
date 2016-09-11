@@ -1,1 +1,20 @@
-apply plugin: 'java'
+plugins {
+    id "com.github.lkishalmi.gatling" version "0.4.1"
+    id "java"
+    id "scala"
+}
+
+apply plugin: 'kotlin'
+
+dependencies {
+    compile 'org.scala-lang:scala-library:2.11.1'
+}
+
+idea {
+    targetVersion = "13"
+}
+
+ScalaCompileOptions.metaClass.daemonServer = true
+ScalaCompileOptions.metaClass.fork = true
+ScalaCompileOptions.metaClass.useAnt = false
+ScalaCompileOptions.metaClass.useCompileDaemon = false

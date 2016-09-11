@@ -24,3 +24,5 @@ include ':api:version-bumper'
 
 //Docs
 include ':docs'
+
+include ':load-test'

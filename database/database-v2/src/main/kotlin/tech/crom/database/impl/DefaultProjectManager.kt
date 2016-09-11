@@ -62,6 +62,10 @@ open class DefaultProjectManager @Autowired constructor(
         return CromProject(projectDetails.uuid, projectDetails.securityId, projectDetails.projectName)
     }
 
+    @Caching(evict = arrayOf(
+        CacheEvict("projectById", key = "#result.projectUid.toString()"),
+        CacheEvict("projectByName", key = "#name")
+    ))
     override fun createProject(name: String): CromProject {
         val projectDetails = Tables.PROJECT_DETAILS
         val record = dslContext

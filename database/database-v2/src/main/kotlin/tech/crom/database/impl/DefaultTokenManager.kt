@@ -5,6 +5,7 @@ import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
+import org.springframework.cache.annotation.Caching
 import org.springframework.stereotype.Service
 import tech.crom.database.api.TokenManager
 import tech.crom.model.repository.CromRepo
@@ -50,6 +51,10 @@ open class DefaultTokenManager @Autowired constructor(
         return valid && clock.instant().isBefore(expirationDate)
     }
 
+    @Caching(evict = arrayOf(
+        CacheEvict("tokensByResource", allEntries = true),
+        CacheEvict("tokensById", allEntries = true)
+    ))
     override fun generateUserToken(cromUser: CromUser, expirationDate: ZonedDateTime): TokenManager.TokenDetails {
         val userTokens = Tables.USER_TOKENS
         val result = dslContext
@@ -66,6 +71,10 @@ open class DefaultTokenManager @Autowired constructor(
             TokenType.USER)
     }
 
+    @Caching(evict = arrayOf(
+        CacheEvict("tokensByResource", allEntries = true),
+        CacheEvict("tokensById", allEntries = true)
+    ))
     override fun generateRepoToken(cromRepo: CromRepo, expirationDate: ZonedDateTime): TokenManager.TokenDetails {
         val repoTokens = Tables.REPOSITORY_TOKENS
         val result = dslContext
@@ -125,7 +134,10 @@ open class DefaultTokenManager @Autowired constructor(
         }
     }
 
-    @CacheEvict("tokensById")
+    @Caching(evict = arrayOf(
+        CacheEvict("tokensByResource", allEntries = true),
+        CacheEvict("tokensById", allEntries = true)
+    ))
     override fun invalidateToken(uid: UUID, tokenType: TokenType) {
         if (tokenType == TokenType.REPOSITORY) {
             dslContext

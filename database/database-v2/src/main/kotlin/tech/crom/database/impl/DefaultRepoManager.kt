@@ -46,6 +46,9 @@ open class DefaultRepoManager @Autowired constructor(
             .execute()
     }
 
+    @Caching(evict = arrayOf(
+        CacheEvict("repoDetailsByUid", allEntries = true),
+        CacheEvict("repoByProjectAndName", key="#cromProject.projectUid.toString() + #repoName")))
     override fun createRepo(cromProject: CromProject,
                             repoName: String,
                             versionBumper: CromVersionBumper,

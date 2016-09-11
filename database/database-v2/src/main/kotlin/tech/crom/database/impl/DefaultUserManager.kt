@@ -17,7 +17,7 @@ open class DefaultUserManager @Autowired constructor(
     val userDetailsDao: UserDetailsDao
 ) : UserManager {
 
-    @CacheEvict("userById", key = "sourceUser.userUid")
+    @CacheEvict("userById", key = "#sourceUser.userUid.toString()")
     override fun changeDisplayName(sourceUser: CromUser, displayName: String) {
         val userDetails = Tables.USER_DETAILS
         dslContext
@@ -58,7 +58,7 @@ open class DefaultUserManager @Autowired constructor(
         return CromUser(user.uuid, user.userName, user.name)
     }
 
-    @CacheEvict("userById", key = "cromUser.userUid")
+    @CacheEvict("userById", key = "#cromUser.userUid.toString()")
     override fun changeUserName(cromUser: CromUser, newUserName: String): CromUser {
         if (userNameExists(newUserName) && cromUser.userName != newUserName) {
             throw UserManager.UsernameAlreadyExists(newUserName)
@@ -76,7 +76,7 @@ open class DefaultUserManager @Autowired constructor(
         return CromUser(user.uuid, user.userName, user.name)
     }
 
-    @Cacheable("userById")
+    @Cacheable("userById", key = "#uuid.toString()")
     override fun findUserDetails(uuid: UUID): CromUser? {
         val user = userDetailsDao.fetchOneByUuid(uuid) ?: return null
         return CromUser(user.uuid, user.userName, user.name)
