@@ -5,15 +5,18 @@ import com.codahale.metrics.Timer
 import org.jooq.ExecuteContext
 import org.jooq.Query
 import org.jooq.impl.DefaultExecuteListener
+import org.springframework.core.env.Environment
 import tech.crom.logger.getLogger
 
-class JooqMetricsCollector(metrics: MetricRegistry) : DefaultExecuteListener() {
+class JooqMetricsCollector(metrics: MetricRegistry, env: Environment) : DefaultExecuteListener() {
 
     val localTimer: ThreadLocal<LocalTimer>
 
     init {
         val responses = metrics.timer(MetricRegistry.name(JooqMetricsCollector::class.java, "queries"))
-        localTimer = ThreadLocal.withInitial { LocalTimer(responses) }
+        localTimer = ThreadLocal.withInitial {
+            LocalTimer(responses, env.getProperty("metrics.jooq.slowQuery", Long::class.java, 25))
+        }
     }
 
     override fun start(ctx: ExecuteContext) {
@@ -24,7 +27,7 @@ class JooqMetricsCollector(metrics: MetricRegistry) : DefaultExecuteListener() {
         localTimer.get().end({ctx.query()})
     }
 
-    class LocalTimer(val timer: Timer) {
+    class LocalTimer(val timer: Timer, val slowQueryTimeout: Long) {
         val log by getLogger()
 
         var instance: Timer.Context? = null
@@ -36,8 +39,8 @@ class JooqMetricsCollector(metrics: MetricRegistry) : DefaultExecuteListener() {
             val time = instance?.stop() ?: return
             val query = unit.invoke() ?: return
             val ms = time / 1000000
-            if (query.sql != null && ms >= 10) {
-                log.info("Long running ({} ms) sql query {}", ms, query.sql)
+            if (query.sql != null && ms >= slowQueryTimeout) {
+                log.info("Long running ({} ms) sql query `{}`", ms, query.sql)
             }
         }
     }

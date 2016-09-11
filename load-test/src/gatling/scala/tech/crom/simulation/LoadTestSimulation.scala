@@ -10,15 +10,15 @@ class LoadTestSimulation extends Simulation {
 
     val httpConf = http.baseURL("http://localhost:8080")
 
-    val projectDetails = scenario("GetProjectDetails").repeat(300) {
+    val projectDetails = scenario("GetProjectDetails").repeat(700) {
         exec(http("request_1").get("/api/v1/project/ethankhall").check(status.is(200)))
     }
 
-    val repoDetails = scenario("GetRepoDetails").repeat(300) {
+    val repoDetails = scenario("GetRepoDetails").repeat(700) {
         exec(http("request_2").get("/api/v1/project/ethankhall/repo/version-manager").check(status.is(200)))
     }
 
-    val repoVersions = scenario("GetVersions").repeat(300) {
+    val repoVersions = scenario("GetVersions").repeat(700) {
         exec(http("request_3").get("/api/v1/project/ethankhall/repo/version-manager/versions").check(status.is(200)))
     }
 

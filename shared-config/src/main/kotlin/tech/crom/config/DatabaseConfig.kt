@@ -11,11 +11,13 @@ import org.jooq.impl.DefaultConfiguration
 import org.jooq.impl.DefaultDSLContext
 import org.jooq.impl.DefaultExecuteListenerProvider
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.context.annotation.*
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.ComponentScan
+import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Import
 import org.springframework.core.env.Environment
 import org.springframework.jdbc.datasource.DataSourceTransactionManager
 import org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy
-import org.springframework.web.context.annotation.RequestScope
 import tech.crom.config.metrics.JooqMetricsCollector
 import javax.sql.DataSource
 
@@ -52,7 +54,6 @@ open class DatabaseConfig {
     }
 
     @Bean
-//    @Scope("thread", proxyMode = ScopedProxyMode.TARGET_CLASS)
     open fun defaultDSLContext(): DSLContext {
         return DefaultDSLContext(jooqConfiguration())
     }
@@ -62,7 +63,7 @@ open class DatabaseConfig {
             .derive(connectionProvider())
             .derive(transactionProvider())
             .derive(SQLDialect.POSTGRES_9_4)
-            .derive(DefaultExecuteListenerProvider(JooqMetricsCollector(metricRegistry!!)))
+            .derive(DefaultExecuteListenerProvider(JooqMetricsCollector(metricRegistry!!, environment!!)))
     }
 
     @Bean

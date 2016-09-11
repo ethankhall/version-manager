@@ -7,7 +7,6 @@ import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.cache.annotation.Caching
 import org.springframework.stereotype.Service
-import org.springframework.web.context.annotation.RequestScope
 import tech.crom.database.api.TokenManager
 import tech.crom.model.repository.CromRepo
 import tech.crom.model.token.TokenType
@@ -19,10 +18,9 @@ import java.time.ZonedDateTime
 import java.util.*
 
 @Service
-@RequestScope
 open class DefaultTokenManager @Autowired constructor(
-    val clock: Clock,
-    val dslContext: DSLContext
+    internal val clock: Clock,
+    internal val dslContext: DSLContext
 ) : TokenManager {
 
     @Cacheable("tokensById")
@@ -47,7 +45,7 @@ open class DefaultTokenManager @Autowired constructor(
         }
     }
 
-    private fun isTokenValid(valid: Boolean, expirationDate: Instant): Boolean {
+    internal fun isTokenValid(valid: Boolean, expirationDate: Instant): Boolean {
         return valid && clock.instant().isBefore(expirationDate)
     }
 

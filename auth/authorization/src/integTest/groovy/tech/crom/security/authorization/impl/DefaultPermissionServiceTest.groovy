@@ -6,24 +6,19 @@ import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.test.context.TestPropertySource
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
-import tech.crom.config.ClockConfig
-import tech.crom.config.DatabaseConfig
 import tech.crom.database.api.ProjectManager
 import tech.crom.database.api.RepoManager
 import tech.crom.database.api.VersionBumperManager
-import tech.crom.database.config.CromDoaConfig
 import tech.crom.model.security.authentication.CromUserAuthentication
 import tech.crom.model.security.authorization.CromPermission
 import tech.crom.model.user.CromUser
 import tech.crom.security.authorization.api.PermissionService
-import tech.crom.security.authorization.config.AuthorizationConfig
-import tech.crom.security.authorization.testdouble.StubAuthenticationManager
+import tech.crom.security.authorization.confg.TestConfig
 import tech.crom.security.authorization.testdouble.WithMockCromUser
 
-import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.NONE
-
 @Transactional
-@SpringBootTest(classes = [DatabaseConfig, ClockConfig, CromDoaConfig, AuthorizationConfig, StubAuthenticationManager], webEnvironment = NONE)
+@SpringBootTest(classes = [TestConfig],
+    webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @TestPropertySource("/application-test.yml")
 class DefaultPermissionServiceTest extends Specification {
 

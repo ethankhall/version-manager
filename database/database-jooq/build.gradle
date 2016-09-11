@@ -30,6 +30,7 @@ def createLibraryXml = task createLibraryXml {
     ext.libraryFile = file("$buildDir/library.xml")
     ext.outputDir = file('src/main/generated-java')
     inputs.files(configurations.migration)
+    inputs.files(configurations.migration)
     outputs.dir(ext.outputDir)
     doFirst {
         (ext.libraryFile as File).parentFile.mkdirs()
@@ -65,7 +66,7 @@ def createLibraryXml = task createLibraryXml {
                     }
                     generate([:]) {
                         pojos true
-                        daos true
+                        daos false
                         jpaAnnotations true
                         validationAnnotations true
                     }
