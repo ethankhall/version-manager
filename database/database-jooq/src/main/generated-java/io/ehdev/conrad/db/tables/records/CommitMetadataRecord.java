@@ -20,8 +20,8 @@ import javax.validation.constraints.Size;
 
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record7;
-import org.jooq.Row7;
+import org.jooq.Record8;
+import org.jooq.Row8;
 import org.jooq.impl.UpdatableRecordImpl;
 
 
@@ -40,9 +40,9 @@ import org.jooq.impl.UpdatableRecordImpl;
 @Table(name = "commit_metadata", schema = "public", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"name", "commit_uuid"})
 })
-public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataRecord> implements Record7<UUID, UUID, UUID, String, String, Instant, Instant> {
+public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataRecord> implements Record8<UUID, UUID, UUID, String, String, Instant, Instant, Long> {
 
-    private static final long serialVersionUID = 2126250816;
+    private static final long serialVersionUID = 893588817;
 
     /**
      * Setter for <code>public.commit_metadata.uuid</code>.
@@ -108,19 +108,19 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
     }
 
     /**
-     * Setter for <code>public.commit_metadata.url</code>.
+     * Setter for <code>public.commit_metadata.uri</code>.
      */
-    public void setUrl(String value) {
+    public void setUri(String value) {
         set(4, value);
     }
 
     /**
-     * Getter for <code>public.commit_metadata.url</code>.
+     * Getter for <code>public.commit_metadata.uri</code>.
      */
-    @Column(name = "url", nullable = false, length = 512)
+    @Column(name = "uri", nullable = false, length = 512)
     @NotNull
     @Size(max = 512)
-    public String getUrl() {
+    public String getUri() {
         return (String) get(4);
     }
 
@@ -156,6 +156,21 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
         return (Instant) get(6);
     }
 
+    /**
+     * Setter for <code>public.commit_metadata.size</code>.
+     */
+    public void setSize(Long value) {
+        set(7, value);
+    }
+
+    /**
+     * Getter for <code>public.commit_metadata.size</code>.
+     */
+    @Column(name = "size", nullable = false, precision = 64)
+    public Long getSize() {
+        return (Long) get(7);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -169,23 +184,23 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
     }
 
     // -------------------------------------------------------------------------
-    // Record7 type implementation
+    // Record8 type implementation
     // -------------------------------------------------------------------------
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Row7<UUID, UUID, UUID, String, String, Instant, Instant> fieldsRow() {
-        return (Row7) super.fieldsRow();
+    public Row8<UUID, UUID, UUID, String, String, Instant, Instant, Long> fieldsRow() {
+        return (Row8) super.fieldsRow();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Row7<UUID, UUID, UUID, String, String, Instant, Instant> valuesRow() {
-        return (Row7) super.valuesRow();
+    public Row8<UUID, UUID, UUID, String, String, Instant, Instant, Long> valuesRow() {
+        return (Row8) super.valuesRow();
     }
 
     /**
@@ -225,7 +240,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      */
     @Override
     public Field<String> field5() {
-        return CommitMetadataTable.COMMIT_METADATA.URL;
+        return CommitMetadataTable.COMMIT_METADATA.URI;
     }
 
     /**
@@ -242,6 +257,14 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
     @Override
     public Field<Instant> field7() {
         return CommitMetadataTable.COMMIT_METADATA.UPDATED_AT;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Field<Long> field8() {
+        return CommitMetadataTable.COMMIT_METADATA.SIZE;
     }
 
     /**
@@ -281,7 +304,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      */
     @Override
     public String value5() {
-        return getUrl();
+        return getUri();
     }
 
     /**
@@ -298,6 +321,14 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
     @Override
     public Instant value7() {
         return getUpdatedAt();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Long value8() {
+        return getSize();
     }
 
     /**
@@ -341,7 +372,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      */
     @Override
     public CommitMetadataRecord value5(String value) {
-        setUrl(value);
+        setUri(value);
         return this;
     }
 
@@ -367,7 +398,16 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      * {@inheritDoc}
      */
     @Override
-    public CommitMetadataRecord values(UUID value1, UUID value2, UUID value3, String value4, String value5, Instant value6, Instant value7) {
+    public CommitMetadataRecord value8(Long value) {
+        setSize(value);
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public CommitMetadataRecord values(UUID value1, UUID value2, UUID value3, String value4, String value5, Instant value6, Instant value7, Long value8) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -375,6 +415,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
         value5(value5);
         value6(value6);
         value7(value7);
+        value8(value8);
         return this;
     }
 
@@ -392,15 +433,16 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
     /**
      * Create a detached, initialised CommitMetadataRecord
      */
-    public CommitMetadataRecord(UUID uuid, UUID commitUuid, UUID repoDetailsUuid, String name, String url, Instant createdAt, Instant updatedAt) {
+    public CommitMetadataRecord(UUID uuid, UUID commitUuid, UUID repoDetailsUuid, String name, String uri, Instant createdAt, Instant updatedAt, Long size) {
         super(CommitMetadataTable.COMMIT_METADATA);
 
         set(0, uuid);
         set(1, commitUuid);
         set(2, repoDetailsUuid);
         set(3, name);
-        set(4, url);
+        set(4, uri);
         set(5, createdAt);
         set(6, updatedAt);
+        set(7, size);
     }
 }

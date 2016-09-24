@@ -217,6 +217,14 @@
         "dropwizard": [
             "io.dropwizard.metrics:metrics-core:@version.dropwizard@",
             "io.dropwizard.metrics:metrics-ehcache:@version.dropwizard@"
+        ],
+        "googleCloud": [
+            "com.google.api-client:google-api-client:1.22.0",
+            {
+                "group": "com.google.apis",
+                "name": "google-api-services-storage",
+                "version": "v1-rev83-1.22.0"
+            }
         ]
     }
 }

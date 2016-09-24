@@ -35,15 +35,16 @@ import javax.validation.constraints.Size;
 })
 public class CommitMetadata implements Serializable {
 
-    private static final long serialVersionUID = 1048517594;
+    private static final long serialVersionUID = 1843720263;
 
     private UUID    uuid;
     private UUID    commitUuid;
     private UUID    repoDetailsUuid;
     private String  name;
-    private String  url;
+    private String  uri;
     private Instant createdAt;
     private Instant updatedAt;
+    private Long    size;
 
     public CommitMetadata() {}
 
@@ -52,9 +53,10 @@ public class CommitMetadata implements Serializable {
         this.commitUuid = value.commitUuid;
         this.repoDetailsUuid = value.repoDetailsUuid;
         this.name = value.name;
-        this.url = value.url;
+        this.uri = value.uri;
         this.createdAt = value.createdAt;
         this.updatedAt = value.updatedAt;
+        this.size = value.size;
     }
 
     public CommitMetadata(
@@ -62,17 +64,19 @@ public class CommitMetadata implements Serializable {
         UUID    commitUuid,
         UUID    repoDetailsUuid,
         String  name,
-        String  url,
+        String  uri,
         Instant createdAt,
-        Instant updatedAt
+        Instant updatedAt,
+        Long    size
     ) {
         this.uuid = uuid;
         this.commitUuid = commitUuid;
         this.repoDetailsUuid = repoDetailsUuid;
         this.name = name;
-        this.url = url;
+        this.uri = uri;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.size = size;
     }
 
     @Id
@@ -114,15 +118,15 @@ public class CommitMetadata implements Serializable {
         this.name = name;
     }
 
-    @Column(name = "url", nullable = false, length = 512)
+    @Column(name = "uri", nullable = false, length = 512)
     @NotNull
     @Size(max = 512)
-    public String getUrl() {
-        return this.url;
+    public String getUri() {
+        return this.uri;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setUri(String uri) {
+        this.uri = uri;
     }
 
     @Column(name = "created_at", nullable = false)
@@ -145,6 +149,15 @@ public class CommitMetadata implements Serializable {
         this.updatedAt = updatedAt;
     }
 
+    @Column(name = "size", nullable = false, precision = 64)
+    public Long getSize() {
+        return this.size;
+    }
+
+    public void setSize(Long size) {
+        this.size = size;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CommitMetadata (");
@@ -153,9 +166,10 @@ public class CommitMetadata implements Serializable {
         sb.append(", ").append(commitUuid);
         sb.append(", ").append(repoDetailsUuid);
         sb.append(", ").append(name);
-        sb.append(", ").append(url);
+        sb.append(", ").append(uri);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(updatedAt);
+        sb.append(", ").append(size);
 
         sb.append(")");
         return sb.toString();

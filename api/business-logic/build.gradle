@@ -9,4 +9,5 @@ dependencies {
     compile project(":auth:authentication")
     compile project(":database:database-v2")
     compile project(":api:version-bumper")
+    compile project(":api:storage")
 }

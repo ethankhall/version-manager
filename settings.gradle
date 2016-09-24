@@ -21,6 +21,7 @@ include ':auth:authorization'
 include ':api:rest-model'
 include ':api:business-logic'
 include ':api:version-bumper'
+include ':api:storage'
 
 //Docs
 include ':docs'
