@@ -31,11 +31,15 @@ open class DefaultStorageApi(
         }
 
         val uri = storageEngine.upload("/${cromRepo.repoUid}/${version.commitUid}/${storageData.fileName}", storageData)
-        metaDataManager.addNewFile(cromRepo, version, uri, storageData)
+        metaDataManager.insertFile(cromRepo, version, uri, storageData)
     }
 
-    override fun getFile(cromRepo: CromRepo, version: PersistedCommit, fileName: String): StorageData? {
-        val fileUri = metaDataManager.findFileUri(cromRepo, version, fileName)?: return null
+    override fun getFile(version: PersistedCommit, fileName: String): StorageData? {
+        val fileUri = metaDataManager.findFile(version, fileName)?: return null
         return storageEngine.download(fileUri)
+    }
+
+    override fun listFilesForVersion(version: PersistedCommit): List<String> {
+        return metaDataManager.listFiles(version)
     }
 }

@@ -8,7 +8,9 @@ interface StorageApi {
 
     fun insertFile(cromRepo: CromRepo, version: PersistedCommit, storageData: StorageData)
 
-    fun getFile(cromRepo: CromRepo, version: PersistedCommit, fileName: String): StorageData?
+    fun getFile(version: PersistedCommit, fileName: String): StorageData?
+
+    fun listFilesForVersion(version: PersistedCommit): List<String>
 
     class MaxStorageReachedException: RuntimeException("Your project has reached it's max size.")
 }

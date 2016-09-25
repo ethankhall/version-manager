@@ -8,14 +8,21 @@ import io.ehdev.conrad.db.Keys;
 import io.ehdev.conrad.db.Public;
 import io.ehdev.conrad.db.converter.TimestampConverter;
 import io.ehdev.conrad.db.tables.records.CommitMetadataRecord;
-import org.jooq.*;
-import org.jooq.impl.TableImpl;
 
-import javax.annotation.Generated;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
+
+import javax.annotation.Generated;
+
+import org.jooq.Field;
+import org.jooq.ForeignKey;
+import org.jooq.Schema;
+import org.jooq.Table;
+import org.jooq.TableField;
+import org.jooq.UniqueKey;
+import org.jooq.impl.TableImpl;
 
 
 /**
@@ -31,7 +38,7 @@ import java.util.UUID;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommitMetadataTable extends TableImpl<CommitMetadataRecord> {
 
-    private static final long serialVersionUID = 1239022398;
+    private static final long serialVersionUID = -344121833;
 
     /**
      * The reference instance of <code>public.commit_metadata</code>
@@ -54,12 +61,17 @@ public class CommitMetadataTable extends TableImpl<CommitMetadataRecord> {
     /**
      * The column <code>public.commit_metadata.commit_uuid</code>.
      */
-    public final TableField<CommitMetadataRecord, UUID> COMMIT_UUID = createField("commit_uuid", org.jooq.impl.SQLDataType.UUID, this, "");
+    public final TableField<CommitMetadataRecord, UUID> COMMIT_UUID = createField("commit_uuid", org.jooq.impl.SQLDataType.UUID.nullable(false), this, "");
 
     /**
-     * The column <code>public.commit_metadata.repo_details_uuid</code>.
+     * The column <code>public.commit_metadata.project_uuid</code>.
      */
-    public final TableField<CommitMetadataRecord, UUID> REPO_DETAILS_UUID = createField("repo_details_uuid", org.jooq.impl.SQLDataType.UUID, this, "");
+    public final TableField<CommitMetadataRecord, UUID> PROJECT_UUID = createField("project_uuid", org.jooq.impl.SQLDataType.UUID.nullable(false), this, "");
+
+    /**
+     * The column <code>public.commit_metadata.repo_uuid</code>.
+     */
+    public final TableField<CommitMetadataRecord, UUID> REPO_UUID = createField("repo_uuid", org.jooq.impl.SQLDataType.UUID.nullable(false), this, "");
 
     /**
      * The column <code>public.commit_metadata.name</code>.
@@ -69,22 +81,22 @@ public class CommitMetadataTable extends TableImpl<CommitMetadataRecord> {
     /**
      * The column <code>public.commit_metadata.uri</code>.
      */
-    public final TableField<CommitMetadataRecord, String> URI = createField("uri", org.jooq.impl.SQLDataType.VARCHAR.length(512).nullable(false), this, "");
-
-    /**
-     * The column <code>public.commit_metadata.created_at</code>.
-     */
-    public final TableField<CommitMetadataRecord, Instant> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "", new TimestampConverter());
-
-    /**
-     * The column <code>public.commit_metadata.updated_at</code>.
-     */
-    public final TableField<CommitMetadataRecord, Instant> UPDATED_AT = createField("updated_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false), this, "", new TimestampConverter());
+    public final TableField<CommitMetadataRecord, String> URI = createField("uri", org.jooq.impl.SQLDataType.VARCHAR.length(255).nullable(false), this, "");
 
     /**
      * The column <code>public.commit_metadata.size</code>.
      */
-    public final TableField<CommitMetadataRecord, Long> SIZE = createField("size", org.jooq.impl.SQLDataType.BIGINT.nullable(false).defaultValue(org.jooq.impl.DSL.field("0", org.jooq.impl.SQLDataType.BIGINT)), this, "");
+    public final TableField<CommitMetadataRecord, Long> SIZE = createField("size", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.commit_metadata.created_at</code>.
+     */
+    public final TableField<CommitMetadataRecord, Instant> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.field("now()", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "", new TimestampConverter());
+
+    /**
+     * The column <code>public.commit_metadata.updated_at</code>.
+     */
+    public final TableField<CommitMetadataRecord, Instant> UPDATED_AT = createField("updated_at", org.jooq.impl.SQLDataType.TIMESTAMP, this, "", new TimestampConverter());
 
     /**
      * Create a <code>public.commit_metadata</code> table reference
@@ -129,7 +141,7 @@ public class CommitMetadataTable extends TableImpl<CommitMetadataRecord> {
      */
     @Override
     public List<UniqueKey<CommitMetadataRecord>> getKeys() {
-        return Arrays.<UniqueKey<CommitMetadataRecord>>asList(Keys.COMMIT_METADATA_PKEY, Keys.COMMIT_METADATA_NAME_COMMIT_UUID_KEY);
+        return Arrays.<UniqueKey<CommitMetadataRecord>>asList(Keys.COMMIT_METADATA_PKEY, Keys.COMMIT_METADATA_COMMIT_UUID_NAME_KEY, Keys.COMMIT_METADATA_COMMIT_UUID_PROJECT_UUID_REPO_UUID_KEY);
     }
 
     /**
@@ -137,7 +149,7 @@ public class CommitMetadataTable extends TableImpl<CommitMetadataRecord> {
      */
     @Override
     public List<ForeignKey<CommitMetadataRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<CommitMetadataRecord, ?>>asList(Keys.COMMIT_METADATA__COMMIT_METADATA_COMMIT_UUID_FKEY, Keys.COMMIT_METADATA__COMMIT_METADATA_REPO_DETAILS_UUID_FKEY);
+        return Arrays.<ForeignKey<CommitMetadataRecord, ?>>asList(Keys.COMMIT_METADATA__COMMIT_METADATA_COMMIT_UUID_FKEY, Keys.COMMIT_METADATA__COMMIT_METADATA_PROJECT_UUID_FKEY, Keys.COMMIT_METADATA__COMMIT_METADATA_REPO_UUID_FKEY);
     }
 
     /**

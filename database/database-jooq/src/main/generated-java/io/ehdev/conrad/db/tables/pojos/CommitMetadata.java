@@ -31,52 +31,57 @@ import javax.validation.constraints.Size;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
 @Table(name = "commit_metadata", schema = "public", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"name", "commit_uuid"})
+    @UniqueConstraint(columnNames = {"commit_uuid", "name"}),
+    @UniqueConstraint(columnNames = {"commit_uuid", "project_uuid", "repo_uuid"})
 })
 public class CommitMetadata implements Serializable {
 
-    private static final long serialVersionUID = 1843720263;
+    private static final long serialVersionUID = -1120926580;
 
     private UUID    uuid;
     private UUID    commitUuid;
-    private UUID    repoDetailsUuid;
+    private UUID    projectUuid;
+    private UUID    repoUuid;
     private String  name;
     private String  uri;
+    private Long    size;
     private Instant createdAt;
     private Instant updatedAt;
-    private Long    size;
 
     public CommitMetadata() {}
 
     public CommitMetadata(CommitMetadata value) {
         this.uuid = value.uuid;
         this.commitUuid = value.commitUuid;
-        this.repoDetailsUuid = value.repoDetailsUuid;
+        this.projectUuid = value.projectUuid;
+        this.repoUuid = value.repoUuid;
         this.name = value.name;
         this.uri = value.uri;
+        this.size = value.size;
         this.createdAt = value.createdAt;
         this.updatedAt = value.updatedAt;
-        this.size = value.size;
     }
 
     public CommitMetadata(
         UUID    uuid,
         UUID    commitUuid,
-        UUID    repoDetailsUuid,
+        UUID    projectUuid,
+        UUID    repoUuid,
         String  name,
         String  uri,
+        Long    size,
         Instant createdAt,
-        Instant updatedAt,
-        Long    size
+        Instant updatedAt
     ) {
         this.uuid = uuid;
         this.commitUuid = commitUuid;
-        this.repoDetailsUuid = repoDetailsUuid;
+        this.projectUuid = projectUuid;
+        this.repoUuid = repoUuid;
         this.name = name;
         this.uri = uri;
+        this.size = size;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.size = size;
     }
 
     @Id
@@ -89,7 +94,8 @@ public class CommitMetadata implements Serializable {
         this.uuid = uuid;
     }
 
-    @Column(name = "commit_uuid")
+    @Column(name = "commit_uuid", nullable = false)
+    @NotNull
     public UUID getCommitUuid() {
         return this.commitUuid;
     }
@@ -98,13 +104,24 @@ public class CommitMetadata implements Serializable {
         this.commitUuid = commitUuid;
     }
 
-    @Column(name = "repo_details_uuid")
-    public UUID getRepoDetailsUuid() {
-        return this.repoDetailsUuid;
+    @Column(name = "project_uuid", nullable = false)
+    @NotNull
+    public UUID getProjectUuid() {
+        return this.projectUuid;
     }
 
-    public void setRepoDetailsUuid(UUID repoDetailsUuid) {
-        this.repoDetailsUuid = repoDetailsUuid;
+    public void setProjectUuid(UUID projectUuid) {
+        this.projectUuid = projectUuid;
+    }
+
+    @Column(name = "repo_uuid", nullable = false)
+    @NotNull
+    public UUID getRepoUuid() {
+        return this.repoUuid;
+    }
+
+    public void setRepoUuid(UUID repoUuid) {
+        this.repoUuid = repoUuid;
     }
 
     @Column(name = "name", nullable = false, length = 255)
@@ -118,9 +135,9 @@ public class CommitMetadata implements Serializable {
         this.name = name;
     }
 
-    @Column(name = "uri", nullable = false, length = 512)
+    @Column(name = "uri", nullable = false, length = 255)
     @NotNull
-    @Size(max = 512)
+    @Size(max = 255)
     public String getUri() {
         return this.uri;
     }
@@ -129,27 +146,8 @@ public class CommitMetadata implements Serializable {
         this.uri = uri;
     }
 
-    @Column(name = "created_at", nullable = false)
-    @NotNull
-    public Instant getCreatedAt() {
-        return this.createdAt;
-    }
-
-    public void setCreatedAt(Instant createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    @Column(name = "updated_at", nullable = false)
-    @NotNull
-    public Instant getUpdatedAt() {
-        return this.updatedAt;
-    }
-
-    public void setUpdatedAt(Instant updatedAt) {
-        this.updatedAt = updatedAt;
-    }
-
     @Column(name = "size", nullable = false, precision = 64)
+    @NotNull
     public Long getSize() {
         return this.size;
     }
@@ -158,18 +156,37 @@ public class CommitMetadata implements Serializable {
         this.size = size;
     }
 
+    @Column(name = "created_at", nullable = false)
+    public Instant getCreatedAt() {
+        return this.createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    @Column(name = "updated_at")
+    public Instant getUpdatedAt() {
+        return this.updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CommitMetadata (");
 
         sb.append(uuid);
         sb.append(", ").append(commitUuid);
-        sb.append(", ").append(repoDetailsUuid);
+        sb.append(", ").append(projectUuid);
+        sb.append(", ").append(repoUuid);
         sb.append(", ").append(name);
         sb.append(", ").append(uri);
+        sb.append(", ").append(size);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(updatedAt);
-        sb.append(", ").append(size);
 
         sb.append(")");
         return sb.toString();
