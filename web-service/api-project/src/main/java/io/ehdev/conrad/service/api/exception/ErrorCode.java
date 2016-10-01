@@ -12,6 +12,7 @@ public enum ErrorCode {
     UPDATE_MUST_BE_LONGER("UP-001"),
     USER_ALREADY_EXISTS("UP-002"),
     VERSION_NOT_FOUND("VR-001"),
+    METADATA_NOT_FOUND("VR-002"),
     ;
 
     private final String errorCode;

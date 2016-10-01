@@ -26,4 +26,5 @@ include ':api:storage'
 //Docs
 include ':docs'
 
-include ':load-test'
+include ':load-test:gatling'
+include ':load-test:data-generator'

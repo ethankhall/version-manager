@@ -5,15 +5,10 @@ import io.ehdev.conrad.service.api.aop.annotation.RepoRequired
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired
 import io.ehdev.conrad.service.api.exception.BaseHttpException
 import io.ehdev.conrad.service.api.exception.ErrorCode
-import org.springframework.http.HttpHeaders
 import org.springframework.http.HttpStatus
-import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.annotation.PathVariable
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestMethod
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import tech.crom.business.api.CommitApi
 import tech.crom.business.api.StorageApi
@@ -21,6 +16,7 @@ import tech.crom.model.commit.CommitIdContainer
 import tech.crom.model.commit.impl.PersistedCommit
 import tech.crom.model.metadata.StorageData
 import tech.crom.web.api.model.RequestDetails
+import javax.servlet.http.HttpServletResponse
 
 @Service
 @RequestMapping("/api/v1/project/{projectName}/repo/{repoName}/version/{version}/metadata")
@@ -31,35 +27,38 @@ open class VersionMetaDataEndpoint(
 
     @RepoRequired
     @RequestMapping(method = arrayOf(RequestMethod.GET))
-    fun getFiles(requestDetails: RequestDetails,
-                 @PathVariable("version") versionArg: String): ResponseEntity<AvailableFilesResponse> {
+    open fun getFiles(requestDetails: RequestDetails,
+                      @PathVariable("version") versionArg: String): ResponseEntity<AvailableFilesResponse> {
         val commit = getVersionOrThrow(requestDetails, versionArg)
         val files = storageApi.listFilesForVersion(commit)
         return ResponseEntity.ok(AvailableFilesResponse(files))
     }
 
     @RepoRequired
-    @RequestMapping("/{filename:.+}", method = arrayOf(RequestMethod.GET))
-    fun retrieveFile(requestDetails: RequestDetails,
-                     @PathVariable("version") versionArg: String,
-                     @PathVariable("fileName") fileName: String): ResponseEntity<ByteArray> {
+    @ResponseBody
+    @RequestMapping("/{fileName:.+}", method = arrayOf(RequestMethod.GET))
+    open fun retrieveFile(requestDetails: RequestDetails,
+                          @PathVariable("version") versionArg: String,
+                          @PathVariable("fileName") fileName: String,
+                          response: HttpServletResponse) {
         val commit = getVersionOrThrow(requestDetails, versionArg)
-        val file = storageApi.getFile(commit, fileName) ?: return ResponseEntity(HttpStatus.NOT_FOUND)
+        val file = storageApi.getFile(commit, fileName) ?: throw FileNotFoundException(fileName)
 
-        val httpHeaders = HttpHeaders()
-        httpHeaders.contentType = MediaType.parseMediaType(file.contentType)
-        httpHeaders.contentLength = file.bytes.size.toLong()
+        response.contentType = file.contentType
+        response.setContentLength(file.bytes.size)
+        response.status = HttpStatus.OK.value()
 
-        return ResponseEntity (file.bytes, httpHeaders, HttpStatus.OK)
+        file.bytes.inputStream().copyTo(response.outputStream)
+        response.outputStream.flush()
     }
 
     @RepoRequired
     @WritePermissionRequired
-    @RequestMapping("/{filename:.+}", method = arrayOf(RequestMethod.POST))
-    fun uploadFile(requestDetails: RequestDetails,
-                   @PathVariable("version") versionArg: String,
-                   @PathVariable("fileName") fileName: String,
-                   @RequestParam("file") file: MultipartFile): ResponseEntity<Any> {
+    @RequestMapping("/{fileName:.+}", method = arrayOf(RequestMethod.POST))
+    open fun uploadFile(requestDetails: RequestDetails,
+                        @PathVariable("version") versionArg: String,
+                        @PathVariable("fileName") fileName: String,
+                        @RequestParam("file") file: MultipartFile): ResponseEntity<Any> {
         val commit = getVersionOrThrow(requestDetails, versionArg)
 
         try {
@@ -80,4 +79,6 @@ open class VersionMetaDataEndpoint(
 
     class VersionNotFoundException(version: String) :
         BaseHttpException(HttpStatus.NOT_FOUND, ErrorCode.VERSION_NOT_FOUND, "Count not find $version.")
+
+    class FileNotFoundException(name: String): BaseHttpException(HttpStatus.NOT_FOUND, ErrorCode.METADATA_NOT_FOUND, "$name was not found.")
 }

@@ -31,32 +31,7 @@ spring:
         password: password
     jpa:
         show-sql: true
----
-
-
-spring:
-    profiles: container
-    datasource:
-        url: jdbc:postgresql://${DATABASE_URL}/${DATABASE_NAME}
-        username: ${DATABASE_USERNAME}
-        password: ${DATABASE_PASSWORD}
-    jpa:
-        show-sql: true
-        hibernate:
-            ddl-auto: verify
-jwt:
-    signing:
-        key: ${JWT_SIGNING_KEY}
-
-auth:
-    callback.url: http://${PUBLIC_ADDRESS}:${PUBLIC_PORT}
-    client:
-        github:
-            key: ${GITHUB_KEY}
-            secret: ${GITHUB_SECRET}
-        google:
-            key: key
-            secret: secret
-server:
-    address: ${PUBLIC_ADDRESS}
-    port: ${PUBLIC_PORT}
+    http:
+        multipart:
+            max-file-size: 1M
+            max-request-size: 1M
