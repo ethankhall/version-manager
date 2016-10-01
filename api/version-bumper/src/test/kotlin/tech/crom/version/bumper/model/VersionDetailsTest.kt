@@ -1,6 +1,8 @@
 package tech.crom.version.bumper.model
 
 import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.on
 import tech.crom.model.commit.VersionDetails
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

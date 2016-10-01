@@ -2,6 +2,9 @@ package tech.crom.version.bumper.impl.semver
 
 import de.svenjacobs.loremipsum.LoremIpsum
 import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.given
+import org.jetbrains.spek.api.dsl.it
+import org.jetbrains.spek.api.dsl.on
 import tech.crom.model.commit.CommitDetails
 import tech.crom.model.commit.impl.RequestedCommit
 import tech.crom.version.bumper.impl.createVersionDetails

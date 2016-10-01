@@ -4,6 +4,8 @@ import com.nhaarman.mockito_kotlin.any
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.it
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import tech.crom.database.api.UserManager
 import tech.crom.security.authentication.createUser

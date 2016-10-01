@@ -5,6 +5,8 @@ import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.verify
 import com.nhaarman.mockito_kotlin.whenever
 import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.context
+import org.jetbrains.spek.api.dsl.it
 import org.mockito.internal.verification.VerificationModeFactory
 import org.springframework.social.connect.Connection
 import org.springframework.social.connect.UserProfile

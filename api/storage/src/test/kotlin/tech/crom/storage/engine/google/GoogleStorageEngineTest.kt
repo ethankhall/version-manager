@@ -2,6 +2,8 @@ package tech.crom.storage.engine.google
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleCredential
 import org.jetbrains.spek.api.Spek
+import org.jetbrains.spek.api.dsl.given
+import org.jetbrains.spek.api.dsl.it
 import org.springframework.mock.env.MockEnvironment
 import tech.crom.model.metadata.StorageData
 import java.net.URI

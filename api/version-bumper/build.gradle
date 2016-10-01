@@ -1,5 +1,6 @@
 apply plugin: "kotlin"
 apply plugin: "groovy"
+apply plugin: 'spek'
 
 repositories {
     mavenCentral()
@@ -13,4 +14,5 @@ dependencies {
     compile project(":shared-model")
 
     testCompile libraries.testingLibraries
+    testCompile libraries.kotlinTesting
 }
