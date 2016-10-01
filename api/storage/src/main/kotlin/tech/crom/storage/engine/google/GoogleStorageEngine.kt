@@ -34,10 +34,10 @@ class GoogleStorageEngine(env: Environment, val credential: GoogleCredential): S
 
         insertObject.execute()
 
-        return URI.create("gs://" + path)
+        return URI.create("gs://$bucketName/${path.trimStart('/')}")
     }
 
-    override fun download(uri: URI): StorageData {
+    override fun download(uri: URI): ByteArray {
         val get = storage.objects().get(bucketName, uri.toPath())
         get.mediaHttpDownloader.isDirectDownloadEnabled = true
         val media = get.executeMedia()
@@ -45,7 +45,7 @@ class GoogleStorageEngine(env: Environment, val credential: GoogleCredential): S
         val outputStream = ByteArrayOutputStream()
         IOUtils.copy(media.content, outputStream)
 
-        return StorageData(uri.getFileName(), outputStream.toByteArray(), media.contentType)
+        return outputStream.toByteArray()
     }
 
     override fun delete(uri: URI) {
@@ -54,7 +54,6 @@ class GoogleStorageEngine(env: Environment, val credential: GoogleCredential): S
 
     override fun exists(uri: URI): Boolean {
         try {
-            println(uri.toPath())
             return storage.objects().get(bucketName, uri.toPath()).executeUsingHead().isSuccessStatusCode
         } catch (gjre: GoogleJsonResponseException) {
             return false

@@ -1,6 +1,7 @@
 package tech.crom.database.api
 
 import tech.crom.model.commit.impl.PersistedCommit
+import tech.crom.model.metadata.MetaDataModel
 import tech.crom.model.metadata.StorageData
 import tech.crom.model.project.CromProject
 import tech.crom.model.repository.CromRepo
@@ -14,7 +15,7 @@ interface MetaDataManager {
 
     fun insertFile(cromRepo: CromRepo, persistedCommit: PersistedCommit, uri: URI, storageData: StorageData)
 
-    fun findFile(version: PersistedCommit, fileName: String): URI?
+    fun findFile(version: PersistedCommit, fileName: String): MetaDataModel?
 
     fun listFiles(version: PersistedCommit): List<String>
 }

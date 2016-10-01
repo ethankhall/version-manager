@@ -91,6 +91,6 @@ class DefaultMetaDataManagerTest extends Specification {
 
         then:
         metaDataManager.listFiles(repo1Commit1) == ['filename', 'filename1']
-        metaDataManager.findFile(repo1Commit1, 'filename').toString() == 'gs://foo/bar/baz'
+        metaDataManager.findFile(repo1Commit1, 'filename').uri.toString() == 'gs://foo/bar/baz'
     }
 }

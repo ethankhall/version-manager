@@ -35,8 +35,9 @@ open class DefaultStorageApi(
     }
 
     override fun getFile(version: PersistedCommit, fileName: String): StorageData? {
-        val fileUri = metaDataManager.findFile(version, fileName)?: return null
-        return storageEngine.download(fileUri)
+        val fileMetaData = metaDataManager.findFile(version, fileName)?: return null
+        val bytes = storageEngine.download(fileMetaData.uri) ?: return null
+        return StorageData(fileMetaData.fileName, bytes, fileMetaData.contentType)
     }
 
     override fun listFilesForVersion(version: PersistedCommit): List<String> {

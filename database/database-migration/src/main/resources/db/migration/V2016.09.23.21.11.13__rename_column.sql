@@ -8,6 +8,7 @@ CREATE TABLE commit_metadata (
     name         VARCHAR(255)                                                          NOT NULL,
     uri          VARCHAR(255)                                                          NOT NULL,
     size         BIGINT                                                                NOT NULL,
+    content_type VARCHAR(128)                                                          NOT NULL,
     created_at   TIMESTAMPTZ                                                           NOT NULL DEFAULT now(),
     updated_at   TIMESTAMPTZ,
     UNIQUE (commit_uuid, name)

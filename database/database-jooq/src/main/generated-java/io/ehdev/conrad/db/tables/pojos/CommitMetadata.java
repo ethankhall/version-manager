@@ -31,12 +31,11 @@ import javax.validation.constraints.Size;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
 @Table(name = "commit_metadata", schema = "public", uniqueConstraints = {
-    @UniqueConstraint(columnNames = {"commit_uuid", "name"}),
-    @UniqueConstraint(columnNames = {"commit_uuid", "project_uuid", "repo_uuid"})
+    @UniqueConstraint(columnNames = {"commit_uuid", "name"})
 })
 public class CommitMetadata implements Serializable {
 
-    private static final long serialVersionUID = -1120926580;
+    private static final long serialVersionUID = -1490078087;
 
     private UUID    uuid;
     private UUID    commitUuid;
@@ -45,6 +44,7 @@ public class CommitMetadata implements Serializable {
     private String  name;
     private String  uri;
     private Long    size;
+    private String  contentType;
     private Instant createdAt;
     private Instant updatedAt;
 
@@ -58,6 +58,7 @@ public class CommitMetadata implements Serializable {
         this.name = value.name;
         this.uri = value.uri;
         this.size = value.size;
+        this.contentType = value.contentType;
         this.createdAt = value.createdAt;
         this.updatedAt = value.updatedAt;
     }
@@ -70,6 +71,7 @@ public class CommitMetadata implements Serializable {
         String  name,
         String  uri,
         Long    size,
+        String  contentType,
         Instant createdAt,
         Instant updatedAt
     ) {
@@ -80,6 +82,7 @@ public class CommitMetadata implements Serializable {
         this.name = name;
         this.uri = uri;
         this.size = size;
+        this.contentType = contentType;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
@@ -156,6 +159,17 @@ public class CommitMetadata implements Serializable {
         this.size = size;
     }
 
+    @Column(name = "content_type", nullable = false, length = 128)
+    @NotNull
+    @Size(max = 128)
+    public String getContentType() {
+        return this.contentType;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
     @Column(name = "created_at", nullable = false)
     public Instant getCreatedAt() {
         return this.createdAt;
@@ -185,6 +199,7 @@ public class CommitMetadata implements Serializable {
         sb.append(", ").append(name);
         sb.append(", ").append(uri);
         sb.append(", ").append(size);
+        sb.append(", ").append(contentType);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(updatedAt);
 

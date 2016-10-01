@@ -38,7 +38,7 @@ import org.jooq.impl.TableImpl;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommitMetadataTable extends TableImpl<CommitMetadataRecord> {
 
-    private static final long serialVersionUID = -344121833;
+    private static final long serialVersionUID = -183074580;
 
     /**
      * The reference instance of <code>public.commit_metadata</code>
@@ -87,6 +87,11 @@ public class CommitMetadataTable extends TableImpl<CommitMetadataRecord> {
      * The column <code>public.commit_metadata.size</code>.
      */
     public final TableField<CommitMetadataRecord, Long> SIZE = createField("size", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>public.commit_metadata.content_type</code>.
+     */
+    public final TableField<CommitMetadataRecord, String> CONTENT_TYPE = createField("content_type", org.jooq.impl.SQLDataType.VARCHAR.length(128).nullable(false), this, "");
 
     /**
      * The column <code>public.commit_metadata.created_at</code>.
@@ -141,7 +146,7 @@ public class CommitMetadataTable extends TableImpl<CommitMetadataRecord> {
      */
     @Override
     public List<UniqueKey<CommitMetadataRecord>> getKeys() {
-        return Arrays.<UniqueKey<CommitMetadataRecord>>asList(Keys.COMMIT_METADATA_PKEY, Keys.COMMIT_METADATA_COMMIT_UUID_NAME_KEY, Keys.COMMIT_METADATA_COMMIT_UUID_PROJECT_UUID_REPO_UUID_KEY);
+        return Arrays.<UniqueKey<CommitMetadataRecord>>asList(Keys.COMMIT_METADATA_PKEY, Keys.COMMIT_METADATA_COMMIT_UUID_NAME_KEY);
     }
 
     /**

@@ -5,7 +5,7 @@ import java.net.URI
 
 interface StorageEngine {
     fun upload(path: String, storageData: StorageData): URI
-    fun download(uri: URI): StorageData
+    fun download(uri: URI): ByteArray?
     fun delete(uri: URI)
     fun exists(uri: URI): Boolean
 }

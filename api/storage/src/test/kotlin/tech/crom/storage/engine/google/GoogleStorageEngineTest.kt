@@ -8,7 +8,7 @@ import java.net.URI
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class GoogleStorageEngineTest: Spek({
+class GoogleStorageEngineTest : Spek({
 
     given("valid credentials") {
         val env = MockEnvironment()
@@ -17,21 +17,30 @@ class GoogleStorageEngineTest: Spek({
         val credential = GoogleCredential.fromStream(credentialsJson).createScoped(listOf("https://www.googleapis.com/auth/cloud-platform"))
         val storageEngine = GoogleStorageEngine(env, credential)
 
+        beforeEach {
+            try {
+                storageEngine.delete("blob/text.txt".toGoogleStorageUri())
+            } catch (ignored: Exception) { }
+        }
+
         it("can store a file in storage") {
             assertFalse(storageEngine.exists("blob/text.txt".toGoogleStorageUri()))
         }
 
         it("can store file in storage") {
             val input = "this is a file".toByteArray()
-            storageEngine.upload("/blob/text.txt", StorageData("", input, "text/plain"))
+            val uri = storageEngine.upload("/blob/text.txt", StorageData("", input, "text/plain"))
 
             assertTrue(storageEngine.exists("blob/text.txt".toGoogleStorageUri()))
+            assertTrue(storageEngine.exists(uri))
 
-            storageEngine.download("blob/text.txt".toGoogleStorageUri()).bytes == input
+            storageEngine.download("blob/text.txt".toGoogleStorageUri()) == input
+            storageEngine.download(uri) == input
 
             storageEngine.delete("blob/text.txt".toGoogleStorageUri())
 
             assertFalse(storageEngine.exists("blob/text.txt".toGoogleStorageUri()))
+            assertFalse(storageEngine.exists(uri))
         }
     }
 

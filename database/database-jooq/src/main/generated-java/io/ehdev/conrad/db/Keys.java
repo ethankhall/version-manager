@@ -83,7 +83,6 @@ public class Keys {
     public static final UniqueKey<CommitDetailsRecord> COMMIT_DETAILS_VERSION_REPO_DETAILS_UUID_KEY = UniqueKeys0.COMMIT_DETAILS_VERSION_REPO_DETAILS_UUID_KEY;
     public static final UniqueKey<CommitMetadataRecord> COMMIT_METADATA_PKEY = UniqueKeys0.COMMIT_METADATA_PKEY;
     public static final UniqueKey<CommitMetadataRecord> COMMIT_METADATA_COMMIT_UUID_NAME_KEY = UniqueKeys0.COMMIT_METADATA_COMMIT_UUID_NAME_KEY;
-    public static final UniqueKey<CommitMetadataRecord> COMMIT_METADATA_COMMIT_UUID_PROJECT_UUID_REPO_UUID_KEY = UniqueKeys0.COMMIT_METADATA_COMMIT_UUID_PROJECT_UUID_REPO_UUID_KEY;
     public static final UniqueKey<ProjectDetailsRecord> PROJECT_DETAILS_PKEY = UniqueKeys0.PROJECT_DETAILS_PKEY;
     public static final UniqueKey<ProjectDetailsRecord> PROJECT_DETAILS_PROJECT_NAME_KEY = UniqueKeys0.PROJECT_DETAILS_PROJECT_NAME_KEY;
     public static final UniqueKey<RepoDetailsRecord> REPO_DETAILS_PKEY = UniqueKeys0.REPO_DETAILS_PKEY;
@@ -146,7 +145,6 @@ public class Keys {
         public static final UniqueKey<CommitDetailsRecord> COMMIT_DETAILS_VERSION_REPO_DETAILS_UUID_KEY = createUniqueKey(CommitDetailsTable.COMMIT_DETAILS, "commit_details_version_repo_details_uuid_key", CommitDetailsTable.COMMIT_DETAILS.VERSION, CommitDetailsTable.COMMIT_DETAILS.REPO_DETAILS_UUID);
         public static final UniqueKey<CommitMetadataRecord> COMMIT_METADATA_PKEY = createUniqueKey(CommitMetadataTable.COMMIT_METADATA, "commit_metadata_pkey", CommitMetadataTable.COMMIT_METADATA.UUID);
         public static final UniqueKey<CommitMetadataRecord> COMMIT_METADATA_COMMIT_UUID_NAME_KEY = createUniqueKey(CommitMetadataTable.COMMIT_METADATA, "commit_metadata_commit_uuid_name_key", CommitMetadataTable.COMMIT_METADATA.COMMIT_UUID, CommitMetadataTable.COMMIT_METADATA.NAME);
-        public static final UniqueKey<CommitMetadataRecord> COMMIT_METADATA_COMMIT_UUID_PROJECT_UUID_REPO_UUID_KEY = createUniqueKey(CommitMetadataTable.COMMIT_METADATA, "commit_metadata_commit_uuid_project_uuid_repo_uuid_key", CommitMetadataTable.COMMIT_METADATA.COMMIT_UUID, CommitMetadataTable.COMMIT_METADATA.PROJECT_UUID, CommitMetadataTable.COMMIT_METADATA.REPO_UUID);
         public static final UniqueKey<ProjectDetailsRecord> PROJECT_DETAILS_PKEY = createUniqueKey(ProjectDetailsTable.PROJECT_DETAILS, "project_details_pkey", ProjectDetailsTable.PROJECT_DETAILS.UUID);
         public static final UniqueKey<ProjectDetailsRecord> PROJECT_DETAILS_PROJECT_NAME_KEY = createUniqueKey(ProjectDetailsTable.PROJECT_DETAILS, "project_details_project_name_key", ProjectDetailsTable.PROJECT_DETAILS.PROJECT_NAME);
         public static final UniqueKey<RepoDetailsRecord> REPO_DETAILS_PKEY = createUniqueKey(RepoDetailsTable.REPO_DETAILS, "repo_details_pkey", RepoDetailsTable.REPO_DETAILS.UUID);
