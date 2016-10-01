@@ -14,14 +14,14 @@ import java.nio.file.Files
 import java.nio.file.Paths
 
 @Service
-@ConditionalOnProperty("'\${storage.engine}' == 'disk'")
+@ConditionalOnProperty(name = arrayOf("storage.engine"), havingValue = "disk")
 open class DiskStorageEngine(val rootDir: File) : StorageEngine {
 
     @Autowired constructor(env: Environment): this(File(env.getRequiredProperty("storage.disk.root")))
 
     init {
         if (!rootDir.exists()) {
-            throw RuntimeException("Unable to start because root dir is not available")
+            throw RuntimeException("Unable to start because ${rootDir.absolutePath} dir is not available")
         }
     }
 

@@ -19,6 +19,11 @@ jwt:
 flyway:
     out-of-order: true
 
+storage:
+    engine: disk
+    disk:
+        root: build
+
 spring:
     datasource:
         url: jdbc:postgresql://172.0.1.100/version_manager

@@ -19,13 +19,14 @@ import tech.crom.config.SpringTransactionProvider;
 import tech.crom.security.authentication.config.AuthenticationConfig;
 import tech.crom.security.authorization.config.AuthorizationConfig;
 import tech.crom.service.api.config.ServiceApiConfig;
+import tech.crom.storage.config.StorageConfig;
 import tech.crom.version.bumper.config.VersionBumperConfig;
 
 @EnableCaching
 @Configuration
 @Import({DatabaseConfig.class, ClockConfig.class, SharedMasterConfig.class, SpringTransactionProvider.class,
     VersionBumperConfig.class, BuisnessLogicConfig.class, AuthorizationConfig.class, AuthenticationConfig.class,
-    ServiceApiConfig.class})
+    ServiceApiConfig.class, StorageConfig.class})
 @ComponentScan({"io.ehdev.conrad.app", "tech.crom.webapp.endpoint"})
 @EnableAutoConfiguration
 public class MainApplication {
