@@ -27,4 +27,3 @@ include ':api:storage'
 include ':docs'
 
 include ':load-test:gatling'
-include ':load-test:data-generator'
