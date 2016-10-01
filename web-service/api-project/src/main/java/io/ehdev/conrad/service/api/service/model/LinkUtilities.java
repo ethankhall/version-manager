@@ -1,7 +1,6 @@
 package io.ehdev.conrad.service.api.service.model;
 
 import io.ehdev.conrad.model.ResourceLink;
-import org.springframework.hateoas.Link;
 import tech.crom.web.api.model.RequestDetails;
 
 public class LinkUtilities {
@@ -21,9 +20,5 @@ public class LinkUtilities {
             "/version/" + version;
 
         return new ResourceLink("self", url);
-    }
-
-    public static ResourceLink toLink(Link link) {
-        return new ResourceLink(link.getRel(), link.getHref());
     }
 }

@@ -9,7 +9,6 @@ import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 import tech.crom.model.security.authorization.CromPermission;
-import tech.crom.security.authorization.api.PermissionService;
 import tech.crom.web.api.model.RequestDetails;
 
 import static io.ehdev.conrad.service.api.aop.impl.RequestDetailsHelper.findRequestDetails;
@@ -19,12 +18,10 @@ import static io.ehdev.conrad.service.api.aop.impl.RequestDetailsHelper.findRequ
 public class PermissionRequiredCheck implements Ordered {
 
     private final Environment env;
-    private final PermissionService permissionService;
 
     @Autowired
-    public PermissionRequiredCheck(Environment env, PermissionService permissionService) {
+    public PermissionRequiredCheck(Environment env) {
         this.env = env;
-        this.permissionService = permissionService;
     }
 
     @Before(value = "@annotation(io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired)")
