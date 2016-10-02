@@ -23,7 +23,7 @@ class PermissionRequiredCheckTest extends Specification {
     def setup() {
         permissionService = new PermissionServiceTestDouble()
         environment = new MockEnvironment()
-        permissionRequiredCheck = new PermissionRequiredCheck(environment, permissionService)
+        permissionRequiredCheck = new PermissionRequiredCheck(environment)
     }
 
     def 'admin permissions work'() {

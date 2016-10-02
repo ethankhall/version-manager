@@ -16,7 +16,7 @@ import java.io.ByteArrayOutputStream
 import java.net.URI
 
 @Service
-@ConditionalOnProperty("'\${storage.engine}' == 'google'")
+@ConditionalOnProperty(name = arrayOf("storage.engine"), havingValue = "google")
 class GoogleStorageEngine(env: Environment, val credential: GoogleCredential): StorageEngine {
 
     val bucketName: String

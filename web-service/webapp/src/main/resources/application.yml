@@ -5,6 +5,11 @@ auth:
             clientId: 501986272416-882h8qm11sherv2m99geckohi2mrmffh.apps.googleusercontent.com
             clientSecret: qHv-RKsHe5zavBhjWwXmktMr
 
+web-ui:
+    domain: http://localhost:3000
+    login-page: /login
+    root-page: /
+
 server:
     port: 8080
 
@@ -31,7 +36,3 @@ spring:
         password: password
     jpa:
         show-sql: true
-    http:
-        multipart:
-            max-file-size: 1M
-            max-request-size: 1M

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.annotation.Order
+import org.springframework.core.env.Environment
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.config.annotation.ObjectPostProcessor
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder
@@ -16,6 +17,7 @@ import org.springframework.social.UserIdSource
 import org.springframework.social.security.SocialAuthenticationFilter
 import org.springframework.social.security.SpringSocialConfigurer
 import tech.crom.security.authentication.config.stateless.SocialAuthenticationSuccessHandler
+import tech.crom.security.authentication.getLoginRedirect
 
 @Configuration
 @EnableWebSecurity
@@ -26,12 +28,16 @@ open class WebSecurityConfig @Autowired constructor(
     val socialAuthenticationSuccessHandler: SocialAuthenticationSuccessHandler
 ) : WebSecurityConfigurerAdapter() {
 
+    @Autowired
+    lateinit var env: Environment
+
+
     override fun configure(http: HttpSecurity) {
         //@formatter:off
         http
             .formLogin()
-                .loginPage("/#/login")
-                .failureUrl("/#/login?param.error=bad_credentials")
+                .loginPage(env.getLoginRedirect())
+                .failureUrl(env.getLoginRedirect() + "?param.error=bad_credentials")
             .and()
                 .logout()
                     .logoutUrl("/signout")
@@ -53,7 +59,7 @@ open class WebSecurityConfig @Autowired constructor(
 
     private fun createSocialConfigurer(): SpringSocialConfigurer {
         val socialConfigurer = SpringSocialConfigurer()
-            .connectionAddedRedirectUrl("/")
+            .connectionAddedRedirectUrl(env.getLoginRedirect())
             .userIdSource(userIdSource)
 
         socialConfigurer.addObjectPostProcessor(object : ObjectPostProcessor<SocialAuthenticationFilter> {

@@ -8,10 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
+import org.springframework.core.env.Environment
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
+import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
@@ -28,8 +30,16 @@ open class ServiceApiConfig : WebMvcConfigurerAdapter() {
     @Autowired
     lateinit var resolver: RequestDetailsParameterResolver
 
+    @Autowired
+    lateinit var env: Environment
+
     override fun addArgumentResolvers(argumentResolvers: MutableList<HandlerMethodArgumentResolver>) {
         argumentResolvers.add(resolver)
+    }
+
+    override fun addCorsMappings(registry: CorsRegistry) {
+        val domains = env.getRequiredProperty("web-ui.domain").split(",")
+        registry.addMapping("/api/**").allowedOrigins(*domains.toTypedArray())
     }
 
     override fun configureMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
