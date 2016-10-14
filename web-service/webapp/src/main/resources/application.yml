@@ -6,7 +6,8 @@ auth:
             clientSecret: qHv-RKsHe5zavBhjWwXmktMr
 
 web-ui:
-    domain: http://localhost:3000
+    cors-domain: http://localhost:3000
+    root-domain: http://localhost:3000
     login-page: /login
     root-page: /
 

@@ -38,7 +38,7 @@ open class ServiceApiConfig : WebMvcConfigurerAdapter() {
     }
 
     override fun addCorsMappings(registry: CorsRegistry) {
-        val domains = env.getRequiredProperty("web-ui.domain").split(",")
+        val domains = env.getRequiredProperty("web-ui.cors-domain").split(",")
         registry.addMapping("/api/**").allowedOrigins(*domains.toTypedArray())
     }
 
