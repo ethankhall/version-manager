@@ -13,6 +13,6 @@ gcloud compute --project "$GCLOUD_PROJECT" instance-templates create "instance-t
     --machine-type "g1-small" --network "default" \
     --metadata "version=$CURRENT_VERSION,startup-script-url=gs://crom-vm-data/vm-packages/webapp-bootstrap.sh" \
     --maintenance-policy "MIGRATE" \
-    --scopes default="https://www.googleapis.com/auth/cloud.useraccounts.readonly","https://www.googleapis.com/auth/devstorage.read_only","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring.write" \
+    --scopes default="https://www.googleapis.com/auth/cloud.useraccounts.readonly","https://www.googleapis.com/auth/devstorage.read_write","https://www.googleapis.com/auth/logging.write","https://www.googleapis.com/auth/monitoring.write" \
     --image "/centos-cloud/centos-7-v20160418" --boot-disk-size "10" --boot-disk-type "pd-ssd" \
     --boot-disk-device-name "instance-template-$CURRENT_POSTFIX"
