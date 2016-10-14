@@ -45,8 +45,7 @@ open class ServiceApiConfig : WebMvcConfigurerAdapter() {
     override fun configureMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
         val builder = Jackson2ObjectMapperBuilder()
         builder
-            .serializationInclusion(JsonInclude.Include.NON_NULL)
-            .serializationInclusion(JsonInclude.Include.NON_EMPTY)
+            .serializationInclusion(JsonInclude.Include.ALWAYS)
             .indentOutput(true)
             .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             .modulesToInstall(KotlinModule(), JavaTimeModule())
