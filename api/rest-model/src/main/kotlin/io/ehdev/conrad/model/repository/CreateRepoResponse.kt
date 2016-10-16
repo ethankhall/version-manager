@@ -1,7 +1,6 @@
 package io.ehdev.conrad.model.repository
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import io.ehdev.conrad.model.DefaultResourceSupport
 
 class CreateRepoResponse(
     @JsonProperty("projectName")
@@ -11,5 +10,4 @@ class CreateRepoResponse(
     val repoName: String,
 
     @JsonProperty("url")
-    val url: String? = null) : DefaultResourceSupport() {
-}
+    val url: String? = null)

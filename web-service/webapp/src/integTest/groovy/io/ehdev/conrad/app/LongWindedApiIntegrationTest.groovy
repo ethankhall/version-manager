@@ -127,8 +127,6 @@ class LongWindedApiIntegrationTest extends Specification {
         then:
         response.statusLine.statusCode == 200
         response.content.name == 'repoUser1'
-        response.content.links.find { it.rel == 'tokens' } == null
-        response.content.links.find { it.rel == 'permissions' } == null
 
         when:
         response = makeRequest('api/v1/project/repoUser2')
@@ -136,8 +134,6 @@ class LongWindedApiIntegrationTest extends Specification {
         then:
         response.statusLine.statusCode == 200
         response.content.name == 'repoUser2'
-        response.content.links.find { it.rel == 'tokens' } == null
-        response.content.links.find { it.rel == 'permissions' } == null
 
         when:
         response = makeRequest('api/v1/project/repoUser1', userContainer1)
@@ -145,8 +141,6 @@ class LongWindedApiIntegrationTest extends Specification {
         then:
         response.statusLine.statusCode == 200
         response.content.name == 'repoUser1'
-        response.content.links.find { it.rel == 'tokens' } != null
-        response.content.links.find { it.rel == 'permissions' } != null
 
         when:
         response = makeRequest('api/v1/project/repoUser1', userContainer2) //unapproved user
@@ -154,8 +148,6 @@ class LongWindedApiIntegrationTest extends Specification {
         then:
         response.statusLine.statusCode == 200
         response.content.name == 'repoUser1'
-        response.content.links.find { it.rel == 'tokens' } == null
-        response.content.links.find { it.rel == 'permissions' } == null
 
         when:
         response = makeRequest('api/v1/project/repoUser2', userContainer2)
@@ -163,8 +155,6 @@ class LongWindedApiIntegrationTest extends Specification {
         then:
         response.statusLine.statusCode == 200
         response.content.name == 'repoUser2'
-        response.content.links.find { it.rel == 'tokens' } != null
-        response.content.links.find { it.rel == 'permissions' } != null
 
         when:
         response = makeRequest('api/v1/project/repoUser2', userContainer1) //unapproved user
@@ -172,8 +162,6 @@ class LongWindedApiIntegrationTest extends Specification {
         then:
         response.statusLine.statusCode == 200
         response.content.name == 'repoUser2'
-        response.content.links.find { it.rel == 'tokens' } == null
-        response.content.links.find { it.rel == 'permissions' } == null
     }
 
     def 'grant and remove permission to user'() {

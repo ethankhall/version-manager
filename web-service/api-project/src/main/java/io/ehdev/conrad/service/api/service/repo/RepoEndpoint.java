@@ -10,8 +10,6 @@ import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
-import io.ehdev.conrad.service.api.service.annotation.InternalLink;
-import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,15 +28,12 @@ import tech.crom.model.commit.impl.PersistedCommit;
 import tech.crom.model.commit.impl.RequestedCommit;
 import tech.crom.model.repository.CromRepo;
 import tech.crom.model.repository.CromRepoDetails;
-import tech.crom.model.security.authorization.CromPermission;
 import tech.crom.web.api.model.RequestDetails;
 
 import javax.transaction.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static io.ehdev.conrad.service.api.service.model.LinkUtilities.*;
 
 @Service
 @RequestMapping(
@@ -72,7 +67,6 @@ public class RepoEndpoint {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @InternalLinks
     @Transactional
     @WritePermissionRequired
     @RepoRequired(exists = false)
@@ -111,13 +105,6 @@ public class RepoEndpoint {
         return new ResponseEntity<>(model, HttpStatus.CREATED);
     }
 
-    @InternalLinks(links = {
-        @InternalLink(name = "project", ref = "/../.."),
-        @InternalLink(name = "tokens", ref = "/tokenDetails", permissions = CromPermission.ADMIN),
-        @InternalLink(name = "permissions", ref = "/permissions", permissions = CromPermission.ADMIN),
-        @InternalLink(name = VERSION_REF, ref = "/versions"),
-        @InternalLink(name = "latest", ref = "/version/latest")
-    })
     @RepoRequired
     @ReadPermissionRequired
     @RequestMapping(method = RequestMethod.GET)
@@ -154,7 +141,6 @@ public class RepoEndpoint {
             VersionSearchResponse body = new VersionSearchResponse(latestCommit.getCommitId(),
                 latestCommit.getVersion().getVersionString(),
                 latestCommit.getCreatedAt());
-            body.addLink(versionSelfLink(requestDetails, latestCommit.getVersion().getVersionString()));
             return ResponseEntity.ok(body);
         }
     }

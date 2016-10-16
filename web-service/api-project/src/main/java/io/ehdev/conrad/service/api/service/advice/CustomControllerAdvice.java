@@ -1,9 +1,6 @@
 package io.ehdev.conrad.service.api.service.advice;
 
 import io.ehdev.conrad.model.AdminView;
-import io.ehdev.conrad.model.DefaultResourceSupport;
-import io.ehdev.conrad.service.api.service.advice.link.DefaultLinkControllerAdviceHelper;
-import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -20,8 +17,6 @@ import tech.crom.service.api.config.RequestDetailsParameterResolver;
 import tech.crom.web.api.model.RequestDetails;
 
 import javax.servlet.http.HttpServletRequest;
-
-import static io.ehdev.conrad.service.api.service.advice.link.DefaultLinkControllerAdviceHelper.getFullURL;
 
 @ControllerAdvice
 public class CustomControllerAdvice extends AbstractMappingJacksonResponseBodyAdvice {
@@ -43,29 +38,15 @@ public class CustomControllerAdvice extends AbstractMappingJacksonResponseBodyAd
                                            MethodParameter returnType,
                                            ServerHttpRequest request,
                                            ServerHttpResponse response) {
-        if(!(bodyContainer.getValue() instanceof DefaultResourceSupport)) {
-            return;
-        }
-
-        DefaultResourceSupport resourceSupport = (DefaultResourceSupport) bodyContainer.getValue();
         HttpServletRequest servletRequest = ((ServletServerHttpRequest) request).getServletRequest();
 
         RequestDetails requestDetails = requestDetailsParameterResolver.createRequestDetails(servletRequest);
         CromPermission permission = requestDetails.getRequestPermission().findHighestPermission();
 
-        addLinks(resourceSupport, returnType, servletRequest, permission);
-
         if(permission.isHigherOrEqualThan(CromPermission.ADMIN)) {
             bodyContainer.setSerializationView(AdminView.class);
         } else {
             bodyContainer.setSerializationView(Object.class);
-        }
-    }
-
-    private void addLinks(DefaultResourceSupport resourceSupport, MethodParameter returnType, HttpServletRequest servletRequest, CromPermission permission) {
-        InternalLinks annotation = returnType.getMethodAnnotation(InternalLinks.class);
-        if(annotation != null) {
-            new DefaultLinkControllerAdviceHelper(resourceSupport, permission, getFullURL(servletRequest)).addLinks(annotation);
         }
     }
 }

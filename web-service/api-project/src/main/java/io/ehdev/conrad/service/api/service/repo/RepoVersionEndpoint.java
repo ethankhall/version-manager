@@ -7,8 +7,6 @@ import io.ehdev.conrad.model.version.GetVersionResponse;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
-import io.ehdev.conrad.service.api.service.annotation.InternalLink;
-import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -30,8 +28,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.ehdev.conrad.service.api.service.model.LinkUtilities.versionSelfLink;
-
 @Service
 @RequestMapping("/api/v1/project/{projectName}/repo/{repoName}")
 public class RepoVersionEndpoint {
@@ -44,10 +40,6 @@ public class RepoVersionEndpoint {
     }
 
     @RepoRequired
-    @InternalLinks(links = {
-        @InternalLink(name = "project", ref = "/../../.."),
-        @InternalLink(name = "tokenType", ref = "/..")
-    })
     @ReadPermissionRequired
     @RequestMapping(value = "/versions", method = RequestMethod.GET)
     public ResponseEntity<GetAllVersionsResponse> getAllVersions(RequestDetails requestDetails) {
@@ -60,7 +52,6 @@ public class RepoVersionEndpoint {
                 GetAllVersionsResponse.CommitModel commit = new GetAllVersionsResponse.CommitModel(it.getCommitId(),
                     it.getVersionString(),
                     it.getCreatedAt());
-                commit.addLink(versionSelfLink(requestDetails, it.getVersionString()));
                 response.addCommit(commit);
             });
 
@@ -73,11 +64,6 @@ public class RepoVersionEndpoint {
 
     @RepoRequired
     @Transactional
-    @InternalLinks(links = {
-        @InternalLink(name = "project", ref = "/../../.."),
-        @InternalLink(name = "versions", ref = "/../versions"),
-        @InternalLink(name = "tokenType", ref = "/..")
-    })
     @WritePermissionRequired
     @RequestMapping(value = "/version", method = RequestMethod.POST)
     public ResponseEntity<CreateVersionResponse> createNewVersion(RequestDetails requestDetails,
@@ -96,16 +82,10 @@ public class RepoVersionEndpoint {
         CreateVersionResponse response = new CreateVersionResponse(versionModel.getCommitId(),
             nextCommit.getVersionString(),
             nextCommit.getCreatedAt());
-        response.addLink(versionSelfLink(requestDetails, nextCommit.getVersionString()));
         return ResponseEntity.created(uri).body(response);
     }
 
     @RepoRequired
-    @InternalLinks(links = {
-        @InternalLink(name = "project", ref = "/../../../.."),
-        @InternalLink(name = "versions", ref = "/../../versions"),
-        @InternalLink(name = "tokenType", ref = "/../..")
-    })
     @ReadPermissionRequired
     @RequestMapping(value = "/version/{versionArg:.+}", method = RequestMethod.GET)
     public ResponseEntity<GetVersionResponse> findVersion(RequestDetails requestDetails,

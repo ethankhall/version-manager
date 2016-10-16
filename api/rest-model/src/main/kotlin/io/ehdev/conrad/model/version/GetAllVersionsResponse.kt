@@ -2,10 +2,9 @@ package io.ehdev.conrad.model.version
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.fasterxml.jackson.annotation.JsonPropertyDescription
-import io.ehdev.conrad.model.DefaultResourceSupport
 import java.time.ZonedDateTime
 
-class GetAllVersionsResponse() : DefaultResourceSupport() {
+class GetAllVersionsResponse() {
     @JsonPropertyDescription("All of the commits for a repository")
     @JsonProperty("commits")
     val commits: MutableList<CommitModel> = mutableListOf()

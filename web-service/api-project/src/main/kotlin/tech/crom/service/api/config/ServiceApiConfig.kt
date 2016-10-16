@@ -1,6 +1,5 @@
 package tech.crom.service.api.config
 
-import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -45,7 +44,6 @@ open class ServiceApiConfig : WebMvcConfigurerAdapter() {
     override fun configureMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
         val builder = Jackson2ObjectMapperBuilder()
         builder
-            .serializationInclusion(JsonInclude.Include.ALWAYS)
             .indentOutput(true)
             .featuresToDisable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
             .modulesToInstall(KotlinModule(), JavaTimeModule())

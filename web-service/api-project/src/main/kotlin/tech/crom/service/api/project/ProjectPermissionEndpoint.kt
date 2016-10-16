@@ -6,8 +6,6 @@ import io.ehdev.conrad.model.permission.PermissionGrant
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired
 import io.ehdev.conrad.service.api.aop.annotation.ProjectRequired
-import io.ehdev.conrad.service.api.service.annotation.InternalLink
-import io.ehdev.conrad.service.api.service.annotation.InternalLinks
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -50,9 +48,6 @@ open class ProjectPermissionEndpoint @Autowired constructor(
     }
 
     @ProjectRequired
-    @InternalLinks(links = arrayOf(
-        InternalLink(name = "project", ref = "/..")
-    ))
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RequestMapping(method = arrayOf(RequestMethod.POST))

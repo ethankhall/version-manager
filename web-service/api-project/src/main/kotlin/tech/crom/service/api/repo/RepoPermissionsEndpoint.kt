@@ -5,8 +5,6 @@ import io.ehdev.conrad.model.permission.PermissionGrant
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired
-import io.ehdev.conrad.service.api.service.annotation.InternalLink
-import io.ehdev.conrad.service.api.service.annotation.InternalLinks
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -29,7 +27,6 @@ open class RepoPermissionsEndpoint @Autowired constructor(
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RequestMapping(value = "/{username}", method = arrayOf(RequestMethod.DELETE))
-    @InternalLinks(links = arrayOf(InternalLink(name = "project", ref = "/../../.."), InternalLink(name = "repository", ref = "/..")))
     open fun deletePermissions(container: RequestDetails, @PathVariable("username") username: String): ResponseEntity<Any> {
         permissionApi.dropPermission(username, container.cromRepo!!)
         return ResponseEntity(HttpStatus.OK)
@@ -39,7 +36,6 @@ open class RepoPermissionsEndpoint @Autowired constructor(
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RequestMapping(method = arrayOf(RequestMethod.POST))
-    @InternalLinks(links = arrayOf(InternalLink(name = "project", ref = "/../../.."), InternalLink(name = "repository", ref = "/..")))
     open fun addPermission(container: RequestDetails, @RequestBody permissionGrant: PermissionGrant): ResponseEntity<PermissionCreateResponse> {
         if(permissionApi.grantPermission(permissionGrant.username, container.cromRepo!!, convertType(permissionGrant))) {
             return ResponseEntity(PermissionCreateResponse(true), HttpStatus.CREATED)

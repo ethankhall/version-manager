@@ -7,8 +7,6 @@ import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ProjectRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
-import io.ehdev.conrad.service.api.service.annotation.InternalLink;
-import io.ehdev.conrad.service.api.service.annotation.InternalLinks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,7 +19,6 @@ import tech.crom.business.api.RepositoryApi;
 import tech.crom.database.api.ProjectManager;
 import tech.crom.model.project.CromProject;
 import tech.crom.model.repository.CromRepo;
-import tech.crom.model.security.authorization.CromPermission;
 import tech.crom.web.api.model.RequestDetails;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,8 +27,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
-import static io.ehdev.conrad.service.api.service.model.LinkUtilities.repositorySelfLink;
 
 @Controller
 @RequestMapping(
@@ -50,7 +45,6 @@ public class SpecificProjectEndpoint {
 
 
     @Transactional
-    @InternalLinks
     @LoggedInUserRequired
     @ProjectRequired(exists = false)
     @RequestMapping(method = RequestMethod.POST)
@@ -70,10 +64,6 @@ public class SpecificProjectEndpoint {
 
     @ProjectRequired
     @ReadPermissionRequired
-    @InternalLinks(links = {
-        @InternalLink(name = "tokens", ref = "/tokenDetails", permissions = CromPermission.ADMIN),
-        @InternalLink(name = "permissions", ref = "/permissions", permissions = CromPermission.ADMIN)
-    })
     @RequestMapping(method = RequestMethod.GET)
     public ResponseEntity<GetProjectResponse> getProject(RequestDetails container) {
         Collection<CromRepo> repos = repositoryApi.findRepo(container.getCromProject());
@@ -82,11 +72,7 @@ public class SpecificProjectEndpoint {
 
         GetProjectResponse projectModel = new GetProjectResponse(container.getCromProject().getProjectName(), details);
 
-        repos.forEach(it -> {
-            RepoDefinitionsDetails repo = new RepoDefinitionsDetails(it.getRepoName());
-            repo.addLink(repositorySelfLink(container));
-            details.add(repo);
-        });
+        repos.forEach(it -> details.add(new RepoDefinitionsDetails(it.getRepoName())));
 
         return ResponseEntity.ok(projectModel);
     }
