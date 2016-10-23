@@ -6,4 +6,5 @@ import tech.crom.model.repository.CromRepo
 interface VersionBumperManager {
     fun findBumper(name: String): CromVersionBumper?
     fun getBumper(cromRepo: CromRepo): CromVersionBumper
+    fun findAll(): List<CromVersionBumper>
 }

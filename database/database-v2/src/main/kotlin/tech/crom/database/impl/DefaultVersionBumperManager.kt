@@ -35,6 +35,15 @@ open class DefaultVersionBumperManager @Autowired constructor(
         return CromVersionBumper(b.uuid, b.bumperName, b.className, b.description, createExecutorInstance(b.className))
     }
 
+    override fun findAll(): List<CromVersionBumper> {
+        val details = VersionBumpersTable.VERSION_BUMPERS
+        return dslContext
+            .selectFrom(details)
+            .fetch()
+            .into(details)
+            .map { b -> CromVersionBumper(b.uuid, b.bumperName, b.className, b.description, createExecutorInstance(b.className)) }
+    }
+
     private fun createExecutorInstance(className: String): CromVersionBumper.Executor {
         return Class.forName(className).newInstance() as CromVersionBumper.Executor
     }

@@ -20,5 +20,9 @@ class DefaultVersionBumperApi @Autowired constructor(
         return versionBumperManager.findBumper(name) ?: throw VersionBumperNotFoundException(name)
     }
 
+    override fun findAll(): List<CromVersionBumper> {
+        return versionBumperManager.findAll()
+    }
+
     class VersionBumperNotFoundException(name: String): RuntimeException("Unable to find bumper for $name")
 }
