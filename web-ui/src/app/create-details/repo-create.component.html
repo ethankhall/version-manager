@@ -1,0 +1,25 @@
+<h2>Add Repo to {{projectName}}</h2>
+<p>
+    Repo's contain versions that usually map directly to a SCM.
+</p>
+<form [formGroup]="form">
+    <div class="form-group">
+        <label for="repoName">Name</label>
+        <input type="text" class="form-control" id="repoName" formControlName="repoName" required>
+    </div>
+
+    <div class="form-group">
+        <label for="scmUrl">SCM Url</label>
+        <input type="text" class="form-control" id="scmUrl" formControlName="scmUrl">
+    </div>
+
+    <div *ngIf="bumpers?.bumpers">
+    <select formControlName="bumper" required>
+        <option *ngFor="let bumper of bumpers.bumpers" [value]="bumper.name">
+            {{bumper.name}} - {{bumper.description}}
+        </option>
+    </select>
+    </div>
+
+    <button type="submit" class="btn btn-default" (click)="onSubmit()">Create</button>
+</form>

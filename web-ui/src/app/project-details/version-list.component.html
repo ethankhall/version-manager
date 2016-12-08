@@ -1,0 +1,10 @@
+<div>
+    <h3><a (click)="toProject()">{{projectName}}</a>/<a (click)="toRepo()">{{repoName}}</a>/versions</h3>
+    <div *ngIf="latest">Latest Version: <a (click)="toVersion(latest.commitId)">{{latest.version}}</a></div>
+    <div *ngIf="versions">
+        All Versions:
+        <ul>
+            <li *ngFor="let version of versions"><a (click)="toVersion(version.commitId)">{{version.version}}</a></li>
+        </ul>
+    </div>
+</div>

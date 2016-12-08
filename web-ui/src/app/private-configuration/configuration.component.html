@@ -1,0 +1,14 @@
+<form *ngIf="config" #heroForm="ngForm">
+    <div class="form-group">
+        <label for="api">Api</label>
+        <input type="text" class="form-control" id="api" [(ngModel)]="config.api" [ngModelOptions]="{standalone: true}">
+    </div>
+
+    <div class="form-group">
+        <label for="auth">Auth Token</label>
+        <input type="text" class="form-control" id="auth" [(ngModel)]="config.auth" [ngModelOptions]="{standalone: true}">
+    </div>
+
+    <button type="submit" class="btn btn-default" (click)="onSubmit()">Submit</button>
+    <button type="submit" class="btn btn-warning" (click)="reset()" >Reset</button>
+</form>

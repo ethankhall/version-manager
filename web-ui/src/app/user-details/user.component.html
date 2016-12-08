@@ -1,0 +1,8 @@
+<div *ngIf="user">
+    Hi {{user.displayName}}! <br />
+
+    Your username is {{user.userName}}. Change it <a>here</a>.<br />
+</div>
+<div *ngIf="!user">
+    Loading your profile.....
+</div>

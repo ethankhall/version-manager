@@ -1,0 +1,7 @@
+<div>
+    <h3><a (click)="toProject()">{{projectName}}</a>/{{repoName}}/<a (click)="toVersionList()">versions</a></h3>
+    <div>Url: {{repoDetails?.url}}</div>
+    <br />
+    <div>Latest Version: <a (click)="toVersion(latestVersion.commitId)">{{latestVersion?.version}}</a></div>
+
+</div>

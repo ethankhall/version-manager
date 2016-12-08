@@ -1,0 +1,22 @@
+<div *ngIf="pageLoaded">
+    <h3>{{projectDetails.name}}</h3>
+    <div *ngIf="hasAdmin">
+        <button class="btn btn-default" [routerLink]="['/create', 'repo', projectDetails.name]">Add Repo</button>
+    </div>
+
+    <div *ngIf="projectDetails.repos.length != 0">
+        <h4>Repositories:</h4>
+        <ul *ngIf="projectDetails" >
+            <li *ngFor="let repo of projectDetails.repos"><a (click)="toRepo(repo.name)">{{repo.name}}</a></li>
+        </ul>
+    </div>
+
+    <div *ngIf="loggedIn && projectDetails.repos.length == 0">
+        You don't have any repos, click the "Add Repo" button to add one, or click
+        <a [routerLink]="['/create', 'repo', projectDetails.name]">here</a>
+    </div>
+
+    <p *ngIf="loggedIn == false">
+        If you log in, you'll may be able to add your own repos or create your own projects!
+    </p>
+</div>
