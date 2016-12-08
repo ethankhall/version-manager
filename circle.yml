@@ -4,6 +4,8 @@ machine:
     services:
         - docker
         - postgresql
+    node:
+        version: 7.2.1 
     environment:
         SPRING_DATASOURCE_URL: jdbc:postgresql://localhost/circle_test
         SPRING_DATASOURCE_USERNAME: ubuntu
