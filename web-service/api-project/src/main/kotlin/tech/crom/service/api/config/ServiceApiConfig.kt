@@ -5,20 +5,20 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration
+import org.springframework.boot.web.servlet.FilterRegistrationBean
+import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.ComponentScan
 import org.springframework.context.annotation.Configuration
 import org.springframework.core.env.Environment
 import org.springframework.http.converter.HttpMessageConverter
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter
+import org.springframework.web.cors.CorsConfiguration
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource
+import org.springframework.web.filter.CorsFilter
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
-import org.springframework.web.servlet.config.annotation.CorsRegistry
 import org.springframework.web.servlet.config.annotation.EnableWebMvc
-import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
-import org.springframework.web.servlet.resource.GzipResourceResolver
-import org.springframework.web.servlet.resource.PathResourceResolver
-import java.util.concurrent.TimeUnit
 
 @EnableWebMvc
 @Configuration
@@ -36,11 +36,6 @@ open class ServiceApiConfig : WebMvcConfigurerAdapter() {
         argumentResolvers.add(resolver)
     }
 
-    override fun addCorsMappings(registry: CorsRegistry) {
-        val domains = env.getRequiredProperty("web-ui.cors-domain").split(",")
-        registry.addMapping("/api/**").allowedOrigins(*domains.toTypedArray())
-    }
-
     override fun configureMessageConverters(converters: MutableList<HttpMessageConverter<*>>) {
         val builder = Jackson2ObjectMapperBuilder()
         builder
@@ -51,18 +46,19 @@ open class ServiceApiConfig : WebMvcConfigurerAdapter() {
         converters.add(MappingJackson2HttpMessageConverter(builder.build()))
     }
 
-    override fun addResourceHandlers(registry: ResourceHandlerRegistry) {
-        registry.addResourceHandler("/webjars/**")
-            .addResourceLocations("classpath:/META-INF/resources/webjars/")
-            .setCachePeriod(TimeUnit.MINUTES.toSeconds(1).toInt())
-            .resourceChain(true)
-            .addResolver(GzipResourceResolver())
-            .addResolver(PathResourceResolver())
-
-        registry.addResourceHandler("/static/**")
-            .addResourceLocations("classpath:/static/")
-            .resourceChain(true)
-            .addResolver(GzipResourceResolver())
-            .addResolver(PathResourceResolver())
+    @Bean
+    open fun corsFilter(): FilterRegistrationBean {
+        val source = UrlBasedCorsConfigurationSource()
+        val config = CorsConfiguration()
+        config.allowCredentials = true
+        env.getRequiredProperty("web-ui.cors-domain").split(",").forEach {
+            config.addAllowedOrigin(it)
+        }
+        config.addAllowedHeader("*")
+        config.addAllowedMethod("*")
+        source.registerCorsConfiguration("/api/**", config)
+        val bean = FilterRegistrationBean(CorsFilter(source))
+        bean.order = 0
+        return bean
     }
 }
