@@ -24,6 +24,8 @@ task packageProd(type: Tar) {
     exclude '.gitkeep'
 }
 
+check.dependsOn prodBuild
+
 artifacts {
     archives packageProd
 }
