@@ -8,6 +8,7 @@ gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
 gcloud config set project $GCLOUD_PROJECT
 
 gsutil cp ./build/web-service/webapp/libs/webapp-$CURRENT_VERSION.jar $GCLOUD_BUCKET
+gsutil cp ./web-ui/build/distributions/web-ui-$CURRENT_VERSION.tar $GCLOUD_BUCKET
 
 gcloud compute --project "$GCLOUD_PROJECT" instance-templates create "instance-template-$CURRENT_POSTFIX" \
     --machine-type "g1-small" --network "default" \

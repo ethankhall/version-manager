@@ -1,0 +1,29 @@
+apply plugin: 'base'
+
+task npmInstall(type: Exec) {
+    inputs.files(file('package.json'))
+    outputs.dir(file('node_modules'))
+    commandLine 'npm install'.split(' ')
+}
+
+task prodBuild(type: Exec) {
+    inputs.file(file('tsconfig.json'))
+    inputs.file(file('webpack.config.js'))
+    inputs.files(file('src'))
+    inputs.files(file('typings'))
+    inputs.files(file('config'))
+    outputs.dir(file("$buildDir/dist"))
+
+    dependsOn npmInstall
+    commandLine 'npm run build:prod'.split(' ')
+}
+
+task packageProd(type: Tar) {
+    dependsOn prodBuild
+    from "$buildDir/dist"
+    exclude '.gitkeep'
+}
+
+artifacts {
+    archives packageProd
+}

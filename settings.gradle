@@ -27,3 +27,4 @@ include ':api:storage'
 include ':docs'
 
 include ':load-test:gatling'
+include ':web-ui'
