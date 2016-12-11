@@ -1,0 +1,26 @@
+evaluationDependsOn(":web-service:webapp")
+
+task prepairWebAppContainer(type: Copy) {
+    dependsOn ':web-service:webapp:bootRepackage'
+    from project(":web-service:webapp").tasks.jar
+    into file('crom-webapp')
+    rename '(.*).jar', 'webapp.jar'
+}
+
+task buildWebAppContainer(type: Exec) {
+    inputs.property('version', version)
+    dependsOn prepairWebAppContainer
+    commandLine "docker build --tag us.gcr.io/crom-1289/crom-webapp:v$version .".split(' ')
+    workingDir file('crom-webapp')
+}
+
+task pushWebAppContainer(type: Exec) {
+    inputs.property('version', version)
+    dependsOn buildWebAppContainer
+    commandLine "gcloud docker -- push us.gcr.io/crom-1289/crom-webapp:v$version".split(' ')
+    workingDir file('crom-webapp')
+}
+
+task pushContainers {
+    dependsOn pushWebAppContainer
+}

@@ -24,6 +24,7 @@ open class EhCacheConfig() {
         cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("tokensById", 10)))
         cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("tokensByResource", 10)))
         cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("userById", 30)))
+        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("repoByUid", 30)))
         cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("repoDetailsByUid", 30)))
         cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("repoByProjectAndName", 30)))
         cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("projectByName", 30)))

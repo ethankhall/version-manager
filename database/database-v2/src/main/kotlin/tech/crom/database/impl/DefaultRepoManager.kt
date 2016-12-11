@@ -30,6 +30,7 @@ open class DefaultRepoManager @Autowired constructor(
     }
 
     @Caching(evict = arrayOf(
+        CacheEvict("repoByUid", key="#cromRepo.repoUid"),
         CacheEvict("repoDetailsByUid", key="#cromRepo.repoUid"),
         CacheEvict("repoByProjectAndName", key="#cromRepo.projectUid.toString() + #cromRepo.repoName")))
     override fun deleteRepo(cromRepo: CromRepo) {
@@ -47,6 +48,7 @@ open class DefaultRepoManager @Autowired constructor(
     }
 
     @Caching(evict = arrayOf(
+        CacheEvict("repoByUid", allEntries = true),
         CacheEvict("repoDetailsByUid", allEntries = true),
         CacheEvict("repoByProjectAndName", key="#cromProject.projectUid.toString() + #repoName")))
     override fun createRepo(cromProject: CromProject,

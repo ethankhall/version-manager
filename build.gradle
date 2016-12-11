@@ -16,7 +16,7 @@ buildscript {
 
 allprojects {
     apply plugin: 'idea'
-    group = 'io.ehdev.conrad'
+    group = 'crom.tech'
 
     repositories {
         mavenCentral()
