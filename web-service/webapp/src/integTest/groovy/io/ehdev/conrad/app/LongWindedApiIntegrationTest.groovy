@@ -587,10 +587,6 @@ class LongWindedApiIntegrationTest extends Specification {
         response.content.message == 'Username already exists.'
     }
 
-    def 'create repo tokens, and use them'() {
-
-    }
-
     def doDelete(String endpoint, UserContainer container) {
         def response = Request
             .Delete("http://localhost:${environment.getProperty("local.server.port")}/$endpoint")
