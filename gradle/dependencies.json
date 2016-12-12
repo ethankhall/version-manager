@@ -59,7 +59,7 @@
     ],
     "version": {
         "jooq": "3.8.4",
-        "kotlin": "1.0.4",
+        "kotlin": "1.0.5",
         "spring": "4.3.2.RELEASE",
         "springBoot": "1.4.0.RELEASE",
         "springSecurity": "4.1.1.RELEASE",

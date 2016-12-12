@@ -16,22 +16,4 @@ data class RequestDetails(val cromProject: CromProject?,
         fun getRepoName(): String? = requestParameters["repoName"]
     }
 
-    data class RequestPermissions(val projectPermission: CromPermission?,
-                                  val repoPermission: CromPermission?,
-                                  val cromUser: CromUser?) {
-
-        fun findUserName(): String? = cromUser?.userName
-
-        fun findHighestPermission(): CromPermission {
-            if(projectPermission == null) {
-                return CromPermission.NONE
-            }
-
-            if(repoPermission != null) {
-                if(repoPermission.isHigherOrEqualThan(projectPermission)) repoPermission else projectPermission
-            }
-
-            return projectPermission
-        }
-    }
 }

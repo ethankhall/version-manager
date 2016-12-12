@@ -100,20 +100,20 @@ class LongWindedApiIntegrationTest extends Specification {
 
     def 'create a project for each user'() {
         when:
-        def response = makeRequest('api/v1/project/repoUser1')
+        def response = makeGetRequest('api/v1/project/repoUser1')
 
         then:
         response.statusLine.statusCode == 404
 
         when:
-        response = makeRequest("api/v1/project/repoUser1", null, userContainer1)
+        response = makePostRequest("api/v1/project/repoUser1", null, userContainer1)
 
         then:
         response.statusLine.statusCode == 201
         response.content.name == 'repoUser1'
 
         when:
-        response = makeRequest("api/v1/project/repoUser2", null, userContainer2)
+        response = makePostRequest("api/v1/project/repoUser2", null, userContainer2)
 
         then:
         response.statusLine.statusCode == 201
@@ -122,42 +122,42 @@ class LongWindedApiIntegrationTest extends Specification {
 
     def 'get response from each repo'() {
         when:
-        def response = makeRequest('api/v1/project/repoUser1')
+        def response = makeGetRequest('api/v1/project/repoUser1')
 
         then:
         response.statusLine.statusCode == 200
         response.content.name == 'repoUser1'
 
         when:
-        response = makeRequest('api/v1/project/repoUser2')
+        response = makeGetRequest('api/v1/project/repoUser2')
 
         then:
         response.statusLine.statusCode == 200
         response.content.name == 'repoUser2'
 
         when:
-        response = makeRequest('api/v1/project/repoUser1', userContainer1)
+        response = makeGetRequest('api/v1/project/repoUser1', userContainer1)
 
         then:
         response.statusLine.statusCode == 200
         response.content.name == 'repoUser1'
 
         when:
-        response = makeRequest('api/v1/project/repoUser1', userContainer2) //unapproved user
+        response = makeGetRequest('api/v1/project/repoUser1', userContainer2) //unapproved user
 
         then:
         response.statusLine.statusCode == 200
         response.content.name == 'repoUser1'
 
         when:
-        response = makeRequest('api/v1/project/repoUser2', userContainer2)
+        response = makeGetRequest('api/v1/project/repoUser2', userContainer2)
 
         then:
         response.statusLine.statusCode == 200
         response.content.name == 'repoUser2'
 
         when:
-        response = makeRequest('api/v1/project/repoUser2', userContainer1) //unapproved user
+        response = makeGetRequest('api/v1/project/repoUser2', userContainer1) //unapproved user
 
         then:
         response.statusLine.statusCode == 200
@@ -166,13 +166,13 @@ class LongWindedApiIntegrationTest extends Specification {
 
     def 'grant and remove permission to user'() {
         when:
-        def response = makeRequest('api/v1/project/repoUser1/permissions')
+        def response = makeGetRequest('api/v1/project/repoUser1/permissions')
 
         then:
         response.statusLine.statusCode == 418
 
         when:
-        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer1)
+        response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer1)
 
         then:
         response.statusLine.statusCode == 200
@@ -183,14 +183,14 @@ class LongWindedApiIntegrationTest extends Specification {
         //======================================
         when:
         def permissionGrant = ["username": "user2", "permission": "READ"]
-        response = makeRequest('api/v1/project/repoUser1/permissions', permissionGrant, userContainer1)
+        response = makePostRequest('api/v1/project/repoUser1/permissions', permissionGrant, userContainer1)
 
         then:
         response.statusLine.statusCode == 201
         response.content.accepted == true
 
         when:
-        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer1)
+        response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer1)
 
         then:
         (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', permission: 'ADMIN']
@@ -198,7 +198,7 @@ class LongWindedApiIntegrationTest extends Specification {
         (response.content.permissions as List).size() == 2
 
         when:  //user doesn't have enough permissions
-        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer2)
+        response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer2)
 
         then:
         response.statusLine.statusCode == 401
@@ -210,14 +210,14 @@ class LongWindedApiIntegrationTest extends Specification {
         //======================================
         when:
         permissionGrant = ["username": "user2", "permission": "WRITE"]
-        response = makeRequest('api/v1/project/repoUser1/permissions', permissionGrant, userContainer1)
+        response = makePostRequest('api/v1/project/repoUser1/permissions', permissionGrant, userContainer1)
 
         then:
         response.statusLine.statusCode == 201
         response.content.accepted == true
 
         when:
-        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer1)
+        response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer1)
 
         then:
         (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', permission: 'ADMIN']
@@ -225,7 +225,7 @@ class LongWindedApiIntegrationTest extends Specification {
         (response.content.permissions as List).size() == 2
 
         when:  //user doesn't have enough permissions
-        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer2)
+        response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer2)
 
         then:
         response.statusLine.statusCode == 401
@@ -237,14 +237,14 @@ class LongWindedApiIntegrationTest extends Specification {
         //======================================
         when:
         permissionGrant = ["username": "user2", "permission": "ADMIN"]
-        response = makeRequest('api/v1/project/repoUser1/permissions', permissionGrant, userContainer1)
+        response = makePostRequest('api/v1/project/repoUser1/permissions', permissionGrant, userContainer1)
 
         then:
         response.statusLine.statusCode == 201
         response.content.accepted == true
 
         when:
-        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer1)
+        response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer1)
 
         then:
         (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', permission: 'ADMIN']
@@ -252,7 +252,7 @@ class LongWindedApiIntegrationTest extends Specification {
         (response.content.permissions as List).size() == 2
 
         when:
-        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer2)
+        response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer2)
 
         then:
         (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', permission: 'ADMIN']
@@ -270,14 +270,14 @@ class LongWindedApiIntegrationTest extends Specification {
         response.statusLine.statusCode == 200
 
         when:
-        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer1)
+        response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer1)
 
         then:
         (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', permission: 'ADMIN']
         (response.content.permissions as List).size() == 1
 
         when:  //user doesn't have enough permissions
-        response = makeRequest('api/v1/project/repoUser1/permissions', userContainer2)
+        response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer2)
 
         then:
         response.statusLine.statusCode == 401
@@ -287,7 +287,7 @@ class LongWindedApiIntegrationTest extends Specification {
 
     def 'create a repo for each user'() {
         when:
-        def response = makeRequest('api/v1/project/repoUser1/repo/repo1')
+        def response = makeGetRequest('api/v1/project/repoUser1/repo/repo1')
 
         then:
         response.statusLine.statusCode == 404
@@ -305,7 +305,7 @@ class LongWindedApiIntegrationTest extends Specification {
                 "createdAt": "2016-09-10T17:15:30.545Z"
             ]
         ]]
-        response = makeRequest("api/v1/project/repoUser1/repo/repo1", content, userContainer1)
+        response = makePostRequest("api/v1/project/repoUser1/repo/repo1", content, userContainer1)
 
         then:
         response.statusLine.statusCode == 201
@@ -315,7 +315,7 @@ class LongWindedApiIntegrationTest extends Specification {
 
         when:
         content = ["scmUrl": "git@github.com:foo/bar.git", "bumper": "semver"]
-        response = makeRequest("api/v1/project/repoUser2/repo/repo2", content, userContainer2)
+        response = makePostRequest("api/v1/project/repoUser2/repo/repo2", content, userContainer2)
 
         then:
         response.statusLine.statusCode == 201
@@ -324,14 +324,14 @@ class LongWindedApiIntegrationTest extends Specification {
         response.content.url == content.scmUrl
 
         when:
-        response = makeRequest("api/v1/project/repoUser2/repo/repo2", null)
+        response = makeGetRequest("api/v1/project/repoUser2/repo/repo2", null)
 
         then:
         response.content.projectName == 'repoUser2'
         response.content.repoName == 'repo2'
 
         when:
-        response = makeRequest("api/v1/project/repoUser1/repo/repo1", null)
+        response = makeGetRequest("api/v1/project/repoUser1/repo/repo1", null)
 
         then:
         response.content.projectName == 'repoUser1'
@@ -344,7 +344,7 @@ class LongWindedApiIntegrationTest extends Specification {
         response.statusLine.statusCode == 200
 
         when:
-        response = makeRequest("api/v1/project/repoUser2/repo/repo2", null)
+        response = makeGetRequest("api/v1/project/repoUser2/repo/repo2", null)
 
         then:
         response.statusLine.statusCode == 404
@@ -353,7 +353,7 @@ class LongWindedApiIntegrationTest extends Specification {
     def 'handle versions'() {
         when:
         def body = ["commits": ['1'], "message": "bla", "commitId": "2"]
-        def response = makeRequest('api/v1/project/repoUser1/repo/repo1/version', body, userContainer1)
+        def response = makePostRequest('api/v1/project/repoUser1/repo/repo1/version', body, userContainer1)
 
         then:
         response.statusLine.statusCode == 201
@@ -362,7 +362,7 @@ class LongWindedApiIntegrationTest extends Specification {
 
         when:
         body = ["commits": ['2', '1', '0'], "message": "bla[bump major]", "commitId": "3"]
-        response = makeRequest('api/v1/project/repoUser1/repo/repo1/version', body, userContainer1)
+        response = makePostRequest('api/v1/project/repoUser1/repo/repo1/version', body, userContainer1)
 
         then:
         response.statusLine.statusCode == 201
@@ -372,7 +372,7 @@ class LongWindedApiIntegrationTest extends Specification {
         when:
         // Should fail because user doesn't have permission
         body = ["commits": ['3', '2', '1'], "message": "bla", "commitId": "4"]
-        response = makeRequest('api/v1/project/repoUser1/repo/repo1/version', body, userContainer2)
+        response = makePostRequest('api/v1/project/repoUser1/repo/repo1/version', body, userContainer2)
 
         then:
         response.statusLine.statusCode == 401
@@ -381,7 +381,7 @@ class LongWindedApiIntegrationTest extends Specification {
 
         when:
         //try request as different user
-        response = makeRequest('api/v1/project/repoUser1/repo/repo1/versions', userContainer2)
+        response = makeGetRequest('api/v1/project/repoUser1/repo/repo1/versions', userContainer2)
 
         then:
         response.statusLine.statusCode == 200
@@ -403,7 +403,7 @@ class LongWindedApiIntegrationTest extends Specification {
 
     def 'version search'() {
         when:
-        def response = makeRequest('api/v1/project/repoUser1/repo/repo1/search/version', [commits: ['1', '2', '3']], userContainer1)
+        def response = makePostRequest('api/v1/project/repoUser1/repo/repo1/search/version', [commits: ['1', '2', '3']], userContainer1)
 
         then:
         response.statusLine.statusCode == 200
@@ -411,7 +411,7 @@ class LongWindedApiIntegrationTest extends Specification {
         response.content.version == '2.0.0'
 
         when:
-        response = makeRequest('api/v1/project/repoUser1/repo/repo1/search/version', [commits: ['1', '2', '3', '4']], userContainer2)
+        response = makePostRequest('api/v1/project/repoUser1/repo/repo1/search/version', [commits: ['1', '2', '3', '4']], userContainer2)
 
         then:
         response.statusLine.statusCode == 200
@@ -422,7 +422,7 @@ class LongWindedApiIntegrationTest extends Specification {
     def 'token changes'() {
         when:
         //user without permissions shouldn't be able to look at things
-        def response = makeRequest('api/v1/project/repoUser1/repo/repo1/token', userContainer2)
+        def response = makeGetRequest('api/v1/project/repoUser1/repo/repo1/token', userContainer2)
 
         then:
         response.statusLine.statusCode == 401
@@ -430,23 +430,35 @@ class LongWindedApiIntegrationTest extends Specification {
         response.content.message == 'user2 does not have access.'
 
         when:
-        response = makeRequest('api/v1/project/repoUser1/repo/repo1/token', userContainer1)
+        response = makeGetRequest('api/v1/project/repoUser1/repo/repo1/token', userContainer1)
 
         then:
         response.statusLine.statusCode == 200
         response.content.tokens == null
 
         when:
-        response = makeRequest('api/v1/project/repoUser1/repo/repo1/token?validFor=1', [:], userContainer1)
+        response = makePostRequest('api/v1/project/repoUser1/repo/repo1/token?validFor=1', [:], userContainer1)
 
         then:
         response.statusLine.statusCode == 201
         response.content.authToken != null
         ZonedDateTime.parse(response.content.expiresAt as String).isBefore(ZonedDateTime.now().plusDays(1))
 
+        //can use new token to access api's
+        when:
+        def token = new GeneratedTokenDetails(UUID.randomUUID(), ZonedDateTime.now(), ZonedDateTime.now(), response.content.authToken)
+        def container = new UserContainer(null, token)
+
+        def body = ["commits": ['4', '3', '2', '1'], "message": "bla", "commitId": "5"]
+        response = makePostRequest('api/v1/project/repoUser1/repo/repo1/version', body, container)
+
+        then:
+        response.statusLine.statusCode == 201
+        response.content.commitId == '5'
+
         when:
         // user doesn't have access
-        response = makeRequest('api/v1/project/repoUser1/repo/repo1/token', [:], userContainer2)
+        response = makePostRequest('api/v1/project/repoUser1/repo/repo1/token', [:], userContainer2)
 
         then:
         response.statusLine.statusCode == 401
@@ -454,7 +466,7 @@ class LongWindedApiIntegrationTest extends Specification {
         response.content.message == 'user2 does not have access.'
 
         when:
-        response = makeRequest('api/v1/project/repoUser1/repo/repo1/token', userContainer1)
+        response = makeGetRequest('api/v1/project/repoUser1/repo/repo1/token', userContainer1)
 
         then:
         response.statusLine.statusCode == 200
@@ -495,7 +507,7 @@ class LongWindedApiIntegrationTest extends Specification {
     def 'create read and delete user tokens'() {
         when:
         //user without permissions shouldn't be able to look at things
-        def response = makeRequest('api/v1/user/tokens')
+        def response = makeGetRequest('api/v1/user/tokens')
 
         then:
         response.statusLine.statusCode == 418
@@ -503,21 +515,21 @@ class LongWindedApiIntegrationTest extends Specification {
         response.content.message == 'Real user required, not API user.'
 
         when:
-        response = makeRequest('api/v1/user/tokens', userContainer1)
+        response = makeGetRequest('api/v1/user/tokens', userContainer1)
 
         then:
         response.statusLine.statusCode == 200
         (response.content.tokens as List).any { it.id == userContainer1.tokenDetails.id.toString() }
 
         when:
-        def createdResponse = makeRequest('api/v1/user/tokens', [:], userContainer1)
+        def createdResponse = makePostRequest('api/v1/user/tokens', [:], userContainer1)
 
         then:
         createdResponse.statusLine.statusCode == 201
         createdResponse.content.id != null
 
         when:
-        response = makeRequest('api/v1/user/tokens', userContainer1)
+        response = makeGetRequest('api/v1/user/tokens', userContainer1)
 
         then:
         response.statusLine.statusCode == 200
@@ -531,7 +543,7 @@ class LongWindedApiIntegrationTest extends Specification {
         response.statusLine.statusCode == 200
 
         when:
-        response = makeRequest('api/v1/user/tokens', userContainer1)
+        response = makeGetRequest('api/v1/user/tokens', userContainer1)
 
         then:
         response.statusLine.statusCode == 200
@@ -541,7 +553,7 @@ class LongWindedApiIntegrationTest extends Specification {
 
     def 'gets profile info'() {
         when:
-        def response = makeRequest('api/v1/user/profile', userContainer1)
+        def response = makeGetRequest('api/v1/user/profile', userContainer1)
 
         then:
         response.statusLine.statusCode == 200
@@ -552,13 +564,13 @@ class LongWindedApiIntegrationTest extends Specification {
     def 'update profile info'() {
         when:
         def body = [updates: [[field: 'DISPLAY_NAME', value: 'bob burger'], [field: 'USER_NAME', value: 'newUser']]]
-        def response = makeRequest('api/v1/user/profile/update', body, userContainer1)
+        def response = makePostRequest('api/v1/user/profile/update', body, userContainer1)
 
         then:
         response.statusLine.statusCode == 200
 
         when:
-        response = makeRequest('api/v1/user/profile', userContainer1)
+        response = makeGetRequest('api/v1/user/profile', userContainer1)
 
         then:
         response.statusLine.statusCode == 200
@@ -567,12 +579,16 @@ class LongWindedApiIntegrationTest extends Specification {
 
         when:
         body = [updates: [[field: 'USER_NAME', value: 'newUser']]]
-        response = makeRequest('api/v1/user/profile/update', body, userContainer2)
+        response = makePostRequest('api/v1/user/profile/update', body, userContainer2)
 
         then:
         response.statusLine.statusCode == 406
         response.content.errorCode == 'UP-002'
         response.content.message == 'Username already exists.'
+    }
+
+    def 'create repo tokens, and use them'() {
+
     }
 
     def doDelete(String endpoint, UserContainer container) {
@@ -587,7 +603,7 @@ class LongWindedApiIntegrationTest extends Specification {
         return new PostResponse(StringUtils.isEmpty(responseString) ? null : (slurper.parseText(responseString) as Map), responseCode)
     }
 
-    def makeRequest(String endpoint, UserContainer container = null) {
+    def makeGetRequest(String endpoint, UserContainer container = null) {
         def builder = Request.Get("http://localhost:${environment.getProperty("local.server.port")}/$endpoint")
         if (container) {
             builder = builder.addHeader("X-AUTH-TOKEN", container.tokenDetails.value)
@@ -600,7 +616,7 @@ class LongWindedApiIntegrationTest extends Specification {
         return new PostResponse(slurper.parseText(responseString) as Map, responseCode)
     }
 
-    def makeRequest(String endpoint, Object body, UserContainer container) {
+    def makePostRequest(String endpoint, Object body, UserContainer container) {
         def builder = new JsonBuilder(body)
         def response = Request.Post("http://localhost:${environment.getProperty("local.server.port")}/$endpoint")
             .addHeader("X-AUTH-TOKEN", container.tokenDetails.value)

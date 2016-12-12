@@ -2,6 +2,7 @@ package tech.crom.service.api.config
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.MethodParameter
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
@@ -11,10 +12,14 @@ import org.springframework.web.servlet.HandlerMapping.URI_TEMPLATE_VARIABLES_ATT
 import tech.crom.business.api.PermissionApi
 import tech.crom.database.api.ProjectManager
 import tech.crom.database.api.RepoManager
-import tech.crom.findCromUser
+import tech.crom.model.project.CromProject
+import tech.crom.model.repository.CromRepo
+import tech.crom.model.security.authentication.CromRepositoryAuthentication
+import tech.crom.model.security.authentication.CromUserAuthentication
 import tech.crom.model.security.authorization.CromPermission
-import tech.crom.security.authorization.api.PermissionService
+import tech.crom.model.user.CromUser
 import tech.crom.web.api.model.RequestDetails
+import tech.crom.web.api.model.RequestPermissions
 import javax.servlet.http.HttpServletRequest
 
 @Service
@@ -33,19 +38,48 @@ class RequestDetailsParameterResolver @Autowired constructor(
     fun createRequestDetails(httpServletRequest: HttpServletRequest): RequestDetails {
         val rawRequest = httpServletRequest.createRawRequestDetails()
 
-        val cromUser = findCromUser()
-        var requestPermissions = RequestDetails.RequestPermissions(null, null, cromUser)
+        val project = getProject(rawRequest)
+        val repo = getRepo(rawRequest, project)
 
-        val projectName = rawRequest.getProjectName() ?: return RequestDetails(null, null, requestPermissions, rawRequest)
-        val cromProject = projectManager.findProject(projectName) ?: return RequestDetails(null, null, requestPermissions, rawRequest)
+        val authentication = SecurityContextHolder.getContext().authentication
+        val permission = when(authentication) {
+            is CromRepositoryAuthentication -> getPermissionsForRepoAuth(repo, authentication)
+            is CromUserAuthentication -> getPermissionForUserAuth(project, repo, authentication)
+            else -> createNoPermissions()
+        }
 
-        var projectPermission = permissionApi.findHighestPermission(cromProject)
-        requestPermissions = requestPermissions.copy(projectPermission = projectPermission)
-        val repoName = rawRequest.getRepoName() ?: return RequestDetails(cromProject, null, requestPermissions, rawRequest)
-        val cromRepo = repoManager.findRepo(cromProject, repoName) ?: return RequestDetails(cromProject, null, requestPermissions, rawRequest)
+        return RequestDetails(project, repo, permission, rawRequest)
+    }
 
-        requestPermissions = requestPermissions.copy(repoPermission = permissionApi.findHighestPermission(cromRepo))
-        return RequestDetails(cromProject, cromRepo, requestPermissions, rawRequest)
+    fun createNoPermissions() : RequestPermissions {
+        return RequestPermissions(CromPermission.READ, CromPermission.READ, null)
+    }
+
+    fun getPermissionForUserAuth(project: CromProject?, repo: CromRepo?, auth: CromUserAuthentication): RequestPermissions {
+        val projectPermission = if (project != null) permissionApi.findHighestPermission(project) else CromPermission.READ
+        val repoPermission = if (repo != null) permissionApi.findHighestPermission(repo) else CromPermission.READ
+        return RequestPermissions(projectPermission, repoPermission, auth.user)
+    }
+
+    fun getPermissionsForRepoAuth(repo: CromRepo?, auth: CromRepositoryAuthentication) : RequestPermissions {
+        if (repo != null) {
+            if (repo.projectUid == auth.source.projectUid && repo.repoUid == auth.source.repoUid) {
+                return RequestPermissions(CromPermission.NONE, CromPermission.WRITE, CromUser.REPO_USER)
+            }
+        }
+
+        return createNoPermissions()
+    }
+
+    fun getProject(request: RequestDetails.RawRequestDetails): CromProject? {
+        val projectName = request.getProjectName() ?: return null
+        return projectManager.findProject(projectName)
+    }
+
+    fun getRepo(request: RequestDetails.RawRequestDetails, project: CromProject?): CromRepo? {
+        project ?: return null
+        val repoName = request.getRepoName() ?: return null
+        return repoManager.findRepo(project, repoName)
     }
 
     companion object {

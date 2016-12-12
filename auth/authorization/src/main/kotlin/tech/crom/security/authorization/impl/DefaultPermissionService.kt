@@ -118,11 +118,10 @@ class DefaultPermissionService @Autowired constructor(
         logger.info("Registering repo ${cromRepo.repoUid} with security id ${cromRepo.securityId}")
         val oi = ObjectIdentityImpl(CromRepo::class.java, cromRepo.securityId)
 
-        val acl: MutableAcl
-        try {
-            acl = aclService.readAclById(oi) as MutableAcl
+        val acl: MutableAcl = try {
+            aclService.readAclById(oi) as MutableAcl
         } catch (nfe: NotFoundException) {
-            acl = aclService.createAcl(oi)
+            aclService.createAcl(oi)
         }
 
         val project = projectManager.findProject(cromRepo.projectUid) ?: throw IllegalStateException("Unable to find parent project")
@@ -137,11 +136,10 @@ class DefaultPermissionService @Autowired constructor(
         logger.info("Registering project ${cromProject.projectUid} with security id ${cromProject.securityId}")
         val oi = ObjectIdentityImpl(CromProject::class.java, cromProject.securityId)
 
-        val acl: MutableAcl
-        try {
-            acl = aclService.readAclById(oi) as MutableAcl
+        val acl: MutableAcl = try {
+            aclService.readAclById(oi) as MutableAcl
         } catch (nfe: NotFoundException) {
-            acl = aclService.createAcl(oi)
+            aclService.createAcl(oi)
         }
 
         val sid = findCromAuthentication()!!.toSid()

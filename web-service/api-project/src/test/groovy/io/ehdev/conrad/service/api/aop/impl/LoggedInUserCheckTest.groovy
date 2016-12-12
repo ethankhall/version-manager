@@ -8,6 +8,7 @@ import spock.lang.Specification
 import tech.crom.model.security.authorization.CromPermission
 import tech.crom.model.user.CromUser
 import tech.crom.web.api.model.RequestDetails
+import tech.crom.web.api.model.RequestPermissions
 
 import static io.ehdev.conrad.service.api.service.TestUtils.emptyDetails
 
@@ -28,7 +29,7 @@ class LoggedInUserCheckTest extends Specification {
         FooTestInterface proxy = factory.getProxy()
 
         when:
-        def permissions = new RequestDetails.RequestPermissions(CromPermission.NONE, CromPermission.NONE, null)
+        def permissions = new RequestPermissions(CromPermission.NONE, CromPermission.NONE, null)
         proxy.doWork(new RequestDetails(null, null, permissions, emptyDetails()))
 
 
@@ -37,7 +38,7 @@ class LoggedInUserCheckTest extends Specification {
 
         when:
         def user = new CromUser(UUID.randomUUID(), 'username', 'display')
-        permissions = new RequestDetails.RequestPermissions(CromPermission.NONE, CromPermission.ADMIN, user)
+        permissions = new RequestPermissions(CromPermission.NONE, CromPermission.ADMIN, user)
         proxy.doWork(new RequestDetails(null, null, permissions, emptyDetails()))
 
         then:
