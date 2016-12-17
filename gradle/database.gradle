@@ -2,7 +2,7 @@ ext {
     database = [:]
 }
 
-database.driver = 'org.postgresql.Driver'
-database.url = System.getenv('SPRING_DATASOURCE_URL') ?:'jdbc:postgresql://172.0.1.100/version_manager_test'
-database.user = System.getenv('SPRING_DATASOURCE_USERNAME') ?: 'version_manager_test'
+database.driver = 'com.mysql.cj.jdbc.Driver'
+database.url = System.getenv('SPRING_DATASOURCE_URL') ?:'jdbc:mysql://127.0.0.1:13306/version_manager_test?verifyServerCertificate=false&useSSL=true'
+database.user = System.getenv('SPRING_DATASOURCE_USERNAME') ?: 'root'
 database.password = System.getenv('SPRING_DATASOURCE_PASSWORD') ?: 'password'

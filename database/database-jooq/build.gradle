@@ -54,7 +54,7 @@ def createLibraryXml = task createLibraryXml {
                             customType() {
                                 bnd.name("Instant")
                                 type('java.time.Instant')
-                                converter('io.ehdev.conrad.db.converter.TimestampConverter')
+                                converter('tech.crom.db.converter.TimestampConverter')
                             }
                         }
                         forcedTypes() {
