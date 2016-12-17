@@ -26,7 +26,7 @@ open class UserEndpoint @Autowired constructor(
     @LoggedInUserRequired
     @RequestMapping(value = "/profile")
     open fun findProfile(requestDetails: RequestDetails): ResponseEntity<GetFullProfileResponse> {
-        val user = userApi.findUserDetails(requestDetails.requestPermission.cromUser!!.userUid)!!
+        val user = userApi.findUserDetails(requestDetails.requestPermission.cromUser!!.userId)!!
 
         return ResponseEntity(GetFullProfileResponse(user.userName, null, user.displayName), HttpStatus.OK)
     }

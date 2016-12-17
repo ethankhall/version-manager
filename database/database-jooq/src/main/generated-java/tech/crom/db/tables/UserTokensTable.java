@@ -4,7 +4,7 @@
 package tech.crom.db.tables;
 
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +21,7 @@ import org.jooq.impl.TableImpl;
 
 import tech.crom.db.Keys;
 import tech.crom.db.VersionManagerTest;
+import tech.crom.db.converter.TimestampConverter;
 import tech.crom.db.tables.records.UserTokensRecord;
 
 
@@ -37,7 +38,7 @@ import tech.crom.db.tables.records.UserTokensRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class UserTokensTable extends TableImpl<UserTokensRecord> {
 
-    private static final long serialVersionUID = 995636765;
+    private static final long serialVersionUID = 1848830377;
 
     /**
      * The reference instance of <code>version_manager_test.user_tokens</code>
@@ -53,24 +54,24 @@ public class UserTokensTable extends TableImpl<UserTokensRecord> {
     }
 
     /**
-     * The column <code>version_manager_test.user_tokens.id</code>.
+     * The column <code>version_manager_test.user_tokens.user_tokens_id</code>.
      */
-    public final TableField<UserTokensRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<UserTokensRecord, Long> USER_TOKENS_ID = createField("user_tokens_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>version_manager_test.user_tokens.created_at</code>.
      */
-    public final TableField<UserTokensRecord, Timestamp> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<UserTokensRecord, Instant> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "", new TimestampConverter());
 
     /**
      * The column <code>version_manager_test.user_tokens.expires_at</code>.
      */
-    public final TableField<UserTokensRecord, Timestamp> EXPIRES_AT = createField("expires_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<UserTokensRecord, Instant> EXPIRES_AT = createField("expires_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "", new TimestampConverter());
 
     /**
      * The column <code>version_manager_test.user_tokens.valid</code>.
      */
-    public final TableField<UserTokensRecord, Byte> VALID = createField("valid", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<UserTokensRecord, Boolean> VALID = createField("valid", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>version_manager_test.user_tokens.user_id</code>.

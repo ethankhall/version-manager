@@ -21,18 +21,18 @@ interface TokenManager {
     /**
      * is token valid
      */
-    fun getTokenData(tokenUid: UUID, tokenType: TokenType): UderlyingTokenDetails?
+    fun getTokenData(tokenId: Long, tokenType: TokenType): UderlyingTokenDetails?
 
     /**
      * Kill a token
      */
-    fun invalidateToken(uid: UUID, tokenType: TokenType)
+    fun invalidateToken(id: Long, tokenType: TokenType)
 
-    fun findTokens(resourceUid: UUID, tokenType: TokenType): List<TokenDetails>
+    fun findTokens(resourceId: Long, tokenType: TokenType): List<TokenDetails>
 
-    data class UderlyingTokenDetails(val linkedUid: UUID, val tokenType: TokenType)
+    data class UderlyingTokenDetails(val linkedId: Long, val tokenType: TokenType)
 
-    data class TokenDetails(val uuid: UUID,
+    data class TokenDetails(val id: Long,
                             val createDate: ZonedDateTime,
                             val expiresAt: ZonedDateTime,
                             val valid: Boolean,

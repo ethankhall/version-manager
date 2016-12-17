@@ -4,7 +4,7 @@
 package tech.crom.db.tables;
 
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +21,7 @@ import org.jooq.impl.TableImpl;
 
 import tech.crom.db.Keys;
 import tech.crom.db.VersionManagerTest;
+import tech.crom.db.converter.TimestampConverter;
 import tech.crom.db.tables.records.CommitDetailsRecord;
 
 
@@ -37,7 +38,7 @@ import tech.crom.db.tables.records.CommitDetailsRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommitDetailsTable extends TableImpl<CommitDetailsRecord> {
 
-    private static final long serialVersionUID = 1868664041;
+    private static final long serialVersionUID = -827738294;
 
     /**
      * The reference instance of <code>version_manager_test.commit_details</code>
@@ -80,7 +81,7 @@ public class CommitDetailsTable extends TableImpl<CommitDetailsRecord> {
     /**
      * The column <code>version_manager_test.commit_details.created_at</code>.
      */
-    public final TableField<CommitDetailsRecord, Timestamp> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<CommitDetailsRecord, Instant> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "", new TimestampConverter());
 
     /**
      * Create a <code>version_manager_test.commit_details</code> table reference

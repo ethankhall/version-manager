@@ -14,7 +14,7 @@ class TestUtils {
     static RequestDetails createTestingRepoModel(CromPermission projectPermission = CromPermission.NONE,
                                                  CromPermission repoPermission = CromPermission.NONE) {
         def project = new CromProject(UUID.randomUUID(), 1, 'projectName')
-        def repo = new CromRepo(UUID.randomUUID(), 2, project.projectUid, 'repoName', UUID.randomUUID())
+        def repo = new CromRepo(UUID.randomUUID(), 2, project.getProjectId, 'repoName', UUID.randomUUID())
         def user = new CromUser(UUID.randomUUID(), 'userName', 'displayName')
         def permissions = new RequestPermissions(projectPermission, repoPermission, user)
         return new RequestDetails(project, repo, permissions, emptyDetails())

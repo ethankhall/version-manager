@@ -50,6 +50,24 @@ def createLibraryXml = task createLibraryXml {
                         bnd.name('org.jooq.util.mysql.MySQLDatabase')
                         excludes('schema_version')
                         inputSchema('version_manager_test')
+                        customTypes() {
+                            customType() {
+                                bnd.name("Instant")
+                                type('java.time.Instant')
+                                converter('tech.crom.db.converter.TimestampConverter')
+                            }
+                        }
+                        forcedTypes() {
+                            forcedType() {
+                                bnd.name('Instant')
+                                types('timestamp')
+                            }
+
+                            forcedType() {
+                                bnd.name('Boolean')
+                                types('tinyint')
+                            }
+                        }
                     }
                     generate([:]) {
                         pojos true

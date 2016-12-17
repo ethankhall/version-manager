@@ -1,4 +1,4 @@
-package io.ehdev.conrad.db.converter;
+package tech.crom.db.converter;
 
 import org.jooq.Converter;
 

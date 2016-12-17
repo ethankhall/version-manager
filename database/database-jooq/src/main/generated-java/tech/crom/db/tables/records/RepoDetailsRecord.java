@@ -36,9 +36,9 @@ import tech.crom.db.tables.RepoDetailsTable;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
 @Table(name = "repo_details", schema = "version_manager_test")
-public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> implements Record8<Long, String, Long, Long, String, String, Byte, Long> {
+public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> implements Record8<Long, String, Long, Long, String, String, Boolean, Long> {
 
-    private static final long serialVersionUID = 939878689;
+    private static final long serialVersionUID = 888833791;
 
     /**
      * Setter for <code>version_manager_test.repo_details.repo_details_id</code>.
@@ -142,16 +142,16 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
     /**
      * Setter for <code>version_manager_test.repo_details.public</code>.
      */
-    public void setPublic(Byte value) {
+    public void setPublic(Boolean value) {
         set(6, value);
     }
 
     /**
      * Getter for <code>version_manager_test.repo_details.public</code>.
      */
-    @Column(name = "public", precision = 3)
-    public Byte getPublic() {
-        return (Byte) get(6);
+    @Column(name = "public")
+    public Boolean getPublic() {
+        return (Boolean) get(6);
     }
 
     /**
@@ -190,7 +190,7 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
      * {@inheritDoc}
      */
     @Override
-    public Row8<Long, String, Long, Long, String, String, Byte, Long> fieldsRow() {
+    public Row8<Long, String, Long, Long, String, String, Boolean, Long> fieldsRow() {
         return (Row8) super.fieldsRow();
     }
 
@@ -198,7 +198,7 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
      * {@inheritDoc}
      */
     @Override
-    public Row8<Long, String, Long, Long, String, String, Byte, Long> valuesRow() {
+    public Row8<Long, String, Long, Long, String, String, Boolean, Long> valuesRow() {
         return (Row8) super.valuesRow();
     }
 
@@ -254,7 +254,7 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
      * {@inheritDoc}
      */
     @Override
-    public Field<Byte> field7() {
+    public Field<Boolean> field7() {
         return RepoDetailsTable.REPO_DETAILS.PUBLIC;
     }
 
@@ -318,7 +318,7 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
      * {@inheritDoc}
      */
     @Override
-    public Byte value7() {
+    public Boolean value7() {
         return getPublic();
     }
 
@@ -388,7 +388,7 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
      * {@inheritDoc}
      */
     @Override
-    public RepoDetailsRecord value7(Byte value) {
+    public RepoDetailsRecord value7(Boolean value) {
         setPublic(value);
         return this;
     }
@@ -406,7 +406,7 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
      * {@inheritDoc}
      */
     @Override
-    public RepoDetailsRecord values(Long value1, String value2, Long value3, Long value4, String value5, String value6, Byte value7, Long value8) {
+    public RepoDetailsRecord values(Long value1, String value2, Long value3, Long value4, String value5, String value6, Boolean value7, Long value8) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -432,7 +432,7 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
     /**
      * Create a detached, initialised RepoDetailsRecord
      */
-    public RepoDetailsRecord(Long repoDetailsId, String repoName, Long projectId, Long versionBumperId, String url, String description, Byte public_, Long securityId) {
+    public RepoDetailsRecord(Long repoDetailsId, String repoName, Long projectId, Long versionBumperId, String url, String description, Boolean public_, Long securityId) {
         super(RepoDetailsTable.REPO_DETAILS);
 
         set(0, repoDetailsId);

@@ -36,7 +36,7 @@ import tech.crom.db.tables.records.AclSidRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AclSidTable extends TableImpl<AclSidRecord> {
 
-    private static final long serialVersionUID = 1699967007;
+    private static final long serialVersionUID = 785292796;
 
     /**
      * The reference instance of <code>version_manager_test.acl_sid</code>
@@ -59,7 +59,7 @@ public class AclSidTable extends TableImpl<AclSidRecord> {
     /**
      * The column <code>version_manager_test.acl_sid.principal</code>.
      */
-    public final TableField<AclSidRecord, Byte> PRINCIPAL = createField("principal", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<AclSidRecord, Boolean> PRINCIPAL = createField("principal", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>version_manager_test.acl_sid.sid</code>.

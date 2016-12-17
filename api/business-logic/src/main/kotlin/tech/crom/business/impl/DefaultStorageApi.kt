@@ -30,7 +30,7 @@ open class DefaultStorageApi(
             throw StorageApi.MaxStorageReachedException()
         }
 
-        val uri = storageEngine.upload("/${cromRepo.repoUid}/${version.commitUid}/${storageData.fileName}", storageData)
+        val uri = storageEngine.upload("/${cromRepo.repoId}/${version.id}/${storageData.fileName}", storageData)
         metaDataManager.insertFile(cromRepo, version, uri, storageData)
     }
 

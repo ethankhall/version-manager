@@ -3,11 +3,10 @@ package tech.crom.database.api
 import tech.crom.model.bumper.CromVersionBumper
 import tech.crom.model.project.CromProject
 import tech.crom.model.repository.CromRepo
-import java.util.*
 
 interface RepoManager {
 
-    fun findRepo(uuid: UUID): CromRepo?
+    fun findRepo(id: Long): CromRepo?
 
     fun findRepo(cromProject: CromProject, repoName: String): CromRepo?
 
@@ -27,7 +26,7 @@ interface RepoManager {
     fun getDetails(cromRepo: CromRepo): CromRepoDetails
 
     data class CromRepoDetails(val cromRepo: CromRepo,
-                               val cromVersionBumperUid: UUID,
+                               val cromVersionBumperId: Long,
                                val public: Boolean,
                                val checkoutUrl: String?,
                                val description: String?)

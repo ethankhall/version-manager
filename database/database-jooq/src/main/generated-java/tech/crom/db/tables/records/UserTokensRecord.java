@@ -4,7 +4,7 @@
 package tech.crom.db.tables.records;
 
 
-import java.sql.Timestamp;
+import java.time.Instant;
 
 import javax.annotation.Generated;
 import javax.persistence.Column;
@@ -37,32 +37,32 @@ import tech.crom.db.tables.UserTokensTable;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
 @Table(name = "user_tokens", schema = "version_manager_test")
-public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> implements Record5<Long, Timestamp, Timestamp, Byte, Long> {
+public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> implements Record5<Long, Instant, Instant, Boolean, Long> {
 
-    private static final long serialVersionUID = -851114465;
+    private static final long serialVersionUID = -598064095;
 
     /**
-     * Setter for <code>version_manager_test.user_tokens.id</code>.
+     * Setter for <code>version_manager_test.user_tokens.user_tokens_id</code>.
      */
-    public void setId(Long value) {
+    public void setUserTokensId(Long value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.user_tokens.id</code>.
+     * Getter for <code>version_manager_test.user_tokens.user_tokens_id</code>.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false, precision = 19)
+    @Column(name = "user_tokens_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getId() {
+    public Long getUserTokensId() {
         return (Long) get(0);
     }
 
     /**
      * Setter for <code>version_manager_test.user_tokens.created_at</code>.
      */
-    public void setCreatedAt(Timestamp value) {
+    public void setCreatedAt(Instant value) {
         set(1, value);
     }
 
@@ -70,14 +70,14 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * Getter for <code>version_manager_test.user_tokens.created_at</code>.
      */
     @Column(name = "created_at", nullable = false)
-    public Timestamp getCreatedAt() {
-        return (Timestamp) get(1);
+    public Instant getCreatedAt() {
+        return (Instant) get(1);
     }
 
     /**
      * Setter for <code>version_manager_test.user_tokens.expires_at</code>.
      */
-    public void setExpiresAt(Timestamp value) {
+    public void setExpiresAt(Instant value) {
         set(2, value);
     }
 
@@ -85,23 +85,23 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * Getter for <code>version_manager_test.user_tokens.expires_at</code>.
      */
     @Column(name = "expires_at", nullable = false)
-    public Timestamp getExpiresAt() {
-        return (Timestamp) get(2);
+    public Instant getExpiresAt() {
+        return (Instant) get(2);
     }
 
     /**
      * Setter for <code>version_manager_test.user_tokens.valid</code>.
      */
-    public void setValid(Byte value) {
+    public void setValid(Boolean value) {
         set(3, value);
     }
 
     /**
      * Getter for <code>version_manager_test.user_tokens.valid</code>.
      */
-    @Column(name = "valid", precision = 3)
-    public Byte getValid() {
-        return (Byte) get(3);
+    @Column(name = "valid")
+    public Boolean getValid() {
+        return (Boolean) get(3);
     }
 
     /**
@@ -140,7 +140,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public Row5<Long, Timestamp, Timestamp, Byte, Long> fieldsRow() {
+    public Row5<Long, Instant, Instant, Boolean, Long> fieldsRow() {
         return (Row5) super.fieldsRow();
     }
 
@@ -148,7 +148,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public Row5<Long, Timestamp, Timestamp, Byte, Long> valuesRow() {
+    public Row5<Long, Instant, Instant, Boolean, Long> valuesRow() {
         return (Row5) super.valuesRow();
     }
 
@@ -157,14 +157,14 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      */
     @Override
     public Field<Long> field1() {
-        return UserTokensTable.USER_TOKENS.ID;
+        return UserTokensTable.USER_TOKENS.USER_TOKENS_ID;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Field<Timestamp> field2() {
+    public Field<Instant> field2() {
         return UserTokensTable.USER_TOKENS.CREATED_AT;
     }
 
@@ -172,7 +172,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public Field<Timestamp> field3() {
+    public Field<Instant> field3() {
         return UserTokensTable.USER_TOKENS.EXPIRES_AT;
     }
 
@@ -180,7 +180,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public Field<Byte> field4() {
+    public Field<Boolean> field4() {
         return UserTokensTable.USER_TOKENS.VALID;
     }
 
@@ -197,14 +197,14 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      */
     @Override
     public Long value1() {
-        return getId();
+        return getUserTokensId();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Timestamp value2() {
+    public Instant value2() {
         return getCreatedAt();
     }
 
@@ -212,7 +212,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public Timestamp value3() {
+    public Instant value3() {
         return getExpiresAt();
     }
 
@@ -220,7 +220,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public Byte value4() {
+    public Boolean value4() {
         return getValid();
     }
 
@@ -237,7 +237,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      */
     @Override
     public UserTokensRecord value1(Long value) {
-        setId(value);
+        setUserTokensId(value);
         return this;
     }
 
@@ -245,7 +245,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public UserTokensRecord value2(Timestamp value) {
+    public UserTokensRecord value2(Instant value) {
         setCreatedAt(value);
         return this;
     }
@@ -254,7 +254,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public UserTokensRecord value3(Timestamp value) {
+    public UserTokensRecord value3(Instant value) {
         setExpiresAt(value);
         return this;
     }
@@ -263,7 +263,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public UserTokensRecord value4(Byte value) {
+    public UserTokensRecord value4(Boolean value) {
         setValid(value);
         return this;
     }
@@ -281,7 +281,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public UserTokensRecord values(Long value1, Timestamp value2, Timestamp value3, Byte value4, Long value5) {
+    public UserTokensRecord values(Long value1, Instant value2, Instant value3, Boolean value4, Long value5) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -304,10 +304,10 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
     /**
      * Create a detached, initialised UserTokensRecord
      */
-    public UserTokensRecord(Long id, Timestamp createdAt, Timestamp expiresAt, Byte valid, Long userId) {
+    public UserTokensRecord(Long userTokensId, Instant createdAt, Instant expiresAt, Boolean valid, Long userId) {
         super(UserTokensTable.USER_TOKENS);
 
-        set(0, id);
+        set(0, userTokensId);
         set(1, createdAt);
         set(2, expiresAt);
         set(3, valid);

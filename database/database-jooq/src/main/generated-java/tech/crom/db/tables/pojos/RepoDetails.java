@@ -32,16 +32,16 @@ import javax.validation.constraints.Size;
 @Table(name = "repo_details", schema = "version_manager_test")
 public class RepoDetails implements Serializable {
 
-    private static final long serialVersionUID = -1806142315;
+    private static final long serialVersionUID = -184366061;
 
-    private Long   repoDetailsId;
-    private String repoName;
-    private Long   projectId;
-    private Long   versionBumperId;
-    private String url;
-    private String description;
-    private Byte   public_;
-    private Long   securityId;
+    private Long    repoDetailsId;
+    private String  repoName;
+    private Long    projectId;
+    private Long    versionBumperId;
+    private String  url;
+    private String  description;
+    private Boolean public_;
+    private Long    securityId;
 
     public RepoDetails() {}
 
@@ -57,14 +57,14 @@ public class RepoDetails implements Serializable {
     }
 
     public RepoDetails(
-        Long   repoDetailsId,
-        String repoName,
-        Long   projectId,
-        Long   versionBumperId,
-        String url,
-        String description,
-        Byte   public_,
-        Long   securityId
+        Long    repoDetailsId,
+        String  repoName,
+        Long    projectId,
+        Long    versionBumperId,
+        String  url,
+        String  description,
+        Boolean public_,
+        Long    securityId
     ) {
         this.repoDetailsId = repoDetailsId;
         this.repoName = repoName;
@@ -139,12 +139,12 @@ public class RepoDetails implements Serializable {
         this.description = description;
     }
 
-    @Column(name = "public", precision = 3)
-    public Byte getPublic() {
+    @Column(name = "public")
+    public Boolean getPublic() {
         return this.public_;
     }
 
-    public void setPublic(Byte public_) {
+    public void setPublic(Boolean public_) {
         this.public_ = public_;
     }
 

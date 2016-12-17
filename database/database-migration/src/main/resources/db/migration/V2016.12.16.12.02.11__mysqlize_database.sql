@@ -32,10 +32,10 @@ CREATE TABLE repo_details (
 ) ENGINE=innodb;
 
 CREATE TABLE repository_tokens (
-    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    repository_tokens_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     created_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     expires_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    valid bool DEFAULT 1,
+    valid BOOLEAN DEFAULT 1,
     repo_id BIGINT NOT NULL,
     FOREIGN KEY (repo_id) REFERENCES repo_details(repo_details_id)
 ) ENGINE=innodb;
@@ -47,7 +47,7 @@ CREATE TABLE user_details (
 ) ENGINE=innodb;
 
 CREATE TABLE user_tokens (
-    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    user_tokens_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     created_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     expires_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
     valid bool DEFAULT 1,
@@ -77,7 +77,7 @@ CREATE TABLE commit_details (
 ) ENGINE=innodb;
 
 CREATE TABLE commit_metadata (
-    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    commit_metadata_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     commit_id BIGINT NOT NULL,
     project_id BIGINT NOT NULL,
     repo_id BIGINT NOT NULL,

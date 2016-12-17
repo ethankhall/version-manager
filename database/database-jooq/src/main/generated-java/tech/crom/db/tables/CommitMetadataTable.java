@@ -4,7 +4,7 @@
 package tech.crom.db.tables;
 
 
-import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
@@ -21,6 +21,7 @@ import org.jooq.impl.TableImpl;
 
 import tech.crom.db.Keys;
 import tech.crom.db.VersionManagerTest;
+import tech.crom.db.converter.TimestampConverter;
 import tech.crom.db.tables.records.CommitMetadataRecord;
 
 
@@ -37,7 +38,7 @@ import tech.crom.db.tables.records.CommitMetadataRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommitMetadataTable extends TableImpl<CommitMetadataRecord> {
 
-    private static final long serialVersionUID = 1676580075;
+    private static final long serialVersionUID = -1200266450;
 
     /**
      * The reference instance of <code>version_manager_test.commit_metadata</code>
@@ -53,9 +54,9 @@ public class CommitMetadataTable extends TableImpl<CommitMetadataRecord> {
     }
 
     /**
-     * The column <code>version_manager_test.commit_metadata.id</code>.
+     * The column <code>version_manager_test.commit_metadata.commit_metadata_id</code>.
      */
-    public final TableField<CommitMetadataRecord, Long> ID = createField("id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<CommitMetadataRecord, Long> COMMIT_METADATA_ID = createField("commit_metadata_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>version_manager_test.commit_metadata.commit_id</code>.
@@ -95,12 +96,12 @@ public class CommitMetadataTable extends TableImpl<CommitMetadataRecord> {
     /**
      * The column <code>version_manager_test.commit_metadata.created_at</code>.
      */
-    public final TableField<CommitMetadataRecord, Timestamp> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<CommitMetadataRecord, Instant> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "", new TimestampConverter());
 
     /**
      * The column <code>version_manager_test.commit_metadata.updated_at</code>.
      */
-    public final TableField<CommitMetadataRecord, Timestamp> UPDATED_AT = createField("updated_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "");
+    public final TableField<CommitMetadataRecord, Instant> UPDATED_AT = createField("updated_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "", new TimestampConverter());
 
     /**
      * Create a <code>version_manager_test.commit_metadata</code> table reference

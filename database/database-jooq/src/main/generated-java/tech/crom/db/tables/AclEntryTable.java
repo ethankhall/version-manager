@@ -38,7 +38,7 @@ import tech.crom.db.tables.records.AclEntryRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AclEntryTable extends TableImpl<AclEntryRecord> {
 
-    private static final long serialVersionUID = -1612458021;
+    private static final long serialVersionUID = 1472825342;
 
     /**
      * The reference instance of <code>version_manager_test.acl_entry</code>
@@ -81,17 +81,17 @@ public class AclEntryTable extends TableImpl<AclEntryRecord> {
     /**
      * The column <code>version_manager_test.acl_entry.granting</code>.
      */
-    public final TableField<AclEntryRecord, Byte> GRANTING = createField("granting", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<AclEntryRecord, Boolean> GRANTING = createField("granting", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>version_manager_test.acl_entry.audit_success</code>.
      */
-    public final TableField<AclEntryRecord, Byte> AUDIT_SUCCESS = createField("audit_success", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<AclEntryRecord, Boolean> AUDIT_SUCCESS = createField("audit_success", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * The column <code>version_manager_test.acl_entry.audit_failure</code>.
      */
-    public final TableField<AclEntryRecord, Byte> AUDIT_FAILURE = createField("audit_failure", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<AclEntryRecord, Boolean> AUDIT_FAILURE = createField("audit_failure", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * Create a <code>version_manager_test.acl_entry</code> table reference

@@ -1,28 +1,27 @@
 package tech.crom.database.impl
 
-import io.ehdev.conrad.db.Tables
-import io.ehdev.conrad.db.tables.UserDetailsTable
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.cache.annotation.CacheEvict
 import org.springframework.cache.annotation.Cacheable
 import org.springframework.stereotype.Service
 import tech.crom.database.api.UserManager
+import tech.crom.db.Tables
+import tech.crom.db.tables.UserDetailsTable
 import tech.crom.model.user.CromUser
-import java.util.*
 
 @Service
 open class DefaultUserManager @Autowired constructor(
     val dslContext: DSLContext
 ) : UserManager {
 
-    @CacheEvict("userById", key = "#sourceUser.userUid.toString()")
+    @CacheEvict("userById", key = "#sourceUser.userId")
     override fun changeDisplayName(sourceUser: CromUser, displayName: String) {
         val userDetails = Tables.USER_DETAILS
         dslContext
             .update(userDetails)
             .set(userDetails.NAME, displayName)
-            .where(userDetails.UUID.eq(sourceUser.userUid))
+            .where(userDetails.USER_ID.eq(sourceUser.userId))
             .execute()
     }
 
@@ -32,7 +31,7 @@ open class DefaultUserManager @Autowired constructor(
             .selectFrom(details)
             .where(details.USER_NAME.eq(userName))
             .fetchOne()?.into(details) ?: return null
-        return CromUser(user.uuid, user.userName, user.name)
+        return CromUser(user.userId, user.userName, user.name)
     }
 
     override fun userNameExists(userName: String): Boolean {
@@ -58,10 +57,10 @@ open class DefaultUserManager @Autowired constructor(
             .fetchOne()
             .into(userDetails)
 
-        return CromUser(user.uuid, user.userName, user.name)
+        return CromUser(user.userId, user.userName, user.name)
     }
 
-    @CacheEvict("userById", key = "#cromUser.userUid.toString()")
+    @CacheEvict("userById", key = "#cromUser.userId")
     override fun changeUserName(cromUser: CromUser, newUserName: String): CromUser {
         if (userNameExists(newUserName) && cromUser.userName != newUserName) {
             throw UserManager.UsernameAlreadyExists(newUserName)
@@ -71,21 +70,21 @@ open class DefaultUserManager @Autowired constructor(
         val user = dslContext
             .update(userDetails)
             .set(userDetails.USER_NAME, newUserName)
-            .where(userDetails.UUID.eq(cromUser.userUid))
+            .where(userDetails.USER_ID.eq(cromUser.userId))
             .returning(userDetails.fields().toList())
             .fetchOne()
             .into(userDetails)
 
-        return CromUser(user.uuid, user.userName, user.name)
+        return CromUser(user.userId, user.userName, user.name)
     }
 
-    @Cacheable("userById", key = "#uuid.toString()")
-    override fun findUserDetails(uuid: UUID): CromUser? {
+    @Cacheable("userById", key = "#id")
+    override fun findUserDetails(id: Long): CromUser? {
         val details = UserDetailsTable.USER_DETAILS
         val user = dslContext
             .selectFrom(details)
-            .where(details.UUID.eq(uuid))
+            .where(details.USER_ID.eq(id))
             .fetchOne()?.into(details) ?: return null
-        return CromUser(user.uuid, user.userName, user.name)
+        return CromUser(user.userId, user.userName, user.name)
     }
 }

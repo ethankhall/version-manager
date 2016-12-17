@@ -36,9 +36,9 @@ class CromUserDetailsServiceTest: Spek({
             val cromUser = createUser()
             whenever(userManager.findUserDetails(any<UUID>())).thenReturn(cromUser)
 
-            val loadedUser = uds.loadUserByUserId(cromUser.userUid.toString())
+            val loadedUser = uds.loadUserByUserId(cromUser.userId.toString())
             assertNotNull(loadedUser)
-            assertEquals(cromUser.userUid.toString(), loadedUser.userId)
+            assertEquals(cromUser.userId.toString(), loadedUser.userId)
         }
 
         it("will respond when asked for user by loadUserByUsername") {

@@ -2,11 +2,10 @@ package tech.crom.database.api
 
 import tech.crom.model.project.CromProject
 import tech.crom.model.project.FilteredProjects
-import java.util.*
 
 interface ProjectManager {
 
-    fun findProject(uid: UUID): CromProject?
+    fun findProject(id: Long): CromProject?
 
     fun findProject(projectName: String): CromProject?
 

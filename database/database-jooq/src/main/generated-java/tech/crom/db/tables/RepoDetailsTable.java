@@ -4,23 +4,15 @@
 package tech.crom.db.tables;
 
 
-import java.util.Arrays;
-import java.util.List;
-
-import javax.annotation.Generated;
-
-import org.jooq.Field;
-import org.jooq.ForeignKey;
-import org.jooq.Identity;
-import org.jooq.Schema;
-import org.jooq.Table;
-import org.jooq.TableField;
-import org.jooq.UniqueKey;
+import org.jooq.*;
 import org.jooq.impl.TableImpl;
-
 import tech.crom.db.Keys;
 import tech.crom.db.VersionManagerTest;
 import tech.crom.db.tables.records.RepoDetailsRecord;
+
+import javax.annotation.Generated;
+import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -36,7 +28,7 @@ import tech.crom.db.tables.records.RepoDetailsRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RepoDetailsTable extends TableImpl<RepoDetailsRecord> {
 
-    private static final long serialVersionUID = 447447607;
+    private static final long serialVersionUID = -797072693;
 
     /**
      * The reference instance of <code>version_manager_test.repo_details</code>
@@ -84,7 +76,7 @@ public class RepoDetailsTable extends TableImpl<RepoDetailsRecord> {
     /**
      * The column <code>version_manager_test.repo_details.public</code>.
      */
-    public final TableField<RepoDetailsRecord, Byte> PUBLIC = createField("public", org.jooq.impl.SQLDataType.TINYINT.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.TINYINT)), this, "");
+    public final TableField<RepoDetailsRecord, Boolean> PUBLIC = createField("public", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.inline("1", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
 
     /**
      * The column <code>version_manager_test.repo_details.security_id</code>.

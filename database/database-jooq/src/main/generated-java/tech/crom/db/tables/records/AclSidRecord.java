@@ -40,9 +40,9 @@ import tech.crom.db.tables.AclSidTable;
 @Table(name = "acl_sid", schema = "version_manager_test", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"sid", "principal"})
 })
-public class AclSidRecord extends UpdatableRecordImpl<AclSidRecord> implements Record3<ULong, Byte, String> {
+public class AclSidRecord extends UpdatableRecordImpl<AclSidRecord> implements Record3<ULong, Boolean, String> {
 
-    private static final long serialVersionUID = 1441349319;
+    private static final long serialVersionUID = -1180258747;
 
     /**
      * Setter for <code>version_manager_test.acl_sid.id</code>.
@@ -65,17 +65,17 @@ public class AclSidRecord extends UpdatableRecordImpl<AclSidRecord> implements R
     /**
      * Setter for <code>version_manager_test.acl_sid.principal</code>.
      */
-    public void setPrincipal(Byte value) {
+    public void setPrincipal(Boolean value) {
         set(1, value);
     }
 
     /**
      * Getter for <code>version_manager_test.acl_sid.principal</code>.
      */
-    @Column(name = "principal", nullable = false, precision = 3)
+    @Column(name = "principal", nullable = false)
     @NotNull
-    public Byte getPrincipal() {
-        return (Byte) get(1);
+    public Boolean getPrincipal() {
+        return (Boolean) get(1);
     }
 
     /**
@@ -115,7 +115,7 @@ public class AclSidRecord extends UpdatableRecordImpl<AclSidRecord> implements R
      * {@inheritDoc}
      */
     @Override
-    public Row3<ULong, Byte, String> fieldsRow() {
+    public Row3<ULong, Boolean, String> fieldsRow() {
         return (Row3) super.fieldsRow();
     }
 
@@ -123,7 +123,7 @@ public class AclSidRecord extends UpdatableRecordImpl<AclSidRecord> implements R
      * {@inheritDoc}
      */
     @Override
-    public Row3<ULong, Byte, String> valuesRow() {
+    public Row3<ULong, Boolean, String> valuesRow() {
         return (Row3) super.valuesRow();
     }
 
@@ -139,7 +139,7 @@ public class AclSidRecord extends UpdatableRecordImpl<AclSidRecord> implements R
      * {@inheritDoc}
      */
     @Override
-    public Field<Byte> field2() {
+    public Field<Boolean> field2() {
         return AclSidTable.ACL_SID.PRINCIPAL;
     }
 
@@ -163,7 +163,7 @@ public class AclSidRecord extends UpdatableRecordImpl<AclSidRecord> implements R
      * {@inheritDoc}
      */
     @Override
-    public Byte value2() {
+    public Boolean value2() {
         return getPrincipal();
     }
 
@@ -188,7 +188,7 @@ public class AclSidRecord extends UpdatableRecordImpl<AclSidRecord> implements R
      * {@inheritDoc}
      */
     @Override
-    public AclSidRecord value2(Byte value) {
+    public AclSidRecord value2(Boolean value) {
         setPrincipal(value);
         return this;
     }
@@ -206,7 +206,7 @@ public class AclSidRecord extends UpdatableRecordImpl<AclSidRecord> implements R
      * {@inheritDoc}
      */
     @Override
-    public AclSidRecord values(ULong value1, Byte value2, String value3) {
+    public AclSidRecord values(ULong value1, Boolean value2, String value3) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -227,7 +227,7 @@ public class AclSidRecord extends UpdatableRecordImpl<AclSidRecord> implements R
     /**
      * Create a detached, initialised AclSidRecord
      */
-    public AclSidRecord(ULong id, Byte principal, String sid) {
+    public AclSidRecord(ULong id, Boolean principal, String sid) {
         super(AclSidTable.ACL_SID);
 
         set(0, id);

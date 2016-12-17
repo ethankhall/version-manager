@@ -22,7 +22,6 @@ import javax.transaction.Transactional;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Controller
@@ -43,7 +42,7 @@ public class RepoTokenEndpoint {
     @RequestMapping(value = "/{tokenId}", method = RequestMethod.DELETE)
     public ResponseEntity deleteToken(RequestDetails requestDetails,
                                       @PathVariable("tokenId") String tokenId) {
-        tokenManagementApi.invalidateToken(UUID.fromString(tokenId), TokenType.REPOSITORY);
+        tokenManagementApi.invalidateToken(Long.parseLong(tokenId), TokenType.REPOSITORY);
         return new ResponseEntity(HttpStatus.OK);
     }
 

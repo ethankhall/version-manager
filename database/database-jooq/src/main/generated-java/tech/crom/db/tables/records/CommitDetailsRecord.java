@@ -4,7 +4,7 @@
 package tech.crom.db.tables.records;
 
 
-import java.sql.Timestamp;
+import java.time.Instant;
 
 import javax.annotation.Generated;
 import javax.persistence.Column;
@@ -38,9 +38,9 @@ import tech.crom.db.tables.CommitDetailsTable;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
 @Table(name = "commit_details", schema = "version_manager_test")
-public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord> implements Record6<Long, Long, Long, String, String, Timestamp> {
+public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord> implements Record6<Long, Long, Long, String, String, Instant> {
 
-    private static final long serialVersionUID = -770621519;
+    private static final long serialVersionUID = 840092032;
 
     /**
      * Setter for <code>version_manager_test.commit_details.commit_details_id</code>.
@@ -128,7 +128,7 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
     /**
      * Setter for <code>version_manager_test.commit_details.created_at</code>.
      */
-    public void setCreatedAt(Timestamp value) {
+    public void setCreatedAt(Instant value) {
         set(5, value);
     }
 
@@ -136,8 +136,8 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
      * Getter for <code>version_manager_test.commit_details.created_at</code>.
      */
     @Column(name = "created_at", nullable = false)
-    public Timestamp getCreatedAt() {
-        return (Timestamp) get(5);
+    public Instant getCreatedAt() {
+        return (Instant) get(5);
     }
 
     // -------------------------------------------------------------------------
@@ -160,7 +160,7 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
      * {@inheritDoc}
      */
     @Override
-    public Row6<Long, Long, Long, String, String, Timestamp> fieldsRow() {
+    public Row6<Long, Long, Long, String, String, Instant> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 
@@ -168,7 +168,7 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
      * {@inheritDoc}
      */
     @Override
-    public Row6<Long, Long, Long, String, String, Timestamp> valuesRow() {
+    public Row6<Long, Long, Long, String, String, Instant> valuesRow() {
         return (Row6) super.valuesRow();
     }
 
@@ -216,7 +216,7 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
      * {@inheritDoc}
      */
     @Override
-    public Field<Timestamp> field6() {
+    public Field<Instant> field6() {
         return CommitDetailsTable.COMMIT_DETAILS.CREATED_AT;
     }
 
@@ -264,7 +264,7 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
      * {@inheritDoc}
      */
     @Override
-    public Timestamp value6() {
+    public Instant value6() {
         return getCreatedAt();
     }
 
@@ -317,7 +317,7 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
      * {@inheritDoc}
      */
     @Override
-    public CommitDetailsRecord value6(Timestamp value) {
+    public CommitDetailsRecord value6(Instant value) {
         setCreatedAt(value);
         return this;
     }
@@ -326,7 +326,7 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
      * {@inheritDoc}
      */
     @Override
-    public CommitDetailsRecord values(Long value1, Long value2, Long value3, String value4, String value5, Timestamp value6) {
+    public CommitDetailsRecord values(Long value1, Long value2, Long value3, String value4, String value5, Instant value6) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -350,7 +350,7 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
     /**
      * Create a detached, initialised CommitDetailsRecord
      */
-    public CommitDetailsRecord(Long commitDetailsId, Long repoDetailsId, Long parentCommitId, String commitId, String version, Timestamp createdAt) {
+    public CommitDetailsRecord(Long commitDetailsId, Long repoDetailsId, Long parentCommitId, String commitId, String version, Instant createdAt) {
         super(CommitDetailsTable.COMMIT_DETAILS);
 
         set(0, commitDetailsId);

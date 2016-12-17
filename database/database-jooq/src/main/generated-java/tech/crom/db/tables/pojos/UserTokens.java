@@ -5,7 +5,7 @@ package tech.crom.db.tables.pojos;
 
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.Instant;
 
 import javax.annotation.Generated;
 import javax.persistence.Column;
@@ -32,18 +32,18 @@ import javax.validation.constraints.NotNull;
 @Table(name = "user_tokens", schema = "version_manager_test")
 public class UserTokens implements Serializable {
 
-    private static final long serialVersionUID = 150081047;
+    private static final long serialVersionUID = 1693029115;
 
-    private Long      id;
-    private Timestamp createdAt;
-    private Timestamp expiresAt;
-    private Byte      valid;
-    private Long      userId;
+    private Long    userTokensId;
+    private Instant createdAt;
+    private Instant expiresAt;
+    private Boolean valid;
+    private Long    userId;
 
     public UserTokens() {}
 
     public UserTokens(UserTokens value) {
-        this.id = value.id;
+        this.userTokensId = value.userTokensId;
         this.createdAt = value.createdAt;
         this.expiresAt = value.expiresAt;
         this.valid = value.valid;
@@ -51,13 +51,13 @@ public class UserTokens implements Serializable {
     }
 
     public UserTokens(
-        Long      id,
-        Timestamp createdAt,
-        Timestamp expiresAt,
-        Byte      valid,
-        Long      userId
+        Long    userTokensId,
+        Instant createdAt,
+        Instant expiresAt,
+        Boolean valid,
+        Long    userId
     ) {
-        this.id = id;
+        this.userTokensId = userTokensId;
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
         this.valid = valid;
@@ -66,40 +66,40 @@ public class UserTokens implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false, precision = 19)
+    @Column(name = "user_tokens_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getId() {
-        return this.id;
+    public Long getUserTokensId() {
+        return this.userTokensId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setUserTokensId(Long userTokensId) {
+        this.userTokensId = userTokensId;
     }
 
     @Column(name = "created_at", nullable = false)
-    public Timestamp getCreatedAt() {
+    public Instant getCreatedAt() {
         return this.createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 
     @Column(name = "expires_at", nullable = false)
-    public Timestamp getExpiresAt() {
+    public Instant getExpiresAt() {
         return this.expiresAt;
     }
 
-    public void setExpiresAt(Timestamp expiresAt) {
+    public void setExpiresAt(Instant expiresAt) {
         this.expiresAt = expiresAt;
     }
 
-    @Column(name = "valid", precision = 3)
-    public Byte getValid() {
+    @Column(name = "valid")
+    public Boolean getValid() {
         return this.valid;
     }
 
-    public void setValid(Byte valid) {
+    public void setValid(Boolean valid) {
         this.valid = valid;
     }
 
@@ -117,7 +117,7 @@ public class UserTokens implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("UserTokens (");
 
-        sb.append(id);
+        sb.append(userTokensId);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(expiresAt);
         sb.append(", ").append(valid);

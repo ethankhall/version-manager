@@ -37,16 +37,16 @@ import org.jooq.types.ULong;
 })
 public class AclEntry implements Serializable {
 
-    private static final long serialVersionUID = 418511726;
+    private static final long serialVersionUID = 1106417992;
 
     private ULong    id;
     private ULong    aclObjectIdentity;
     private Integer  aceOrder;
     private ULong    sid;
     private UInteger mask;
-    private Byte     granting;
-    private Byte     auditSuccess;
-    private Byte     auditFailure;
+    private Boolean  granting;
+    private Boolean  auditSuccess;
+    private Boolean  auditFailure;
 
     public AclEntry() {}
 
@@ -67,9 +67,9 @@ public class AclEntry implements Serializable {
         Integer  aceOrder,
         ULong    sid,
         UInteger mask,
-        Byte     granting,
-        Byte     auditSuccess,
-        Byte     auditFailure
+        Boolean  granting,
+        Boolean  auditSuccess,
+        Boolean  auditFailure
     ) {
         this.id = id;
         this.aclObjectIdentity = aclObjectIdentity;
@@ -133,33 +133,33 @@ public class AclEntry implements Serializable {
         this.mask = mask;
     }
 
-    @Column(name = "granting", nullable = false, precision = 3)
+    @Column(name = "granting", nullable = false)
     @NotNull
-    public Byte getGranting() {
+    public Boolean getGranting() {
         return this.granting;
     }
 
-    public void setGranting(Byte granting) {
+    public void setGranting(Boolean granting) {
         this.granting = granting;
     }
 
-    @Column(name = "audit_success", nullable = false, precision = 3)
+    @Column(name = "audit_success", nullable = false)
     @NotNull
-    public Byte getAuditSuccess() {
+    public Boolean getAuditSuccess() {
         return this.auditSuccess;
     }
 
-    public void setAuditSuccess(Byte auditSuccess) {
+    public void setAuditSuccess(Boolean auditSuccess) {
         this.auditSuccess = auditSuccess;
     }
 
-    @Column(name = "audit_failure", nullable = false, precision = 3)
+    @Column(name = "audit_failure", nullable = false)
     @NotNull
-    public Byte getAuditFailure() {
+    public Boolean getAuditFailure() {
         return this.auditFailure;
     }
 
-    public void setAuditFailure(Byte auditFailure) {
+    public void setAuditFailure(Boolean auditFailure) {
         this.auditFailure = auditFailure;
     }
 

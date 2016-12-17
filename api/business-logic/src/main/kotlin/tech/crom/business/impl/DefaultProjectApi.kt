@@ -34,7 +34,7 @@ open class DefaultProjectApi @Autowired constructor(
         return projectManager.findProject(projectName) != null
     }
 
-    override fun findProject(uid: UUID): CromProject? = projectManager.findProject(uid)
+    override fun findProject(id: Long): CromProject? = projectManager.findProject(id)
 
     override fun findProject(projectName: String): CromProject? = projectManager.findProject(projectName)
 

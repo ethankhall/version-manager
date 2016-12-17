@@ -44,7 +44,7 @@ class DefaultJwtManager @Autowired constructor(
     override fun createToken(tokenDetails: TokenManager.TokenDetails): String {
         val claims = Jwts
             .claims()
-            .setSubject(tokenDetails.uuid.toString())
+            .setSubject(tokenDetails.id.toString())
             .setExpiration(Date.from(tokenDetails.expiresAt.toInstant()))
             .setNotBefore(Date.from(tokenDetails.createDate.toInstant()))
 
@@ -74,13 +74,13 @@ class DefaultJwtManager @Autowired constructor(
             val tokenString: String = parsed[TOKEN_TYPE] as String? ?: return null
             val tokenType = TokenType.valueOf(tokenString)
 
-            val tokenUid = UUID.fromString(parsed.subject)
-            val tokenData = tokenManager.getTokenData(tokenUid, tokenType) ?: return null
+            val tokenId = parsed.subject.toLong()
+            val tokenData = tokenManager.getTokenData(tokenId, tokenType) ?: return null
 
             if (tokenData.tokenType == TokenType.REPOSITORY) {
-                return JwtTokenAuthentication.RepoJwtTokenAuthentication(tokenData.linkedUid, tokenUid)
+                return JwtTokenAuthentication.RepoJwtTokenAuthentication(tokenData.linkedId, tokenId)
             } else {
-                return JwtTokenAuthentication.UserJwtTokenAuthentication(tokenData.linkedUid, tokenUid)
+                return JwtTokenAuthentication.UserJwtTokenAuthentication(tokenData.linkedId, tokenId)
             }
         } catch (exception: JwtException) {
             log.debug("Token {} was invalid: {}", token, exception.message)

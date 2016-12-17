@@ -4,7 +4,7 @@
 package tech.crom.db.tables.records;
 
 
-import java.sql.Timestamp;
+import java.time.Instant;
 
 import javax.annotation.Generated;
 import javax.persistence.Column;
@@ -38,25 +38,25 @@ import tech.crom.db.tables.CommitMetadataTable;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
 @Table(name = "commit_metadata", schema = "version_manager_test")
-public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataRecord> implements Record10<Long, Long, Long, Long, String, String, Long, String, Timestamp, Timestamp> {
+public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataRecord> implements Record10<Long, Long, Long, Long, String, String, Long, String, Instant, Instant> {
 
-    private static final long serialVersionUID = 608987146;
+    private static final long serialVersionUID = 2019302254;
 
     /**
-     * Setter for <code>version_manager_test.commit_metadata.id</code>.
+     * Setter for <code>version_manager_test.commit_metadata.commit_metadata_id</code>.
      */
-    public void setId(Long value) {
+    public void setCommitMetadataId(Long value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.commit_metadata.id</code>.
+     * Getter for <code>version_manager_test.commit_metadata.commit_metadata_id</code>.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false, precision = 19)
+    @Column(name = "commit_metadata_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getId() {
+    public Long getCommitMetadataId() {
         return (Long) get(0);
     }
 
@@ -178,7 +178,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
     /**
      * Setter for <code>version_manager_test.commit_metadata.created_at</code>.
      */
-    public void setCreatedAt(Timestamp value) {
+    public void setCreatedAt(Instant value) {
         set(8, value);
     }
 
@@ -186,14 +186,14 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      * Getter for <code>version_manager_test.commit_metadata.created_at</code>.
      */
     @Column(name = "created_at", nullable = false)
-    public Timestamp getCreatedAt() {
-        return (Timestamp) get(8);
+    public Instant getCreatedAt() {
+        return (Instant) get(8);
     }
 
     /**
      * Setter for <code>version_manager_test.commit_metadata.updated_at</code>.
      */
-    public void setUpdatedAt(Timestamp value) {
+    public void setUpdatedAt(Instant value) {
         set(9, value);
     }
 
@@ -201,8 +201,8 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      * Getter for <code>version_manager_test.commit_metadata.updated_at</code>.
      */
     @Column(name = "updated_at", nullable = false)
-    public Timestamp getUpdatedAt() {
-        return (Timestamp) get(9);
+    public Instant getUpdatedAt() {
+        return (Instant) get(9);
     }
 
     // -------------------------------------------------------------------------
@@ -225,7 +225,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      * {@inheritDoc}
      */
     @Override
-    public Row10<Long, Long, Long, Long, String, String, Long, String, Timestamp, Timestamp> fieldsRow() {
+    public Row10<Long, Long, Long, Long, String, String, Long, String, Instant, Instant> fieldsRow() {
         return (Row10) super.fieldsRow();
     }
 
@@ -233,7 +233,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      * {@inheritDoc}
      */
     @Override
-    public Row10<Long, Long, Long, Long, String, String, Long, String, Timestamp, Timestamp> valuesRow() {
+    public Row10<Long, Long, Long, Long, String, String, Long, String, Instant, Instant> valuesRow() {
         return (Row10) super.valuesRow();
     }
 
@@ -242,7 +242,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      */
     @Override
     public Field<Long> field1() {
-        return CommitMetadataTable.COMMIT_METADATA.ID;
+        return CommitMetadataTable.COMMIT_METADATA.COMMIT_METADATA_ID;
     }
 
     /**
@@ -305,7 +305,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      * {@inheritDoc}
      */
     @Override
-    public Field<Timestamp> field9() {
+    public Field<Instant> field9() {
         return CommitMetadataTable.COMMIT_METADATA.CREATED_AT;
     }
 
@@ -313,7 +313,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      * {@inheritDoc}
      */
     @Override
-    public Field<Timestamp> field10() {
+    public Field<Instant> field10() {
         return CommitMetadataTable.COMMIT_METADATA.UPDATED_AT;
     }
 
@@ -322,7 +322,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      */
     @Override
     public Long value1() {
-        return getId();
+        return getCommitMetadataId();
     }
 
     /**
@@ -385,7 +385,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      * {@inheritDoc}
      */
     @Override
-    public Timestamp value9() {
+    public Instant value9() {
         return getCreatedAt();
     }
 
@@ -393,7 +393,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      * {@inheritDoc}
      */
     @Override
-    public Timestamp value10() {
+    public Instant value10() {
         return getUpdatedAt();
     }
 
@@ -402,7 +402,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      */
     @Override
     public CommitMetadataRecord value1(Long value) {
-        setId(value);
+        setCommitMetadataId(value);
         return this;
     }
 
@@ -473,7 +473,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      * {@inheritDoc}
      */
     @Override
-    public CommitMetadataRecord value9(Timestamp value) {
+    public CommitMetadataRecord value9(Instant value) {
         setCreatedAt(value);
         return this;
     }
@@ -482,7 +482,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      * {@inheritDoc}
      */
     @Override
-    public CommitMetadataRecord value10(Timestamp value) {
+    public CommitMetadataRecord value10(Instant value) {
         setUpdatedAt(value);
         return this;
     }
@@ -491,7 +491,7 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
      * {@inheritDoc}
      */
     @Override
-    public CommitMetadataRecord values(Long value1, Long value2, Long value3, Long value4, String value5, String value6, Long value7, String value8, Timestamp value9, Timestamp value10) {
+    public CommitMetadataRecord values(Long value1, Long value2, Long value3, Long value4, String value5, String value6, Long value7, String value8, Instant value9, Instant value10) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -519,10 +519,10 @@ public class CommitMetadataRecord extends UpdatableRecordImpl<CommitMetadataReco
     /**
      * Create a detached, initialised CommitMetadataRecord
      */
-    public CommitMetadataRecord(Long id, Long commitId, Long projectId, Long repoId, String name, String uri, Long size, String contentType, Timestamp createdAt, Timestamp updatedAt) {
+    public CommitMetadataRecord(Long commitMetadataId, Long commitId, Long projectId, Long repoId, String name, String uri, Long size, String contentType, Instant createdAt, Instant updatedAt) {
         super(CommitMetadataTable.COMMIT_METADATA);
 
-        set(0, id);
+        set(0, commitMetadataId);
         set(1, commitId);
         set(2, projectId);
         set(3, repoId);

@@ -21,8 +21,8 @@ sudo systemctl enable postgresql-9.4
 
 createuser -U postgres --createdb  version_manager_test
 createdb --username=version_manager_test --owner version_manager_test version_manager_test
-psql --user=postgres version_manager_test --command='CREATE EXTENSION "uuid-ossp";'
+psql --user=postgres version_manager_test --command='CREATE EXTENSION "id-ossp";'
 
 createuser -U postgres --createdb version
 createdb --username=version --owner version version_manager
-psql --user=postgres version_manager --command='CREATE EXTENSION "uuid-ossp";'
+psql --user=postgres version_manager --command='CREATE EXTENSION "id-ossp";'

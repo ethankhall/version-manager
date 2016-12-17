@@ -40,9 +40,9 @@ import tech.crom.db.tables.AclEntryTable;
 @Table(name = "acl_entry", schema = "version_manager_test", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"acl_object_identity", "ace_order"})
 })
-public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implements Record8<ULong, ULong, Integer, ULong, UInteger, Byte, Byte, Byte> {
+public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implements Record8<ULong, ULong, Integer, ULong, UInteger, Boolean, Boolean, Boolean> {
 
-    private static final long serialVersionUID = -2093942153;
+    private static final long serialVersionUID = 415197695;
 
     /**
      * Setter for <code>version_manager_test.acl_entry.id</code>.
@@ -129,49 +129,49 @@ public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implemen
     /**
      * Setter for <code>version_manager_test.acl_entry.granting</code>.
      */
-    public void setGranting(Byte value) {
+    public void setGranting(Boolean value) {
         set(5, value);
     }
 
     /**
      * Getter for <code>version_manager_test.acl_entry.granting</code>.
      */
-    @Column(name = "granting", nullable = false, precision = 3)
+    @Column(name = "granting", nullable = false)
     @NotNull
-    public Byte getGranting() {
-        return (Byte) get(5);
+    public Boolean getGranting() {
+        return (Boolean) get(5);
     }
 
     /**
      * Setter for <code>version_manager_test.acl_entry.audit_success</code>.
      */
-    public void setAuditSuccess(Byte value) {
+    public void setAuditSuccess(Boolean value) {
         set(6, value);
     }
 
     /**
      * Getter for <code>version_manager_test.acl_entry.audit_success</code>.
      */
-    @Column(name = "audit_success", nullable = false, precision = 3)
+    @Column(name = "audit_success", nullable = false)
     @NotNull
-    public Byte getAuditSuccess() {
-        return (Byte) get(6);
+    public Boolean getAuditSuccess() {
+        return (Boolean) get(6);
     }
 
     /**
      * Setter for <code>version_manager_test.acl_entry.audit_failure</code>.
      */
-    public void setAuditFailure(Byte value) {
+    public void setAuditFailure(Boolean value) {
         set(7, value);
     }
 
     /**
      * Getter for <code>version_manager_test.acl_entry.audit_failure</code>.
      */
-    @Column(name = "audit_failure", nullable = false, precision = 3)
+    @Column(name = "audit_failure", nullable = false)
     @NotNull
-    public Byte getAuditFailure() {
-        return (Byte) get(7);
+    public Boolean getAuditFailure() {
+        return (Boolean) get(7);
     }
 
     // -------------------------------------------------------------------------
@@ -194,7 +194,7 @@ public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implemen
      * {@inheritDoc}
      */
     @Override
-    public Row8<ULong, ULong, Integer, ULong, UInteger, Byte, Byte, Byte> fieldsRow() {
+    public Row8<ULong, ULong, Integer, ULong, UInteger, Boolean, Boolean, Boolean> fieldsRow() {
         return (Row8) super.fieldsRow();
     }
 
@@ -202,7 +202,7 @@ public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implemen
      * {@inheritDoc}
      */
     @Override
-    public Row8<ULong, ULong, Integer, ULong, UInteger, Byte, Byte, Byte> valuesRow() {
+    public Row8<ULong, ULong, Integer, ULong, UInteger, Boolean, Boolean, Boolean> valuesRow() {
         return (Row8) super.valuesRow();
     }
 
@@ -250,7 +250,7 @@ public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implemen
      * {@inheritDoc}
      */
     @Override
-    public Field<Byte> field6() {
+    public Field<Boolean> field6() {
         return AclEntryTable.ACL_ENTRY.GRANTING;
     }
 
@@ -258,7 +258,7 @@ public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implemen
      * {@inheritDoc}
      */
     @Override
-    public Field<Byte> field7() {
+    public Field<Boolean> field7() {
         return AclEntryTable.ACL_ENTRY.AUDIT_SUCCESS;
     }
 
@@ -266,7 +266,7 @@ public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implemen
      * {@inheritDoc}
      */
     @Override
-    public Field<Byte> field8() {
+    public Field<Boolean> field8() {
         return AclEntryTable.ACL_ENTRY.AUDIT_FAILURE;
     }
 
@@ -314,7 +314,7 @@ public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implemen
      * {@inheritDoc}
      */
     @Override
-    public Byte value6() {
+    public Boolean value6() {
         return getGranting();
     }
 
@@ -322,7 +322,7 @@ public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implemen
      * {@inheritDoc}
      */
     @Override
-    public Byte value7() {
+    public Boolean value7() {
         return getAuditSuccess();
     }
 
@@ -330,7 +330,7 @@ public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implemen
      * {@inheritDoc}
      */
     @Override
-    public Byte value8() {
+    public Boolean value8() {
         return getAuditFailure();
     }
 
@@ -383,7 +383,7 @@ public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implemen
      * {@inheritDoc}
      */
     @Override
-    public AclEntryRecord value6(Byte value) {
+    public AclEntryRecord value6(Boolean value) {
         setGranting(value);
         return this;
     }
@@ -392,7 +392,7 @@ public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implemen
      * {@inheritDoc}
      */
     @Override
-    public AclEntryRecord value7(Byte value) {
+    public AclEntryRecord value7(Boolean value) {
         setAuditSuccess(value);
         return this;
     }
@@ -401,7 +401,7 @@ public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implemen
      * {@inheritDoc}
      */
     @Override
-    public AclEntryRecord value8(Byte value) {
+    public AclEntryRecord value8(Boolean value) {
         setAuditFailure(value);
         return this;
     }
@@ -410,7 +410,7 @@ public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implemen
      * {@inheritDoc}
      */
     @Override
-    public AclEntryRecord values(ULong value1, ULong value2, Integer value3, ULong value4, UInteger value5, Byte value6, Byte value7, Byte value8) {
+    public AclEntryRecord values(ULong value1, ULong value2, Integer value3, ULong value4, UInteger value5, Boolean value6, Boolean value7, Boolean value8) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -436,7 +436,7 @@ public class AclEntryRecord extends UpdatableRecordImpl<AclEntryRecord> implemen
     /**
      * Create a detached, initialised AclEntryRecord
      */
-    public AclEntryRecord(ULong id, ULong aclObjectIdentity, Integer aceOrder, ULong sid, UInteger mask, Byte granting, Byte auditSuccess, Byte auditFailure) {
+    public AclEntryRecord(ULong id, ULong aclObjectIdentity, Integer aceOrder, ULong sid, UInteger mask, Boolean granting, Boolean auditSuccess, Boolean auditFailure) {
         super(AclEntryTable.ACL_ENTRY);
 
         set(0, id);

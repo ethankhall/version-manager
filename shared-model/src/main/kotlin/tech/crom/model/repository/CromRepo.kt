@@ -2,16 +2,15 @@ package tech.crom.model.repository
 
 import tech.crom.model.security.authorization.AuthorizedObject
 import java.io.Serializable
-import java.util.*
 
-data class CromRepo(val repoUid: UUID,
+data class CromRepo(val repoId: Long,
                     val securityId: Long,
-                    val projectUid: UUID,
+                    val projectId: Long,
                     val repoName: String,
-                    val versionBumperUid: UUID): AuthorizedObject {
+                    val versionBumperId: Long): AuthorizedObject {
     override fun getId(): Serializable = securityId
 
     override fun toString(): String {
-        return repoUid.toString()
+        return repoId.toString()
     }
 }

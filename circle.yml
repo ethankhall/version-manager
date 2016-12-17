@@ -18,7 +18,7 @@ dependencies:
 
 database:
     pre:
-        - psql -U ubuntu circle_test --command 'CREATE EXTENSION "uuid-ossp";'
+        - psql -U ubuntu circle_test --command 'CREATE EXTENSION "id-ossp";'
 
 test:
     override:

@@ -37,7 +37,7 @@ class ManagerResourceIntegrationTest extends Specification {
 
         then:
         projectManager.findProject(project.projectName) == project
-        projectManager.findProject(project.projectUid) == project
+        projectManager.findProject(project.getProjectId) == project
 
         when:
         def bumper = versionBumperManager.findBumper('semver')
@@ -49,14 +49,14 @@ class ManagerResourceIntegrationTest extends Specification {
         def repo1 = repoManager.createRepo(project, 'repo1', bumper, null, "", true)
 
         then:
-        repoManager.findRepo(repo1.repoUid) == repo1
+        repoManager.findRepo(repo1.getRepoId) == repo1
         repoManager.findRepo(project, repo1.repoName) == repo1
 
         when:
         def repo2 = repoManager.createRepo(project, 'repo2', bumper, null, "", true)
 
         then:
-        repoManager.findRepo(repo2.repoUid) == repo2
+        repoManager.findRepo(repo2.getRepoId) == repo2
         repoManager.findRepo(project, repo2.repoName) == repo2
 
         when:
@@ -69,7 +69,7 @@ class ManagerResourceIntegrationTest extends Specification {
         repoManager.deleteRepo(repo2)
 
         then:
-        !repoManager.findRepo(repo2.repoUid)
+        !repoManager.findRepo(repo2.getRepoId)
         !repoManager.findRepo(project, repo2.repoName)
 
         expect:

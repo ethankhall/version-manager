@@ -3,7 +3,6 @@ package tech.crom.database.api
 import tech.crom.model.project.CromProject
 import tech.crom.model.repository.CromRepo
 import tech.crom.model.user.CromUser
-import java.util.*
 
 interface WatcherManager {
 
@@ -17,5 +16,5 @@ interface WatcherManager {
 
     fun getWatches(cromUser: CromUser): List<UserWatch>
 
-    data class UserWatch(val projectUuid: UUID, val repoUuid: UUID?)
+    data class UserWatch(val projectId: Long, val repoId: Long?)
 }

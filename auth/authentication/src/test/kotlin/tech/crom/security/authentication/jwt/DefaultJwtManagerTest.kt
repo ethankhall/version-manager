@@ -32,7 +32,7 @@ class DefaultJwtManagerTest: Spek({
 
             val cromUser = CromUser(UUID.randomUUID(), "username", "displayName")
             val createdToken = createGeneratedToken(TokenType.USER)
-            val underlyingToken = TokenManager.UderlyingTokenDetails(cromUser.userUid, TokenType.USER)
+            val underlyingToken = TokenManager.UderlyingTokenDetails(cromUser.userId, TokenType.USER)
 
             whenever(tokenManager.generateUserToken(any(), any())).thenReturn(createdToken)
             whenever(tokenManager.getTokenData(any(), any())).thenReturn(underlyingToken)
@@ -42,8 +42,8 @@ class DefaultJwtManagerTest: Spek({
 
             val parsedToken = jwtManager.parseToken(token) as JwtTokenAuthentication.UserJwtTokenAuthentication
             assertNotNull(parsedToken)
-            assertEquals(parsedToken.userUuid, cromUser.userUid)
-            assertEquals(parsedToken.userTokenUid, createdToken.uuid)
+            assertEquals(parsedToken.userId, cromUser.userId)
+            assertEquals(parsedToken.userTokenId, createdToken.uuid)
         }
 
         it("should return a repo tokenDetails") {
@@ -52,7 +52,7 @@ class DefaultJwtManagerTest: Spek({
 
             val cromRepo = CromRepo(UUID.randomUUID(), 1, UUID.randomUUID(), "repoName", UUID.randomUUID())
             val createdToken = createGeneratedToken(TokenType.REPOSITORY)
-            val underlyingToken = TokenManager.UderlyingTokenDetails(cromRepo.repoUid, TokenType.REPOSITORY)
+            val underlyingToken = TokenManager.UderlyingTokenDetails(cromRepo.repoId, TokenType.REPOSITORY)
 
             whenever(tokenManager.generateRepoToken(any(), any())).thenReturn(createdToken)
             whenever(tokenManager.getTokenData(any(), any())).thenReturn(underlyingToken)
@@ -62,8 +62,8 @@ class DefaultJwtManagerTest: Spek({
 
             val parsedToken = jwtManager.parseToken(token) as JwtTokenAuthentication.RepoJwtTokenAuthentication
             assertNotNull(parsedToken)
-            assertEquals(parsedToken.repoUuid, cromRepo.repoUid)
-            assertEquals(parsedToken.repoTokenUid, createdToken.uuid)
+            assertEquals(parsedToken.repoId, cromRepo.repoId)
+            assertEquals(parsedToken.repoTokenId, createdToken.uuid)
         }
 
         it("should return null when a tokenDetails is bad") {

@@ -19,14 +19,14 @@ class DefaultTokenManagementApi @Autowired constructor(
     val jwtManager: JwtManager
 ): TokenManagementApi {
 
-    override fun invalidateToken(id: UUID, tokenType: TokenType) {
+    override fun invalidateToken(id: Long, tokenType: TokenType) {
         tokenManager.invalidateToken(id, tokenType)
     }
 
     override fun createToken(cromUser: CromUser, expiresAt: ZonedDateTime): GeneratedTokenDetails {
         val generateRepoToken = tokenManager.generateUserToken(cromUser, expiresAt)
         val token = jwtManager.createToken(generateRepoToken)
-        return GeneratedTokenDetails(generateRepoToken.uuid,
+        return GeneratedTokenDetails(generateRepoToken.id,
             generateRepoToken.createDate,
             generateRepoToken.expiresAt,
             token)
@@ -35,7 +35,7 @@ class DefaultTokenManagementApi @Autowired constructor(
     override fun createToken(cromRepo: CromRepo, expiresAt: ZonedDateTime): GeneratedTokenDetails {
         val generateRepoToken = tokenManager.generateRepoToken(cromRepo, expiresAt)
         val token = jwtManager.createToken(generateRepoToken)
-        return GeneratedTokenDetails(generateRepoToken.uuid,
+        return GeneratedTokenDetails(generateRepoToken.id,
             generateRepoToken.createDate,
             generateRepoToken.expiresAt,
             token)
@@ -43,13 +43,13 @@ class DefaultTokenManagementApi @Autowired constructor(
 
     override fun getTokens(cromRepo: CromRepo): List<RetrievedTokenDetails> {
         return tokenManager
-            .findTokens(cromRepo.repoUid, TokenType.REPOSITORY)
-            .map { RetrievedTokenDetails(it.uuid, it.createDate, it.expiresAt) }
+            .findTokens(cromRepo.repoId, TokenType.REPOSITORY)
+            .map { RetrievedTokenDetails(it.id, it.createDate, it.expiresAt) }
     }
 
     override fun getTokens(cromUser: CromUser): List<RetrievedTokenDetails> {
         return tokenManager
-            .findTokens(cromUser.userUid, TokenType.USER)
-            .map { RetrievedTokenDetails(it.uuid, it.createDate, it.expiresAt) }
+            .findTokens(cromUser.userId, TokenType.USER)
+            .map { RetrievedTokenDetails(it.id, it.createDate, it.expiresAt) }
     }
 }

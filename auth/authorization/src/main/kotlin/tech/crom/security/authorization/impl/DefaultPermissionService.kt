@@ -56,7 +56,7 @@ class DefaultPermissionService @Autowired constructor(
     }
 
     override fun revokePermission(cromUser: CromUser, authorizedObject: AuthorizedObject, accessLevel: CromPermission) {
-        logger.info("Revoking $accessLevel from ${cromUser.userUid} on ${authorizedObject.getId()}")
+        logger.info("Revoking $accessLevel from ${cromUser.userId} on ${authorizedObject.getId()}")
         val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
 
         val sid = CromUserAuthentication(cromUser).toSid()
@@ -74,7 +74,7 @@ class DefaultPermissionService @Autowired constructor(
     }
 
     override fun grantPermission(cromUser: CromUser, authorizedObject: AuthorizedObject, accessLevel: CromPermission) {
-        logger.info("Grating $accessLevel from ${cromUser.userUid} on ${authorizedObject.getId()}")
+        logger.info("Grating $accessLevel from ${cromUser.userId} on ${authorizedObject.getId()}")
         val oi = ObjectIdentityImpl(authorizedObject.javaClass, authorizedObject.getId())
 
         val acl = aclService.readAclById(oi) as MutableAcl
@@ -115,7 +115,7 @@ class DefaultPermissionService @Autowired constructor(
     }
 
     override fun registerRepository(cromRepo: CromRepo) {
-        logger.info("Registering repo ${cromRepo.repoUid} with security id ${cromRepo.securityId}")
+        logger.info("Registering repo ${cromRepo.repoId} with security id ${cromRepo.securityId}")
         val oi = ObjectIdentityImpl(CromRepo::class.java, cromRepo.securityId)
 
         val acl: MutableAcl = try {
@@ -124,7 +124,7 @@ class DefaultPermissionService @Autowired constructor(
             aclService.createAcl(oi)
         }
 
-        val project = projectManager.findProject(cromRepo.projectUid) ?: throw IllegalStateException("Unable to find parent project")
+        val project = projectManager.findProject(cromRepo.projectId) ?: throw IllegalStateException("Unable to find parent project")
         val projectAcl = aclService.readAclById(ObjectIdentityImpl(CromProject::class.java, project.securityId))
 
         acl.setParent(projectAcl)
@@ -133,7 +133,7 @@ class DefaultPermissionService @Autowired constructor(
     }
 
     override fun registerProject(cromProject: CromProject) {
-        logger.info("Registering project ${cromProject.projectUid} with security id ${cromProject.securityId}")
+        logger.info("Registering project ${cromProject.projectId} with security id ${cromProject.securityId}")
         val oi = ObjectIdentityImpl(CromProject::class.java, cromProject.securityId)
 
         val acl: MutableAcl = try {

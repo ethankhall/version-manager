@@ -5,7 +5,7 @@ package tech.crom.db.tables.pojos;
 
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.Instant;
 
 import javax.annotation.Generated;
 import javax.persistence.Column;
@@ -33,23 +33,23 @@ import javax.validation.constraints.Size;
 @Table(name = "commit_metadata", schema = "version_manager_test")
 public class CommitMetadata implements Serializable {
 
-    private static final long serialVersionUID = -1005616729;
+    private static final long serialVersionUID = -1329121123;
 
-    private Long      id;
-    private Long      commitId;
-    private Long      projectId;
-    private Long      repoId;
-    private String    name;
-    private String    uri;
-    private Long      size;
-    private String    contentType;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private Long    commitMetadataId;
+    private Long    commitId;
+    private Long    projectId;
+    private Long    repoId;
+    private String  name;
+    private String  uri;
+    private Long    size;
+    private String  contentType;
+    private Instant createdAt;
+    private Instant updatedAt;
 
     public CommitMetadata() {}
 
     public CommitMetadata(CommitMetadata value) {
-        this.id = value.id;
+        this.commitMetadataId = value.commitMetadataId;
         this.commitId = value.commitId;
         this.projectId = value.projectId;
         this.repoId = value.repoId;
@@ -62,18 +62,18 @@ public class CommitMetadata implements Serializable {
     }
 
     public CommitMetadata(
-        Long      id,
-        Long      commitId,
-        Long      projectId,
-        Long      repoId,
-        String    name,
-        String    uri,
-        Long      size,
-        String    contentType,
-        Timestamp createdAt,
-        Timestamp updatedAt
+        Long    commitMetadataId,
+        Long    commitId,
+        Long    projectId,
+        Long    repoId,
+        String  name,
+        String  uri,
+        Long    size,
+        String  contentType,
+        Instant createdAt,
+        Instant updatedAt
     ) {
-        this.id = id;
+        this.commitMetadataId = commitMetadataId;
         this.commitId = commitId;
         this.projectId = projectId;
         this.repoId = repoId;
@@ -87,14 +87,14 @@ public class CommitMetadata implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", unique = true, nullable = false, precision = 19)
+    @Column(name = "commit_metadata_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getId() {
-        return this.id;
+    public Long getCommitMetadataId() {
+        return this.commitMetadataId;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setCommitMetadataId(Long commitMetadataId) {
+        this.commitMetadataId = commitMetadataId;
     }
 
     @Column(name = "commit_id", nullable = false, precision = 19)
@@ -171,20 +171,20 @@ public class CommitMetadata implements Serializable {
     }
 
     @Column(name = "created_at", nullable = false)
-    public Timestamp getCreatedAt() {
+    public Instant getCreatedAt() {
         return this.createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 
     @Column(name = "updated_at", nullable = false)
-    public Timestamp getUpdatedAt() {
+    public Instant getUpdatedAt() {
         return this.updatedAt;
     }
 
-    public void setUpdatedAt(Timestamp updatedAt) {
+    public void setUpdatedAt(Instant updatedAt) {
         this.updatedAt = updatedAt;
     }
 
@@ -192,7 +192,7 @@ public class CommitMetadata implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("CommitMetadata (");
 
-        sb.append(id);
+        sb.append(commitMetadataId);
         sb.append(", ").append(commitId);
         sb.append(", ").append(projectId);
         sb.append(", ").append(repoId);

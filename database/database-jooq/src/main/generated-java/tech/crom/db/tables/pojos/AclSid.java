@@ -37,11 +37,11 @@ import org.jooq.types.ULong;
 })
 public class AclSid implements Serializable {
 
-    private static final long serialVersionUID = 833729085;
+    private static final long serialVersionUID = 1323806337;
 
-    private ULong  id;
-    private Byte   principal;
-    private String sid;
+    private ULong   id;
+    private Boolean principal;
+    private String  sid;
 
     public AclSid() {}
 
@@ -52,9 +52,9 @@ public class AclSid implements Serializable {
     }
 
     public AclSid(
-        ULong  id,
-        Byte   principal,
-        String sid
+        ULong   id,
+        Boolean principal,
+        String  sid
     ) {
         this.id = id;
         this.principal = principal;
@@ -73,13 +73,13 @@ public class AclSid implements Serializable {
         this.id = id;
     }
 
-    @Column(name = "principal", nullable = false, precision = 3)
+    @Column(name = "principal", nullable = false)
     @NotNull
-    public Byte getPrincipal() {
+    public Boolean getPrincipal() {
         return this.principal;
     }
 
-    public void setPrincipal(Byte principal) {
+    public void setPrincipal(Boolean principal) {
         this.principal = principal;
     }
 

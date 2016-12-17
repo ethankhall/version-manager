@@ -1,10 +1,10 @@
 package tech.crom.database.impl
 
-import io.ehdev.conrad.db.tables.WatcherTable
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import tech.crom.database.api.WatcherManager
+import tech.crom.db.tables.WatcherTable
 import tech.crom.model.project.CromProject
 import tech.crom.model.repository.CromRepo
 import tech.crom.model.user.CromUser
@@ -19,14 +19,14 @@ open class DefaultWatcherManager @Autowired constructor(
 
         val size = dslContext.selectCount()
             .from(watcher)
-            .where(watcher.USER_UUID.eq(cromUser.userUid)
-                .and(watcher.PROJECT_DETAILS_UUID.eq(cromProject.projectUid))
-                .and(watcher.REPO_DETAILS_UUID.isNull))
+            .where(watcher.USER_ID.eq(cromUser.userId)
+                .and(watcher.PROJECT_DETAILS_ID.eq(cromProject.projectId))
+                .and(watcher.REPO_DETAILS_ID.isNull))
             .fetchOne(0, Int::class.java)
 
         if(size == 0) {
-            dslContext.insertInto(watcher, watcher.USER_UUID, watcher.PROJECT_DETAILS_UUID)
-                .values(cromUser.userUid, cromProject.projectUid)
+            dslContext.insertInto(watcher, watcher.USER_ID, watcher.PROJECT_DETAILS_ID)
+                .values(cromUser.userId, cromProject.projectId)
                 .execute()
         }
     }
@@ -35,14 +35,14 @@ open class DefaultWatcherManager @Autowired constructor(
         val watcher = WatcherTable.WATCHER
         val size = dslContext.selectCount()
             .from(watcher)
-            .where(watcher.USER_UUID.eq(cromUser.userUid)
-                .and(watcher.PROJECT_DETAILS_UUID.eq(cromRepo.projectUid))
-                .and(watcher.REPO_DETAILS_UUID.eq(cromRepo.repoUid)))
+            .where(watcher.USER_ID.eq(cromUser.userId)
+                .and(watcher.PROJECT_DETAILS_ID.eq(cromRepo.projectId))
+                .and(watcher.REPO_DETAILS_ID.eq(cromRepo.repoId)))
             .fetchOne(0, Int::class.java)
 
         if(size == 0) {
-            dslContext.insertInto(watcher, watcher.USER_UUID, watcher.PROJECT_DETAILS_UUID, watcher.REPO_DETAILS_UUID)
-                .values(cromUser.userUid, cromRepo.projectUid, cromRepo.repoUid)
+            dslContext.insertInto(watcher, watcher.USER_ID, watcher.PROJECT_DETAILS_ID, watcher.REPO_DETAILS_ID)
+                .values(cromUser.userId, cromRepo.projectId, cromRepo.repoId)
                 .execute()
         }
     }
@@ -51,8 +51,8 @@ open class DefaultWatcherManager @Autowired constructor(
         val watcher = WatcherTable.WATCHER
         dslContext
             .delete(watcher)
-            .where(watcher.USER_UUID.eq(cromUser.userUid)
-                .and(watcher.PROJECT_DETAILS_UUID.eq(cromProject.projectUid)))
+            .where(watcher.USER_ID.eq(cromUser.userId)
+                .and(watcher.PROJECT_DETAILS_ID.eq(cromProject.projectId)))
             .execute()
     }
 
@@ -60,9 +60,9 @@ open class DefaultWatcherManager @Autowired constructor(
         val watcher = WatcherTable.WATCHER
         dslContext
             .delete(watcher)
-            .where(watcher.USER_UUID.eq(cromUser.userUid)
-                .and(watcher.PROJECT_DETAILS_UUID.eq(cromRepo.projectUid))
-                .and(watcher.REPO_DETAILS_UUID.eq(cromRepo.repoUid)))
+            .where(watcher.USER_ID.eq(cromUser.userId)
+                .and(watcher.PROJECT_DETAILS_ID.eq(cromRepo.projectId))
+                .and(watcher.REPO_DETAILS_ID.eq(cromRepo.repoId)))
             .execute()
     }
 
@@ -70,10 +70,10 @@ open class DefaultWatcherManager @Autowired constructor(
         val watcher = WatcherTable.WATCHER
         return dslContext
             .selectFrom(watcher)
-            .where(watcher.USER_UUID.eq(cromUser.userUid))
+            .where(watcher.USER_ID.eq(cromUser.userId))
             .fetch()
             .into(watcher)
-            .map { WatcherManager.UserWatch(it.projectDetailsUuid, it.repoDetailsUuid) }
+            .map { WatcherManager.UserWatch(it.projectDetailsId, it.repoDetailsId) }
     }
 
 }

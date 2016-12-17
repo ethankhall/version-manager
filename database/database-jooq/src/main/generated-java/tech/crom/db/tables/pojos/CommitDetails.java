@@ -5,7 +5,7 @@ package tech.crom.db.tables.pojos;
 
 
 import java.io.Serializable;
-import java.sql.Timestamp;
+import java.time.Instant;
 
 import javax.annotation.Generated;
 import javax.persistence.Column;
@@ -33,14 +33,14 @@ import javax.validation.constraints.Size;
 @Table(name = "commit_details", schema = "version_manager_test")
 public class CommitDetails implements Serializable {
 
-    private static final long serialVersionUID = 715211149;
+    private static final long serialVersionUID = 1664817859;
 
-    private Long      commitDetailsId;
-    private Long      repoDetailsId;
-    private Long      parentCommitId;
-    private String    commitId;
-    private String    version;
-    private Timestamp createdAt;
+    private Long    commitDetailsId;
+    private Long    repoDetailsId;
+    private Long    parentCommitId;
+    private String  commitId;
+    private String  version;
+    private Instant createdAt;
 
     public CommitDetails() {}
 
@@ -54,12 +54,12 @@ public class CommitDetails implements Serializable {
     }
 
     public CommitDetails(
-        Long      commitDetailsId,
-        Long      repoDetailsId,
-        Long      parentCommitId,
-        String    commitId,
-        String    version,
-        Timestamp createdAt
+        Long    commitDetailsId,
+        Long    repoDetailsId,
+        Long    parentCommitId,
+        String  commitId,
+        String  version,
+        Instant createdAt
     ) {
         this.commitDetailsId = commitDetailsId;
         this.repoDetailsId = repoDetailsId;
@@ -123,11 +123,11 @@ public class CommitDetails implements Serializable {
     }
 
     @Column(name = "created_at", nullable = false)
-    public Timestamp getCreatedAt() {
+    public Instant getCreatedAt() {
         return this.createdAt;
     }
 
-    public void setCreatedAt(Timestamp createdAt) {
+    public void setCreatedAt(Instant createdAt) {
         this.createdAt = createdAt;
     }
 

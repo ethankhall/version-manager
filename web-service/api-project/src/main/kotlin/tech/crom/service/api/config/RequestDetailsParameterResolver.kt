@@ -63,7 +63,7 @@ class RequestDetailsParameterResolver @Autowired constructor(
 
     fun getPermissionsForRepoAuth(repo: CromRepo?, auth: CromRepositoryAuthentication) : RequestPermissions {
         if (repo != null) {
-            if (repo.projectUid == auth.source.projectUid && repo.repoUid == auth.source.repoUid) {
+            if (repo.projectId == auth.source.projectId && repo.repoId == auth.source.repoId) {
                 return RequestPermissions(CromPermission.NONE, CromPermission.WRITE, CromUser.REPO_USER)
             }
         }

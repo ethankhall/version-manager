@@ -37,7 +37,7 @@ import tech.crom.db.tables.records.AclObjectIdentityRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class AclObjectIdentityTable extends TableImpl<AclObjectIdentityRecord> {
 
-    private static final long serialVersionUID = -967236012;
+    private static final long serialVersionUID = 1088936377;
 
     /**
      * The reference instance of <code>version_manager_test.acl_object_identity</code>
@@ -80,7 +80,7 @@ public class AclObjectIdentityTable extends TableImpl<AclObjectIdentityRecord> {
     /**
      * The column <code>version_manager_test.acl_object_identity.entries_inheriting</code>.
      */
-    public final TableField<AclObjectIdentityRecord, Byte> ENTRIES_INHERITING = createField("entries_inheriting", org.jooq.impl.SQLDataType.TINYINT.nullable(false), this, "");
+    public final TableField<AclObjectIdentityRecord, Boolean> ENTRIES_INHERITING = createField("entries_inheriting", org.jooq.impl.SQLDataType.BOOLEAN.nullable(false), this, "");
 
     /**
      * Create a <code>version_manager_test.acl_object_identity</code> table reference

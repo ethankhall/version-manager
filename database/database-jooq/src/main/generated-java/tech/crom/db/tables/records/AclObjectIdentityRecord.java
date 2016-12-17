@@ -39,9 +39,9 @@ import tech.crom.db.tables.AclObjectIdentityTable;
 @Table(name = "acl_object_identity", schema = "version_manager_test", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"object_id_class", "object_id_identity"})
 })
-public class AclObjectIdentityRecord extends UpdatableRecordImpl<AclObjectIdentityRecord> implements Record6<ULong, ULong, Long, ULong, ULong, Byte> {
+public class AclObjectIdentityRecord extends UpdatableRecordImpl<AclObjectIdentityRecord> implements Record6<ULong, ULong, Long, ULong, ULong, Boolean> {
 
-    private static final long serialVersionUID = -144092190;
+    private static final long serialVersionUID = -88035718;
 
     /**
      * Setter for <code>version_manager_test.acl_object_identity.id</code>.
@@ -126,17 +126,17 @@ public class AclObjectIdentityRecord extends UpdatableRecordImpl<AclObjectIdenti
     /**
      * Setter for <code>version_manager_test.acl_object_identity.entries_inheriting</code>.
      */
-    public void setEntriesInheriting(Byte value) {
+    public void setEntriesInheriting(Boolean value) {
         set(5, value);
     }
 
     /**
      * Getter for <code>version_manager_test.acl_object_identity.entries_inheriting</code>.
      */
-    @Column(name = "entries_inheriting", nullable = false, precision = 3)
+    @Column(name = "entries_inheriting", nullable = false)
     @NotNull
-    public Byte getEntriesInheriting() {
-        return (Byte) get(5);
+    public Boolean getEntriesInheriting() {
+        return (Boolean) get(5);
     }
 
     // -------------------------------------------------------------------------
@@ -159,7 +159,7 @@ public class AclObjectIdentityRecord extends UpdatableRecordImpl<AclObjectIdenti
      * {@inheritDoc}
      */
     @Override
-    public Row6<ULong, ULong, Long, ULong, ULong, Byte> fieldsRow() {
+    public Row6<ULong, ULong, Long, ULong, ULong, Boolean> fieldsRow() {
         return (Row6) super.fieldsRow();
     }
 
@@ -167,7 +167,7 @@ public class AclObjectIdentityRecord extends UpdatableRecordImpl<AclObjectIdenti
      * {@inheritDoc}
      */
     @Override
-    public Row6<ULong, ULong, Long, ULong, ULong, Byte> valuesRow() {
+    public Row6<ULong, ULong, Long, ULong, ULong, Boolean> valuesRow() {
         return (Row6) super.valuesRow();
     }
 
@@ -215,7 +215,7 @@ public class AclObjectIdentityRecord extends UpdatableRecordImpl<AclObjectIdenti
      * {@inheritDoc}
      */
     @Override
-    public Field<Byte> field6() {
+    public Field<Boolean> field6() {
         return AclObjectIdentityTable.ACL_OBJECT_IDENTITY.ENTRIES_INHERITING;
     }
 
@@ -263,7 +263,7 @@ public class AclObjectIdentityRecord extends UpdatableRecordImpl<AclObjectIdenti
      * {@inheritDoc}
      */
     @Override
-    public Byte value6() {
+    public Boolean value6() {
         return getEntriesInheriting();
     }
 
@@ -316,7 +316,7 @@ public class AclObjectIdentityRecord extends UpdatableRecordImpl<AclObjectIdenti
      * {@inheritDoc}
      */
     @Override
-    public AclObjectIdentityRecord value6(Byte value) {
+    public AclObjectIdentityRecord value6(Boolean value) {
         setEntriesInheriting(value);
         return this;
     }
@@ -325,7 +325,7 @@ public class AclObjectIdentityRecord extends UpdatableRecordImpl<AclObjectIdenti
      * {@inheritDoc}
      */
     @Override
-    public AclObjectIdentityRecord values(ULong value1, ULong value2, Long value3, ULong value4, ULong value5, Byte value6) {
+    public AclObjectIdentityRecord values(ULong value1, ULong value2, Long value3, ULong value4, ULong value5, Boolean value6) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -349,7 +349,7 @@ public class AclObjectIdentityRecord extends UpdatableRecordImpl<AclObjectIdenti
     /**
      * Create a detached, initialised AclObjectIdentityRecord
      */
-    public AclObjectIdentityRecord(ULong id, ULong objectIdClass, Long objectIdIdentity, ULong parentObject, ULong ownerSid, Byte entriesInheriting) {
+    public AclObjectIdentityRecord(ULong id, ULong objectIdClass, Long objectIdIdentity, ULong parentObject, ULong ownerSid, Boolean entriesInheriting) {
         super(AclObjectIdentityTable.ACL_OBJECT_IDENTITY);
 
         set(0, id);

@@ -36,14 +36,14 @@ import org.jooq.types.ULong;
 })
 public class AclObjectIdentity implements Serializable {
 
-    private static final long serialVersionUID = 344733504;
+    private static final long serialVersionUID = 836038200;
 
-    private ULong id;
-    private ULong objectIdClass;
-    private Long  objectIdIdentity;
-    private ULong parentObject;
-    private ULong ownerSid;
-    private Byte  entriesInheriting;
+    private ULong   id;
+    private ULong   objectIdClass;
+    private Long    objectIdIdentity;
+    private ULong   parentObject;
+    private ULong   ownerSid;
+    private Boolean entriesInheriting;
 
     public AclObjectIdentity() {}
 
@@ -57,12 +57,12 @@ public class AclObjectIdentity implements Serializable {
     }
 
     public AclObjectIdentity(
-        ULong id,
-        ULong objectIdClass,
-        Long  objectIdIdentity,
-        ULong parentObject,
-        ULong ownerSid,
-        Byte  entriesInheriting
+        ULong   id,
+        ULong   objectIdClass,
+        Long    objectIdIdentity,
+        ULong   parentObject,
+        ULong   ownerSid,
+        Boolean entriesInheriting
     ) {
         this.id = id;
         this.objectIdClass = objectIdClass;
@@ -122,13 +122,13 @@ public class AclObjectIdentity implements Serializable {
         this.ownerSid = ownerSid;
     }
 
-    @Column(name = "entries_inheriting", nullable = false, precision = 3)
+    @Column(name = "entries_inheriting", nullable = false)
     @NotNull
-    public Byte getEntriesInheriting() {
+    public Boolean getEntriesInheriting() {
         return this.entriesInheriting;
     }
 
-    public void setEntriesInheriting(Byte entriesInheriting) {
+    public void setEntriesInheriting(Boolean entriesInheriting) {
         this.entriesInheriting = entriesInheriting;
     }
 
