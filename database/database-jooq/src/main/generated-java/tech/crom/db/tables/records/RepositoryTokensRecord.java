@@ -4,17 +4,25 @@
 package tech.crom.db.tables.records;
 
 
-import org.jooq.Field;
-import org.jooq.Record1;
-import org.jooq.Record5;
-import org.jooq.Row5;
-import org.jooq.impl.UpdatableRecordImpl;
-import tech.crom.db.tables.RepositoryTokensTable;
+import java.time.Instant;
 
 import javax.annotation.Generated;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
-import java.time.Instant;
+import javax.validation.constraints.Size;
+
+import org.jooq.Field;
+import org.jooq.Record1;
+import org.jooq.Record6;
+import org.jooq.Row6;
+import org.jooq.impl.UpdatableRecordImpl;
+
+import tech.crom.db.tables.RepositoryTokensTable;
 
 
 /**
@@ -30,33 +38,50 @@ import java.time.Instant;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
 @Table(name = "repository_tokens", schema = "version_manager_test")
-public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokensRecord> implements Record5<Long, Instant, Instant, Boolean, Long> {
+public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokensRecord> implements Record6<Long, String, Instant, Instant, Boolean, Long> {
 
-    private static final long serialVersionUID = -2013671517;
+    private static final long serialVersionUID = 1595780548;
 
     /**
-     * Setter for <code>version_manager_test.repository_tokens.repository_tokens_id</code>.
+     * Setter for <code>version_manager_test.repository_tokens.repository_token_id</code>.
      */
-    public void setRepositoryTokensId(Long value) {
+    public void setRepositoryTokenId(Long value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.repository_tokens.repository_tokens_id</code>.
+     * Getter for <code>version_manager_test.repository_tokens.repository_token_id</code>.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "repository_tokens_id", unique = true, nullable = false, precision = 19)
+    @Column(name = "repository_token_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getRepositoryTokensId() {
+    public Long getRepositoryTokenId() {
         return (Long) get(0);
+    }
+
+    /**
+     * Setter for <code>version_manager_test.repository_tokens.public_repo_token</code>.
+     */
+    public void setPublicRepoToken(String value) {
+        set(1, value);
+    }
+
+    /**
+     * Getter for <code>version_manager_test.repository_tokens.public_repo_token</code>.
+     */
+    @Column(name = "public_repo_token", unique = true, nullable = false, length = 64)
+    @NotNull
+    @Size(max = 64)
+    public String getPublicRepoToken() {
+        return (String) get(1);
     }
 
     /**
      * Setter for <code>version_manager_test.repository_tokens.created_at</code>.
      */
     public void setCreatedAt(Instant value) {
-        set(1, value);
+        set(2, value);
     }
 
     /**
@@ -64,14 +89,14 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      */
     @Column(name = "created_at", nullable = false)
     public Instant getCreatedAt() {
-        return (Instant) get(1);
+        return (Instant) get(2);
     }
 
     /**
      * Setter for <code>version_manager_test.repository_tokens.expires_at</code>.
      */
     public void setExpiresAt(Instant value) {
-        set(2, value);
+        set(3, value);
     }
 
     /**
@@ -79,14 +104,14 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      */
     @Column(name = "expires_at", nullable = false)
     public Instant getExpiresAt() {
-        return (Instant) get(2);
+        return (Instant) get(3);
     }
 
     /**
      * Setter for <code>version_manager_test.repository_tokens.valid</code>.
      */
     public void setValid(Boolean value) {
-        set(3, value);
+        set(4, value);
     }
 
     /**
@@ -94,14 +119,14 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      */
     @Column(name = "valid")
     public Boolean getValid() {
-        return (Boolean) get(3);
+        return (Boolean) get(4);
     }
 
     /**
      * Setter for <code>version_manager_test.repository_tokens.repo_id</code>.
      */
     public void setRepoId(Long value) {
-        set(4, value);
+        set(5, value);
     }
 
     /**
@@ -110,7 +135,7 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
     @Column(name = "repo_id", nullable = false, precision = 19)
     @NotNull
     public Long getRepoId() {
-        return (Long) get(4);
+        return (Long) get(5);
     }
 
     // -------------------------------------------------------------------------
@@ -126,23 +151,23 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
     }
 
     // -------------------------------------------------------------------------
-    // Record5 type implementation
+    // Record6 type implementation
     // -------------------------------------------------------------------------
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Row5<Long, Instant, Instant, Boolean, Long> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, String, Instant, Instant, Boolean, Long> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Row5<Long, Instant, Instant, Boolean, Long> valuesRow() {
-        return (Row5) super.valuesRow();
+    public Row6<Long, String, Instant, Instant, Boolean, Long> valuesRow() {
+        return (Row6) super.valuesRow();
     }
 
     /**
@@ -150,15 +175,15 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      */
     @Override
     public Field<Long> field1() {
-        return RepositoryTokensTable.REPOSITORY_TOKENS.REPOSITORY_TOKENS_ID;
+        return RepositoryTokensTable.REPOSITORY_TOKENS.REPOSITORY_TOKEN_ID;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Field<Instant> field2() {
-        return RepositoryTokensTable.REPOSITORY_TOKENS.CREATED_AT;
+    public Field<String> field2() {
+        return RepositoryTokensTable.REPOSITORY_TOKENS.PUBLIC_REPO_TOKEN;
     }
 
     /**
@@ -166,6 +191,14 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      */
     @Override
     public Field<Instant> field3() {
+        return RepositoryTokensTable.REPOSITORY_TOKENS.CREATED_AT;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Field<Instant> field4() {
         return RepositoryTokensTable.REPOSITORY_TOKENS.EXPIRES_AT;
     }
 
@@ -173,7 +206,7 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      * {@inheritDoc}
      */
     @Override
-    public Field<Boolean> field4() {
+    public Field<Boolean> field5() {
         return RepositoryTokensTable.REPOSITORY_TOKENS.VALID;
     }
 
@@ -181,7 +214,7 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      * {@inheritDoc}
      */
     @Override
-    public Field<Long> field5() {
+    public Field<Long> field6() {
         return RepositoryTokensTable.REPOSITORY_TOKENS.REPO_ID;
     }
 
@@ -190,15 +223,15 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      */
     @Override
     public Long value1() {
-        return getRepositoryTokensId();
+        return getRepositoryTokenId();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Instant value2() {
-        return getCreatedAt();
+    public String value2() {
+        return getPublicRepoToken();
     }
 
     /**
@@ -206,6 +239,14 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      */
     @Override
     public Instant value3() {
+        return getCreatedAt();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Instant value4() {
         return getExpiresAt();
     }
 
@@ -213,7 +254,7 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      * {@inheritDoc}
      */
     @Override
-    public Boolean value4() {
+    public Boolean value5() {
         return getValid();
     }
 
@@ -221,7 +262,7 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      * {@inheritDoc}
      */
     @Override
-    public Long value5() {
+    public Long value6() {
         return getRepoId();
     }
 
@@ -230,7 +271,7 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      */
     @Override
     public RepositoryTokensRecord value1(Long value) {
-        setRepositoryTokensId(value);
+        setRepositoryTokenId(value);
         return this;
     }
 
@@ -238,8 +279,8 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      * {@inheritDoc}
      */
     @Override
-    public RepositoryTokensRecord value2(Instant value) {
-        setCreatedAt(value);
+    public RepositoryTokensRecord value2(String value) {
+        setPublicRepoToken(value);
         return this;
     }
 
@@ -248,6 +289,15 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      */
     @Override
     public RepositoryTokensRecord value3(Instant value) {
+        setCreatedAt(value);
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public RepositoryTokensRecord value4(Instant value) {
         setExpiresAt(value);
         return this;
     }
@@ -256,7 +306,7 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      * {@inheritDoc}
      */
     @Override
-    public RepositoryTokensRecord value4(Boolean value) {
+    public RepositoryTokensRecord value5(Boolean value) {
         setValid(value);
         return this;
     }
@@ -265,7 +315,7 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      * {@inheritDoc}
      */
     @Override
-    public RepositoryTokensRecord value5(Long value) {
+    public RepositoryTokensRecord value6(Long value) {
         setRepoId(value);
         return this;
     }
@@ -274,12 +324,13 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
      * {@inheritDoc}
      */
     @Override
-    public RepositoryTokensRecord values(Long value1, Instant value2, Instant value3, Boolean value4, Long value5) {
+    public RepositoryTokensRecord values(Long value1, String value2, Instant value3, Instant value4, Boolean value5, Long value6) {
         value1(value1);
         value2(value2);
         value3(value3);
         value4(value4);
         value5(value5);
+        value6(value6);
         return this;
     }
 
@@ -297,13 +348,14 @@ public class RepositoryTokensRecord extends UpdatableRecordImpl<RepositoryTokens
     /**
      * Create a detached, initialised RepositoryTokensRecord
      */
-    public RepositoryTokensRecord(Long repositoryTokensId, Instant createdAt, Instant expiresAt, Boolean valid, Long repoId) {
+    public RepositoryTokensRecord(Long repositoryTokenId, String publicRepoToken, Instant createdAt, Instant expiresAt, Boolean valid, Long repoId) {
         super(RepositoryTokensTable.REPOSITORY_TOKENS);
 
-        set(0, repositoryTokensId);
-        set(1, createdAt);
-        set(2, expiresAt);
-        set(3, valid);
-        set(4, repoId);
+        set(0, repositoryTokenId);
+        set(1, publicRepoToken);
+        set(2, createdAt);
+        set(3, expiresAt);
+        set(4, valid);
+        set(5, repoId);
     }
 }

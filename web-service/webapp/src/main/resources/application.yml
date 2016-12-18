@@ -32,8 +32,8 @@ storage:
 
 spring:
     datasource:
-        url: jdbc:postgresql://172.0.1.100/version_manager
-        username: version
+        url: jdbc:mysql://127.0.0.1:13306/version_manager_test?verifyServerCertificate=false&useSSL=true
+        username: root
         password: password
     jpa:
         show-sql: true

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import java.time.ZonedDateTime
 
 class CreateTokenResponse(
-    @JsonProperty("id") val id: Long,
+    @JsonProperty("id") val id: String,
     @JsonProperty("createdAt") val createdAt: ZonedDateTime,
     @JsonProperty("expiresAt") val expiresAt: ZonedDateTime,
     @JsonProperty("authToken") val authToken: String)

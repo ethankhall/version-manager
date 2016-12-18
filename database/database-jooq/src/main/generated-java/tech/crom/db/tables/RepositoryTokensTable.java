@@ -38,7 +38,7 @@ import tech.crom.db.tables.records.RepositoryTokensRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class RepositoryTokensTable extends TableImpl<RepositoryTokensRecord> {
 
-    private static final long serialVersionUID = 136515106;
+    private static final long serialVersionUID = -1235058687;
 
     /**
      * The reference instance of <code>version_manager_test.repository_tokens</code>
@@ -54,19 +54,24 @@ public class RepositoryTokensTable extends TableImpl<RepositoryTokensRecord> {
     }
 
     /**
-     * The column <code>version_manager_test.repository_tokens.repository_tokens_id</code>.
+     * The column <code>version_manager_test.repository_tokens.repository_token_id</code>.
      */
-    public final TableField<RepositoryTokensRecord, Long> REPOSITORY_TOKENS_ID = createField("repository_tokens_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<RepositoryTokensRecord, Long> REPOSITORY_TOKEN_ID = createField("repository_token_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>version_manager_test.repository_tokens.public_repo_token</code>.
+     */
+    public final TableField<RepositoryTokensRecord, String> PUBLIC_REPO_TOKEN = createField("public_repo_token", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false), this, "");
 
     /**
      * The column <code>version_manager_test.repository_tokens.created_at</code>.
      */
-    public final TableField<RepositoryTokensRecord, Instant> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "", new TimestampConverter());
+    public final TableField<RepositoryTokensRecord, Instant> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP(6)", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "", new TimestampConverter());
 
     /**
      * The column <code>version_manager_test.repository_tokens.expires_at</code>.
      */
-    public final TableField<RepositoryTokensRecord, Instant> EXPIRES_AT = createField("expires_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "", new TimestampConverter());
+    public final TableField<RepositoryTokensRecord, Instant> EXPIRES_AT = createField("expires_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP(6)", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "", new TimestampConverter());
 
     /**
      * The column <code>version_manager_test.repository_tokens.valid</code>.
@@ -129,7 +134,7 @@ public class RepositoryTokensTable extends TableImpl<RepositoryTokensRecord> {
      */
     @Override
     public List<UniqueKey<RepositoryTokensRecord>> getKeys() {
-        return Arrays.<UniqueKey<RepositoryTokensRecord>>asList(Keys.KEY_REPOSITORY_TOKENS_PRIMARY);
+        return Arrays.<UniqueKey<RepositoryTokensRecord>>asList(Keys.KEY_REPOSITORY_TOKENS_PRIMARY, Keys.KEY_REPOSITORY_TOKENS_PUBLIC_REPO_TOKEN);
     }
 
     /**

@@ -37,7 +37,7 @@ import tech.crom.db.tables.WatcherTable;
 @Table(name = "watcher", schema = "version_manager_test")
 public class WatcherRecord extends UpdatableRecordImpl<WatcherRecord> implements Record4<Long, Long, Long, Long> {
 
-    private static final long serialVersionUID = -1623859700;
+    private static final long serialVersionUID = -1791655436;
 
     /**
      * Setter for <code>version_manager_test.watcher.watcher_id</code>.
@@ -74,32 +74,32 @@ public class WatcherRecord extends UpdatableRecordImpl<WatcherRecord> implements
     }
 
     /**
-     * Setter for <code>version_manager_test.watcher.project_details_id</code>.
+     * Setter for <code>version_manager_test.watcher.project_detail_id</code>.
      */
-    public void setProjectDetailsId(Long value) {
+    public void setProjectDetailId(Long value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.watcher.project_details_id</code>.
+     * Getter for <code>version_manager_test.watcher.project_detail_id</code>.
      */
-    @Column(name = "project_details_id", precision = 19)
-    public Long getProjectDetailsId() {
+    @Column(name = "project_detail_id", precision = 19)
+    public Long getProjectDetailId() {
         return (Long) get(2);
     }
 
     /**
-     * Setter for <code>version_manager_test.watcher.repo_details_id</code>.
+     * Setter for <code>version_manager_test.watcher.repo_detail_id</code>.
      */
-    public void setRepoDetailsId(Long value) {
+    public void setRepoDetailId(Long value) {
         set(3, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.watcher.repo_details_id</code>.
+     * Getter for <code>version_manager_test.watcher.repo_detail_id</code>.
      */
-    @Column(name = "repo_details_id", precision = 19)
-    public Long getRepoDetailsId() {
+    @Column(name = "repo_detail_id", precision = 19)
+    public Long getRepoDetailId() {
         return (Long) get(3);
     }
 
@@ -156,7 +156,7 @@ public class WatcherRecord extends UpdatableRecordImpl<WatcherRecord> implements
      */
     @Override
     public Field<Long> field3() {
-        return WatcherTable.WATCHER.PROJECT_DETAILS_ID;
+        return WatcherTable.WATCHER.PROJECT_DETAIL_ID;
     }
 
     /**
@@ -164,7 +164,7 @@ public class WatcherRecord extends UpdatableRecordImpl<WatcherRecord> implements
      */
     @Override
     public Field<Long> field4() {
-        return WatcherTable.WATCHER.REPO_DETAILS_ID;
+        return WatcherTable.WATCHER.REPO_DETAIL_ID;
     }
 
     /**
@@ -188,7 +188,7 @@ public class WatcherRecord extends UpdatableRecordImpl<WatcherRecord> implements
      */
     @Override
     public Long value3() {
-        return getProjectDetailsId();
+        return getProjectDetailId();
     }
 
     /**
@@ -196,7 +196,7 @@ public class WatcherRecord extends UpdatableRecordImpl<WatcherRecord> implements
      */
     @Override
     public Long value4() {
-        return getRepoDetailsId();
+        return getRepoDetailId();
     }
 
     /**
@@ -222,7 +222,7 @@ public class WatcherRecord extends UpdatableRecordImpl<WatcherRecord> implements
      */
     @Override
     public WatcherRecord value3(Long value) {
-        setProjectDetailsId(value);
+        setProjectDetailId(value);
         return this;
     }
 
@@ -231,7 +231,7 @@ public class WatcherRecord extends UpdatableRecordImpl<WatcherRecord> implements
      */
     @Override
     public WatcherRecord value4(Long value) {
-        setRepoDetailsId(value);
+        setRepoDetailId(value);
         return this;
     }
 
@@ -261,12 +261,12 @@ public class WatcherRecord extends UpdatableRecordImpl<WatcherRecord> implements
     /**
      * Create a detached, initialised WatcherRecord
      */
-    public WatcherRecord(Long watcherId, Long userId, Long projectDetailsId, Long repoDetailsId) {
+    public WatcherRecord(Long watcherId, Long userId, Long projectDetailId, Long repoDetailId) {
         super(WatcherTable.WATCHER);
 
         set(0, watcherId);
         set(1, userId);
-        set(2, projectDetailsId);
-        set(3, repoDetailsId);
+        set(2, projectDetailId);
+        set(3, repoDetailId);
     }
 }

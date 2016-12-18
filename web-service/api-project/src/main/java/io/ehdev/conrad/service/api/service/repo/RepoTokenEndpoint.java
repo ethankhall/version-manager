@@ -42,7 +42,7 @@ public class RepoTokenEndpoint {
     @RequestMapping(value = "/{tokenId}", method = RequestMethod.DELETE)
     public ResponseEntity deleteToken(RequestDetails requestDetails,
                                       @PathVariable("tokenId") String tokenId) {
-        tokenManagementApi.invalidateToken(Long.parseLong(tokenId), TokenType.REPOSITORY);
+        tokenManagementApi.invalidateToken(tokenId, TokenType.REPOSITORY);
         return new ResponseEntity(HttpStatus.OK);
     }
 

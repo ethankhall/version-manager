@@ -38,7 +38,7 @@ import tech.crom.db.tables.records.CommitDetailsRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommitDetailsTable extends TableImpl<CommitDetailsRecord> {
 
-    private static final long serialVersionUID = -827738294;
+    private static final long serialVersionUID = 1162562059;
 
     /**
      * The reference instance of <code>version_manager_test.commit_details</code>
@@ -54,14 +54,14 @@ public class CommitDetailsTable extends TableImpl<CommitDetailsRecord> {
     }
 
     /**
-     * The column <code>version_manager_test.commit_details.commit_details_id</code>.
+     * The column <code>version_manager_test.commit_details.commit_detail_id</code>.
      */
-    public final TableField<CommitDetailsRecord, Long> COMMIT_DETAILS_ID = createField("commit_details_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<CommitDetailsRecord, Long> COMMIT_DETAIL_ID = createField("commit_detail_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>version_manager_test.commit_details.repo_details_id</code>.
+     * The column <code>version_manager_test.commit_details.repo_detail_id</code>.
      */
-    public final TableField<CommitDetailsRecord, Long> REPO_DETAILS_ID = createField("repo_details_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<CommitDetailsRecord, Long> REPO_DETAIL_ID = createField("repo_detail_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>version_manager_test.commit_details.parent_commit_id</code>.
@@ -81,7 +81,7 @@ public class CommitDetailsTable extends TableImpl<CommitDetailsRecord> {
     /**
      * The column <code>version_manager_test.commit_details.created_at</code>.
      */
-    public final TableField<CommitDetailsRecord, Instant> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "", new TimestampConverter());
+    public final TableField<CommitDetailsRecord, Instant> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP(6)", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "", new TimestampConverter());
 
     /**
      * Create a <code>version_manager_test.commit_details</code> table reference

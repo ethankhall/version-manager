@@ -6,6 +6,9 @@ import com.zaxxer.hikari.HikariDataSource
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.TransactionProvider
+import org.jooq.conf.MappedSchema
+import org.jooq.conf.RenderMapping
+import org.jooq.conf.Settings
 import org.jooq.impl.DataSourceConnectionProvider
 import org.jooq.impl.DefaultConfiguration
 import org.jooq.impl.DefaultDSLContext
@@ -59,11 +62,17 @@ open class DatabaseConfig {
     }
 
     fun jooqConfiguration(): org.jooq.Configuration {
+        val database = environment!!.getRequiredProperty("spring.datasource.dbname")
+        val settings = Settings()
+            .withRenderMapping(RenderMapping()
+                .withSchemata(MappedSchema().withInput("version_manager_test").withOutput(database)))
+
         return DefaultConfiguration()
             .derive(connectionProvider())
             .derive(transactionProvider())
-            .derive(SQLDialect.POSTGRES_9_4)
+            .derive(SQLDialect.MYSQL)
             .derive(DefaultExecuteListenerProvider(JooqMetricsCollector(metricRegistry!!, environment!!)))
+            .derive(settings)
     }
 
     @Bean

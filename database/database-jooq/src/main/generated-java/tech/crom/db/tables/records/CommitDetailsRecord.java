@@ -40,39 +40,39 @@ import tech.crom.db.tables.CommitDetailsTable;
 @Table(name = "commit_details", schema = "version_manager_test")
 public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord> implements Record6<Long, Long, Long, String, String, Instant> {
 
-    private static final long serialVersionUID = 840092032;
+    private static final long serialVersionUID = -1495462302;
 
     /**
-     * Setter for <code>version_manager_test.commit_details.commit_details_id</code>.
+     * Setter for <code>version_manager_test.commit_details.commit_detail_id</code>.
      */
-    public void setCommitDetailsId(Long value) {
+    public void setCommitDetailId(Long value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.commit_details.commit_details_id</code>.
+     * Getter for <code>version_manager_test.commit_details.commit_detail_id</code>.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "commit_details_id", unique = true, nullable = false, precision = 19)
+    @Column(name = "commit_detail_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getCommitDetailsId() {
+    public Long getCommitDetailId() {
         return (Long) get(0);
     }
 
     /**
-     * Setter for <code>version_manager_test.commit_details.repo_details_id</code>.
+     * Setter for <code>version_manager_test.commit_details.repo_detail_id</code>.
      */
-    public void setRepoDetailsId(Long value) {
+    public void setRepoDetailId(Long value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.commit_details.repo_details_id</code>.
+     * Getter for <code>version_manager_test.commit_details.repo_detail_id</code>.
      */
-    @Column(name = "repo_details_id", nullable = false, precision = 19)
+    @Column(name = "repo_detail_id", nullable = false, precision = 19)
     @NotNull
-    public Long getRepoDetailsId() {
+    public Long getRepoDetailId() {
         return (Long) get(1);
     }
 
@@ -177,7 +177,7 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
      */
     @Override
     public Field<Long> field1() {
-        return CommitDetailsTable.COMMIT_DETAILS.COMMIT_DETAILS_ID;
+        return CommitDetailsTable.COMMIT_DETAILS.COMMIT_DETAIL_ID;
     }
 
     /**
@@ -185,7 +185,7 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
      */
     @Override
     public Field<Long> field2() {
-        return CommitDetailsTable.COMMIT_DETAILS.REPO_DETAILS_ID;
+        return CommitDetailsTable.COMMIT_DETAILS.REPO_DETAIL_ID;
     }
 
     /**
@@ -225,7 +225,7 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
      */
     @Override
     public Long value1() {
-        return getCommitDetailsId();
+        return getCommitDetailId();
     }
 
     /**
@@ -233,7 +233,7 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
      */
     @Override
     public Long value2() {
-        return getRepoDetailsId();
+        return getRepoDetailId();
     }
 
     /**
@@ -273,7 +273,7 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
      */
     @Override
     public CommitDetailsRecord value1(Long value) {
-        setCommitDetailsId(value);
+        setCommitDetailId(value);
         return this;
     }
 
@@ -282,7 +282,7 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
      */
     @Override
     public CommitDetailsRecord value2(Long value) {
-        setRepoDetailsId(value);
+        setRepoDetailId(value);
         return this;
     }
 
@@ -350,11 +350,11 @@ public class CommitDetailsRecord extends UpdatableRecordImpl<CommitDetailsRecord
     /**
      * Create a detached, initialised CommitDetailsRecord
      */
-    public CommitDetailsRecord(Long commitDetailsId, Long repoDetailsId, Long parentCommitId, String commitId, String version, Instant createdAt) {
+    public CommitDetailsRecord(Long commitDetailId, Long repoDetailId, Long parentCommitId, String commitId, String version, Instant createdAt) {
         super(CommitDetailsTable.COMMIT_DETAILS);
 
-        set(0, commitDetailsId);
-        set(1, repoDetailsId);
+        set(0, commitDetailId);
+        set(1, repoDetailId);
         set(2, parentCommitId);
         set(3, commitId);
         set(4, version);

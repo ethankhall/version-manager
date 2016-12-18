@@ -29,9 +29,9 @@ open class DefaultRepoManager @Autowired constructor(
     }
 
     @Caching(evict = arrayOf(
-        CacheEvict("repoByUid", key="#cromRepo.repoId"),
-        CacheEvict("repoDetailsByUid", key="#cromRepo.repoId"),
-        CacheEvict("repoByProjectAndName", key="#cromRepo.projectId.toString() + #cromRepo.repoName")))
+        CacheEvict("repoById", key="#cromRepo.repoId"),
+        CacheEvict("repoDetailsById", key="#cromRepo.repoId"),
+        CacheEvict("repoByProjectAndName", key="#cromRepo.projectId + #cromRepo.repoName")))
     override fun deleteRepo(cromRepo: CromRepo) {
         val tokens = Tables.REPOSITORY_TOKENS
         dslContext
@@ -42,20 +42,27 @@ open class DefaultRepoManager @Autowired constructor(
         val repoDetails = Tables.REPO_DETAILS
         dslContext
             .deleteFrom(repoDetails)
-            .where(repoDetails.REPO_DETAILS_ID.eq(cromRepo.repoId))
+            .where(repoDetails.REPO_DETAIL_ID.eq(cromRepo.repoId))
             .execute()
     }
 
     @Caching(evict = arrayOf(
-        CacheEvict("repoByUid", allEntries = true),
-        CacheEvict("repoDetailsByUid", allEntries = true),
-        CacheEvict("repoByProjectAndName", key="#cromProject.projectId.toString() + #repoName")))
+        CacheEvict("repoById", allEntries = true),
+        CacheEvict("repoDetailsById", allEntries = true),
+        CacheEvict("repoByProjectAndName", key="#cromProject.projectId + #repoName")))
     override fun createRepo(cromProject: CromProject,
                             repoName: String,
                             versionBumper: CromVersionBumper,
                             checkoutUrl: String?,
                             description: String?,
                             isRepoPublic: Boolean): CromRepo {
+
+        val securityId = dslContext
+            .insertInto(Tables.SECURITY_ID_SEQ, Tables.SECURITY_ID_SEQ.TYPE)
+            .values("repo")
+            .returning(Tables.SECURITY_ID_SEQ.SECURITY_ID)
+            .fetchOne()
+            .securityId
 
         val repoDetails = Tables.REPO_DETAILS
         val record = dslContext.insertInto(repoDetails,
@@ -64,16 +71,17 @@ open class DefaultRepoManager @Autowired constructor(
             repoDetails.VERSION_BUMPER_ID,
             repoDetails.URL,
             repoDetails.DESCRIPTION,
-            repoDetails.PUBLIC)
-            .values(cromProject.projectId, repoName, versionBumper.bumperId, checkoutUrl, description, isRepoPublic)
+            repoDetails.PUBLIC,
+            repoDetails.SECURITY_ID)
+            .values(cromProject.projectId, repoName, versionBumper.bumperId, checkoutUrl, description, isRepoPublic, securityId)
             .returning(repoDetails.fields().toList())
             .fetchOne()
             .into(repoDetails)
 
-        return CromRepo(record.repoDetailsId, record.securityId, record.projectId, record.repoName, record.versionBumperId)
+        return CromRepo(record.repoDetailId, record.securityId, record.projectId, record.repoName, record.versionBumperId)
     }
 
-    @Cacheable("repoByProjectAndName", key = "#cromProject.projectId.toString() + #repoName")
+    @Cacheable("repoByProjectAndName", key = "#cromProject.projectId + #repoName")
     override fun findRepo(cromProject: CromProject, repoName: String): CromRepo? {
         val repoDetails = Tables.REPO_DETAILS
         val record = dslContext
@@ -82,7 +90,7 @@ open class DefaultRepoManager @Autowired constructor(
             .fetchOne()
             ?.into(repoDetails) ?: return null
 
-        return CromRepo(record.repoDetailsId, record.securityId, record.projectId, record.repoName, record.versionBumperId)
+        return CromRepo(record.repoDetailId, record.securityId, record.projectId, record.repoName, record.versionBumperId)
     }
 
     override fun findRepo(cromProject: CromProject): Collection<CromRepo> {
@@ -92,26 +100,26 @@ open class DefaultRepoManager @Autowired constructor(
             .where(details.PROJECT_ID.eq(cromProject.projectId))
             .fetch()
             .into(details)
-            .map { CromRepo(it.repoDetailsId, it.securityId, it.projectId, it.repoName, it.versionBumperId) }
+            .map { CromRepo(it.repoDetailId, it.securityId, it.projectId, it.repoName, it.versionBumperId) }
     }
 
-    @Cacheable("repoByUid")
+    @Cacheable("repoById")
     override fun findRepo(id: Long): CromRepo? {
-        val repo = fetchOneRepoDetailsByUid(id) ?: return null
-        return CromRepo(repo.repoDetailsId, repo.securityId, repo.projectId, repo.repoName, repo.versionBumperId)
+        val repo = fetchOneRepoDetailsById(id) ?: return null
+        return CromRepo(repo.repoDetailId, repo.securityId, repo.projectId, repo.repoName, repo.versionBumperId)
     }
 
-    @Cacheable("repoDetailsByUid", key="#cromRepo.repoId")
+    @Cacheable("repoDetailsById", key="#cromRepo.repoId")
     override fun getDetails(cromRepo: CromRepo): RepoManager.CromRepoDetails {
-        val repo = fetchOneRepoDetailsByUid(cromRepo.repoId)!!
+        val repo = fetchOneRepoDetailsById(cromRepo.repoId)!!
         return RepoManager.CromRepoDetails(cromRepo, repo.versionBumperId, repo.public, repo.url, repo.description)
     }
 
-    private fun fetchOneRepoDetailsByUid(id: Long): RepoDetailsRecord? {
+    private fun fetchOneRepoDetailsById(id: Long): RepoDetailsRecord? {
         val details = RepoDetailsTable.REPO_DETAILS
         return dslContext
             .selectFrom(details)
-            .where(details.REPO_DETAILS_ID.eq(id))
+            .where(details.REPO_DETAIL_ID.eq(id))
             .fetchOne()?.into(details)
     }
 }

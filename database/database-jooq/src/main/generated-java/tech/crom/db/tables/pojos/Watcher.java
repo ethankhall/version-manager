@@ -31,32 +31,32 @@ import javax.validation.constraints.NotNull;
 @Table(name = "watcher", schema = "version_manager_test")
 public class Watcher implements Serializable {
 
-    private static final long serialVersionUID = -140013339;
+    private static final long serialVersionUID = -1698555525;
 
     private Long watcherId;
     private Long userId;
-    private Long projectDetailsId;
-    private Long repoDetailsId;
+    private Long projectDetailId;
+    private Long repoDetailId;
 
     public Watcher() {}
 
     public Watcher(Watcher value) {
         this.watcherId = value.watcherId;
         this.userId = value.userId;
-        this.projectDetailsId = value.projectDetailsId;
-        this.repoDetailsId = value.repoDetailsId;
+        this.projectDetailId = value.projectDetailId;
+        this.repoDetailId = value.repoDetailId;
     }
 
     public Watcher(
         Long watcherId,
         Long userId,
-        Long projectDetailsId,
-        Long repoDetailsId
+        Long projectDetailId,
+        Long repoDetailId
     ) {
         this.watcherId = watcherId;
         this.userId = userId;
-        this.projectDetailsId = projectDetailsId;
-        this.repoDetailsId = repoDetailsId;
+        this.projectDetailId = projectDetailId;
+        this.repoDetailId = repoDetailId;
     }
 
     @Id
@@ -81,22 +81,22 @@ public class Watcher implements Serializable {
         this.userId = userId;
     }
 
-    @Column(name = "project_details_id", precision = 19)
-    public Long getProjectDetailsId() {
-        return this.projectDetailsId;
+    @Column(name = "project_detail_id", precision = 19)
+    public Long getProjectDetailId() {
+        return this.projectDetailId;
     }
 
-    public void setProjectDetailsId(Long projectDetailsId) {
-        this.projectDetailsId = projectDetailsId;
+    public void setProjectDetailId(Long projectDetailId) {
+        this.projectDetailId = projectDetailId;
     }
 
-    @Column(name = "repo_details_id", precision = 19)
-    public Long getRepoDetailsId() {
-        return this.repoDetailsId;
+    @Column(name = "repo_detail_id", precision = 19)
+    public Long getRepoDetailId() {
+        return this.repoDetailId;
     }
 
-    public void setRepoDetailsId(Long repoDetailsId) {
-        this.repoDetailsId = repoDetailsId;
+    public void setRepoDetailId(Long repoDetailId) {
+        this.repoDetailId = repoDetailId;
     }
 
     @Override
@@ -105,8 +105,8 @@ public class Watcher implements Serializable {
 
         sb.append(watcherId);
         sb.append(", ").append(userId);
-        sb.append(", ").append(projectDetailsId);
-        sb.append(", ").append(repoDetailsId);
+        sb.append(", ").append(projectDetailId);
+        sb.append(", ").append(repoDetailId);
 
         sb.append(")");
         return sb.toString();

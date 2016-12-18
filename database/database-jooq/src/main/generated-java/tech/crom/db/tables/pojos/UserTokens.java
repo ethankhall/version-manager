@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 /**
@@ -32,9 +33,10 @@ import javax.validation.constraints.NotNull;
 @Table(name = "user_tokens", schema = "version_manager_test")
 public class UserTokens implements Serializable {
 
-    private static final long serialVersionUID = 1693029115;
+    private static final long serialVersionUID = 324924413;
 
-    private Long    userTokensId;
+    private Long    userTokenId;
+    private String  publicUserToken;
     private Instant createdAt;
     private Instant expiresAt;
     private Boolean valid;
@@ -43,7 +45,8 @@ public class UserTokens implements Serializable {
     public UserTokens() {}
 
     public UserTokens(UserTokens value) {
-        this.userTokensId = value.userTokensId;
+        this.userTokenId = value.userTokenId;
+        this.publicUserToken = value.publicUserToken;
         this.createdAt = value.createdAt;
         this.expiresAt = value.expiresAt;
         this.valid = value.valid;
@@ -51,13 +54,15 @@ public class UserTokens implements Serializable {
     }
 
     public UserTokens(
-        Long    userTokensId,
+        Long    userTokenId,
+        String  publicUserToken,
         Instant createdAt,
         Instant expiresAt,
         Boolean valid,
         Long    userId
     ) {
-        this.userTokensId = userTokensId;
+        this.userTokenId = userTokenId;
+        this.publicUserToken = publicUserToken;
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
         this.valid = valid;
@@ -66,14 +71,25 @@ public class UserTokens implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_tokens_id", unique = true, nullable = false, precision = 19)
+    @Column(name = "user_token_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getUserTokensId() {
-        return this.userTokensId;
+    public Long getUserTokenId() {
+        return this.userTokenId;
     }
 
-    public void setUserTokensId(Long userTokensId) {
-        this.userTokensId = userTokensId;
+    public void setUserTokenId(Long userTokenId) {
+        this.userTokenId = userTokenId;
+    }
+
+    @Column(name = "public_user_token", unique = true, nullable = false, length = 64)
+    @NotNull
+    @Size(max = 64)
+    public String getPublicUserToken() {
+        return this.publicUserToken;
+    }
+
+    public void setPublicUserToken(String publicUserToken) {
+        this.publicUserToken = publicUserToken;
     }
 
     @Column(name = "created_at", nullable = false)
@@ -117,7 +133,8 @@ public class UserTokens implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("UserTokens (");
 
-        sb.append(userTokensId);
+        sb.append(userTokenId);
+        sb.append(", ").append(publicUserToken);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(expiresAt);
         sb.append(", ").append(valid);

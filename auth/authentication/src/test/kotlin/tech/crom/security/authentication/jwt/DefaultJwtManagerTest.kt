@@ -15,7 +15,6 @@ import tech.crom.security.authentication.createGeneratedToken
 import java.time.Clock
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -30,9 +29,9 @@ class DefaultJwtManagerTest: Spek({
             val tokenManager: TokenManager = mock()
             val jwtManager = DefaultJwtManager(clock, env, tokenManager)
 
-            val cromUser = CromUser(UUID.randomUUID(), "username", "displayName")
+            val cromUser = CromUser(Math.random().toLong(), "username", "displayName")
             val createdToken = createGeneratedToken(TokenType.USER)
-            val underlyingToken = TokenManager.UderlyingTokenDetails(cromUser.userId, TokenType.USER)
+            val underlyingToken = TokenManager.UderlyingTokenDetails(cromUser.userId, createdToken.id, TokenType.USER)
 
             whenever(tokenManager.generateUserToken(any(), any())).thenReturn(createdToken)
             whenever(tokenManager.getTokenData(any(), any())).thenReturn(underlyingToken)
@@ -43,16 +42,16 @@ class DefaultJwtManagerTest: Spek({
             val parsedToken = jwtManager.parseToken(token) as JwtTokenAuthentication.UserJwtTokenAuthentication
             assertNotNull(parsedToken)
             assertEquals(parsedToken.userId, cromUser.userId)
-            assertEquals(parsedToken.userTokenId, createdToken.uuid)
+            assertEquals(parsedToken.userTokenId, createdToken.id)
         }
 
         it("should return a repo tokenDetails") {
             val tokenManager: TokenManager = mock()
             val jwtManager = DefaultJwtManager(clock, env, tokenManager)
 
-            val cromRepo = CromRepo(UUID.randomUUID(), 1, UUID.randomUUID(), "repoName", UUID.randomUUID())
+            val cromRepo = CromRepo(Math.random().toLong(), 1, Math.random().toLong(), "repoName", Math.random().toLong())
             val createdToken = createGeneratedToken(TokenType.REPOSITORY)
-            val underlyingToken = TokenManager.UderlyingTokenDetails(cromRepo.repoId, TokenType.REPOSITORY)
+            val underlyingToken = TokenManager.UderlyingTokenDetails(cromRepo.repoId, createdToken.id, TokenType.REPOSITORY)
 
             whenever(tokenManager.generateRepoToken(any(), any())).thenReturn(createdToken)
             whenever(tokenManager.getTokenData(any(), any())).thenReturn(underlyingToken)
@@ -63,7 +62,7 @@ class DefaultJwtManagerTest: Spek({
             val parsedToken = jwtManager.parseToken(token) as JwtTokenAuthentication.RepoJwtTokenAuthentication
             assertNotNull(parsedToken)
             assertEquals(parsedToken.repoId, cromRepo.repoId)
-            assertEquals(parsedToken.repoTokenId, createdToken.uuid)
+            assertEquals(parsedToken.repoTokenId, createdToken.id)
         }
 
         it("should return null when a tokenDetails is bad") {

@@ -36,7 +36,7 @@ import tech.crom.db.tables.records.ProjectDetailsRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class ProjectDetailsTable extends TableImpl<ProjectDetailsRecord> {
 
-    private static final long serialVersionUID = -563622449;
+    private static final long serialVersionUID = -771046148;
 
     /**
      * The reference instance of <code>version_manager_test.project_details</code>
@@ -52,9 +52,9 @@ public class ProjectDetailsTable extends TableImpl<ProjectDetailsRecord> {
     }
 
     /**
-     * The column <code>version_manager_test.project_details.product_details_id</code>.
+     * The column <code>version_manager_test.project_details.product_detail_id</code>.
      */
-    public final TableField<ProjectDetailsRecord, Long> PRODUCT_DETAILS_ID = createField("product_details_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+    public final TableField<ProjectDetailsRecord, Long> PRODUCT_DETAIL_ID = createField("product_detail_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>version_manager_test.project_details.project_name</code>.

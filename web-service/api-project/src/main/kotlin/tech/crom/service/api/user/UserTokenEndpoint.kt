@@ -27,7 +27,7 @@ open class UserTokenEndpoint @Autowired constructor(
     @LoggedInUserRequired
     @RequestMapping(value = "/{tokenId}", method = arrayOf(RequestMethod.DELETE))
     open fun deleteToken(requestDetails: RequestDetails, @PathVariable("tokenId") tokenId: String): ResponseEntity<*> {
-        tokenManagementApi.invalidateToken(tokenId.toLong(), TokenType.USER)
+        tokenManagementApi.invalidateToken(tokenId, TokenType.USER)
         return ResponseEntity<Any>(HttpStatus.OK)
     }
 

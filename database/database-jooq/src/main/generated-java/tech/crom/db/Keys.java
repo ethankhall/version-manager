@@ -93,12 +93,14 @@ public class Keys {
     public static final UniqueKey<CommitMetadataRecord> KEY_COMMIT_METADATA_PRIMARY = UniqueKeys0.KEY_COMMIT_METADATA_PRIMARY;
     public static final UniqueKey<ProjectDetailsRecord> KEY_PROJECT_DETAILS_PRIMARY = UniqueKeys0.KEY_PROJECT_DETAILS_PRIMARY;
     public static final UniqueKey<RepositoryTokensRecord> KEY_REPOSITORY_TOKENS_PRIMARY = UniqueKeys0.KEY_REPOSITORY_TOKENS_PRIMARY;
+    public static final UniqueKey<RepositoryTokensRecord> KEY_REPOSITORY_TOKENS_PUBLIC_REPO_TOKEN = UniqueKeys0.KEY_REPOSITORY_TOKENS_PUBLIC_REPO_TOKEN;
     public static final UniqueKey<RepoDetailsRecord> KEY_REPO_DETAILS_PRIMARY = UniqueKeys0.KEY_REPO_DETAILS_PRIMARY;
     public static final UniqueKey<SecurityIdSeqRecord> KEY_SECURITY_ID_SEQ_PRIMARY = UniqueKeys0.KEY_SECURITY_ID_SEQ_PRIMARY;
     public static final UniqueKey<SsUserconnectionRecord> KEY_SS_USERCONNECTION_PRIMARY = UniqueKeys0.KEY_SS_USERCONNECTION_PRIMARY;
     public static final UniqueKey<SsUserconnectionRecord> KEY_SS_USERCONNECTION_USERCONNECTIONRANK = UniqueKeys0.KEY_SS_USERCONNECTION_USERCONNECTIONRANK;
     public static final UniqueKey<UserDetailsRecord> KEY_USER_DETAILS_PRIMARY = UniqueKeys0.KEY_USER_DETAILS_PRIMARY;
     public static final UniqueKey<UserTokensRecord> KEY_USER_TOKENS_PRIMARY = UniqueKeys0.KEY_USER_TOKENS_PRIMARY;
+    public static final UniqueKey<UserTokensRecord> KEY_USER_TOKENS_PUBLIC_USER_TOKEN = UniqueKeys0.KEY_USER_TOKENS_PUBLIC_USER_TOKEN;
     public static final UniqueKey<VersionBumpersRecord> KEY_VERSION_BUMPERS_PRIMARY = UniqueKeys0.KEY_VERSION_BUMPERS_PRIMARY;
     public static final UniqueKey<WatcherRecord> KEY_WATCHER_PRIMARY = UniqueKeys0.KEY_WATCHER_PRIMARY;
 
@@ -135,14 +137,14 @@ public class Keys {
         public static Identity<AclEntryRecord, ULong> IDENTITY_ACL_ENTRY = createIdentity(AclEntryTable.ACL_ENTRY, AclEntryTable.ACL_ENTRY.ID);
         public static Identity<AclObjectIdentityRecord, ULong> IDENTITY_ACL_OBJECT_IDENTITY = createIdentity(AclObjectIdentityTable.ACL_OBJECT_IDENTITY, AclObjectIdentityTable.ACL_OBJECT_IDENTITY.ID);
         public static Identity<AclSidRecord, ULong> IDENTITY_ACL_SID = createIdentity(AclSidTable.ACL_SID, AclSidTable.ACL_SID.ID);
-        public static Identity<CommitDetailsRecord, Long> IDENTITY_COMMIT_DETAILS = createIdentity(CommitDetailsTable.COMMIT_DETAILS, CommitDetailsTable.COMMIT_DETAILS.COMMIT_DETAILS_ID);
+        public static Identity<CommitDetailsRecord, Long> IDENTITY_COMMIT_DETAILS = createIdentity(CommitDetailsTable.COMMIT_DETAILS, CommitDetailsTable.COMMIT_DETAILS.COMMIT_DETAIL_ID);
         public static Identity<CommitMetadataRecord, Long> IDENTITY_COMMIT_METADATA = createIdentity(CommitMetadataTable.COMMIT_METADATA, CommitMetadataTable.COMMIT_METADATA.COMMIT_METADATA_ID);
-        public static Identity<ProjectDetailsRecord, Long> IDENTITY_PROJECT_DETAILS = createIdentity(ProjectDetailsTable.PROJECT_DETAILS, ProjectDetailsTable.PROJECT_DETAILS.PRODUCT_DETAILS_ID);
-        public static Identity<RepositoryTokensRecord, Long> IDENTITY_REPOSITORY_TOKENS = createIdentity(RepositoryTokensTable.REPOSITORY_TOKENS, RepositoryTokensTable.REPOSITORY_TOKENS.REPOSITORY_TOKENS_ID);
-        public static Identity<RepoDetailsRecord, Long> IDENTITY_REPO_DETAILS = createIdentity(RepoDetailsTable.REPO_DETAILS, RepoDetailsTable.REPO_DETAILS.REPO_DETAILS_ID);
+        public static Identity<ProjectDetailsRecord, Long> IDENTITY_PROJECT_DETAILS = createIdentity(ProjectDetailsTable.PROJECT_DETAILS, ProjectDetailsTable.PROJECT_DETAILS.PRODUCT_DETAIL_ID);
+        public static Identity<RepositoryTokensRecord, Long> IDENTITY_REPOSITORY_TOKENS = createIdentity(RepositoryTokensTable.REPOSITORY_TOKENS, RepositoryTokensTable.REPOSITORY_TOKENS.REPOSITORY_TOKEN_ID);
+        public static Identity<RepoDetailsRecord, Long> IDENTITY_REPO_DETAILS = createIdentity(RepoDetailsTable.REPO_DETAILS, RepoDetailsTable.REPO_DETAILS.REPO_DETAIL_ID);
         public static Identity<SecurityIdSeqRecord, Long> IDENTITY_SECURITY_ID_SEQ = createIdentity(SecurityIdSeqTable.SECURITY_ID_SEQ, SecurityIdSeqTable.SECURITY_ID_SEQ.SECURITY_ID);
         public static Identity<UserDetailsRecord, Long> IDENTITY_USER_DETAILS = createIdentity(UserDetailsTable.USER_DETAILS, UserDetailsTable.USER_DETAILS.USER_ID);
-        public static Identity<UserTokensRecord, Long> IDENTITY_USER_TOKENS = createIdentity(UserTokensTable.USER_TOKENS, UserTokensTable.USER_TOKENS.USER_TOKENS_ID);
+        public static Identity<UserTokensRecord, Long> IDENTITY_USER_TOKENS = createIdentity(UserTokensTable.USER_TOKENS, UserTokensTable.USER_TOKENS.USER_TOKEN_ID);
         public static Identity<VersionBumpersRecord, Long> IDENTITY_VERSION_BUMPERS = createIdentity(VersionBumpersTable.VERSION_BUMPERS, VersionBumpersTable.VERSION_BUMPERS.VERSION_BUMPER_ID);
         public static Identity<WatcherRecord, Long> IDENTITY_WATCHER = createIdentity(WatcherTable.WATCHER, WatcherTable.WATCHER.WATCHER_ID);
     }
@@ -156,16 +158,18 @@ public class Keys {
         public static final UniqueKey<AclObjectIdentityRecord> KEY_ACL_OBJECT_IDENTITY_UK_ACL_OBJECT_IDENTITY = createUniqueKey(AclObjectIdentityTable.ACL_OBJECT_IDENTITY, "KEY_acl_object_identity_uk_acl_object_identity", AclObjectIdentityTable.ACL_OBJECT_IDENTITY.OBJECT_ID_CLASS, AclObjectIdentityTable.ACL_OBJECT_IDENTITY.OBJECT_ID_IDENTITY);
         public static final UniqueKey<AclSidRecord> KEY_ACL_SID_PRIMARY = createUniqueKey(AclSidTable.ACL_SID, "KEY_acl_sid_PRIMARY", AclSidTable.ACL_SID.ID);
         public static final UniqueKey<AclSidRecord> KEY_ACL_SID_UNIQUE_ACL_SID = createUniqueKey(AclSidTable.ACL_SID, "KEY_acl_sid_unique_acl_sid", AclSidTable.ACL_SID.SID, AclSidTable.ACL_SID.PRINCIPAL);
-        public static final UniqueKey<CommitDetailsRecord> KEY_COMMIT_DETAILS_PRIMARY = createUniqueKey(CommitDetailsTable.COMMIT_DETAILS, "KEY_commit_details_PRIMARY", CommitDetailsTable.COMMIT_DETAILS.COMMIT_DETAILS_ID);
+        public static final UniqueKey<CommitDetailsRecord> KEY_COMMIT_DETAILS_PRIMARY = createUniqueKey(CommitDetailsTable.COMMIT_DETAILS, "KEY_commit_details_PRIMARY", CommitDetailsTable.COMMIT_DETAILS.COMMIT_DETAIL_ID);
         public static final UniqueKey<CommitMetadataRecord> KEY_COMMIT_METADATA_PRIMARY = createUniqueKey(CommitMetadataTable.COMMIT_METADATA, "KEY_commit_metadata_PRIMARY", CommitMetadataTable.COMMIT_METADATA.COMMIT_METADATA_ID);
-        public static final UniqueKey<ProjectDetailsRecord> KEY_PROJECT_DETAILS_PRIMARY = createUniqueKey(ProjectDetailsTable.PROJECT_DETAILS, "KEY_project_details_PRIMARY", ProjectDetailsTable.PROJECT_DETAILS.PRODUCT_DETAILS_ID);
-        public static final UniqueKey<RepositoryTokensRecord> KEY_REPOSITORY_TOKENS_PRIMARY = createUniqueKey(RepositoryTokensTable.REPOSITORY_TOKENS, "KEY_repository_tokens_PRIMARY", RepositoryTokensTable.REPOSITORY_TOKENS.REPOSITORY_TOKENS_ID);
-        public static final UniqueKey<RepoDetailsRecord> KEY_REPO_DETAILS_PRIMARY = createUniqueKey(RepoDetailsTable.REPO_DETAILS, "KEY_repo_details_PRIMARY", RepoDetailsTable.REPO_DETAILS.REPO_DETAILS_ID);
+        public static final UniqueKey<ProjectDetailsRecord> KEY_PROJECT_DETAILS_PRIMARY = createUniqueKey(ProjectDetailsTable.PROJECT_DETAILS, "KEY_project_details_PRIMARY", ProjectDetailsTable.PROJECT_DETAILS.PRODUCT_DETAIL_ID);
+        public static final UniqueKey<RepositoryTokensRecord> KEY_REPOSITORY_TOKENS_PRIMARY = createUniqueKey(RepositoryTokensTable.REPOSITORY_TOKENS, "KEY_repository_tokens_PRIMARY", RepositoryTokensTable.REPOSITORY_TOKENS.REPOSITORY_TOKEN_ID);
+        public static final UniqueKey<RepositoryTokensRecord> KEY_REPOSITORY_TOKENS_PUBLIC_REPO_TOKEN = createUniqueKey(RepositoryTokensTable.REPOSITORY_TOKENS, "KEY_repository_tokens_public_repo_token", RepositoryTokensTable.REPOSITORY_TOKENS.PUBLIC_REPO_TOKEN);
+        public static final UniqueKey<RepoDetailsRecord> KEY_REPO_DETAILS_PRIMARY = createUniqueKey(RepoDetailsTable.REPO_DETAILS, "KEY_repo_details_PRIMARY", RepoDetailsTable.REPO_DETAILS.REPO_DETAIL_ID);
         public static final UniqueKey<SecurityIdSeqRecord> KEY_SECURITY_ID_SEQ_PRIMARY = createUniqueKey(SecurityIdSeqTable.SECURITY_ID_SEQ, "KEY_security_id_seq_PRIMARY", SecurityIdSeqTable.SECURITY_ID_SEQ.SECURITY_ID);
         public static final UniqueKey<SsUserconnectionRecord> KEY_SS_USERCONNECTION_PRIMARY = createUniqueKey(SsUserconnectionTable.SS_USERCONNECTION, "KEY_ss_UserConnection_PRIMARY", SsUserconnectionTable.SS_USERCONNECTION.USERID, SsUserconnectionTable.SS_USERCONNECTION.PROVIDERID, SsUserconnectionTable.SS_USERCONNECTION.PROVIDERUSERID);
         public static final UniqueKey<SsUserconnectionRecord> KEY_SS_USERCONNECTION_USERCONNECTIONRANK = createUniqueKey(SsUserconnectionTable.SS_USERCONNECTION, "KEY_ss_UserConnection_UserConnectionRank", SsUserconnectionTable.SS_USERCONNECTION.USERID, SsUserconnectionTable.SS_USERCONNECTION.PROVIDERID, SsUserconnectionTable.SS_USERCONNECTION.RANK);
         public static final UniqueKey<UserDetailsRecord> KEY_USER_DETAILS_PRIMARY = createUniqueKey(UserDetailsTable.USER_DETAILS, "KEY_user_details_PRIMARY", UserDetailsTable.USER_DETAILS.USER_ID);
-        public static final UniqueKey<UserTokensRecord> KEY_USER_TOKENS_PRIMARY = createUniqueKey(UserTokensTable.USER_TOKENS, "KEY_user_tokens_PRIMARY", UserTokensTable.USER_TOKENS.USER_TOKENS_ID);
+        public static final UniqueKey<UserTokensRecord> KEY_USER_TOKENS_PRIMARY = createUniqueKey(UserTokensTable.USER_TOKENS, "KEY_user_tokens_PRIMARY", UserTokensTable.USER_TOKENS.USER_TOKEN_ID);
+        public static final UniqueKey<UserTokensRecord> KEY_USER_TOKENS_PUBLIC_USER_TOKEN = createUniqueKey(UserTokensTable.USER_TOKENS, "KEY_user_tokens_public_user_token", UserTokensTable.USER_TOKENS.PUBLIC_USER_TOKEN);
         public static final UniqueKey<VersionBumpersRecord> KEY_VERSION_BUMPERS_PRIMARY = createUniqueKey(VersionBumpersTable.VERSION_BUMPERS, "KEY_version_bumpers_PRIMARY", VersionBumpersTable.VERSION_BUMPERS.VERSION_BUMPER_ID);
         public static final UniqueKey<WatcherRecord> KEY_WATCHER_PRIMARY = createUniqueKey(WatcherTable.WATCHER, "KEY_watcher_PRIMARY", WatcherTable.WATCHER.WATCHER_ID);
     }
@@ -176,7 +180,7 @@ public class Keys {
         public static final ForeignKey<AclObjectIdentityRecord, AclClassRecord> FK_ACL_OBJECT_IDENTITY_CLASS = createForeignKey(tech.crom.db.Keys.KEY_ACL_CLASS_PRIMARY, AclObjectIdentityTable.ACL_OBJECT_IDENTITY, "fk_acl_object_identity_class", AclObjectIdentityTable.ACL_OBJECT_IDENTITY.OBJECT_ID_CLASS);
         public static final ForeignKey<AclObjectIdentityRecord, AclObjectIdentityRecord> FK_ACL_OBJECT_IDENTITY_PARENT = createForeignKey(tech.crom.db.Keys.KEY_ACL_OBJECT_IDENTITY_PRIMARY, AclObjectIdentityTable.ACL_OBJECT_IDENTITY, "fk_acl_object_identity_parent", AclObjectIdentityTable.ACL_OBJECT_IDENTITY.PARENT_OBJECT);
         public static final ForeignKey<AclObjectIdentityRecord, AclSidRecord> FK_ACL_OBJECT_IDENTITY_OWNER = createForeignKey(tech.crom.db.Keys.KEY_ACL_SID_PRIMARY, AclObjectIdentityTable.ACL_OBJECT_IDENTITY, "fk_acl_object_identity_owner", AclObjectIdentityTable.ACL_OBJECT_IDENTITY.OWNER_SID);
-        public static final ForeignKey<CommitDetailsRecord, RepoDetailsRecord> COMMIT_DETAILS_IBFK_1 = createForeignKey(tech.crom.db.Keys.KEY_REPO_DETAILS_PRIMARY, CommitDetailsTable.COMMIT_DETAILS, "commit_details_ibfk_1", CommitDetailsTable.COMMIT_DETAILS.REPO_DETAILS_ID);
+        public static final ForeignKey<CommitDetailsRecord, RepoDetailsRecord> COMMIT_DETAILS_IBFK_1 = createForeignKey(tech.crom.db.Keys.KEY_REPO_DETAILS_PRIMARY, CommitDetailsTable.COMMIT_DETAILS, "commit_details_ibfk_1", CommitDetailsTable.COMMIT_DETAILS.REPO_DETAIL_ID);
         public static final ForeignKey<CommitDetailsRecord, CommitDetailsRecord> COMMIT_DETAILS_IBFK_2 = createForeignKey(tech.crom.db.Keys.KEY_COMMIT_DETAILS_PRIMARY, CommitDetailsTable.COMMIT_DETAILS, "commit_details_ibfk_2", CommitDetailsTable.COMMIT_DETAILS.PARENT_COMMIT_ID);
         public static final ForeignKey<CommitMetadataRecord, CommitDetailsRecord> COMMIT_METADATA_IBFK_1 = createForeignKey(tech.crom.db.Keys.KEY_COMMIT_DETAILS_PRIMARY, CommitMetadataTable.COMMIT_METADATA, "commit_metadata_ibfk_1", CommitMetadataTable.COMMIT_METADATA.COMMIT_ID);
         public static final ForeignKey<CommitMetadataRecord, ProjectDetailsRecord> COMMIT_METADATA_IBFK_2 = createForeignKey(tech.crom.db.Keys.KEY_PROJECT_DETAILS_PRIMARY, CommitMetadataTable.COMMIT_METADATA, "commit_metadata_ibfk_2", CommitMetadataTable.COMMIT_METADATA.PROJECT_ID);
@@ -188,7 +192,7 @@ public class Keys {
         public static final ForeignKey<RepoDetailsRecord, SecurityIdSeqRecord> REPO_DETAILS_IBFK_3 = createForeignKey(tech.crom.db.Keys.KEY_SECURITY_ID_SEQ_PRIMARY, RepoDetailsTable.REPO_DETAILS, "repo_details_ibfk_3", RepoDetailsTable.REPO_DETAILS.SECURITY_ID);
         public static final ForeignKey<UserTokensRecord, UserDetailsRecord> USER_TOKENS_IBFK_1 = createForeignKey(tech.crom.db.Keys.KEY_USER_DETAILS_PRIMARY, UserTokensTable.USER_TOKENS, "user_tokens_ibfk_1", UserTokensTable.USER_TOKENS.USER_ID);
         public static final ForeignKey<WatcherRecord, UserDetailsRecord> WATCHER_IBFK_1 = createForeignKey(tech.crom.db.Keys.KEY_USER_DETAILS_PRIMARY, WatcherTable.WATCHER, "watcher_ibfk_1", WatcherTable.WATCHER.USER_ID);
-        public static final ForeignKey<WatcherRecord, ProjectDetailsRecord> WATCHER_IBFK_2 = createForeignKey(tech.crom.db.Keys.KEY_PROJECT_DETAILS_PRIMARY, WatcherTable.WATCHER, "watcher_ibfk_2", WatcherTable.WATCHER.PROJECT_DETAILS_ID);
-        public static final ForeignKey<WatcherRecord, RepoDetailsRecord> WATCHER_IBFK_3 = createForeignKey(tech.crom.db.Keys.KEY_REPO_DETAILS_PRIMARY, WatcherTable.WATCHER, "watcher_ibfk_3", WatcherTable.WATCHER.REPO_DETAILS_ID);
+        public static final ForeignKey<WatcherRecord, ProjectDetailsRecord> WATCHER_IBFK_2 = createForeignKey(tech.crom.db.Keys.KEY_PROJECT_DETAILS_PRIMARY, WatcherTable.WATCHER, "watcher_ibfk_2", WatcherTable.WATCHER.PROJECT_DETAIL_ID);
+        public static final ForeignKey<WatcherRecord, RepoDetailsRecord> WATCHER_IBFK_3 = createForeignKey(tech.crom.db.Keys.KEY_REPO_DETAILS_PRIMARY, WatcherTable.WATCHER, "watcher_ibfk_3", WatcherTable.WATCHER.REPO_DETAIL_ID);
     }
 }

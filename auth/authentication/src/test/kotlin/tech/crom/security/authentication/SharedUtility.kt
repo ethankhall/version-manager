@@ -9,7 +9,7 @@ import java.util.*
 
 fun createGeneratedToken(type: TokenType): TokenManager.TokenDetails {
     val now = ZonedDateTime.now()
-    return TokenManager.TokenDetails(UUID.randomUUID(), now, now.plusDays(2), true, type)
+    return TokenManager.TokenDetails(Math.random().toLong(), UUID.randomUUID().toString(), now, now.plusDays(2), true, type)
 }
 
-fun createUser(): CromUser = CromUser(UUID.randomUUID(), "username", "displayName")
+fun createUser(): CromUser = CromUser(Math.random().toLong(), "username", "displayName")

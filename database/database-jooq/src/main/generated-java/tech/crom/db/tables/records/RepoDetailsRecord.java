@@ -38,23 +38,23 @@ import tech.crom.db.tables.RepoDetailsTable;
 @Table(name = "repo_details", schema = "version_manager_test")
 public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> implements Record8<Long, String, Long, Long, String, String, Boolean, Long> {
 
-    private static final long serialVersionUID = 888833791;
+    private static final long serialVersionUID = -141476843;
 
     /**
-     * Setter for <code>version_manager_test.repo_details.repo_details_id</code>.
+     * Setter for <code>version_manager_test.repo_details.repo_detail_id</code>.
      */
-    public void setRepoDetailsId(Long value) {
+    public void setRepoDetailId(Long value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.repo_details.repo_details_id</code>.
+     * Getter for <code>version_manager_test.repo_details.repo_detail_id</code>.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "repo_details_id", unique = true, nullable = false, precision = 19)
+    @Column(name = "repo_detail_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getRepoDetailsId() {
+    public Long getRepoDetailId() {
         return (Long) get(0);
     }
 
@@ -207,7 +207,7 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
      */
     @Override
     public Field<Long> field1() {
-        return RepoDetailsTable.REPO_DETAILS.REPO_DETAILS_ID;
+        return RepoDetailsTable.REPO_DETAILS.REPO_DETAIL_ID;
     }
 
     /**
@@ -271,7 +271,7 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
      */
     @Override
     public Long value1() {
-        return getRepoDetailsId();
+        return getRepoDetailId();
     }
 
     /**
@@ -335,7 +335,7 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
      */
     @Override
     public RepoDetailsRecord value1(Long value) {
-        setRepoDetailsId(value);
+        setRepoDetailId(value);
         return this;
     }
 
@@ -432,10 +432,10 @@ public class RepoDetailsRecord extends UpdatableRecordImpl<RepoDetailsRecord> im
     /**
      * Create a detached, initialised RepoDetailsRecord
      */
-    public RepoDetailsRecord(Long repoDetailsId, String repoName, Long projectId, Long versionBumperId, String url, String description, Boolean public_, Long securityId) {
+    public RepoDetailsRecord(Long repoDetailId, String repoName, Long projectId, Long versionBumperId, String url, String description, Boolean public_, Long securityId) {
         super(RepoDetailsTable.REPO_DETAILS);
 
-        set(0, repoDetailsId);
+        set(0, repoDetailId);
         set(1, repoName);
         set(2, projectId);
         set(3, versionBumperId);

@@ -33,10 +33,10 @@ import javax.validation.constraints.Size;
 @Table(name = "commit_details", schema = "version_manager_test")
 public class CommitDetails implements Serializable {
 
-    private static final long serialVersionUID = 1664817859;
+    private static final long serialVersionUID = -1108446583;
 
-    private Long    commitDetailsId;
-    private Long    repoDetailsId;
+    private Long    commitDetailId;
+    private Long    repoDetailId;
     private Long    parentCommitId;
     private String  commitId;
     private String  version;
@@ -45,8 +45,8 @@ public class CommitDetails implements Serializable {
     public CommitDetails() {}
 
     public CommitDetails(CommitDetails value) {
-        this.commitDetailsId = value.commitDetailsId;
-        this.repoDetailsId = value.repoDetailsId;
+        this.commitDetailId = value.commitDetailId;
+        this.repoDetailId = value.repoDetailId;
         this.parentCommitId = value.parentCommitId;
         this.commitId = value.commitId;
         this.version = value.version;
@@ -54,15 +54,15 @@ public class CommitDetails implements Serializable {
     }
 
     public CommitDetails(
-        Long    commitDetailsId,
-        Long    repoDetailsId,
+        Long    commitDetailId,
+        Long    repoDetailId,
         Long    parentCommitId,
         String  commitId,
         String  version,
         Instant createdAt
     ) {
-        this.commitDetailsId = commitDetailsId;
-        this.repoDetailsId = repoDetailsId;
+        this.commitDetailId = commitDetailId;
+        this.repoDetailId = repoDetailId;
         this.parentCommitId = parentCommitId;
         this.commitId = commitId;
         this.version = version;
@@ -71,24 +71,24 @@ public class CommitDetails implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "commit_details_id", unique = true, nullable = false, precision = 19)
+    @Column(name = "commit_detail_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getCommitDetailsId() {
-        return this.commitDetailsId;
+    public Long getCommitDetailId() {
+        return this.commitDetailId;
     }
 
-    public void setCommitDetailsId(Long commitDetailsId) {
-        this.commitDetailsId = commitDetailsId;
+    public void setCommitDetailId(Long commitDetailId) {
+        this.commitDetailId = commitDetailId;
     }
 
-    @Column(name = "repo_details_id", nullable = false, precision = 19)
+    @Column(name = "repo_detail_id", nullable = false, precision = 19)
     @NotNull
-    public Long getRepoDetailsId() {
-        return this.repoDetailsId;
+    public Long getRepoDetailId() {
+        return this.repoDetailId;
     }
 
-    public void setRepoDetailsId(Long repoDetailsId) {
-        this.repoDetailsId = repoDetailsId;
+    public void setRepoDetailId(Long repoDetailId) {
+        this.repoDetailId = repoDetailId;
     }
 
     @Column(name = "parent_commit_id", precision = 19)
@@ -135,8 +135,8 @@ public class CommitDetails implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("CommitDetails (");
 
-        sb.append(commitDetailsId);
-        sb.append(", ").append(repoDetailsId);
+        sb.append(commitDetailId);
+        sb.append(", ").append(repoDetailId);
         sb.append(", ").append(parentCommitId);
         sb.append(", ").append(commitId);
         sb.append(", ").append(version);

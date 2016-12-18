@@ -38,23 +38,23 @@ import tech.crom.db.tables.ProjectDetailsTable;
 @Table(name = "project_details", schema = "version_manager_test")
 public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsRecord> implements Record3<Long, String, Long> {
 
-    private static final long serialVersionUID = 475161362;
+    private static final long serialVersionUID = -623239912;
 
     /**
-     * Setter for <code>version_manager_test.project_details.product_details_id</code>.
+     * Setter for <code>version_manager_test.project_details.product_detail_id</code>.
      */
-    public void setProductDetailsId(Long value) {
+    public void setProductDetailId(Long value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.project_details.product_details_id</code>.
+     * Getter for <code>version_manager_test.project_details.product_detail_id</code>.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_details_id", unique = true, nullable = false, precision = 19)
+    @Column(name = "product_detail_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getProductDetailsId() {
+    public Long getProductDetailId() {
         return (Long) get(0);
     }
 
@@ -128,7 +128,7 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
      */
     @Override
     public Field<Long> field1() {
-        return ProjectDetailsTable.PROJECT_DETAILS.PRODUCT_DETAILS_ID;
+        return ProjectDetailsTable.PROJECT_DETAILS.PRODUCT_DETAIL_ID;
     }
 
     /**
@@ -152,7 +152,7 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
      */
     @Override
     public Long value1() {
-        return getProductDetailsId();
+        return getProductDetailId();
     }
 
     /**
@@ -176,7 +176,7 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
      */
     @Override
     public ProjectDetailsRecord value1(Long value) {
-        setProductDetailsId(value);
+        setProductDetailId(value);
         return this;
     }
 
@@ -223,10 +223,10 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
     /**
      * Create a detached, initialised ProjectDetailsRecord
      */
-    public ProjectDetailsRecord(Long productDetailsId, String projectName, Long securityId) {
+    public ProjectDetailsRecord(Long productDetailId, String projectName, Long securityId) {
         super(ProjectDetailsTable.PROJECT_DETAILS);
 
-        set(0, productDetailsId);
+        set(0, productDetailId);
         set(1, projectName);
         set(2, securityId);
     }

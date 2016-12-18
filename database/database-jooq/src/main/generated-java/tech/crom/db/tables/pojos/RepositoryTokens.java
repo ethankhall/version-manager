@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 
 /**
@@ -32,9 +33,10 @@ import javax.validation.constraints.NotNull;
 @Table(name = "repository_tokens", schema = "version_manager_test")
 public class RepositoryTokens implements Serializable {
 
-    private static final long serialVersionUID = -247904100;
+    private static final long serialVersionUID = -223196628;
 
-    private Long    repositoryTokensId;
+    private Long    repositoryTokenId;
+    private String  publicRepoToken;
     private Instant createdAt;
     private Instant expiresAt;
     private Boolean valid;
@@ -43,7 +45,8 @@ public class RepositoryTokens implements Serializable {
     public RepositoryTokens() {}
 
     public RepositoryTokens(RepositoryTokens value) {
-        this.repositoryTokensId = value.repositoryTokensId;
+        this.repositoryTokenId = value.repositoryTokenId;
+        this.publicRepoToken = value.publicRepoToken;
         this.createdAt = value.createdAt;
         this.expiresAt = value.expiresAt;
         this.valid = value.valid;
@@ -51,13 +54,15 @@ public class RepositoryTokens implements Serializable {
     }
 
     public RepositoryTokens(
-        Long    repositoryTokensId,
+        Long    repositoryTokenId,
+        String  publicRepoToken,
         Instant createdAt,
         Instant expiresAt,
         Boolean valid,
         Long    repoId
     ) {
-        this.repositoryTokensId = repositoryTokensId;
+        this.repositoryTokenId = repositoryTokenId;
+        this.publicRepoToken = publicRepoToken;
         this.createdAt = createdAt;
         this.expiresAt = expiresAt;
         this.valid = valid;
@@ -66,14 +71,25 @@ public class RepositoryTokens implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "repository_tokens_id", unique = true, nullable = false, precision = 19)
+    @Column(name = "repository_token_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getRepositoryTokensId() {
-        return this.repositoryTokensId;
+    public Long getRepositoryTokenId() {
+        return this.repositoryTokenId;
     }
 
-    public void setRepositoryTokensId(Long repositoryTokensId) {
-        this.repositoryTokensId = repositoryTokensId;
+    public void setRepositoryTokenId(Long repositoryTokenId) {
+        this.repositoryTokenId = repositoryTokenId;
+    }
+
+    @Column(name = "public_repo_token", unique = true, nullable = false, length = 64)
+    @NotNull
+    @Size(max = 64)
+    public String getPublicRepoToken() {
+        return this.publicRepoToken;
+    }
+
+    public void setPublicRepoToken(String publicRepoToken) {
+        this.publicRepoToken = publicRepoToken;
     }
 
     @Column(name = "created_at", nullable = false)
@@ -117,7 +133,8 @@ public class RepositoryTokens implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("RepositoryTokens (");
 
-        sb.append(repositoryTokensId);
+        sb.append(repositoryTokenId);
+        sb.append(", ").append(publicRepoToken);
         sb.append(", ").append(createdAt);
         sb.append(", ").append(expiresAt);
         sb.append(", ").append(valid);

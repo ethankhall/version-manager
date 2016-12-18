@@ -33,13 +33,13 @@ open class DefaultCommitManager @Autowired constructor(
 
         val createdAt = generatedVersion.createdAt?.toInstant() ?: clock.instant()
         val record = dslContext
-            .insertInto(cd, cd.REPO_DETAILS_ID, cd.PARENT_COMMIT_ID, cd.COMMIT_ID, cd.CREATED_AT, cd.VERSION)
+            .insertInto(cd, cd.REPO_DETAIL_ID, cd.PARENT_COMMIT_ID, cd.COMMIT_ID, cd.CREATED_AT, cd.VERSION)
             .values(cromRepo.repoId, parentCommit?.id, generatedVersion.commitId, createdAt, generatedVersion.version.versionString)
             .returning(cd.fields().toList())
             .fetchOne()
             .into(cd)
 
-        return PersistedCommit(record.commitDetailsId, record.commitId, record.version, createdAt.toZonedDateTime())
+        return PersistedCommit(record.commitDetailId, record.commitId, record.version, record.createdAt.toZonedDateTime())
     }
 
     @Cacheable("commitById", key="#cromRepo.repoId.toString() + #apiCommit.commitId")
@@ -48,7 +48,7 @@ open class DefaultCommitManager @Autowired constructor(
 
         val query = dslContext
             .selectFrom(cd)
-            .where(cd.REPO_DETAILS_ID.eq(cromRepo.repoId))
+            .where(cd.REPO_DETAIL_ID.eq(cromRepo.repoId))
 
         val record: Record
 
@@ -60,7 +60,7 @@ open class DefaultCommitManager @Autowired constructor(
 
         val detailsRecord = record.into(cd)
 
-        return PersistedCommit(detailsRecord.commitDetailsId,
+        return PersistedCommit(detailsRecord.commitDetailId,
             detailsRecord.commitId,
             detailsRecord.version,
             detailsRecord.createdAt.toZonedDateTime())
@@ -72,11 +72,11 @@ open class DefaultCommitManager @Autowired constructor(
 
         val commits = dslContext
             .selectFrom(cd)
-            .where(cd.REPO_DETAILS_ID.eq(cromRepo.repoId))
+            .where(cd.REPO_DETAIL_ID.eq(cromRepo.repoId))
             .fetch()
             .into(cd)
         return commits.map {
-            PersistedCommit(it.commitDetailsId, it.commitId, it.version, it.createdAt.toZonedDateTime())
+            PersistedCommit(it.commitDetailId, it.commitId, it.version, it.createdAt.toZonedDateTime())
         }
     }
 
@@ -91,12 +91,12 @@ open class DefaultCommitManager @Autowired constructor(
         //@formatter:off
         val record = dslContext
             .selectFrom(cd)
-            .where(cd.REPO_DETAILS_ID.eq(cromRepo.repoId).and(cd.COMMIT_ID.`in`(commitIds)))
+            .where(cd.REPO_DETAIL_ID.eq(cromRepo.repoId).and(cd.COMMIT_ID.`in`(commitIds)))
             .orderBy(cd.CREATED_AT.desc())
             .limit(1)
             .fetchOne() ?: return null
 
         val details = record.into(cd)
-        return PersistedCommit(details.commitDetailsId, details.commitId, details.version, details.createdAt.toZonedDateTime())
+        return PersistedCommit(details.commitDetailId, details.commitId, details.version, details.createdAt.toZonedDateTime())
     }
 }

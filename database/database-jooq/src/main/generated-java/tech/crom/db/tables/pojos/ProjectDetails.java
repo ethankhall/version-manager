@@ -32,40 +32,40 @@ import javax.validation.constraints.Size;
 @Table(name = "project_details", schema = "version_manager_test")
 public class ProjectDetails implements Serializable {
 
-    private static final long serialVersionUID = -1047829583;
+    private static final long serialVersionUID = 1308103103;
 
-    private Long   productDetailsId;
+    private Long   productDetailId;
     private String projectName;
     private Long   securityId;
 
     public ProjectDetails() {}
 
     public ProjectDetails(ProjectDetails value) {
-        this.productDetailsId = value.productDetailsId;
+        this.productDetailId = value.productDetailId;
         this.projectName = value.projectName;
         this.securityId = value.securityId;
     }
 
     public ProjectDetails(
-        Long   productDetailsId,
+        Long   productDetailId,
         String projectName,
         Long   securityId
     ) {
-        this.productDetailsId = productDetailsId;
+        this.productDetailId = productDetailId;
         this.projectName = projectName;
         this.securityId = securityId;
     }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_details_id", unique = true, nullable = false, precision = 19)
+    @Column(name = "product_detail_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getProductDetailsId() {
-        return this.productDetailsId;
+    public Long getProductDetailId() {
+        return this.productDetailId;
     }
 
-    public void setProductDetailsId(Long productDetailsId) {
-        this.productDetailsId = productDetailsId;
+    public void setProductDetailId(Long productDetailId) {
+        this.productDetailId = productDetailId;
     }
 
     @Column(name = "project_name", nullable = false, length = 255)
@@ -93,7 +93,7 @@ public class ProjectDetails implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("ProjectDetails (");
 
-        sb.append(productDetailsId);
+        sb.append(productDetailId);
         sb.append(", ").append(projectName);
         sb.append(", ").append(securityId);
 

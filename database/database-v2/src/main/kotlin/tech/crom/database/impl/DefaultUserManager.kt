@@ -62,20 +62,18 @@ open class DefaultUserManager @Autowired constructor(
 
     @CacheEvict("userById", key = "#cromUser.userId")
     override fun changeUserName(cromUser: CromUser, newUserName: String): CromUser {
-        if (userNameExists(newUserName) && cromUser.userName != newUserName) {
+        if (userNameExists(newUserName)) {
             throw UserManager.UsernameAlreadyExists(newUserName)
         }
 
         val userDetails = Tables.USER_DETAILS
-        val user = dslContext
+        dslContext
             .update(userDetails)
             .set(userDetails.USER_NAME, newUserName)
             .where(userDetails.USER_ID.eq(cromUser.userId))
-            .returning(userDetails.fields().toList())
-            .fetchOne()
-            .into(userDetails)
+            .execute()
 
-        return CromUser(user.userId, user.userName, user.name)
+        return findUserDetails(cromUser.userId)!!
     }
 
     @Cacheable("userById", key = "#id")

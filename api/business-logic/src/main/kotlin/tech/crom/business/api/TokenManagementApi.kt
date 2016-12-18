@@ -8,7 +8,7 @@ import tech.crom.model.user.CromUser
 import java.time.ZonedDateTime
 
 interface TokenManagementApi {
-    fun invalidateToken(id: Long, tokenType: TokenType)
+    fun invalidateToken(id: String, tokenType: TokenType)
 
     fun createToken(cromRepo: CromRepo, expiresAt: ZonedDateTime): GeneratedTokenDetails
 

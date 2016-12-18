@@ -20,12 +20,12 @@ open class DefaultWatcherManager @Autowired constructor(
         val size = dslContext.selectCount()
             .from(watcher)
             .where(watcher.USER_ID.eq(cromUser.userId)
-                .and(watcher.PROJECT_DETAILS_ID.eq(cromProject.projectId))
-                .and(watcher.REPO_DETAILS_ID.isNull))
+                .and(watcher.PROJECT_DETAIL_ID.eq(cromProject.projectId))
+                .and(watcher.REPO_DETAIL_ID.isNull))
             .fetchOne(0, Int::class.java)
 
         if(size == 0) {
-            dslContext.insertInto(watcher, watcher.USER_ID, watcher.PROJECT_DETAILS_ID)
+            dslContext.insertInto(watcher, watcher.USER_ID, watcher.PROJECT_DETAIL_ID)
                 .values(cromUser.userId, cromProject.projectId)
                 .execute()
         }
@@ -36,12 +36,12 @@ open class DefaultWatcherManager @Autowired constructor(
         val size = dslContext.selectCount()
             .from(watcher)
             .where(watcher.USER_ID.eq(cromUser.userId)
-                .and(watcher.PROJECT_DETAILS_ID.eq(cromRepo.projectId))
-                .and(watcher.REPO_DETAILS_ID.eq(cromRepo.repoId)))
+                .and(watcher.PROJECT_DETAIL_ID.eq(cromRepo.projectId))
+                .and(watcher.REPO_DETAIL_ID.eq(cromRepo.repoId)))
             .fetchOne(0, Int::class.java)
 
         if(size == 0) {
-            dslContext.insertInto(watcher, watcher.USER_ID, watcher.PROJECT_DETAILS_ID, watcher.REPO_DETAILS_ID)
+            dslContext.insertInto(watcher, watcher.USER_ID, watcher.PROJECT_DETAIL_ID, watcher.REPO_DETAIL_ID)
                 .values(cromUser.userId, cromRepo.projectId, cromRepo.repoId)
                 .execute()
         }
@@ -52,7 +52,7 @@ open class DefaultWatcherManager @Autowired constructor(
         dslContext
             .delete(watcher)
             .where(watcher.USER_ID.eq(cromUser.userId)
-                .and(watcher.PROJECT_DETAILS_ID.eq(cromProject.projectId)))
+                .and(watcher.PROJECT_DETAIL_ID.eq(cromProject.projectId)))
             .execute()
     }
 
@@ -61,8 +61,8 @@ open class DefaultWatcherManager @Autowired constructor(
         dslContext
             .delete(watcher)
             .where(watcher.USER_ID.eq(cromUser.userId)
-                .and(watcher.PROJECT_DETAILS_ID.eq(cromRepo.projectId))
-                .and(watcher.REPO_DETAILS_ID.eq(cromRepo.repoId)))
+                .and(watcher.PROJECT_DETAIL_ID.eq(cromRepo.projectId))
+                .and(watcher.REPO_DETAIL_ID.eq(cromRepo.repoId)))
             .execute()
     }
 
@@ -73,7 +73,7 @@ open class DefaultWatcherManager @Autowired constructor(
             .where(watcher.USER_ID.eq(cromUser.userId))
             .fetch()
             .into(watcher)
-            .map { WatcherManager.UserWatch(it.projectDetailsId, it.repoDetailsId) }
+            .map { WatcherManager.UserWatch(it.projectDetailId, it.repoDetailId) }
     }
 
 }

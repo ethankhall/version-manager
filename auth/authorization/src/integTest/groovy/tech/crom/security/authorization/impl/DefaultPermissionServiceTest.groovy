@@ -73,7 +73,8 @@ class DefaultPermissionServiceTest extends Specification {
         def repo = repoManager.createRepo(project, "name", bumper, "", "", true)
         permissionService.registerRepository(repo)
 
-        SecurityContextHolder.getContext().setAuthentication(new CromUserAuthentication(new CromUser(UUID.randomUUID(), '', '')))
+        def authentication = new CromUserAuthentication(new CromUser(AuthUtils.randomLongGenerator(), '', ''))
+        SecurityContextHolder.getContext().setAuthentication(authentication)
 
         then:
         !permissionService.hasAccessTo(project, CromPermission.ADMIN)
@@ -95,7 +96,7 @@ class DefaultPermissionServiceTest extends Specification {
         def repo = repoManager.createRepo(project, "name", bumper, "", "", true)
         permissionService.registerRepository(repo)
 
-        def newUser = new CromUser(UUID.randomUUID(), '', '')
+        def newUser = new CromUser(AuthUtils.randomLongGenerator(), '', '')
 
         then:
         !permissionService.hasAccessTo(newUser, project, CromPermission.ADMIN)

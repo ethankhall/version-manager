@@ -27,7 +27,7 @@ class UserManagerIntegrationTest extends Specification {
         then:
         userManager.userNameExists('userName')
         userManager.findUserDetails('userName') == user
-        userManager.findUserDetails(user.getUserId) == user
+        userManager.findUserDetails(user.userId) == user
 
         when:
         userManager.createUser('displayName1', 'userName')
@@ -53,6 +53,6 @@ class UserManagerIntegrationTest extends Specification {
         then:
         noExceptionThrown()
         newUserName.userName == 'newUserName'
-        newUserName.getUserId == user.getUserId
+        newUserName.userId == user.userId
     }
 }

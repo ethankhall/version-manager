@@ -9,7 +9,7 @@ import java.time.ZonedDateTime
 class GetTokensResponse(
     @JsonProperty("tokens") val entryList: List<TokenEntryModel>) {
 
-    class TokenEntryModel(@JsonProperty("id") val id: Long,
+    class TokenEntryModel(@JsonProperty("id") val id: String,
                           @JsonProperty("createdAt") val createdAt: ZonedDateTime,
                           @JsonProperty("expiresAt") val expiresAt: ZonedDateTime)
 }

@@ -14,11 +14,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record5;
-import org.jooq.Row5;
+import org.jooq.Record6;
+import org.jooq.Row6;
 import org.jooq.impl.UpdatableRecordImpl;
 
 import tech.crom.db.tables.UserTokensTable;
@@ -37,33 +38,50 @@ import tech.crom.db.tables.UserTokensTable;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
 @Table(name = "user_tokens", schema = "version_manager_test")
-public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> implements Record5<Long, Instant, Instant, Boolean, Long> {
+public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> implements Record6<Long, String, Instant, Instant, Boolean, Long> {
 
-    private static final long serialVersionUID = -598064095;
+    private static final long serialVersionUID = 541141217;
 
     /**
-     * Setter for <code>version_manager_test.user_tokens.user_tokens_id</code>.
+     * Setter for <code>version_manager_test.user_tokens.user_token_id</code>.
      */
-    public void setUserTokensId(Long value) {
+    public void setUserTokenId(Long value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.user_tokens.user_tokens_id</code>.
+     * Getter for <code>version_manager_test.user_tokens.user_token_id</code>.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_tokens_id", unique = true, nullable = false, precision = 19)
+    @Column(name = "user_token_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getUserTokensId() {
+    public Long getUserTokenId() {
         return (Long) get(0);
+    }
+
+    /**
+     * Setter for <code>version_manager_test.user_tokens.public_user_token</code>.
+     */
+    public void setPublicUserToken(String value) {
+        set(1, value);
+    }
+
+    /**
+     * Getter for <code>version_manager_test.user_tokens.public_user_token</code>.
+     */
+    @Column(name = "public_user_token", unique = true, nullable = false, length = 64)
+    @NotNull
+    @Size(max = 64)
+    public String getPublicUserToken() {
+        return (String) get(1);
     }
 
     /**
      * Setter for <code>version_manager_test.user_tokens.created_at</code>.
      */
     public void setCreatedAt(Instant value) {
-        set(1, value);
+        set(2, value);
     }
 
     /**
@@ -71,14 +89,14 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      */
     @Column(name = "created_at", nullable = false)
     public Instant getCreatedAt() {
-        return (Instant) get(1);
+        return (Instant) get(2);
     }
 
     /**
      * Setter for <code>version_manager_test.user_tokens.expires_at</code>.
      */
     public void setExpiresAt(Instant value) {
-        set(2, value);
+        set(3, value);
     }
 
     /**
@@ -86,14 +104,14 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      */
     @Column(name = "expires_at", nullable = false)
     public Instant getExpiresAt() {
-        return (Instant) get(2);
+        return (Instant) get(3);
     }
 
     /**
      * Setter for <code>version_manager_test.user_tokens.valid</code>.
      */
     public void setValid(Boolean value) {
-        set(3, value);
+        set(4, value);
     }
 
     /**
@@ -101,14 +119,14 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      */
     @Column(name = "valid")
     public Boolean getValid() {
-        return (Boolean) get(3);
+        return (Boolean) get(4);
     }
 
     /**
      * Setter for <code>version_manager_test.user_tokens.user_id</code>.
      */
     public void setUserId(Long value) {
-        set(4, value);
+        set(5, value);
     }
 
     /**
@@ -117,7 +135,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
     @Column(name = "user_id", nullable = false, precision = 19)
     @NotNull
     public Long getUserId() {
-        return (Long) get(4);
+        return (Long) get(5);
     }
 
     // -------------------------------------------------------------------------
@@ -133,23 +151,23 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
     }
 
     // -------------------------------------------------------------------------
-    // Record5 type implementation
+    // Record6 type implementation
     // -------------------------------------------------------------------------
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Row5<Long, Instant, Instant, Boolean, Long> fieldsRow() {
-        return (Row5) super.fieldsRow();
+    public Row6<Long, String, Instant, Instant, Boolean, Long> fieldsRow() {
+        return (Row6) super.fieldsRow();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Row5<Long, Instant, Instant, Boolean, Long> valuesRow() {
-        return (Row5) super.valuesRow();
+    public Row6<Long, String, Instant, Instant, Boolean, Long> valuesRow() {
+        return (Row6) super.valuesRow();
     }
 
     /**
@@ -157,15 +175,15 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      */
     @Override
     public Field<Long> field1() {
-        return UserTokensTable.USER_TOKENS.USER_TOKENS_ID;
+        return UserTokensTable.USER_TOKENS.USER_TOKEN_ID;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Field<Instant> field2() {
-        return UserTokensTable.USER_TOKENS.CREATED_AT;
+    public Field<String> field2() {
+        return UserTokensTable.USER_TOKENS.PUBLIC_USER_TOKEN;
     }
 
     /**
@@ -173,6 +191,14 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      */
     @Override
     public Field<Instant> field3() {
+        return UserTokensTable.USER_TOKENS.CREATED_AT;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Field<Instant> field4() {
         return UserTokensTable.USER_TOKENS.EXPIRES_AT;
     }
 
@@ -180,7 +206,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public Field<Boolean> field4() {
+    public Field<Boolean> field5() {
         return UserTokensTable.USER_TOKENS.VALID;
     }
 
@@ -188,7 +214,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public Field<Long> field5() {
+    public Field<Long> field6() {
         return UserTokensTable.USER_TOKENS.USER_ID;
     }
 
@@ -197,15 +223,15 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      */
     @Override
     public Long value1() {
-        return getUserTokensId();
+        return getUserTokenId();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Instant value2() {
-        return getCreatedAt();
+    public String value2() {
+        return getPublicUserToken();
     }
 
     /**
@@ -213,6 +239,14 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      */
     @Override
     public Instant value3() {
+        return getCreatedAt();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Instant value4() {
         return getExpiresAt();
     }
 
@@ -220,7 +254,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public Boolean value4() {
+    public Boolean value5() {
         return getValid();
     }
 
@@ -228,7 +262,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public Long value5() {
+    public Long value6() {
         return getUserId();
     }
 
@@ -237,7 +271,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      */
     @Override
     public UserTokensRecord value1(Long value) {
-        setUserTokensId(value);
+        setUserTokenId(value);
         return this;
     }
 
@@ -245,8 +279,8 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public UserTokensRecord value2(Instant value) {
-        setCreatedAt(value);
+    public UserTokensRecord value2(String value) {
+        setPublicUserToken(value);
         return this;
     }
 
@@ -255,6 +289,15 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      */
     @Override
     public UserTokensRecord value3(Instant value) {
+        setCreatedAt(value);
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UserTokensRecord value4(Instant value) {
         setExpiresAt(value);
         return this;
     }
@@ -263,7 +306,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public UserTokensRecord value4(Boolean value) {
+    public UserTokensRecord value5(Boolean value) {
         setValid(value);
         return this;
     }
@@ -272,7 +315,7 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public UserTokensRecord value5(Long value) {
+    public UserTokensRecord value6(Long value) {
         setUserId(value);
         return this;
     }
@@ -281,12 +324,13 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
      * {@inheritDoc}
      */
     @Override
-    public UserTokensRecord values(Long value1, Instant value2, Instant value3, Boolean value4, Long value5) {
+    public UserTokensRecord values(Long value1, String value2, Instant value3, Instant value4, Boolean value5, Long value6) {
         value1(value1);
         value2(value2);
         value3(value3);
         value4(value4);
         value5(value5);
+        value6(value6);
         return this;
     }
 
@@ -304,13 +348,14 @@ public class UserTokensRecord extends UpdatableRecordImpl<UserTokensRecord> impl
     /**
      * Create a detached, initialised UserTokensRecord
      */
-    public UserTokensRecord(Long userTokensId, Instant createdAt, Instant expiresAt, Boolean valid, Long userId) {
+    public UserTokensRecord(Long userTokenId, String publicUserToken, Instant createdAt, Instant expiresAt, Boolean valid, Long userId) {
         super(UserTokensTable.USER_TOKENS);
 
-        set(0, userTokensId);
-        set(1, createdAt);
-        set(2, expiresAt);
-        set(3, valid);
-        set(4, userId);
+        set(0, userTokenId);
+        set(1, publicUserToken);
+        set(2, createdAt);
+        set(3, expiresAt);
+        set(4, valid);
+        set(5, userId);
     }
 }

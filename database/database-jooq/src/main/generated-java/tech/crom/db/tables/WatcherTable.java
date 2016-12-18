@@ -36,7 +36,7 @@ import tech.crom.db.tables.records.WatcherRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class WatcherTable extends TableImpl<WatcherRecord> {
 
-    private static final long serialVersionUID = 273442428;
+    private static final long serialVersionUID = -460637256;
 
     /**
      * The reference instance of <code>version_manager_test.watcher</code>
@@ -62,14 +62,14 @@ public class WatcherTable extends TableImpl<WatcherRecord> {
     public final TableField<WatcherRecord, Long> USER_ID = createField("user_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
-     * The column <code>version_manager_test.watcher.project_details_id</code>.
+     * The column <code>version_manager_test.watcher.project_detail_id</code>.
      */
-    public final TableField<WatcherRecord, Long> PROJECT_DETAILS_ID = createField("project_details_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<WatcherRecord, Long> PROJECT_DETAIL_ID = createField("project_detail_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
-     * The column <code>version_manager_test.watcher.repo_details_id</code>.
+     * The column <code>version_manager_test.watcher.repo_detail_id</code>.
      */
-    public final TableField<WatcherRecord, Long> REPO_DETAILS_ID = createField("repo_details_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
+    public final TableField<WatcherRecord, Long> REPO_DETAIL_ID = createField("repo_detail_id", org.jooq.impl.SQLDataType.BIGINT, this, "");
 
     /**
      * Create a <code>version_manager_test.watcher</code> table reference

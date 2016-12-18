@@ -32,9 +32,9 @@ import javax.validation.constraints.Size;
 @Table(name = "repo_details", schema = "version_manager_test")
 public class RepoDetails implements Serializable {
 
-    private static final long serialVersionUID = -184366061;
+    private static final long serialVersionUID = 245246897;
 
-    private Long    repoDetailsId;
+    private Long    repoDetailId;
     private String  repoName;
     private Long    projectId;
     private Long    versionBumperId;
@@ -46,7 +46,7 @@ public class RepoDetails implements Serializable {
     public RepoDetails() {}
 
     public RepoDetails(RepoDetails value) {
-        this.repoDetailsId = value.repoDetailsId;
+        this.repoDetailId = value.repoDetailId;
         this.repoName = value.repoName;
         this.projectId = value.projectId;
         this.versionBumperId = value.versionBumperId;
@@ -57,7 +57,7 @@ public class RepoDetails implements Serializable {
     }
 
     public RepoDetails(
-        Long    repoDetailsId,
+        Long    repoDetailId,
         String  repoName,
         Long    projectId,
         Long    versionBumperId,
@@ -66,7 +66,7 @@ public class RepoDetails implements Serializable {
         Boolean public_,
         Long    securityId
     ) {
-        this.repoDetailsId = repoDetailsId;
+        this.repoDetailId = repoDetailId;
         this.repoName = repoName;
         this.projectId = projectId;
         this.versionBumperId = versionBumperId;
@@ -78,14 +78,14 @@ public class RepoDetails implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "repo_details_id", unique = true, nullable = false, precision = 19)
+    @Column(name = "repo_detail_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getRepoDetailsId() {
-        return this.repoDetailsId;
+    public Long getRepoDetailId() {
+        return this.repoDetailId;
     }
 
-    public void setRepoDetailsId(Long repoDetailsId) {
-        this.repoDetailsId = repoDetailsId;
+    public void setRepoDetailId(Long repoDetailId) {
+        this.repoDetailId = repoDetailId;
     }
 
     @Column(name = "repo_name", nullable = false, length = 255)
@@ -162,7 +162,7 @@ public class RepoDetails implements Serializable {
     public String toString() {
         StringBuilder sb = new StringBuilder("RepoDetails (");
 
-        sb.append(repoDetailsId);
+        sb.append(repoDetailId);
         sb.append(", ").append(repoName);
         sb.append(", ").append(projectId);
         sb.append(", ").append(versionBumperId);
