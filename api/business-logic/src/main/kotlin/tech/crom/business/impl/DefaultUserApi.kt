@@ -5,7 +5,6 @@ import tech.crom.business.api.UserApi
 import tech.crom.database.api.UserManager
 import tech.crom.model.user.CromUser
 import tech.crom.model.user.DetailedUser
-import java.util.*
 import javax.transaction.Transactional
 
 @Service
@@ -15,7 +14,7 @@ open class DefaultUserApi(
 ): UserApi {
 
     override fun update(user: CromUser) {
-        val sourceUser = userManager.findUserDetails(user.userUid)!!
+        val sourceUser = userManager.findUserDetails(user.userId)!!
 
         if(user.userName != sourceUser.userName) {
             userManager.changeUserName(sourceUser, user.userName)
@@ -30,8 +29,8 @@ open class DefaultUserApi(
         return userManager.findUserDetails(userName)?.toDetailedUser()
     }
 
-    override fun findUserDetails(uuid: UUID): DetailedUser? {
-        return userManager.findUserDetails(uuid)?.toDetailedUser()
+    override fun findUserDetails(id: Long): DetailedUser? {
+        return userManager.findUserDetails(id)?.toDetailedUser()
     }
 
     fun CromUser.toDetailedUser(): DetailedUser {

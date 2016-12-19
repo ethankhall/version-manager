@@ -27,8 +27,10 @@ open class AclSpringConfig {
     @Bean
     open fun aclService(dataSource: DataSource, lookupStrategy: LookupStrategy, aclCache: AclCache): MutableAclService {
         val jdbcMutableAclService = JdbcMutableAclService(dataSource, lookupStrategy, aclCache)
-        jdbcMutableAclService.setClassIdentityQuery("select currval(pg_get_serial_sequence('acl_class', 'id'))")
-        jdbcMutableAclService.setSidIdentityQuery("select currval(pg_get_serial_sequence('acl_sid', 'id'))")
+//        jdbcMutableAclService.setClassIdentityQuery("select max(ID) from acl_class")
+//        jdbcMutableAclService.setSidIdentityQuery("select max(ID) from acl_sid")
+        jdbcMutableAclService.setClassIdentityQuery("SELECT @@IDENTITY")
+        jdbcMutableAclService.setSidIdentityQuery("SELECT @@IDENTITY")
         return jdbcMutableAclService
     }
 

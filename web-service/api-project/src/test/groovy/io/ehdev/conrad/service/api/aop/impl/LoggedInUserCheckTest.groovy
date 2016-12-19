@@ -7,6 +7,7 @@ import org.springframework.mock.env.MockEnvironment
 import spock.lang.Specification
 import tech.crom.model.security.authorization.CromPermission
 import tech.crom.model.user.CromUser
+import tech.crom.security.authorization.impl.AuthUtils
 import tech.crom.web.api.model.RequestDetails
 import tech.crom.web.api.model.RequestPermissions
 
@@ -37,7 +38,7 @@ class LoggedInUserCheckTest extends Specification {
         thrown(NonUserNotAllowedException)
 
         when:
-        def user = new CromUser(UUID.randomUUID(), 'username', 'display')
+        def user = new CromUser(AuthUtils.randomLongGenerator(), 'username', 'display')
         permissions = new RequestPermissions(CromPermission.NONE, CromPermission.ADMIN, user)
         proxy.doWork(new RequestDetails(null, null, permissions, emptyDetails()))
 

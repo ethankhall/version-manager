@@ -15,6 +15,7 @@ import tech.crom.model.bumper.CromVersionBumper
 import tech.crom.model.commit.impl.PersistedCommit
 import tech.crom.model.repository.CromRepoDetails
 import tech.crom.model.security.authorization.CromPermission
+import tech.crom.security.authorization.impl.AuthUtils
 import tech.crom.version.bumper.impl.atomic.AtomicVersionBumper
 
 import java.time.ZonedDateTime
@@ -56,7 +57,7 @@ class RepoEndpointTest extends Specification {
         def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model)
 
         then:
-        1 * commitApi.findLatestCommit(_, _) >> new PersistedCommit(UUID.randomUUID(), 'commit', '2.3.4', ZonedDateTime.now())
+        1 * commitApi.findLatestCommit(_, _) >> new PersistedCommit(AuthUtils.randomLongGenerator(), 'commit', '2.3.4', ZonedDateTime.now())
 
         history.statusCode == HttpStatus.OK
         history.body.commitId == 'commit'
@@ -65,7 +66,7 @@ class RepoEndpointTest extends Specification {
 
     def 'can get details for repo'() {
         def model = createTestingRepoModel()
-        def versionBumper = new CromVersionBumper(UUID.randomUUID(), 'atomic', 'foo', '', new AtomicVersionBumper())
+        def versionBumper = new CromVersionBumper(AuthUtils.randomLongGenerator(), 'atomic', 'foo', '', new AtomicVersionBumper())
 
         when:
         def details = repoEndpoint.getRepoDetails(model)

@@ -3,22 +3,33 @@ machine:
         version: oraclejdk8
     services:
         - docker
-        - postgresql
+        - mysql
     node:
         version: 7.2.1 
     environment:
-        SPRING_DATASOURCE_URL: jdbc:postgresql://localhost/circle_test
-        SPRING_DATASOURCE_USERNAME: ubuntu
-        SPRING_DATASOURCE_PASSWORD:
+        SPRING_DATASOURCE_URL: jdbc:mysql://localhost/circle_test
+        SPRING_DATASOURCE_USERNAME: root
+        SPRING_DATASOURCE_PASSWORD: password
+        SPRING_DATASOURCE_DBNAME: circle_test
+    pre:
+        # Stop the preinstalled MySQL 5.6
+        - sudo service mysql stop
 
 dependencies:
+    pre:
+        - >
+          docker run
+          --detach
+          --name mysql
+          --publish 3306:3306
+          --env MYSQL_ALLOW_EMPTY_PASSWORD='yes'
+          --env MYSQL_DATABASE=circle_test
+          --env MYSQL_ROOT_PASSWORD=password
+          mysql:5.7.11
+          ; sleep 10
     override:
         - ./gradlew resolveDependencies --console=plain
         - bin/fix-ci-vm.sh
-
-database:
-    pre:
-        - psql -U ubuntu circle_test --command 'CREATE EXTENSION "uuid-ossp";'
 
 test:
     override:

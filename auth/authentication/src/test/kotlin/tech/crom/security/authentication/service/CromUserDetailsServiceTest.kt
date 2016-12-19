@@ -9,7 +9,6 @@ import org.jetbrains.spek.api.dsl.it
 import org.springframework.security.core.userdetails.UsernameNotFoundException
 import tech.crom.database.api.UserManager
 import tech.crom.security.authentication.createUser
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
@@ -22,8 +21,8 @@ class CromUserDetailsServiceTest: Spek({
         it("will throw when userid is bad") {
 
             assertFailsWith(UsernameNotFoundException::class) {
-                whenever(userManager.findUserDetails(any<UUID>())).thenReturn(null)
-                uds.loadUserByUserId(UUID.randomUUID().toString())
+                whenever(userManager.findUserDetails(any<Long>())).thenReturn(null)
+                uds.loadUserByUserId(Math.random().toLong().toString())
             }
 
             assertFailsWith(UsernameNotFoundException::class) {
@@ -34,11 +33,11 @@ class CromUserDetailsServiceTest: Spek({
 
         it("will respond when asked for user by loadUserByUserId") {
             val cromUser = createUser()
-            whenever(userManager.findUserDetails(any<UUID>())).thenReturn(cromUser)
+            whenever(userManager.findUserDetails(any<Long>())).thenReturn(cromUser)
 
-            val loadedUser = uds.loadUserByUserId(cromUser.userUid.toString())
+            val loadedUser = uds.loadUserByUserId(cromUser.userId.toString())
             assertNotNull(loadedUser)
-            assertEquals(cromUser.userUid.toString(), loadedUser.userId)
+            assertEquals(cromUser.userId.toString(), loadedUser.userId)
         }
 
         it("will respond when asked for user by loadUserByUsername") {

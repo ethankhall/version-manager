@@ -28,10 +28,10 @@ data class CromUserAuthentication(val user: CromUser): CromAuthentication {
 
     override fun getPrincipal(): CromUser = user
 
-    override fun getUniqueId(): String = user.userUid.toString()
+    override fun getUniqueId(): String = user.userId.toString()
 
     data class SecurityCromUser(val cromUser: CromUser): UserDetails, SocialUserDetails {
-        override fun getUserId(): String = cromUser.userUid.toString()
+        override fun getUserId(): String = cromUser.userId.toString()
 
         override fun getUsername(): String = cromUser.userName
 

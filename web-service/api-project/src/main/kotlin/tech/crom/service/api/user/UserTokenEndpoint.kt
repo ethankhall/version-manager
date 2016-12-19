@@ -16,7 +16,6 @@ import tech.crom.model.token.TokenType
 import tech.crom.web.api.model.RequestDetails
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
-import java.util.*
 
 
 @Controller
@@ -28,7 +27,7 @@ open class UserTokenEndpoint @Autowired constructor(
     @LoggedInUserRequired
     @RequestMapping(value = "/{tokenId}", method = arrayOf(RequestMethod.DELETE))
     open fun deleteToken(requestDetails: RequestDetails, @PathVariable("tokenId") tokenId: String): ResponseEntity<*> {
-        tokenManagementApi.invalidateToken(UUID.fromString(tokenId), TokenType.USER)
+        tokenManagementApi.invalidateToken(tokenId, TokenType.USER)
         return ResponseEntity<Any>(HttpStatus.OK)
     }
 

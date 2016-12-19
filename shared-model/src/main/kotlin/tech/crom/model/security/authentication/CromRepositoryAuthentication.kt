@@ -27,7 +27,7 @@ data class CromRepositoryAuthentication(val source: CromRepo): CromAuthenticatio
 
     override fun getPrincipal(): CromRepo = source
 
-    override fun getUniqueId(): String = source.repoUid.toString()
+    override fun getUniqueId(): String = source.repoId.toString()
 
     data class SecurityCromRepo(val cromRepo: CromRepo): UserDetails {
 

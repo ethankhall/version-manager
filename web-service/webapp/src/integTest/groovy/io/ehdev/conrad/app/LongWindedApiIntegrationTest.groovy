@@ -3,7 +3,6 @@ package io.ehdev.conrad.app
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import groovy.transform.TupleConstructor
-import io.ehdev.conrad.db.tables.*
 import org.apache.commons.lang3.StringUtils
 import org.apache.http.StatusLine
 import org.apache.http.client.fluent.Request
@@ -20,8 +19,10 @@ import spock.lang.Specification
 import spock.lang.Stepwise
 import tech.crom.business.api.TokenManagementApi
 import tech.crom.database.api.UserManager
+import tech.crom.db.tables.*
 import tech.crom.model.token.GeneratedTokenDetails
 import tech.crom.model.user.CromUser
+import tech.crom.security.authorization.impl.AuthUtils
 
 import java.time.ZonedDateTime
 
@@ -58,23 +59,27 @@ class LongWindedApiIntegrationTest extends Specification {
 
         expect:
         //Make sure this is only running on local boxes
-        datasourceUrl.startsWith('jdbc:postgresql://172.0.1.100') || datasourceUrl.startsWith('jdbc:postgresql://localhost')
+        datasourceUrl.startsWith('jdbc:mysql://localhost') || datasourceUrl.startsWith('jdbc:mysql://127.0.0.1')
+
+        context.execute("SET FOREIGN_KEY_CHECKS = 0") == 0
 
         [AclEntryTable, AclObjectIdentityTable, AclClassTable, AclSidTable].each {
-            context.truncate(it.newInstance()).cascade().execute()
+            context.truncate(it.newInstance()).execute()
         }
 
         [UserTokensTable, UserDetailsTable].each {
-            context.truncate(it.newInstance()).cascade().execute()
+            context.truncate(it.newInstance()).execute()
         }
 
         [SsUserconnectionTable].each {
-            context.truncate(it.newInstance()).cascade().execute()
+            context.truncate(it.newInstance()).execute()
         }
 
         [CommitMetadataTable, CommitDetailsTable, RepositoryTokensTable, RepoDetailsTable, ProjectDetailsTable].each {
-            context.truncate(it.newInstance()).cascade().execute()
+            context.truncate(it.newInstance()).execute()
         }
+
+        context.execute("SET FOREIGN_KEY_CHECKS = 1") == 0
     }
 
     def 'create users for test'() {
@@ -96,6 +101,9 @@ class LongWindedApiIntegrationTest extends Specification {
         userContainer1.user
         userContainer2.tokenDetails
         userContainer2.user
+
+        println userContainer1.tokenDetails
+        println userContainer2.tokenDetails
     }
 
     def 'create a project for each user'() {
@@ -295,8 +303,8 @@ class LongWindedApiIntegrationTest extends Specification {
         when:
         def content = ["scmUrl": "git@github.com:foo/bar.git", "bumper": "semver", "history": [
             [
-                "commitId" : "0",
-                "version"  : "0.0.1"
+                "commitId": "0",
+                "version" : "0.0.1"
 
             ],
             [
@@ -358,6 +366,16 @@ class LongWindedApiIntegrationTest extends Specification {
         then:
         response.statusLine.statusCode == 201
         response.content.commitId == '2'
+        response.content.version == '1.0.1'
+
+        when:
+        body = ['commits': ['2', '1', '0']]
+        response = makePostRequest('api/v1/project/repoUser1/repo/repo1/search/version', body, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
+        response.content.commitId == "2"
+        response.content.postfix == null
         response.content.version == '1.0.1'
 
         when:
@@ -446,7 +464,7 @@ class LongWindedApiIntegrationTest extends Specification {
 
         //can use new token to access api's
         when:
-        def token = new GeneratedTokenDetails(UUID.randomUUID(), ZonedDateTime.now(), ZonedDateTime.now(), response.content.authToken)
+        def token = new GeneratedTokenDetails(UUID.randomUUID().toString(), ZonedDateTime.now(), ZonedDateTime.now(), response.content.authToken)
         def container = new UserContainer(null, token)
 
         def body = ["commits": ['4', '3', '2', '1'], "message": "bla", "commitId": "5"]
@@ -519,7 +537,7 @@ class LongWindedApiIntegrationTest extends Specification {
 
         then:
         response.statusLine.statusCode == 200
-        (response.content.tokens as List).any { it.id == userContainer1.tokenDetails.id.toString() }
+        (response.content.tokens as List).any { it.id == userContainer1.tokenDetails.id }
 
         when:
         def createdResponse = makePostRequest('api/v1/user/tokens', [:], userContainer1)
@@ -533,7 +551,7 @@ class LongWindedApiIntegrationTest extends Specification {
 
         then:
         response.statusLine.statusCode == 200
-        (response.content.tokens as List).any { it.id == userContainer1.tokenDetails.id.toString() }
+        (response.content.tokens as List).any { it.id == userContainer1.tokenDetails.id }
         (response.content.tokens as List).any { it.id == createdResponse.content.id }
 
         when:
@@ -547,7 +565,7 @@ class LongWindedApiIntegrationTest extends Specification {
 
         then:
         response.statusLine.statusCode == 200
-        (response.content.tokens as List).any { it.id == userContainer1.tokenDetails.id.toString() }
+        (response.content.tokens as List).any { it.id == userContainer1.tokenDetails.id }
         !(response.content.tokens as List).any { it.id == createdResponse.content.id }
     }
 

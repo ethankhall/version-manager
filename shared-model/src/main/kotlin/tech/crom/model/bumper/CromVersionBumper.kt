@@ -3,9 +3,8 @@ package tech.crom.model.bumper
 import tech.crom.model.commit.VersionDetails
 import tech.crom.model.commit.impl.RealizedCommit
 import tech.crom.model.commit.impl.RequestedCommit
-import java.util.*
 
-data class CromVersionBumper(val bumperUuid: UUID,
+data class CromVersionBumper(val bumperId: Long,
                              val bumperName: String,
                              val className: String,
                              val description: String,

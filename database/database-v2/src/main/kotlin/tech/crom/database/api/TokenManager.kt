@@ -4,7 +4,6 @@ import tech.crom.model.repository.CromRepo
 import tech.crom.model.token.TokenType
 import tech.crom.model.user.CromUser
 import java.time.ZonedDateTime
-import java.util.*
 
 interface TokenManager {
 
@@ -21,18 +20,21 @@ interface TokenManager {
     /**
      * is token valid
      */
-    fun getTokenData(tokenUid: UUID, tokenType: TokenType): UderlyingTokenDetails?
+    fun getTokenData(id: String, tokenType: TokenType): UderlyingTokenDetails?
 
     /**
      * Kill a token
      */
-    fun invalidateToken(uid: UUID, tokenType: TokenType)
+    fun invalidateToken(id: String, tokenType: TokenType)
 
-    fun findTokens(resourceUid: UUID, tokenType: TokenType): List<TokenDetails>
+    fun findTokens(cromRepo: CromRepo): List<TokenDetails>
 
-    data class UderlyingTokenDetails(val linkedUid: UUID, val tokenType: TokenType)
+    fun findTokens(cromUser: CromUser): List<TokenDetails>
 
-    data class TokenDetails(val uuid: UUID,
+    data class UderlyingTokenDetails(val linkedId: Long, val privateId: Long, val tokenType: TokenType)
+
+    data class TokenDetails(val id: Long,
+                            val publicId: String,
                             val createDate: ZonedDateTime,
                             val expiresAt: ZonedDateTime,
                             val valid: Boolean,

@@ -1,7 +1,6 @@
 package tech.crom.database.api
 
 import tech.crom.model.user.CromUser
-import java.util.*
 
 interface UserManager {
 
@@ -11,7 +10,7 @@ interface UserManager {
     @Throws(UsernameAlreadyExists::class)
     fun changeUserName(cromUser: CromUser, newUserName: String): CromUser
 
-    fun findUserDetails(uuid: UUID): CromUser?
+    fun findUserDetails(id: Long): CromUser?
 
     fun findUserDetails(userName: String): CromUser?
 

@@ -155,7 +155,7 @@
             "org.thymeleaf.extras:thymeleaf-extras-springsecurity4:2.1.2.RELEASE"
         ],
         "database": [
-            "org.postgresql:postgresql:9.4.1207.jre7",
+            "mysql:mysql-connector-java:6.0.5",
             "com.zaxxer:HikariCP:2.4.1",
             "org.jooq:jooq",
             "org.jooq:jooq-meta",

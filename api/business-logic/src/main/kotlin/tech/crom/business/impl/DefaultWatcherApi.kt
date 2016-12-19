@@ -35,8 +35,8 @@ open class DefaultWatcherApi @Autowired constructor(
 
     override fun getWatches(cromUser: CromUser): List<WatcherApi.WatcherDetails> {
         return watcherManager.getWatches(cromUser).map {
-            val project = projectManager.findProject(it.projectUuid)!!
-            val repo = if(it.repoUuid != null) repoManager.findRepo(it.repoUuid!!) else null
+            val project = projectManager.findProject(it.projectId)!!
+            val repo = if(it.repoId != null) repoManager.findRepo(it.repoId!!) else null
             WatcherApi.WatcherDetails(project, repo)
         }
     }

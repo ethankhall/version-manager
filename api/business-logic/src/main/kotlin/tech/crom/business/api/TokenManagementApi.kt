@@ -6,10 +6,9 @@ import tech.crom.model.token.RetrievedTokenDetails
 import tech.crom.model.token.TokenType
 import tech.crom.model.user.CromUser
 import java.time.ZonedDateTime
-import java.util.*
 
 interface TokenManagementApi {
-    fun invalidateToken(id: UUID, tokenType: TokenType)
+    fun invalidateToken(id: String, tokenType: TokenType)
 
     fun createToken(cromRepo: CromRepo, expiresAt: ZonedDateTime): GeneratedTokenDetails
 

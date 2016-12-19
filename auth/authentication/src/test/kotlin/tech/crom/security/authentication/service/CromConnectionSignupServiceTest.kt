@@ -30,7 +30,7 @@ class CromConnectionSignupServiceTest: Spek({
             whenever(connection.fetchUserProfile()).thenReturn(userProfile)
             whenever(userManager.createUser(any(), any())).thenReturn(user)
 
-            assertEquals(signupService.execute(connection), user.userUid.toString())
+            assertEquals(signupService.execute(connection), user.userId.toString())
 
             verify(userManager, VerificationModeFactory.times(3)).userNameExists(any())
         }

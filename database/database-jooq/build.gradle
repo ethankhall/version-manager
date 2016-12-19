@@ -47,20 +47,25 @@ def createLibraryXml = task createLibraryXml {
                 }
                 generator() {
                     database() {
-                        bnd.name('org.jooq.util.postgres.PostgresDatabase')
+                        bnd.name('org.jooq.util.mysql.MySQLDatabase')
                         excludes('schema_version')
-                        inputSchema('public')
+                        inputSchema('version_manager_test')
                         customTypes() {
                             customType() {
                                 bnd.name("Instant")
                                 type('java.time.Instant')
-                                converter('io.ehdev.conrad.db.converter.TimestampConverter')
+                                converter('tech.crom.db.converter.TimestampConverter')
                             }
                         }
                         forcedTypes() {
                             forcedType() {
                                 bnd.name('Instant')
-                                types('timestamp\\ with\\ time\\ zone')
+                                types('timestamp')
+                            }
+
+                            forcedType() {
+                                bnd.name('Boolean')
+                                types('tinyint')
                             }
                         }
                     }
@@ -83,7 +88,7 @@ def createLibraryXml = task createLibraryXml {
                         }
                     }
                     target() {
-                        packageName('io.ehdev.conrad.db')
+                        packageName('tech.crom.db')
                         directory(ext.outputDir.absolutePath)
                     }
                 }
