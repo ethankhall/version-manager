@@ -41,6 +41,7 @@ open class DatabaseConfig {
         config.jdbcUrl = environment!!.getRequiredProperty("spring.datasource.url")
         config.username = environment!!.getRequiredProperty("spring.datasource.username")
         config.password = environment!!.getRequiredProperty("spring.datasource.password")
+        config.catalog = environment!!.getRequiredProperty("spring.datasource.dbname")
         config.leakDetectionThreshold = 2000
         config.metricRegistry = metricRegistry
         return TransactionAwareDataSourceProxy(HikariDataSource(config))
