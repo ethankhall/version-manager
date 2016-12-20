@@ -1,4 +1,4 @@
-package io.ehdev.conrad.app;
+package tech.crom.webapp.app;
 
 import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
@@ -27,7 +27,7 @@ import tech.crom.version.bumper.config.VersionBumperConfig;
 @Import({DatabaseConfig.class, ClockConfig.class, SharedMasterConfig.class, SpringTransactionProvider.class,
     VersionBumperConfig.class, BuisnessLogicConfig.class, AuthorizationConfig.class, AuthenticationConfig.class,
     ServiceApiConfig.class, StorageConfig.class})
-@ComponentScan({"io.ehdev.conrad.app", "tech.crom.webapp.endpoint"})
+@ComponentScan({"tech.crom.webapp.app", "tech.crom.webapp.endpoint"})
 @EnableAutoConfiguration
 public class MainApplication {
 

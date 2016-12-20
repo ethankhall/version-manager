@@ -1,4 +1,4 @@
-package io.ehdev.conrad.app
+package tech.crom.webapp.app
 
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
@@ -22,7 +22,6 @@ import tech.crom.database.api.UserManager
 import tech.crom.db.tables.*
 import tech.crom.model.token.GeneratedTokenDetails
 import tech.crom.model.user.CromUser
-import tech.crom.security.authorization.impl.AuthUtils
 
 import java.time.ZonedDateTime
 
