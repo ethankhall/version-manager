@@ -74,7 +74,11 @@ class LongWindedApiIntegrationTest extends Specification {
             context.truncate(it.newInstance()).execute()
         }
 
-        [CommitMetadataTable, CommitDetailsTable, RepositoryTokensTable, RepoDetailsTable, ProjectDetailsTable].each {
+        [CommitMetadataTable, CommitDetailsTable, RepositoryTokensTable, RepoDetailsTable].each {
+            context.truncate(it.newInstance()).execute()
+        }
+
+        [ProjectDetailsTable, ProjectDetailTrackerTable].each {
             context.truncate(it.newInstance()).execute()
         }
 
@@ -125,6 +129,12 @@ class LongWindedApiIntegrationTest extends Specification {
         then:
         response.statusLine.statusCode == 201
         response.content.name == 'repoUser2'
+
+        when:
+        response = makePostRequest("api/v1/project/repoUser2", null, userContainer2)
+
+        then:
+        response.statusLine.statusCode == 409
     }
 
     def 'get response from each repo'() {
@@ -602,6 +612,68 @@ class LongWindedApiIntegrationTest extends Specification {
         response.statusLine.statusCode == 406
         response.content.errorCode == 'UP-002'
         response.content.message == 'Username already exists.'
+    }
+
+    def 'cannot make more than 10 projects'() {
+        when:
+        def response = makePostRequest("api/v1/project/testProject1", null, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+
+        when:
+        response = makePostRequest("api/v1/project/testProject2", null, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+
+        when:
+        response = makePostRequest("api/v1/project/testProject3", null, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+
+        when:
+        response = makePostRequest("api/v1/project/testProject4", null, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+
+        when:
+        response = makePostRequest("api/v1/project/testProject5", null, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+
+        when:
+        response = makePostRequest("api/v1/project/testProject6", null, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+
+        when:
+        response = makePostRequest("api/v1/project/testProject7", null, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+
+        when:
+        response = makePostRequest("api/v1/project/testProject8", null, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+
+        when:
+        response = makePostRequest("api/v1/project/testProject9", null, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 201
+
+        when:
+        response = makePostRequest("api/v1/project/testProject10", null, userContainer1)
+
+        then:
+        response.statusLine.statusCode == 409
     }
 
     def doDelete(String endpoint, UserContainer container) {

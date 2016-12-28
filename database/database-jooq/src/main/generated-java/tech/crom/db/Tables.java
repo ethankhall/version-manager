@@ -4,23 +4,9 @@
 package tech.crom.db;
 
 
-import javax.annotation.Generated;
+import tech.crom.db.tables.*;
 
-import tech.crom.db.tables.AclClassTable;
-import tech.crom.db.tables.AclEntryTable;
-import tech.crom.db.tables.AclObjectIdentityTable;
-import tech.crom.db.tables.AclSidTable;
-import tech.crom.db.tables.CommitDetailsTable;
-import tech.crom.db.tables.CommitMetadataTable;
-import tech.crom.db.tables.ProjectDetailsTable;
-import tech.crom.db.tables.RepoDetailsTable;
-import tech.crom.db.tables.RepositoryTokensTable;
-import tech.crom.db.tables.SecurityIdSeqTable;
-import tech.crom.db.tables.SsUserconnectionTable;
-import tech.crom.db.tables.UserDetailsTable;
-import tech.crom.db.tables.UserTokensTable;
-import tech.crom.db.tables.VersionBumpersTable;
-import tech.crom.db.tables.WatcherTable;
+import javax.annotation.Generated;
 
 
 /**
@@ -70,6 +56,11 @@ public class Tables {
      * The table <code>version_manager_test.project_details</code>.
      */
     public static final ProjectDetailsTable PROJECT_DETAILS = tech.crom.db.tables.ProjectDetailsTable.PROJECT_DETAILS;
+
+    /**
+     * The table <code>version_manager_test.project_detail_tracker</code>.
+     */
+    public static final ProjectDetailTrackerTable PROJECT_DETAIL_TRACKER = tech.crom.db.tables.ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER;
 
     /**
      * The table <code>version_manager_test.repository_tokens</code>.

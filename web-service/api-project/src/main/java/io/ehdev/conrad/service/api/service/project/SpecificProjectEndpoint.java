@@ -50,11 +50,10 @@ public class SpecificProjectEndpoint {
     }
 
 
-    @Transactional
     @LoggedInUserRequired
     @ProjectRequired(exists = false)
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<CreateProjectRequest> createProject(RequestDetails container,
+    public ResponseEntity<Object> createProject(RequestDetails container,
                                                               HttpServletRequest request) {
         try {
             CromProject project = projectApi.createProject(
@@ -65,6 +64,8 @@ public class SpecificProjectEndpoint {
             return ResponseEntity.created(URI.create(request.getRequestURL().toString())).body(createProjectModel);
         } catch (ProjectManager.ProjectAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
+        } catch (ProjectManager.TooManyProjectsException e) {
+            return new ResponseEntity<>(e.toReason(), HttpStatus.CONFLICT);
         }
     }
 

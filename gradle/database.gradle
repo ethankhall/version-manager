@@ -3,7 +3,7 @@ ext {
 }
 
 database.driver = 'com.mysql.cj.jdbc.Driver'
-database.url = System.getenv('SPRING_DATASOURCE_URL') ?:'jdbc:mysql://127.0.0.1:13306/version_manager_test?verifyServerCertificate=false&useSSL=true'
+database.url = System.getenv('SPRING_DATASOURCE_URL') ?:'jdbc:mysql://127.0.0.1:3306/version_manager_test?verifyServerCertificate=false&useSSL=true'
 database.user = System.getenv('SPRING_DATASOURCE_USERNAME') ?: 'root'
 database.password = System.getenv('SPRING_DATASOURCE_PASSWORD') ?: 'password'
 database.name = System.getenv('SPRING_DATASOURCE_DBNAME') ?: 'version_manager_test'

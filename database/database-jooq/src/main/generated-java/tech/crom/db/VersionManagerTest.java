@@ -20,6 +20,7 @@ import tech.crom.db.tables.AclObjectIdentityTable;
 import tech.crom.db.tables.AclSidTable;
 import tech.crom.db.tables.CommitDetailsTable;
 import tech.crom.db.tables.CommitMetadataTable;
+import tech.crom.db.tables.ProjectDetailTrackerTable;
 import tech.crom.db.tables.ProjectDetailsTable;
 import tech.crom.db.tables.RepoDetailsTable;
 import tech.crom.db.tables.RepositoryTokensTable;
@@ -44,7 +45,7 @@ import tech.crom.db.tables.WatcherTable;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class VersionManagerTest extends SchemaImpl {
 
-    private static final long serialVersionUID = 322232330;
+    private static final long serialVersionUID = 716536908;
 
     /**
      * The reference instance of <code>version_manager_test</code>
@@ -85,6 +86,11 @@ public class VersionManagerTest extends SchemaImpl {
      * The table <code>version_manager_test.project_details</code>.
      */
     public final ProjectDetailsTable PROJECT_DETAILS = tech.crom.db.tables.ProjectDetailsTable.PROJECT_DETAILS;
+
+    /**
+     * The table <code>version_manager_test.project_detail_tracker</code>.
+     */
+    public final ProjectDetailTrackerTable PROJECT_DETAIL_TRACKER = tech.crom.db.tables.ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER;
 
     /**
      * The table <code>version_manager_test.repository_tokens</code>.
@@ -158,6 +164,7 @@ public class VersionManagerTest extends SchemaImpl {
             CommitDetailsTable.COMMIT_DETAILS,
             CommitMetadataTable.COMMIT_METADATA,
             ProjectDetailsTable.PROJECT_DETAILS,
+            ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER,
             RepositoryTokensTable.REPOSITORY_TOKENS,
             RepoDetailsTable.REPO_DETAILS,
             SecurityIdSeqTable.SECURITY_ID_SEQ,

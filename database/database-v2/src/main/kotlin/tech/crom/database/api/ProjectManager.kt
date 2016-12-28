@@ -17,4 +17,9 @@ interface ProjectManager {
     fun deleteProject(project: CromProject)
 
     class ProjectAlreadyExistsException(name: String): RuntimeException("Project $name already exists")
+    class TooManyProjectsException(val username: String): RuntimeException() {
+        fun toReason(): Map<String, String> {
+            return mapOf(Pair(username, "There are more than 10 projects, you can't have more than 10"))
+        }
+    }
 }

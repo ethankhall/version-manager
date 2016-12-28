@@ -18,6 +18,7 @@ import tech.crom.db.tables.AclObjectIdentityTable;
 import tech.crom.db.tables.AclSidTable;
 import tech.crom.db.tables.CommitDetailsTable;
 import tech.crom.db.tables.CommitMetadataTable;
+import tech.crom.db.tables.ProjectDetailTrackerTable;
 import tech.crom.db.tables.ProjectDetailsTable;
 import tech.crom.db.tables.RepoDetailsTable;
 import tech.crom.db.tables.RepositoryTokensTable;
@@ -33,6 +34,7 @@ import tech.crom.db.tables.records.AclObjectIdentityRecord;
 import tech.crom.db.tables.records.AclSidRecord;
 import tech.crom.db.tables.records.CommitDetailsRecord;
 import tech.crom.db.tables.records.CommitMetadataRecord;
+import tech.crom.db.tables.records.ProjectDetailTrackerRecord;
 import tech.crom.db.tables.records.ProjectDetailsRecord;
 import tech.crom.db.tables.records.RepoDetailsRecord;
 import tech.crom.db.tables.records.RepositoryTokensRecord;
@@ -69,6 +71,7 @@ public class Keys {
     public static final Identity<CommitDetailsRecord, Long> IDENTITY_COMMIT_DETAILS = Identities0.IDENTITY_COMMIT_DETAILS;
     public static final Identity<CommitMetadataRecord, Long> IDENTITY_COMMIT_METADATA = Identities0.IDENTITY_COMMIT_METADATA;
     public static final Identity<ProjectDetailsRecord, Long> IDENTITY_PROJECT_DETAILS = Identities0.IDENTITY_PROJECT_DETAILS;
+    public static final Identity<ProjectDetailTrackerRecord, Long> IDENTITY_PROJECT_DETAIL_TRACKER = Identities0.IDENTITY_PROJECT_DETAIL_TRACKER;
     public static final Identity<RepositoryTokensRecord, Long> IDENTITY_REPOSITORY_TOKENS = Identities0.IDENTITY_REPOSITORY_TOKENS;
     public static final Identity<RepoDetailsRecord, Long> IDENTITY_REPO_DETAILS = Identities0.IDENTITY_REPO_DETAILS;
     public static final Identity<SecurityIdSeqRecord, Long> IDENTITY_SECURITY_ID_SEQ = Identities0.IDENTITY_SECURITY_ID_SEQ;
@@ -92,6 +95,7 @@ public class Keys {
     public static final UniqueKey<CommitDetailsRecord> KEY_COMMIT_DETAILS_PRIMARY = UniqueKeys0.KEY_COMMIT_DETAILS_PRIMARY;
     public static final UniqueKey<CommitMetadataRecord> KEY_COMMIT_METADATA_PRIMARY = UniqueKeys0.KEY_COMMIT_METADATA_PRIMARY;
     public static final UniqueKey<ProjectDetailsRecord> KEY_PROJECT_DETAILS_PRIMARY = UniqueKeys0.KEY_PROJECT_DETAILS_PRIMARY;
+    public static final UniqueKey<ProjectDetailTrackerRecord> KEY_PROJECT_DETAIL_TRACKER_PRIMARY = UniqueKeys0.KEY_PROJECT_DETAIL_TRACKER_PRIMARY;
     public static final UniqueKey<RepositoryTokensRecord> KEY_REPOSITORY_TOKENS_PRIMARY = UniqueKeys0.KEY_REPOSITORY_TOKENS_PRIMARY;
     public static final UniqueKey<RepositoryTokensRecord> KEY_REPOSITORY_TOKENS_PUBLIC_REPO_TOKEN = UniqueKeys0.KEY_REPOSITORY_TOKENS_PUBLIC_REPO_TOKEN;
     public static final UniqueKey<RepoDetailsRecord> KEY_REPO_DETAILS_PRIMARY = UniqueKeys0.KEY_REPO_DETAILS_PRIMARY;
@@ -119,6 +123,8 @@ public class Keys {
     public static final ForeignKey<CommitMetadataRecord, ProjectDetailsRecord> COMMIT_METADATA_IBFK_2 = ForeignKeys0.COMMIT_METADATA_IBFK_2;
     public static final ForeignKey<CommitMetadataRecord, RepoDetailsRecord> COMMIT_METADATA_IBFK_3 = ForeignKeys0.COMMIT_METADATA_IBFK_3;
     public static final ForeignKey<ProjectDetailsRecord, SecurityIdSeqRecord> PROJECT_DETAILS_IBFK_1 = ForeignKeys0.PROJECT_DETAILS_IBFK_1;
+    public static final ForeignKey<ProjectDetailTrackerRecord, ProjectDetailsRecord> PROJECT_DETAIL_TRACKER_IBFK_1 = ForeignKeys0.PROJECT_DETAIL_TRACKER_IBFK_1;
+    public static final ForeignKey<ProjectDetailTrackerRecord, UserDetailsRecord> PROJECT_DETAIL_TRACKER_IBFK_2 = ForeignKeys0.PROJECT_DETAIL_TRACKER_IBFK_2;
     public static final ForeignKey<RepositoryTokensRecord, RepoDetailsRecord> REPOSITORY_TOKENS_IBFK_1 = ForeignKeys0.REPOSITORY_TOKENS_IBFK_1;
     public static final ForeignKey<RepoDetailsRecord, ProjectDetailsRecord> REPO_DETAILS_IBFK_1 = ForeignKeys0.REPO_DETAILS_IBFK_1;
     public static final ForeignKey<RepoDetailsRecord, VersionBumpersRecord> REPO_DETAILS_IBFK_2 = ForeignKeys0.REPO_DETAILS_IBFK_2;
@@ -140,6 +146,7 @@ public class Keys {
         public static Identity<CommitDetailsRecord, Long> IDENTITY_COMMIT_DETAILS = createIdentity(CommitDetailsTable.COMMIT_DETAILS, CommitDetailsTable.COMMIT_DETAILS.COMMIT_DETAIL_ID);
         public static Identity<CommitMetadataRecord, Long> IDENTITY_COMMIT_METADATA = createIdentity(CommitMetadataTable.COMMIT_METADATA, CommitMetadataTable.COMMIT_METADATA.COMMIT_METADATA_ID);
         public static Identity<ProjectDetailsRecord, Long> IDENTITY_PROJECT_DETAILS = createIdentity(ProjectDetailsTable.PROJECT_DETAILS, ProjectDetailsTable.PROJECT_DETAILS.PRODUCT_DETAIL_ID);
+        public static Identity<ProjectDetailTrackerRecord, Long> IDENTITY_PROJECT_DETAIL_TRACKER = createIdentity(ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER, ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER.PROJECT_DETAIL_TRACKER_ID);
         public static Identity<RepositoryTokensRecord, Long> IDENTITY_REPOSITORY_TOKENS = createIdentity(RepositoryTokensTable.REPOSITORY_TOKENS, RepositoryTokensTable.REPOSITORY_TOKENS.REPOSITORY_TOKEN_ID);
         public static Identity<RepoDetailsRecord, Long> IDENTITY_REPO_DETAILS = createIdentity(RepoDetailsTable.REPO_DETAILS, RepoDetailsTable.REPO_DETAILS.REPO_DETAIL_ID);
         public static Identity<SecurityIdSeqRecord, Long> IDENTITY_SECURITY_ID_SEQ = createIdentity(SecurityIdSeqTable.SECURITY_ID_SEQ, SecurityIdSeqTable.SECURITY_ID_SEQ.SECURITY_ID);
@@ -161,6 +168,7 @@ public class Keys {
         public static final UniqueKey<CommitDetailsRecord> KEY_COMMIT_DETAILS_PRIMARY = createUniqueKey(CommitDetailsTable.COMMIT_DETAILS, "KEY_commit_details_PRIMARY", CommitDetailsTable.COMMIT_DETAILS.COMMIT_DETAIL_ID);
         public static final UniqueKey<CommitMetadataRecord> KEY_COMMIT_METADATA_PRIMARY = createUniqueKey(CommitMetadataTable.COMMIT_METADATA, "KEY_commit_metadata_PRIMARY", CommitMetadataTable.COMMIT_METADATA.COMMIT_METADATA_ID);
         public static final UniqueKey<ProjectDetailsRecord> KEY_PROJECT_DETAILS_PRIMARY = createUniqueKey(ProjectDetailsTable.PROJECT_DETAILS, "KEY_project_details_PRIMARY", ProjectDetailsTable.PROJECT_DETAILS.PRODUCT_DETAIL_ID);
+        public static final UniqueKey<ProjectDetailTrackerRecord> KEY_PROJECT_DETAIL_TRACKER_PRIMARY = createUniqueKey(ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER, "KEY_project_detail_tracker_PRIMARY", ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER.PROJECT_DETAIL_TRACKER_ID);
         public static final UniqueKey<RepositoryTokensRecord> KEY_REPOSITORY_TOKENS_PRIMARY = createUniqueKey(RepositoryTokensTable.REPOSITORY_TOKENS, "KEY_repository_tokens_PRIMARY", RepositoryTokensTable.REPOSITORY_TOKENS.REPOSITORY_TOKEN_ID);
         public static final UniqueKey<RepositoryTokensRecord> KEY_REPOSITORY_TOKENS_PUBLIC_REPO_TOKEN = createUniqueKey(RepositoryTokensTable.REPOSITORY_TOKENS, "KEY_repository_tokens_public_repo_token", RepositoryTokensTable.REPOSITORY_TOKENS.PUBLIC_REPO_TOKEN);
         public static final UniqueKey<RepoDetailsRecord> KEY_REPO_DETAILS_PRIMARY = createUniqueKey(RepoDetailsTable.REPO_DETAILS, "KEY_repo_details_PRIMARY", RepoDetailsTable.REPO_DETAILS.REPO_DETAIL_ID);
@@ -186,6 +194,8 @@ public class Keys {
         public static final ForeignKey<CommitMetadataRecord, ProjectDetailsRecord> COMMIT_METADATA_IBFK_2 = createForeignKey(tech.crom.db.Keys.KEY_PROJECT_DETAILS_PRIMARY, CommitMetadataTable.COMMIT_METADATA, "commit_metadata_ibfk_2", CommitMetadataTable.COMMIT_METADATA.PROJECT_ID);
         public static final ForeignKey<CommitMetadataRecord, RepoDetailsRecord> COMMIT_METADATA_IBFK_3 = createForeignKey(tech.crom.db.Keys.KEY_REPO_DETAILS_PRIMARY, CommitMetadataTable.COMMIT_METADATA, "commit_metadata_ibfk_3", CommitMetadataTable.COMMIT_METADATA.REPO_ID);
         public static final ForeignKey<ProjectDetailsRecord, SecurityIdSeqRecord> PROJECT_DETAILS_IBFK_1 = createForeignKey(tech.crom.db.Keys.KEY_SECURITY_ID_SEQ_PRIMARY, ProjectDetailsTable.PROJECT_DETAILS, "project_details_ibfk_1", ProjectDetailsTable.PROJECT_DETAILS.SECURITY_ID);
+        public static final ForeignKey<ProjectDetailTrackerRecord, ProjectDetailsRecord> PROJECT_DETAIL_TRACKER_IBFK_1 = createForeignKey(tech.crom.db.Keys.KEY_PROJECT_DETAILS_PRIMARY, ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER, "project_detail_tracker_ibfk_1", ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER.PRODUCT_DETAIL_ID);
+        public static final ForeignKey<ProjectDetailTrackerRecord, UserDetailsRecord> PROJECT_DETAIL_TRACKER_IBFK_2 = createForeignKey(tech.crom.db.Keys.KEY_USER_DETAILS_PRIMARY, ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER, "project_detail_tracker_ibfk_2", ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER.USER_ID);
         public static final ForeignKey<RepositoryTokensRecord, RepoDetailsRecord> REPOSITORY_TOKENS_IBFK_1 = createForeignKey(tech.crom.db.Keys.KEY_REPO_DETAILS_PRIMARY, RepositoryTokensTable.REPOSITORY_TOKENS, "repository_tokens_ibfk_1", RepositoryTokensTable.REPOSITORY_TOKENS.REPO_ID);
         public static final ForeignKey<RepoDetailsRecord, ProjectDetailsRecord> REPO_DETAILS_IBFK_1 = createForeignKey(tech.crom.db.Keys.KEY_PROJECT_DETAILS_PRIMARY, RepoDetailsTable.REPO_DETAILS, "repo_details_ibfk_1", RepoDetailsTable.REPO_DETAILS.PROJECT_ID);
         public static final ForeignKey<RepoDetailsRecord, VersionBumpersRecord> REPO_DETAILS_IBFK_2 = createForeignKey(tech.crom.db.Keys.KEY_VERSION_BUMPERS_PRIMARY, RepoDetailsTable.REPO_DETAILS, "repo_details_ibfk_2", RepoDetailsTable.REPO_DETAILS.VERSION_BUMPER_ID);
