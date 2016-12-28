@@ -86,7 +86,7 @@ public class RepoEndpoint {
             List<RequestedCommit> requestedCommits = createModel
                 .getHistory()
                 .stream()
-                .map(it -> new RequestedCommit(it.getCommitId(), "[set version " + it.getVersion() + "]", null))
+                .map(it -> new RequestedCommit(it.getCommitId(), "[set version " + it.getVersion() + "]", it.getCreatedAt()))
                 .collect(Collectors.toList());
 
             CommitIdContainer commitIdContainer = null;
