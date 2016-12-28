@@ -10,6 +10,7 @@ web-ui:
     root-domain: http://localhost:3000
     login-page: /login
     root-page: /
+    register-page: http://localhost:3000/
 
 server:
     port: 8080

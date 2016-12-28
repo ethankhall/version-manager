@@ -64,7 +64,7 @@ open class WebSecurityConfig @Autowired constructor(
 
         socialConfigurer.addObjectPostProcessor(object : ObjectPostProcessor<SocialAuthenticationFilter> {
             override fun <O : SocialAuthenticationFilter> postProcess(filter: O): O {
-                filter.setSignupUrl(null)
+                filter.setSignupUrl(env.getRequiredProperty("web-ui.register-page"))
                 filter.setAuthenticationSuccessHandler(socialAuthenticationSuccessHandler)
                 return filter
             }
