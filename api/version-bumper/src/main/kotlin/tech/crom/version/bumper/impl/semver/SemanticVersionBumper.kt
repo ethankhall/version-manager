@@ -28,7 +28,7 @@ class SemanticVersionBumper : CromVersionBumper.Executor {
     override fun calculateNextVersion(commitModel: RequestedCommit, lastVersion: VersionDetails?): RealizedCommit {
         val versionCreator = findVersionCreator(commitModel, lastVersion)
         val nextVersion = if(versionCreator != null) versionCreator.nextVersion() else bumpLowestPart(lastVersion)
-        return RealizedCommit(commitModel.commitId, VersionDetails(nextVersion))
+        return RealizedCommit(commitModel.commitId, VersionDetails(nextVersion), commitModel.createdAt)
     }
 
     internal fun findVersionCreator(commitModel: RequestedCommit, lastVersion: VersionDetails?): VersionCreator? {

@@ -1,5 +1,6 @@
 package tech.crom.webapp.app
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import groovy.json.JsonBuilder
 import groovy.json.JsonSlurper
 import groovy.transform.TupleConstructor
@@ -52,6 +53,9 @@ class LongWindedApiIntegrationTest extends Specification {
 
     @Shared
     UserContainer userContainer2
+
+    @Autowired
+    ObjectMapper objectMapper
 
     def 'clean up env'() {
         def datasourceUrl = environment.getProperty('spring.datasource.url')
@@ -319,7 +323,7 @@ class LongWindedApiIntegrationTest extends Specification {
             [
                 "commitId" : "1",
                 "version"  : "1.0.0",
-                "createdAt": "2016-09-10T17:15:30.545Z"
+                "createdAt": "2016-09-10T17:15:30.545-08:00"
             ]
         ]]
         response = makePostRequest("api/v1/project/repoUser1/repo/repo1", content, userContainer1)
@@ -329,6 +333,12 @@ class LongWindedApiIntegrationTest extends Specification {
         response.content.projectName == 'repoUser1'
         response.content.repoName == 'repo1'
         response.content.url == content.scmUrl
+
+        when:
+        response = makeGetRequest('api/v1/project/repoUser1/repo/repo1/versions')
+
+        then:
+        response.content.commits[0].createdAt == '2016-09-11T01:15:30.545Z'
 
         when:
         content = ["scmUrl": "git@github.com:foo/bar.git", "bumper": "semver"]
