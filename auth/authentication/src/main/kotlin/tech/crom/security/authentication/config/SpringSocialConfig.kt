@@ -37,8 +37,8 @@ open class SpringSocialConfig @Autowired constructor(val ds: DataSource, val sig
 
     override fun addConnectionFactories(cfConfigurer: ConnectionFactoryConfigurer, env: Environment) {
         val factory = GoogleConnectionFactory(
-            env.getRequiredProperty("auth.client.google.clientId"),
-            env.getRequiredProperty("auth.client.google.clientSecret"))
+            env.getRequiredProperty("auth.client.google.client.id"),
+            env.getRequiredProperty("auth.client.google.client.secret"))
 
         factory.scope = "email"
         cfConfigurer.addConnectionFactory(factory)

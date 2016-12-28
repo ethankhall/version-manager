@@ -2,8 +2,10 @@ auth:
     domain: 'localhost'
     client:
         google:
-            clientId: 501986272416-882h8qm11sherv2m99geckohi2mrmffh.apps.googleusercontent.com
-            clientSecret: qHv-RKsHe5zavBhjWwXmktMr
+            client:
+                id: 501986272416-882h8qm11sherv2m99geckohi2mrmffh.apps.googleusercontent.com
+            client:
+                secret: qHv-RKsHe5zavBhjWwXmktMr
 
 server:
     port: 8080

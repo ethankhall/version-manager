@@ -1,4 +1,4 @@
-auth.client.google.clientId: 501986272416-882h8qm11sherv2m99geckohi2mrmffh.apps.googleusercontent.com
-auth.client.google.clientSecret: qHv-RKsHe5zavBhjWwXmktMr
+auth.client.google.client.id: 501986272416-882h8qm11sherv2m99geckohi2mrmffh.apps.googleusercontent.com
+auth.client.google.client.secret: qHv-RKsHe5zavBhjWwXmktMr
 auth.domain: localhost
 jwt.signing.key: secret
