@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
+import org.springframework.web.servlet.view.RedirectView
 import tech.crom.security.authentication.getRootPage
 
 @Service
@@ -21,8 +22,5 @@ open class RootPageController @Autowired constructor(val environment: Environmen
     }
 
     @RequestMapping(value = "/")
-    fun rootPageRedirect(): String {
-        environment.getRootPage()
-        return "redirect:${environment.getRootPage()}"
-    }
+    fun rootPageRedirect(): RedirectView = RedirectView(environment.getRootPage())
 }

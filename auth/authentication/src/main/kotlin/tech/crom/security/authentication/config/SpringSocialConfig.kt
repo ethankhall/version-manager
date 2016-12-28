@@ -44,13 +44,6 @@ open class SpringSocialConfig @Autowired constructor(val ds: DataSource, val sig
         cfConfigurer.addConnectionFactory(factory)
     }
 
-//    class UserNameIdSource : UserIdSource {
-//        override fun getUserId(): String {
-//            val authentication = SecurityContextHolder.getContext().authentication ?: throw IllegalStateException("No user signed in")
-//            return authentication.name
-//        }
-//    }
-
     @Bean
     @Scope(value = "request", proxyMode = ScopedProxyMode.INTERFACES)
     open fun google(repository: ConnectionRepository): Google? {
