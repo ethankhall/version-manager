@@ -1,11 +1,11 @@
 package io.ehdev.conrad.service.api.service.repo;
 
-import io.ehdev.conrad.model.commit.CommitIdCollection;
-import io.ehdev.conrad.model.permission.PermissionGrant;
-import io.ehdev.conrad.model.repository.CreateRepoRequest;
-import io.ehdev.conrad.model.repository.CreateRepoResponse;
-import io.ehdev.conrad.model.repository.GetRepoResponse;
-import io.ehdev.conrad.model.version.VersionSearchResponse;
+import tech.crom.rest.model.commit.CommitIdCollection;
+import tech.crom.rest.model.permission.PermissionGrant;
+import tech.crom.rest.model.repository.CreateRepoRequest;
+import tech.crom.rest.model.repository.CreateRepoResponse;
+import tech.crom.rest.model.repository.GetRepoResponse;
+import tech.crom.rest.model.version.VersionSearchResponse;
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
@@ -120,7 +120,7 @@ public class RepoEndpoint {
         permissionApi.getPermissions(repoDetails.getCromRepo()).forEach(it -> {
             restRepoModel.addPermission(
                 new PermissionGrant(it.getCromUser().getUserName(),
-                    PermissionGrant.PermissionDefinition.valueOf(it.getCromPermission().name())));
+                    PermissionGrant.AccessLevel.valueOf(it.getCromPermission().name())));
         });
 
         return ResponseEntity.ok(restRepoModel);

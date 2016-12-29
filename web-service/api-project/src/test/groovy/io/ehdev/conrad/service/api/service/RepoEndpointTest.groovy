@@ -1,6 +1,6 @@
 package io.ehdev.conrad.service.api.service
 
-import io.ehdev.conrad.model.commit.CommitIdCollection
+import tech.crom.rest.model.commit.CommitIdCollection
 import io.ehdev.conrad.service.api.service.repo.RepoEndpoint
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletRequest

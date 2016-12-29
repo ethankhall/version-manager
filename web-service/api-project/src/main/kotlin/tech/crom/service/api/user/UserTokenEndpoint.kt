@@ -1,7 +1,7 @@
 package tech.crom.service.api.user
 
-import io.ehdev.conrad.model.permission.CreateTokenResponse
-import io.ehdev.conrad.model.permission.GetTokensResponse
+import tech.crom.rest.model.permission.CreateTokenResponse
+import tech.crom.rest.model.permission.GetTokensResponse
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus

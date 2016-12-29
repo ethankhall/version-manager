@@ -1,6 +1,6 @@
 package io.ehdev.conrad.service.api.service
 
-import io.ehdev.conrad.model.version.CreateVersionRequest
+import tech.crom.rest.model.version.CreateVersionRequest
 import io.ehdev.conrad.service.api.service.repo.RepoVersionEndpoint
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletRequest
@@ -63,7 +63,6 @@ class RepoVersionEndpointTest extends Specification {
 
         version.statusCode == HttpStatus.CREATED
         version.body.commitId == 'f'
-        version.body.postfix == null
         version.body.version == '1.2.4'
     }
 

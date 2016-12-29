@@ -1,6 +1,6 @@
 package tech.crom.service.api.user
 
-import io.ehdev.conrad.model.user.GetWatchesResponse
+import tech.crom.rest.model.user.GetWatchesResponse
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired
 import io.ehdev.conrad.service.api.aop.annotation.ProjectRequired
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired
@@ -37,7 +37,7 @@ open class UserWatchEndpoint @Autowired constructor(
     }
 
     @LoggedInUserRequired
-    @RequestMapping(value = "/watches")
+    @RequestMapping(value = "/watch")
     open fun getWatches(requestDetails: RequestDetails): ResponseEntity<GetWatchesResponse> {
         val watches = watcherApi.getWatches(requestDetails.requestPermission.cromUser!!)
         val details = watches.map { GetWatchesResponse.WatchDetails(it.cromProject.projectName, it.cromRepo?.repoName) }

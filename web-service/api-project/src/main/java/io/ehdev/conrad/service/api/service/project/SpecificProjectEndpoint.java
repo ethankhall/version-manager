@@ -1,9 +1,9 @@
 package io.ehdev.conrad.service.api.service.project;
 
-import io.ehdev.conrad.model.permission.PermissionGrant;
-import io.ehdev.conrad.model.project.CreateProjectRequest;
-import io.ehdev.conrad.model.project.GetProjectResponse;
-import io.ehdev.conrad.model.project.RepoDefinitionsDetails;
+import tech.crom.rest.model.permission.PermissionGrant;
+import tech.crom.rest.model.project.CreateProjectRequest;
+import tech.crom.rest.model.project.GetProjectResponse;
+import tech.crom.rest.model.project.RepoDefinitionsDetails;
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ProjectRequired;
@@ -84,7 +84,7 @@ public class SpecificProjectEndpoint {
         if(user != null && permission != null) {
             permissionList.add(new PermissionGrant(
                 user.getUserName(),
-                PermissionGrant.PermissionDefinition.valueOf(permission.name())));
+                PermissionGrant.AccessLevel.valueOf(permission.name())));
         }
 
         GetProjectResponse projectModel = new GetProjectResponse(

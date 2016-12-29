@@ -2,14 +2,7 @@ apply plugin: "kotlin"
 apply plugin: "groovy"
 apply plugin: 'maven-publish'
 apply plugin: 'spek'
-apply from: "$rootDir/gradle/publishing-public.gradle"
-
-repositories {
-    mavenCentral()
-    maven {
-        url "http://repository.jetbrains.com/all"
-    }
-}
+apply plugin: 'local-dev'
 
 dependencies {
     compile libraries.kotlin
@@ -18,4 +11,33 @@ dependencies {
     compile libraries.jackson
 
     testCompile libraries.kotlinTesting
+
+    integTestCompile libraries.testingLibraries
+//    integTestCompile 'com.fasterxml.jackson.module:jackson-module-jsonSchema:2.8.5'
+    integTestCompile 'com.kjetland:mbknor-jackson-jsonschema_2.12:1.0.11'
+    integTestCompile 'org.reflections:reflections:0.9.10'
+}
+
+integTest {
+    ext.outputDir = file("$buildDir/jsonschema/output")
+
+    outputs.dir(ext.outputDir)
+
+    doFirst {
+        delete ext.outputDir
+        ext.outputDir.mkdirs()
+    }
+    environment('OUTPUT_DIR', ext.outputDir)
+}
+
+task copyDefinitions(type: Sync) {
+    dependsOn integTest
+    from integTest.outputDir
+    into project.hasProperty('destDir') ? project.property("destDir") : '.'
+
+    doFirst {
+        if (!project.hasProperty('destDir')) {
+            throw new GradleException("-PdestDir not set!")
+        }
+    }
 }

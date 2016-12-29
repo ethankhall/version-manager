@@ -1,6 +1,6 @@
 package tech.crom.service.api.project
 
-import io.ehdev.conrad.model.project.FindProjectResponse
+import tech.crom.rest.model.project.FindProjectResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity

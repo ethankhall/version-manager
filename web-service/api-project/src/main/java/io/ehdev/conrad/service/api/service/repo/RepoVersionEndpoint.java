@@ -1,9 +1,9 @@
 package io.ehdev.conrad.service.api.service.repo;
 
-import io.ehdev.conrad.model.version.CreateVersionRequest;
-import io.ehdev.conrad.model.version.CreateVersionResponse;
-import io.ehdev.conrad.model.version.GetAllVersionsResponse;
-import io.ehdev.conrad.model.version.GetVersionResponse;
+import tech.crom.rest.model.version.CreateVersionRequest;
+import tech.crom.rest.model.version.CreateVersionResponse;
+import tech.crom.rest.model.version.GetAllVersionsResponse;
+import tech.crom.rest.model.version.GetVersionResponse;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;

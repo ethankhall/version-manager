@@ -1,6 +1,6 @@
 package tech.crom.service.api.constant
 
-import io.ehdev.conrad.model.constant.BumperListReponse
+import tech.crom.rest.model.constant.BumperListReponse
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RequestMapping

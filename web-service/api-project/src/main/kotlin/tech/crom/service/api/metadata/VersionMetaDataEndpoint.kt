@@ -1,6 +1,5 @@
 package tech.crom.service.api.metadata
 
-import io.ehdev.conrad.model.metadata.AvailableFilesResponse
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired
 import io.ehdev.conrad.service.api.exception.BaseHttpException
@@ -15,6 +14,7 @@ import tech.crom.business.api.StorageApi
 import tech.crom.model.commit.CommitIdContainer
 import tech.crom.model.commit.impl.PersistedCommit
 import tech.crom.model.metadata.StorageData
+import tech.crom.rest.model.metadata.AvailableFilesResponse
 import tech.crom.web.api.model.RequestDetails
 import javax.servlet.http.HttpServletResponse
 

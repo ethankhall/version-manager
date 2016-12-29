@@ -5,7 +5,6 @@ include 'shared-model'
 //web service - api's
 include ':web-service:api-project'
 include ':web-service:webapp'
-include ':web-service:models'
 
 //database
 include ':database:database-jooq'
@@ -22,9 +21,6 @@ include ':api:rest-model'
 include ':api:business-logic'
 include ':api:version-bumper'
 include ':api:storage'
-
-//Docs
-include ':docs'
 
 include ':load-test:gatling'
 include ':docker'

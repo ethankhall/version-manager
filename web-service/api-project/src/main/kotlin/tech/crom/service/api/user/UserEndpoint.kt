@@ -1,7 +1,5 @@
 package tech.crom.service.api.user
 
-import io.ehdev.conrad.model.user.GetFullProfileResponse
-import io.ehdev.conrad.model.user.PostUserUpdate
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired
 import io.ehdev.conrad.service.api.exception.BaseHttpException
 import io.ehdev.conrad.service.api.exception.ErrorCode
@@ -14,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import tech.crom.business.api.UserApi
 import tech.crom.model.user.CromUser
+import tech.crom.rest.model.user.GetFullProfileResponse
+import tech.crom.rest.model.user.PostUserUpdate
 import tech.crom.web.api.model.RequestDetails
 
 
@@ -37,7 +37,7 @@ open class UserEndpoint @Autowired constructor(
 
         var user = requestDetails.requestPermission.cromUser!!
 
-        update.watches.forEach {
+        update.updates.forEach {
             val value = it.value.trim()
             if(value.length < 3) {
                 throw BaseHttpException(HttpStatus.NOT_ACCEPTABLE, ErrorCode.UPDATE_MUST_BE_LONGER, "`$value` must be at least 3 characters long.")

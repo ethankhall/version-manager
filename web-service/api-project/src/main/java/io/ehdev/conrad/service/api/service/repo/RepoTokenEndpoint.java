@@ -1,7 +1,7 @@
 package io.ehdev.conrad.service.api.service.repo;
 
-import io.ehdev.conrad.model.permission.CreateTokenResponse;
-import io.ehdev.conrad.model.permission.GetTokensResponse;
+import tech.crom.rest.model.permission.CreateTokenResponse;
+import tech.crom.rest.model.permission.GetTokensResponse;
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;

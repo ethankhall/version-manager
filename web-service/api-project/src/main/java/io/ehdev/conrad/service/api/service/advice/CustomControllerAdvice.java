@@ -1,6 +1,5 @@
 package io.ehdev.conrad.service.api.service.advice;
 
-import io.ehdev.conrad.model.AdminView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.MediaType;
@@ -13,6 +12,7 @@ import org.springframework.http.server.ServletServerHttpRequest;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.AbstractMappingJacksonResponseBodyAdvice;
 import tech.crom.model.security.authorization.CromPermission;
+import tech.crom.rest.model.AdminView;
 import tech.crom.service.api.config.RequestDetailsParameterResolver;
 import tech.crom.web.api.model.RequestDetails;
 

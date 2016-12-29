@@ -7,7 +7,7 @@ dependencies {
     compile project(':api:rest-model')
     compile project(':database:database-v2')
     compile project(':api:business-logic')
-    compile project(':web-service:models')
+    compile project(':shared-model')
 
     compile libraries.springWeb
     compile libraries.springCore

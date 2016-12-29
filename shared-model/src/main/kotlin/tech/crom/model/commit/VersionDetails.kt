@@ -1,10 +1,18 @@
 package tech.crom.model.commit
 
 data class VersionDetails(val versionString: String) {
-    val versionParts: List<Int>
-    val postFix: String?
+
+    private val versionParse: Pair<List<Int>, String?> by lazy { findVersionParts() }
+    val versionParts: List<Int> by lazy { versionParse.first }
+    val postFix: String? by lazy { versionParse.second }
 
     init {
+        if (!versionString.contains(Regex("[0-9]"))) {
+            throw RuntimeException("Must contain at least one number")
+        }
+    }
+
+    private fun findVersionParts(): Pair<List<Int>, String?> {
         var splitPart: String = versionString
         val dashIndex = versionString.indexOf("-")
         var tempPostFix: String?
@@ -30,14 +38,10 @@ data class VersionDetails(val versionString: String) {
                 }
             }
         }
-        versionParts = versionPartsBuilder.toList()
-        postFix = tempPostFix
-        if (versionParts.isEmpty()) {
-            throw RuntimeException("$versionString is not a valid version")
-        }
+        return Pair(versionPartsBuilder.toList(), tempPostFix)
     }
 
-    fun findNumber(string: String): Int? {
+    private fun findNumber(string: String): Int? {
         try {
             return string.toInt()
         } catch (nfe: NumberFormatException) {

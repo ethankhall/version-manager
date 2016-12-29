@@ -1,7 +1,7 @@
 package tech.crom.service.api.repo
 
-import io.ehdev.conrad.model.permission.PermissionCreateResponse
-import io.ehdev.conrad.model.permission.PermissionGrant
+import tech.crom.rest.model.permission.PermissionCreateResponse
+import tech.crom.rest.model.permission.PermissionGrant
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired
@@ -45,11 +45,11 @@ open class RepoPermissionsEndpoint @Autowired constructor(
     }
 
     private fun convertType(permission: PermissionGrant): CromPermission {
-        return when(permission.permission) {
-            PermissionGrant.PermissionDefinition.NONE -> CromPermission.NONE
-            PermissionGrant.PermissionDefinition.READ -> CromPermission.READ
-            PermissionGrant.PermissionDefinition.WRITE -> CromPermission.WRITE
-            PermissionGrant.PermissionDefinition.ADMIN -> CromPermission.ADMIN
+        return when(permission.accessLevel) {
+            PermissionGrant.AccessLevel.NONE -> CromPermission.NONE
+            PermissionGrant.AccessLevel.READ -> CromPermission.READ
+            PermissionGrant.AccessLevel.WRITE -> CromPermission.WRITE
+            PermissionGrant.AccessLevel.ADMIN -> CromPermission.ADMIN
         }
     }
 }

@@ -197,13 +197,13 @@ class LongWindedApiIntegrationTest extends Specification {
 
         then:
         response.statusLine.statusCode == 200
-        (response.content.permissions as List)[0] == [username: 'user1', permission: 'ADMIN']
+        (response.content.permissions as List)[0] == [username: 'user1', accessLevel: 'ADMIN']
 
         //======================================
         //== Give the other user READ permissions
         //======================================
         when:
-        def permissionGrant = ["username": "user2", "permission": "READ"]
+        def permissionGrant = ["username": "user2", "accessLevel": "READ"]
         response = makePostRequest('api/v1/project/repoUser1/permissions', permissionGrant, userContainer1)
 
         then:
@@ -214,8 +214,8 @@ class LongWindedApiIntegrationTest extends Specification {
         response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer1)
 
         then:
-        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', permission: 'ADMIN']
-        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', permission: 'READ']
+        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', accessLevel: 'ADMIN']
+        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', accessLevel: 'READ']
         (response.content.permissions as List).size() == 2
 
         when:  //user doesn't have enough permissions
@@ -230,7 +230,7 @@ class LongWindedApiIntegrationTest extends Specification {
         //== Give the other user WRITE permissions
         //======================================
         when:
-        permissionGrant = ["username": "user2", "permission": "WRITE"]
+        permissionGrant = ["username": "user2", "accessLevel": "WRITE"]
         response = makePostRequest('api/v1/project/repoUser1/permissions', permissionGrant, userContainer1)
 
         then:
@@ -241,8 +241,8 @@ class LongWindedApiIntegrationTest extends Specification {
         response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer1)
 
         then:
-        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', permission: 'ADMIN']
-        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', permission: 'WRITE']
+        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', accessLevel: 'ADMIN']
+        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', accessLevel: 'WRITE']
         (response.content.permissions as List).size() == 2
 
         when:  //user doesn't have enough permissions
@@ -257,7 +257,7 @@ class LongWindedApiIntegrationTest extends Specification {
         //== Give the other user READ permissions
         //======================================
         when:
-        permissionGrant = ["username": "user2", "permission": "ADMIN"]
+        permissionGrant = ["username": "user2", "accessLevel": "ADMIN"]
         response = makePostRequest('api/v1/project/repoUser1/permissions', permissionGrant, userContainer1)
 
         then:
@@ -268,16 +268,16 @@ class LongWindedApiIntegrationTest extends Specification {
         response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer1)
 
         then:
-        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', permission: 'ADMIN']
-        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', permission: 'ADMIN']
+        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', accessLevel: 'ADMIN']
+        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', accessLevel: 'ADMIN']
         (response.content.permissions as List).size() == 2
 
         when:
         response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer2)
 
         then:
-        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', permission: 'ADMIN']
-        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', permission: 'ADMIN']
+        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', accessLevel: 'ADMIN']
+        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', accessLevel: 'ADMIN']
         (response.content.permissions as List).size() == 2
 
         //======================================
@@ -294,7 +294,7 @@ class LongWindedApiIntegrationTest extends Specification {
         response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer1)
 
         then:
-        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', permission: 'ADMIN']
+        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', accessLevel: 'ADMIN']
         (response.content.permissions as List).size() == 1
 
         when:  //user doesn't have enough permissions
@@ -407,7 +407,7 @@ class LongWindedApiIntegrationTest extends Specification {
         response.content.version == '2.0.0'
 
         when:
-        // Should fail because user doesn't have permission
+        // Should fail because user doesn't have accessLevel
         body = ["commits": ['3', '2', '1'], "message": "bla", "commitId": "4"]
         response = makePostRequest('api/v1/project/repoUser1/repo/repo1/version', body, userContainer2)
 
