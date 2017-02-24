@@ -13,6 +13,7 @@ public enum ErrorCode {
     USER_ALREADY_EXISTS("UP-002"),
     VERSION_NOT_FOUND("VR-001"),
     METADATA_NOT_FOUND("VR-002"),
+    UNKOWN_STORAGE_BACKEND_ERROR("ST-001"),
     ;
 
     private final String errorCode;

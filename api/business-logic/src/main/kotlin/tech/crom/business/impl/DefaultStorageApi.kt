@@ -26,12 +26,16 @@ open class DefaultStorageApi(
 
     @Throws(StorageApi.MaxStorageReachedException::class)
     override fun insertFile(cromRepo: CromRepo, version: PersistedCommit, storageData: StorageData) {
-        if(metaDataManager.getCurrentSizeOfProject(cromRepo) + storageData.bytes.size > maxStorageSize) {
-            throw StorageApi.MaxStorageReachedException()
-        }
+        try {
+            if (metaDataManager.getCurrentSizeOfProject(cromRepo) + storageData.bytes.size > maxStorageSize) {
+                throw StorageApi.MaxStorageReachedException()
+            }
 
-        val uri = storageEngine.upload("/${cromRepo.repoId}/${version.id}/${storageData.fileName}", storageData)
-        metaDataManager.insertFile(cromRepo, version, uri, storageData)
+            val uri = storageEngine.upload("/${cromRepo.repoId}/${version.id}/${storageData.fileName}", storageData)
+            metaDataManager.insertFile(cromRepo, version, uri, storageData)
+        } catch (e: Exception) {
+            throw StorageApi.BackedException(e)
+        }
     }
 
     override fun getFile(version: PersistedCommit, fileName: String): StorageData? {

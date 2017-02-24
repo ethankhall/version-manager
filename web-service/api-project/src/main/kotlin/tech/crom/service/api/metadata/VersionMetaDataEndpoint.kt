@@ -65,6 +65,8 @@ open class VersionMetaDataEndpoint(
             storageApi.insertFile(requestDetails.cromRepo!!, commit, StorageData(fileName, file.bytes, file.contentType))
         } catch (e: StorageApi.MaxStorageReachedException) {
             throw StorageLimitExceeded(e.message)
+        } catch (e: StorageApi.BackedException) {
+            throw UnknownStorageError(e.message ?: "An unknown storage error occured.")
         }
 
         return ResponseEntity(HttpStatus.CREATED)
@@ -75,6 +77,7 @@ open class VersionMetaDataEndpoint(
         return commitApi.findCommit(requestDetails.cromRepo!!, idContainer) ?: throw VersionNotFoundException(version)
     }
 
+    class UnknownStorageError(e: String) : BaseHttpException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.UNKOWN_STORAGE_BACKEND_ERROR, e)
     class StorageLimitExceeded(e: String?) : BaseHttpException(HttpStatus.NOT_ACCEPTABLE, ErrorCode.PROJECT_STORAGE_LIMIT_EXCEEDED, e)
 
     class VersionNotFoundException(version: String) :
