@@ -12,5 +12,8 @@ open class StorageConfig {
 
     @Bean
     @ConditionalOnProperty(name = arrayOf("storage.default.credentials"), havingValue = "google-cloud")
-    open fun googleCredentials(): GoogleCredential = GoogleCredential.getApplicationDefault()
+    open fun googleCredentials(): GoogleCredential {
+        val googleCredential = GoogleCredential.getApplicationDefault()
+        return googleCredential.createScoped(listOf("https://www.googleapis.com/auth/devstorage.read_write"))
+    }
 }
