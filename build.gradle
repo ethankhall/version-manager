@@ -8,7 +8,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'io.ehdev.conrad.client:gradle-client:+'
+        classpath 'tech.crom.client:gradle-client:+'
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.5'
         classpath "org.flywaydb:flyway-gradle-plugin:4.0.3"
     }
