@@ -1,6 +1,5 @@
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'groovy'
-apply plugin: 'spek'
 
 dependencies {
     compile project(":shared-model")
