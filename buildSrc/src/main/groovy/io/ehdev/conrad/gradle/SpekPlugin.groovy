@@ -9,10 +9,7 @@ class SpekPlugin implements Plugin<Project> {
         project.plugins.apply('org.junit.platform.gradle.plugin')
 
         project.junitPlatform {
-            platformVersion '1.0.0-M2'
-            engines {
-                include 'spek'
-            }
+            platformVersion '1.0.0-M3'
         }
     }
 }

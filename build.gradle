@@ -1,17 +1,5 @@
-buildscript {
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-        maven {
-            url 'http://repo.ehdev.io/maven2'
-        }
-    }
-    dependencies {
-        classpath 'tech.crom.client:gradle-client:+'
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.5'
-        classpath "org.flywaydb:flyway-gradle-plugin:4.0.3"
-    }
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.1.1"
 }
 
 allprojects {

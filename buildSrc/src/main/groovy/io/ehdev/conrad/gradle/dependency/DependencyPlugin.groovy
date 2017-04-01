@@ -51,8 +51,8 @@ class DependencyPlugin implements Plugin<Project> {
         project.configurations.forEach(new Consumer<Configuration>() {
             @Override
             void accept(Configuration files) {
-                deps.exclude.each { String group, String name ->
-                    files.exclude(group: group, module: name)
+                deps.exclude.each { Map<String, String> dep ->
+                    files.exclude(group: dep.group, module: dep.name)
                 }
             }
         })

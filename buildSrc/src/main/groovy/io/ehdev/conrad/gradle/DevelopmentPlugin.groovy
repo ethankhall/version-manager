@@ -55,7 +55,7 @@ class DevelopmentPlugin implements Plugin<Project> {
                 jacoco {
                     append = false
                     destinationFile = file("$buildDir/jacoco/${task.name}-jacocoTest.exec")
-                    classDumpFile = file("$buildDir/jacoco/${task.name}-classpathdumps")
+                    setClassDumpDir(file("$buildDir/jacoco/${task.name}-classpathdumps"))
                 }
             }
 

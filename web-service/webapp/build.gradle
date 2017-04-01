@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'groovy'
 apply plugin: 'kotlin'
 apply plugin: 'local-dev'
-apply plugin: 'spring-boot'
+apply plugin: 'org.springframework.boot'
 apply from: "$rootDir/gradle/publishing-private.gradle"
 
 publish.dependsOn assemble

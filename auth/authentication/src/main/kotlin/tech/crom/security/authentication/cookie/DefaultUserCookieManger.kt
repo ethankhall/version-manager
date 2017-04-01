@@ -32,11 +32,8 @@ open class DefaultUserCookieManger @Autowired constructor(
 
     override fun readCookieValue(request: HttpServletRequest): String? {
         val cookies = request.cookies ?: return null
-        for (cookie in cookies) {
-            if (cookie.name == userCookieGenerator.cookieName) {
-                return cookie.value
-            }
-        }
-        return null
+        return cookies
+            .firstOrNull { it.name == userCookieGenerator.cookieName }
+            ?.value
     }
 }
