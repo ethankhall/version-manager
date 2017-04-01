@@ -1,7 +1,6 @@
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "groovy"
 apply plugin: 'maven-publish'
-apply plugin: 'spek'
 apply plugin: 'local-dev'
 
 dependencies {
@@ -10,10 +9,9 @@ dependencies {
     compile 'javax.validation:validation-api:1.1.0.Final'
     compile libraries.jackson
 
-    testCompile libraries.kotlinTesting
+    testCompile libraries.testingLibraries
 
     integTestCompile libraries.testingLibraries
-//    integTestCompile 'com.fasterxml.jackson.module:jackson-module-jsonSchema:2.8.5'
     integTestCompile 'com.kjetland:mbknor-jackson-jsonschema_2.12:1.0.11'
     integTestCompile 'org.reflections:reflections:0.9.10'
 }
