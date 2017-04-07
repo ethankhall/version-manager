@@ -1,5 +1,13 @@
 plugins {
     id "org.jetbrains.kotlin.jvm" version "1.1.1"
+    id 'com.gradle.build-scan' version '1.6'
+}
+
+buildScan {
+    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
+    licenseAgree = 'yes'
+
+    publishAlways()
 }
 
 allprojects {
@@ -46,8 +54,8 @@ versionManager {
 
 
 subprojects {
-    if(it.path != ':web-ui') {
-        buildDir = new File(rootProject.getProjectDir(), "build/${project.path.replace(':', '/').substring(1)}")
+    if (it.path != ':web-ui') {
+        buildDir = new File(rootProject.getProjectDir(), "build/${ project.path.replace(':', '/').substring(1) }")
         apply plugin: 'java'
     }
 
@@ -83,8 +91,8 @@ evaluationDependsOnChildren()
 
 task testCoverage(type: JacocoReport) {
     dependsOn mergeReport
-    sourceDirectories = files(subprojects.findAll{ it.path != ':web-ui' }.sourceSets.main.allSource.srcDirs)
-    classDirectories = files(subprojects.findAll{ it.path != ':web-ui' }.sourceSets.main.output).asFileTree.matching {
+    sourceDirectories = files(subprojects.findAll { it.path != ':web-ui' }.sourceSets.main.allSource.srcDirs)
+    classDirectories = files(subprojects.findAll { it.path != ':web-ui' }.sourceSets.main.output).asFileTree.matching {
         exclude '**/io/ehdev/conrad/db/tables/**'
     }
     executionData = mergeReport.executionData

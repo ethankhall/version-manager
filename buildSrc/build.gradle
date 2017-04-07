@@ -1,6 +1,6 @@
 plugins {
     id 'groovy'
-    id "org.jetbrains.kotlin.jvm" version "1.1.1"
+//    id "org.jetbrains.kotlin.jvm" version "1.1.1"
 }
 
 repositories {
@@ -28,7 +28,7 @@ dependencies {
     runtime 'org.junit.platform:junit-platform-gradle-plugin:1.0.0-M3'
     runtime 'org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE'
 //    compile group: 'org.jetbrains.kotlin', name: 'kotlin-script-util', version: '1.1.1'
-    compile group: 'org.jetbrains.kotlin', name: 'compiler-embeddable', version: '1.1.1'
+//    compile group: 'org.jetbrains.kotlin', name: 'kotlin-compiler-embeddable', version: '1.1.1'
     compile 'org.jetbrains.kotlin:kotlin-stdlib-jre8:1.1.1'
     runtime('gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:1.0.1') {
         exclude group: 'org.jetbrains.kotlin'
