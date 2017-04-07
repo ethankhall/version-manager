@@ -1,12 +1,6 @@
-apply plugin: "kotlin"
+apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "groovy"
-
-repositories {
-    mavenCentral()
-    maven {
-        url "http://repository.jetbrains.com/all"
-    }
-}
+apply plugin: 'local-dev'
 
 dependencies {
     compile libraries.kotlin

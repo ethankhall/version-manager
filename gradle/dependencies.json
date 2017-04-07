@@ -163,20 +163,7 @@
             "org.jooq:jooq-codegen",
             "org.flywaydb:flyway-core"
         ],
-        "kotlinTesting": [
-            "org.jetbrains.spek:spek-api:1.1.0",
-            "org.jetbrains.spek:spek-junit-platform-engine:1.1.0",
-            "org.junit.platform:junit-platform-runner:1.0.0-M3",
-            "org.jetbrains.kotlin:kotlin-test",
-            "com.nhaarman:mockito-kotlin:0.5.2",
-            "org.junit.jupiter:junit-jupiter-api:5.0.0-M3",
-            "org.junit.jupiter:junit-jupiter-engine:5.0.0-M3",
-            "org.junit.vintage:junit-vintage-engine:4.12.0-M3"
-        ],
         "testingLibraries": [
-            "org.junit.jupiter:junit-jupiter-api:5.0.0-M2",
-            "org.junit.jupiter:junit-jupiter-engine:5.0.0-M2",
-            "org.junit.vintage:junit-vintage-engine:4.12.0-M2",
             "org.spockframework:spock-core",
             {
                 "group": "org.mockito",

@@ -21,6 +21,7 @@ include ':api:rest-model'
 include ':api:business-logic'
 include ':api:version-bumper'
 include ':api:storage'
+include ':api:state-machine'
 
 include ':load-test:gatling'
 include ':docker'
