@@ -61,7 +61,7 @@ subprojects {
 
     task resolveDependencies {
         doLast {
-            configurations.each { it.files }
+            configurations.findAll { it.canBeResolved }.each { it.files }
         }
     }
 
