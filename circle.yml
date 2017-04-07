@@ -4,8 +4,6 @@ machine:
     services:
         - docker
         - mysql
-    node:
-        version: 7.2.1 
     environment:
         SPRING_DATASOURCE_URL: jdbc:mysql://localhost/circle_test
         SPRING_DATASOURCE_USERNAME: root
