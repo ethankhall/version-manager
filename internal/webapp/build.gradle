@@ -18,15 +18,15 @@ bootRun {
 dependencies {
     compile project(":api:business-logic")
     compile project(":api:rest-model")
-    compile project(":api:version-bumper")
+    compile project(":internal:version-bumper")
     compile project(":database:database-v2")
     compile project(":database:database-jooq")
     compile project(":database:database-migration")
-    compile project(":web-service:api-project")
-    compile project(":shared-config")
-    compile project(":shared-model")
-    compile project(':auth:authentication')
-    compile project(':auth:authorization')
+    compile project(":internal:endpoints")
+    compile project(":internal:shared-config")
+    compile project(":internal:shared-model")
+    compile project(':internal:authentication')
+    compile project(':internal:authorization')
     compile libraries.kotlin
 
 //    compile 'org.springframework.boot:spring-boot-devtools'

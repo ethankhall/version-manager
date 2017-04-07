@@ -5,9 +5,11 @@ apply plugin: 'kotlin'
 dependencies {
     compile libraries.kotlin
     compile libraries.logging
-    compile project(":auth:authorization")
-    compile project(":auth:authentication")
+    compile group: "javax.transaction",  name: "javax.transaction-api", version: "1.2"
+    compile project(":internal:shared-model")
+    compile project(":internal:authorization")
+    compile project(":internal:authentication")
     compile project(":database:database-v2")
-    compile project(":api:version-bumper")
-    compile project(":api:storage")
+    compile project(":internal:version-bumper")
+    compile project(":internal:storage")
 }

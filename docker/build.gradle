@@ -1,8 +1,8 @@
-evaluationDependsOn(":web-service:webapp")
+evaluationDependsOn(":internal:webapp")
 
 task prepairWebAppContainer(type: Copy) {
-    dependsOn ':web-service:webapp:bootRepackage'
-    from project(":web-service:webapp").tasks.jar
+    dependsOn ':internal:webapp:bootRepackage'
+    from project(":internal:webapp").tasks.jar
     into file('crom-webapp')
     rename '(.*).jar', 'webapp.jar'
 }

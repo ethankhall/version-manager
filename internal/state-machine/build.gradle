@@ -4,7 +4,7 @@ apply plugin: 'local-dev'
 
 dependencies {
     compile libraries.kotlin
-    compile project(":shared-model")
+    compile project(":internal:shared-model")
 
     testCompile libraries.testingLibraries
 }

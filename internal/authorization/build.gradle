@@ -4,8 +4,8 @@ apply plugin: 'local-dev'
 apply plugin: 'org.jetbrains.kotlin.jvm'
 
 dependencies {
-    compile project(":shared-config")
-    compile project(":shared-model")
+    compile project(":internal:shared-config")
+    compile project(":internal:shared-model")
     compile project(":database:database-v2")
     compile libraries.kotlin
     compile libraries.logging
@@ -13,7 +13,7 @@ dependencies {
 
     testCompile libraries.testingLibraries
 
-    integTestCompile project(":api:version-bumper")
+    integTestCompile project(":internal:version-bumper")
     integTestCompile libraries.springTest
     integTestCompile libraries.servletCore
     integTestCompile libraries.springBootTest

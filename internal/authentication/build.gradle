@@ -6,7 +6,7 @@ apply plugin: 'kotlin'
 configurations.integTestCompile.exclude module: 'spring-boot-starter-tomcat'
 
 dependencies {
-    compile project(":shared-config")
+    compile project(":internal:shared-config")
     compile project(":database:database-v2")
     compile libraries.kotlin
     compile libraries.logging

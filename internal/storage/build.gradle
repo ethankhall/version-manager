@@ -2,7 +2,7 @@ apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'groovy'
 
 dependencies {
-    compile project(":shared-model")
+    compile project(":internal:shared-model")
     compile libraries.kotlin
     compile libraries.googleCloud
     compile libraries.springBoot

@@ -5,7 +5,7 @@ apply plugin: 'kotlin'
 
 dependencies {
     compile project(":database:database-jooq")
-    compile project(":shared-model")
+    compile project(":internal:shared-model")
     compile libraries.kotlin
     compile libraries.logging
     compile libraries.springSecurity
@@ -15,8 +15,8 @@ dependencies {
 
     integTestCompile libraries.springTest
     integTestCompile libraries.springBootTest
-    integTestCompile project(":shared-config")
-    integTestCompile project(":api:version-bumper")
+    integTestCompile project(":internal:shared-config")
+    integTestCompile project(":internal:version-bumper")
 }
 
 integTest.dependsOn ':database:database-migration:flywayMigrate'

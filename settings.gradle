@@ -1,10 +1,10 @@
 //shared
-include 'shared-config'
-include 'shared-model'
+include ':internal:shared-config'
+include ':internal:shared-model'
 
 //web service - api's
-include ':web-service:api-project'
-include ':web-service:webapp'
+include ':internal:endpoints'
+include ':internal:webapp'
 
 //database
 include ':database:database-jooq'
@@ -13,15 +13,15 @@ include ':database:database-migration'
 include ':database:database-api-model'
 
 //security
-include ':auth:authentication'
-include ':auth:authorization'
+include ':internal:authentication'
+include ':internal:authorization'
 
 //api model
 include ':api:rest-model'
 include ':api:business-logic'
-include ':api:version-bumper'
-include ':api:storage'
-include ':api:state-machine'
+include ':internal:version-bumper'
+include ':internal:storage'
+include ':internal:state-machine'
 
 include ':load-test:gatling'
 include ':docker'

@@ -1,5 +1,6 @@
 plugins {
     id 'groovy'
+    id "org.jetbrains.kotlin.jvm" version "1.1.1"
 }
 
 repositories {
@@ -14,6 +15,9 @@ repositories {
     maven {
         url 'http://repo.ehdev.io/maven2'
     }
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
 }
 
 dependencies {
@@ -23,11 +27,17 @@ dependencies {
     compile 'com.netflix.nebula:nebula-dependency-recommender:4.1.2'
     runtime 'org.junit.platform:junit-platform-gradle-plugin:1.0.0-M3'
     runtime 'org.springframework.boot:spring-boot-gradle-plugin:1.5.2.RELEASE'
+//    compile group: 'org.jetbrains.kotlin', name: 'kotlin-script-util', version: '1.1.1'
+    compile group: 'org.jetbrains.kotlin', name: 'compiler-embeddable', version: '1.1.1'
+    compile 'org.jetbrains.kotlin:kotlin-stdlib-jre8:1.1.1'
+    runtime('gradle.plugin.org.jlleitschuh.gradle:ktlint-gradle:1.0.1') {
+        exclude group: 'org.jetbrains.kotlin'
+    }
 
     runtime 'tech.crom.client:gradle-client:+'
     runtime "org.flywaydb:flyway-gradle-plugin:4.1.2"
 
-    testCompile('org.spockframework:spock-core:1.0-groovy-2.4'){
+    testCompile('org.spockframework:spock-core:1.0-groovy-2.4') {
         exclude group: 'org.codehaus.groovy'
     }
 }

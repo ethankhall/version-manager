@@ -31,7 +31,7 @@ allprojects {
 }
 
 subprojects {
-    task allDeps(type: DependencyReportTask) {}
+    tasks.create('allDeps', DependencyReportTask)
 }
 
 apply from: "gradle/database.gradle"

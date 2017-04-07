@@ -2,7 +2,7 @@ apply plugin: 'java'
 apply plugin: 'kotlin'
 
 dependencies {
-    compile project(':shared-model')
+    compile project(':internal:shared-model')
     compile libraries.kotlin
     compile libraries.logging
     compile libraries.springCore
