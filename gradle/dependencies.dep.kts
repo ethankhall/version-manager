@@ -1,0 +1,83 @@
+defineVersion("jooq", "3.9.1").lock { withGroup("org.jooq") }
+defineVersion("kotlin", "1.1.1").lock { withGroup("org.jetbrains.kotlin") }
+defineVersion("spring", "4.3.2.RELEASE").lock { withGroup("org.springframework") }
+defineVersion("springBoot", "1.4.0.RELEASE").lock { withGroup("org.springframework.boot") }
+defineVersion("springSecurity", "4.1.1.RELEASE").lock { withGroup("org.springframework.security") }
+defineVersion("springSocial", "1.1.4.RELEASE")
+defineVersion("groovy", "2.4.5").lock { withGroup("org.codehaus.groovy") }
+defineVersion("spock", "1.1-groovy-2.4-rc-1").lock { withGroup("org.spockframework") }
+defineVersion("slf4j", "1.7.21").lock { withGroup("org.slf4j") }
+defineVersion("logback", "1.1.7").lock { withGroup("ch.qos.logback") }
+defineVersion("ehcache", "2.8.3").lock { withGroup("net.sf.ehcache") }
+defineVersion("hibernate", "5.3.4.Final")
+defineVersion("jackson", "2.8.7")
+    .lock { withGroup("com.fasterxml.jackson.core") }
+    .lock { withGroup("com.fasterxml.jackson.datatype") }
+defineVersion("flyway", "4.1.2").lock { withGroup("org.flywaydb") }
+defineVersion("dropwizard", "3.1.2").lock { withGroup("io.dropwizard.metrics") }
+
+excludeLibrary("org.springframework.boot", "spring-boot-starter-tomcat")
+
+defineLibrary("jooq", listOf("org.jooq:jooq", "org.jooq:jooq-meta", "org.jooq:jooq-codegen"))
+defineLibrary("kotlin", listOf("org.jetbrains.kotlin:kotlin-stdlib-jre8:${usingVersion("kotlin")}"))
+defineLibrary("aspectJ", listOf("org.aspectj:aspectjweaver:1.8.8"))
+defineLibrary("springSecurity", listOf("org.springframework.security:spring-security-web",
+    "org.springframework.security:spring-security-config",
+    "org.springframework.security:spring-security-core",
+    "org.springframework.security:spring-security-acl",
+    "javax.annotation:jsr250-api:1.0"))
+defineLibrary("springSecurityTest", listOf("org.springframework.security:spring-security-test"))
+defineLibrary("springTest", listOf("org.springframework:spring-test", "org.spockframework:spock-spring"))
+defineLibrary("springBootTest", listOf("org.springframework.boot:spring-boot-starter-test"))
+defineLibrary("springCore", listOf("org.springframework:spring-context",
+    "org.springframework:spring-context-support",
+    "org.springframework:spring-aop",
+    "javax.transaction:javax.transaction-api:1.2",
+    "org.springframework:spring-tx",
+    "org.springframework:spring-jdbc",
+    "cglib:cglib:3.2.0"))
+defineLibrary("springWeb", listOf("org.springframework:spring-web", "org.springframework:spring-webmvc"))
+defineLibrary("springBootBase", listOf("org.springframework.boot:spring-boot",
+    "org.springframework.boot:spring-boot-autoconfigure"))
+defineLibrary("springBoot", listOf("org.springframework.boot:spring-boot",
+    "org.springframework.boot:spring-boot-autoconfigure",
+    "org.springframework.boot:spring-boot-starter-thymeleaf",
+    "org.springframework.boot:spring-boot-starter-web",
+    "org.springframework.boot:spring-boot-starter-jetty"))
+defineLibrary("springSocial", listOf("org.springframework.social:spring-social-security:${usingVersion("springSocial")}",
+    "org.springframework.social:spring-social-core:${usingVersion("springSocial")}",
+    "org.springframework.social:spring-social-config:${usingVersion("springSocial")}",
+    "org.springframework.social:spring-social-google:1.0.0.RELEASE"))
+defineLibrary("thymeleaf", listOf("org.thymeleaf.extras:thymeleaf-extras-java8time:2.1.0.RELEASE",
+    "org.thymeleaf.extras:thymeleaf-extras-springsecurity4:2.1.2.RELEASE"))
+defineLibrary("database", listOf("mysql:mysql-connector-java:6.0.5",
+    "com.zaxxer:HikariCP:2.4.1",
+    "org.jooq:jooq",
+    "org.jooq:jooq-meta",
+    "org.jooq:jooq-codegen",
+    "org.flywaydb:flyway-core"))
+defineLibrary("testingLibraries", listOf("org.spockframework:spock-core",
+    "org.mockito:mockito-core:1.10.19",
+    "com.jayway.jsonpath:json-path:2.0.0",
+    "cglib:cglib:3.2.0",
+    "org.objenesis:objenesis:2.2",
+    "org.ow2.asm:asm:5.0.4",
+    "de.sven-jacobs:loremipsum:1.0",
+    "org.codehaus.groovy:groovy-all"))
+defineLibrary("groovy", listOf("org.codehaus.groovy:groovy-all"))
+defineLibrary("apacheCommons", listOf("org.apache.commons:commons-lang3:3.4",
+    "commons-io:commons-io:2.4",
+    "org.apache.httpcomponents:httpclient:4.2.2"))
+defineLibrary("logging", listOf("org.slf4j:slf4j-api", "ch.qos.logback:logback-classic"))
+defineLibrary("servletCore", listOf("javax.servlet:javax.servlet-api:3.1.0",
+    "org.glassfish.web:javax.el:2.2.6"))
+defineLibrary("jwt", listOf("io.jsonwebtoken:jjwt:0.6.0"))
+defineLibrary("ehcache", listOf("net.sf.ehcache:ehcache"))
+defineLibrary("jackson", listOf("com.fasterxml.jackson.core:jackson-annotations",
+    "com.fasterxml.jackson.core:jackson-databind",
+    "com.fasterxml.jackson.datatype:jackson-datatype-jsr310",
+    "com.fasterxml.jackson.module:jackson-module-kotlin:2.8.7"))
+defineLibrary("dropwizard", listOf("io.dropwizard.metrics:metrics-core:${usingVersion("dropwizard")}",
+    "io.dropwizard.metrics:metrics-ehcache:${usingVersion("dropwizard")}"))
+defineLibrary("googleCloud", listOf("com.google.api-client:google-api-client:1.22.0",
+    "com.google.apis:google-api-services-storage:v1-rev83-1.22.0"))

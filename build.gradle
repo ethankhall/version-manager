@@ -17,6 +17,7 @@ allprojects {
     repositories {
         mavenCentral()
         jcenter()
+        mavenLocal()
         maven {
             url 'http://repo.spring.io/milestone'
         }
@@ -54,10 +55,8 @@ versionManager {
 
 
 subprojects {
-    if (it.path != ':web-ui') {
-        buildDir = new File(rootProject.getProjectDir(), "build/${ project.path.replace(':', '/').substring(1) }")
-        apply plugin: 'java'
-    }
+    buildDir = new File(rootProject.getProjectDir(), "build/${ project.path.replace(':', '-').substring(1) }")
+    apply plugin: 'java'
 
     task resolveDependencies {
         doLast {
