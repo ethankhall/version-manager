@@ -1,11 +1,11 @@
 package tech.crom.service.api.constant
 
-import tech.crom.rest.model.constant.BumperListReponse
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import tech.crom.business.api.VersionBumperApi
+import tech.crom.rest.model.constant.BumperListReponse
 
 @Service
 @RequestMapping("/api/v1/constant")

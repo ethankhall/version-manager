@@ -12,7 +12,7 @@ import tech.crom.model.repository.CromRepo
 @Service
 open class DefaultVersionBumperManager @Autowired constructor(
     val dslContext: DSLContext
-): VersionBumperManager {
+) : VersionBumperManager {
 
     @Cacheable("versionBumperByName")
     override fun findBumper(name: String): CromVersionBumper? {
@@ -47,5 +47,5 @@ open class DefaultVersionBumperManager @Autowired constructor(
         return Class.forName(className).newInstance() as CromVersionBumper.Executor
     }
 
-    class BumperNotFoundException(bumperId: Long): RuntimeException("Could not find $bumperId.")
+    class BumperNotFoundException(bumperId: Long) : RuntimeException("Could not find $bumperId.")
 }

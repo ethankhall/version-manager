@@ -12,6 +12,6 @@ interface StorageApi {
 
     fun listFilesForVersion(version: PersistedCommit): List<String>
 
-    class MaxStorageReachedException: RuntimeException("Your project has reached it's max size.")
-    class BackedException(e: Throwable): RuntimeException("An unknown error with the storage backend occurred.", e)
+    class MaxStorageReachedException : RuntimeException("Your project has reached it's max size.")
+    class BackedException(e: Throwable) : RuntimeException("An unknown error with the storage backend occurred.", e)
 }

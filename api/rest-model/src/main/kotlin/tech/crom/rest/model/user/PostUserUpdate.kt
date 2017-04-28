@@ -15,6 +15,7 @@ data class PostUserUpdate(
     @JsonClassDescription("Description of what should be changed on the user.")
     data class Details(@JsonProperty("field") val field: FieldDetails,
                        @JsonProperty("value") val value: String)
+
     enum class FieldDetails {
         USER_NAME,
         DISPLAY_NAME

@@ -18,7 +18,7 @@ open class DefaultRepositoryApi @Autowired constructor(
     val repoManager: RepoManager,
     val versionBumperManager: VersionBumperManager,
     val permissionService: PermissionService
-): RepositoryApi {
+) : RepositoryApi {
 
     override fun deleteRepo(cromRepo: CromRepo) {
         repoManager.deleteRepo(cromRepo)

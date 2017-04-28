@@ -6,7 +6,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import org.springframework.social.security.SocialUserDetails
 import tech.crom.model.user.CromUser
 
-data class CromUserAuthentication(val user: CromUser): CromAuthentication {
+data class CromUserAuthentication(val user: CromUser) : CromAuthentication {
 
     val securityUser: SecurityCromUser
 
@@ -16,7 +16,7 @@ data class CromUserAuthentication(val user: CromUser): CromAuthentication {
 
     override fun getName(): String = user.userName
 
-    override fun setAuthenticated(isAuthenticated: Boolean) { }
+    override fun setAuthenticated(isAuthenticated: Boolean) {}
 
     override fun getCredentials(): Any? = null
 
@@ -30,7 +30,7 @@ data class CromUserAuthentication(val user: CromUser): CromAuthentication {
 
     override fun getUniqueId(): String = user.userId.toString()
 
-    data class SecurityCromUser(val cromUser: CromUser): UserDetails, SocialUserDetails {
+    data class SecurityCromUser(val cromUser: CromUser) : UserDetails, SocialUserDetails {
         override fun getUserId(): String = cromUser.userId.toString()
 
         override fun getUsername(): String = cromUser.userName

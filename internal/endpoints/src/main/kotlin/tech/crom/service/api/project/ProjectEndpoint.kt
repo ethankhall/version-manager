@@ -1,6 +1,5 @@
 package tech.crom.service.api.project
 
-import tech.crom.rest.model.project.FindProjectResponse
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -9,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import tech.crom.business.api.ProjectApi
+import tech.crom.rest.model.project.FindProjectResponse
 
 @Controller
 @RequestMapping(value = "/api/v1/projects", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))

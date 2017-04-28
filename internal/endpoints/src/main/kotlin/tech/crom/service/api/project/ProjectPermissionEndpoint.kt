@@ -41,7 +41,7 @@ open class ProjectPermissionEndpoint @Autowired constructor(
     open fun findPermissions(container: RequestDetails): ResponseEntity<GetPermissionGrantWrapper> {
         val permissions = permissionApi
             .findAllPermissions(container.cromProject!!)
-            .map { PermissionGrant(it.cromUser.userName, convertType(it.cromPermission))}
+            .map { PermissionGrant(it.cromUser.userName, convertType(it.cromPermission)) }
             .toList()
 
         return ResponseEntity(GetPermissionGrantWrapper(permissions), HttpStatus.OK)
@@ -52,7 +52,7 @@ open class ProjectPermissionEndpoint @Autowired constructor(
     @AdminPermissionRequired
     @RequestMapping(method = arrayOf(RequestMethod.POST))
     open fun addPermission(container: RequestDetails, @RequestBody permissionGrant: PermissionGrant): ResponseEntity<PermissionCreateResponse> {
-        if(permissionApi.grantPermission(permissionGrant.username, container.cromProject!!, convertType(permissionGrant))) {
+        if (permissionApi.grantPermission(permissionGrant.username, container.cromProject!!, convertType(permissionGrant))) {
             return ResponseEntity(PermissionCreateResponse(true), HttpStatus.CREATED)
         } else {
             return ResponseEntity(PermissionCreateResponse(false), HttpStatus.FORBIDDEN)
@@ -60,7 +60,7 @@ open class ProjectPermissionEndpoint @Autowired constructor(
     }
 
     private fun convertType(permission: PermissionGrant): CromPermission {
-        return when(permission.accessLevel) {
+        return when (permission.accessLevel) {
             PermissionGrant.AccessLevel.NONE -> CromPermission.NONE
             PermissionGrant.AccessLevel.READ -> CromPermission.READ
             PermissionGrant.AccessLevel.WRITE -> CromPermission.WRITE
@@ -69,7 +69,7 @@ open class ProjectPermissionEndpoint @Autowired constructor(
     }
 
     private fun convertType(permission: CromPermission): PermissionGrant.AccessLevel {
-        return when(permission) {
+        return when (permission) {
             CromPermission.NONE -> PermissionGrant.AccessLevel.NONE
             CromPermission.READ -> PermissionGrant.AccessLevel.READ
             CromPermission.WRITE -> PermissionGrant.AccessLevel.WRITE

@@ -34,7 +34,6 @@ internal class SpringTransactionProvider(private val txMgr: DataSourceTransactio
     internal inner class SpringTransaction(val tx: TransactionStatus) : Transaction
 
     companion object {
-
         private val logger = LoggerFactory.getLogger(SpringTransactionProvider::class.java)
     }
 }

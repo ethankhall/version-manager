@@ -23,7 +23,7 @@ open class DefaultCommitManager @Autowired constructor(
     val clock: Clock
 ) : CommitManager {
 
-    @CacheEvict("allCommitsByRepo", key="#cromRepo.repoId.toString()")
+    @CacheEvict("allCommitsByRepo", key = "#cromRepo.repoId.toString()")
     override fun createCommit(cromRepo: CromRepo,
                               generatedVersion: RealizedCommit,
                               parent: List<CommitIdContainer>): PersistedCommit {
@@ -42,7 +42,7 @@ open class DefaultCommitManager @Autowired constructor(
         return PersistedCommit(record.commitDetailId, record.commitId, record.version, record.createdAt.toZonedDateTime())
     }
 
-    @Cacheable("commitById", key="#cromRepo.repoId.toString() + #apiCommit.commitId")
+    @Cacheable("commitById", key = "#cromRepo.repoId.toString() + #apiCommit.commitId")
     override fun findCommit(cromRepo: CromRepo, apiCommit: CommitIdContainer): PersistedCommit? {
         val cd = Tables.COMMIT_DETAILS.`as`("cd")
 
@@ -66,7 +66,7 @@ open class DefaultCommitManager @Autowired constructor(
             detailsRecord.createdAt.toZonedDateTime())
     }
 
-    @Cacheable("allCommitsByRepo", key="#cromRepo.repoId.toString()")
+    @Cacheable("allCommitsByRepo", key = "#cromRepo.repoId.toString()")
     override fun findAllCommits(cromRepo: CromRepo): List<PersistedCommit> {
         val cd = Tables.COMMIT_DETAILS
 

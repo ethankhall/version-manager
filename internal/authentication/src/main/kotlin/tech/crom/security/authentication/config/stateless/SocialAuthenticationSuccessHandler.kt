@@ -20,7 +20,7 @@ class SocialAuthenticationSuccessHandler @Autowired constructor(
     val tokenManager: TokenManager,
     val jwtManager: JwtManager,
     val userCookieManger: UserCookieManger,
-    val env: Environment): SavedRequestAwareAuthenticationSuccessHandler() {
+    val env: Environment) : SavedRequestAwareAuthenticationSuccessHandler() {
 
     init {
         defaultTargetUrl = env.getRootPage()

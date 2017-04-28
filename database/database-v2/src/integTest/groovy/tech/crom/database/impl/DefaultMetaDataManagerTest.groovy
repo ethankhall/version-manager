@@ -2,8 +2,7 @@ package tech.crom.database.impl
 
 import org.jooq.DSLContext
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.SpringApplicationContextLoader
-import org.springframework.test.context.ContextConfiguration
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 import tech.crom.config.ClockConfig
@@ -15,7 +14,7 @@ import tech.crom.model.commit.impl.RealizedCommit
 import tech.crom.model.metadata.StorageData
 
 @Transactional
-@ContextConfiguration(classes = [DatabaseConfig, ClockConfig, CromDoaConfig], loader = SpringApplicationContextLoader.class)
+@SpringBootTest(classes = [DatabaseConfig, ClockConfig, CromDoaConfig], webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class DefaultMetaDataManagerTest extends Specification {
 
     @Autowired

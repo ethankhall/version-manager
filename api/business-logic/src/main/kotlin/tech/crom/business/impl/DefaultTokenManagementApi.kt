@@ -16,7 +16,7 @@ import java.time.ZonedDateTime
 class DefaultTokenManagementApi @Autowired constructor(
     val tokenManager: TokenManager,
     val jwtManager: JwtManager
-): TokenManagementApi {
+) : TokenManagementApi {
 
     override fun invalidateToken(id: String, tokenType: TokenType) {
         tokenManager.invalidateToken(id, tokenType)

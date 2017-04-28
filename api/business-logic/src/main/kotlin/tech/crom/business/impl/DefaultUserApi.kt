@@ -11,16 +11,16 @@ import javax.transaction.Transactional
 @Transactional
 open class DefaultUserApi(
     val userManager: UserManager
-): UserApi {
+) : UserApi {
 
     override fun update(user: CromUser) {
         val sourceUser = userManager.findUserDetails(user.userId)!!
 
-        if(user.userName != sourceUser.userName) {
+        if (user.userName != sourceUser.userName) {
             userManager.changeUserName(sourceUser, user.userName)
         }
 
-        if(user.displayName != sourceUser.displayName) {
+        if (user.displayName != sourceUser.displayName) {
             userManager.changeDisplayName(sourceUser, user.displayName)
         }
     }

@@ -41,7 +41,7 @@ open class DefaultMetaDataManager(
                     .and(mdt.NAME.eq(storageData.fileName)))
             .fetchOne()?.value1()
 
-        if(id != null) {
+        if (id != null) {
             dslContext
                 .update(mdt)
                 .set(mdt.SIZE, storageData.bytes.size.toLong())

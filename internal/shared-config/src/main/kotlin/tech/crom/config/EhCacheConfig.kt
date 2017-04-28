@@ -40,7 +40,7 @@ open class EhCacheConfig() {
 
     private fun createCache(name: String, ttl: Long? = null, maxEntries: Long = 5000, policy: String = "LRU"): Cache {
         val cacheConfiguration = CacheConfiguration()
-        if(ttl != null) {
+        if (ttl != null) {
             cacheConfiguration.timeToLiveSeconds = ttl
         }
         cacheConfiguration.name = name

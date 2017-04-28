@@ -5,7 +5,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 import tech.crom.model.repository.CromRepo
 
-data class CromRepositoryAuthentication(val source: CromRepo): CromAuthentication {
+data class CromRepositoryAuthentication(val source: CromRepo) : CromAuthentication {
 
     val securityRepo: SecurityCromRepo
 
@@ -15,7 +15,7 @@ data class CromRepositoryAuthentication(val source: CromRepo): CromAuthenticatio
 
     override fun getName(): String = source.repoName
 
-    override fun setAuthenticated(isAuthenticated: Boolean) { }
+    override fun setAuthenticated(isAuthenticated: Boolean) {}
 
     override fun getCredentials(): Any? = null
 
@@ -29,7 +29,7 @@ data class CromRepositoryAuthentication(val source: CromRepo): CromAuthenticatio
 
     override fun getUniqueId(): String = source.repoId.toString()
 
-    data class SecurityCromRepo(val cromRepo: CromRepo): UserDetails {
+    data class SecurityCromRepo(val cromRepo: CromRepo) : UserDetails {
 
         override fun getUsername(): String = cromRepo.repoName
 

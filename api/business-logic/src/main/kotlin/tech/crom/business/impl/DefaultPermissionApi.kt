@@ -16,7 +16,7 @@ class DefaultPermissionApi @Autowired constructor(
     val permissionService: PermissionService,
     val userManager: UserManager,
     val repositoryApi: RepositoryApi
-): PermissionApi {
+) : PermissionApi {
 
     override fun grantPermission(userName: String, authorizedObject: AuthorizedObject, permission: CromPermission): Boolean {
         try {
@@ -46,12 +46,12 @@ class DefaultPermissionApi @Autowired constructor(
 
     override fun findHighestPermission(authorizedObject: AuthorizedObject): CromPermission {
         val foundPermission = permissionService.findHighestPermission(authorizedObject)
-        if(authorizedObject is CromProject) {
+        if (authorizedObject is CromProject) {
             return if (foundPermission == CromPermission.NONE) CromPermission.READ else foundPermission
         }
 
-        if(authorizedObject is CromRepo) {
-            if(foundPermission == CromPermission.NONE) {
+        if (authorizedObject is CromRepo) {
+            if (foundPermission == CromPermission.NONE) {
                 val repoDetails = repositoryApi.getRepoDetails(authorizedObject)
                 return if (repoDetails.public) CromPermission.READ else foundPermission
             } else {
@@ -70,7 +70,7 @@ class DefaultPermissionApi @Autowired constructor(
     override fun getPermissions(authorizedObject: AuthorizedObject): List<PermissionApi.PermissionGroup> {
         return permissionService
             .retrieveAllPermissions(authorizedObject)
-            .map { PermissionApi.PermissionGroup(userManager.findUserDetails(it.userId)!!, it.permission)}
+            .map { PermissionApi.PermissionGroup(userManager.findUserDetails(it.userId)!!, it.permission) }
             .toList()
     }
 }

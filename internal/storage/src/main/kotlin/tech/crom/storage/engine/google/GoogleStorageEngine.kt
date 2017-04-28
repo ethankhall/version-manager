@@ -17,14 +17,10 @@ import java.net.URI
 
 @Service
 @ConditionalOnProperty(name = arrayOf("storage.engine"), havingValue = "google")
-class GoogleStorageEngine(env: Environment, val credential: GoogleCredential): StorageEngine {
+class GoogleStorageEngine(env: Environment, val credential: GoogleCredential) : StorageEngine {
 
-    val bucketName: String
+    val bucketName: String = env.getRequiredProperty("storage.bucket.name")
     val storage = getStorage()
-
-    init {
-        bucketName = env.getRequiredProperty("storage.bucket.name")
-    }
 
     override fun upload(path: String, storageData: StorageData): URI {
         val content = InputStreamContent(storageData.contentType, storageData.bytes.inputStream())

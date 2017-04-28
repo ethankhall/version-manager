@@ -1,7 +1,6 @@
 apply plugin: 'groovy'
 apply plugin: 'kotlin'
 apply plugin: 'local-dev'
-apply plugin: io.ehdev.conrad.gradle.SpringRestDocPlugin
 
 dependencies {
     compile project(':api:rest-model')
@@ -20,12 +19,8 @@ dependencies {
 
     compile 'javax.validation:validation-api:1.1.0.Final'
     compile 'org.hibernate:hibernate-validator:5.0.1.Final'
-    compile 'org.springframework.hateoas:spring-hateoas:0.19.0.RELEASE'
 
     testCompile libraries.groovy
     testCompile libraries.springTest
     testCompile libraries.testingLibraries
-
-    integTestCompile libraries.springBoot
-    integTestCompile libraries.springBootTest
 }

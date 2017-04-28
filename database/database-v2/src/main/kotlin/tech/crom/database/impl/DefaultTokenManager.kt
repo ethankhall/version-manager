@@ -15,7 +15,7 @@ import tech.crom.toZonedDateTime
 import java.time.Clock
 import java.time.Instant
 import java.time.ZonedDateTime
-import java.util.*
+import java.util.UUID
 
 @Service
 open class DefaultTokenManager @Autowired constructor(
@@ -28,21 +28,21 @@ open class DefaultTokenManager @Autowired constructor(
         if (tokenType == TokenType.REPOSITORY) {
             val tokensTable = Tables.REPOSITORY_TOKENS
             val repositoryToken = dslContext
-                .selectFrom(tokensTable)
-                .where(tokensTable.PUBLIC_REPO_TOKEN.eq(id))
-                .fetchOne()?.into(tokensTable)
+                    .selectFrom(tokensTable)
+                    .where(tokensTable.PUBLIC_REPO_TOKEN.eq(id))
+                    .fetchOne()?.into(tokensTable)
 
-            if (repositoryToken == null || isTokenValid(repositoryToken.valid, repositoryToken.expiresAt) == false) {
+            if (repositoryToken == null || !isTokenValid(repositoryToken.valid, repositoryToken.expiresAt)) {
                 return null
             }
             return TokenManager.UderlyingTokenDetails(repositoryToken.repoId, repositoryToken.repositoryTokenId, tokenType)
         } else {
             val userTokens = Tables.USER_TOKENS
             val userToken = dslContext
-                .selectFrom(userTokens)
-                .where(userTokens.PUBLIC_USER_TOKEN.eq(id))
-                .fetchOne()?.into(userTokens)
-            if (userToken == null || isTokenValid(userToken.valid, userToken.expiresAt) == false) {
+                    .selectFrom(userTokens)
+                    .where(userTokens.PUBLIC_USER_TOKEN.eq(id))
+                    .fetchOne()?.into(userTokens)
+            if (userToken == null || !isTokenValid(userToken.valid, userToken.expiresAt)) {
                 return null
             }
             return TokenManager.UderlyingTokenDetails(userToken.userId, userToken.userTokenId, tokenType)

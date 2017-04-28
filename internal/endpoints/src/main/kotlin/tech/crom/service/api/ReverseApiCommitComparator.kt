@@ -1,7 +1,7 @@
 package tech.crom.service.api
 
 import tech.crom.model.commit.VersionCommitDetails
-import java.util.*
+import java.util.Comparator
 
 class ReverseApiCommitComparator : Comparator<VersionCommitDetails> {
 

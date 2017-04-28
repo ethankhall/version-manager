@@ -10,7 +10,7 @@ import tech.crom.model.repository.CromRepo
 @Service
 class DefaultVersionBumperApi @Autowired constructor(
     val versionBumperManager: VersionBumperManager
-): VersionBumperApi {
+) : VersionBumperApi {
 
     override fun findVersionBumper(cromRepo: CromRepo): CromVersionBumper {
         return versionBumperManager.getBumper(cromRepo)
@@ -24,5 +24,5 @@ class DefaultVersionBumperApi @Autowired constructor(
         return versionBumperManager.findAll()
     }
 
-    class VersionBumperNotFoundException(name: String): RuntimeException("Unable to find bumper for $name")
+    class VersionBumperNotFoundException(name: String) : RuntimeException("Unable to find bumper for $name")
 }

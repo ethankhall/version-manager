@@ -15,7 +15,7 @@ open class DefaultWatcherApi @Autowired constructor(
     val watcherManager: WatcherManager,
     val projectManager: ProjectManager,
     val repoManager: RepoManager
-): WatcherApi {
+) : WatcherApi {
 
     override fun addWatch(cromUser: CromUser, cromProject: CromProject) {
         watcherManager.addWatch(cromUser, cromProject)
@@ -36,7 +36,7 @@ open class DefaultWatcherApi @Autowired constructor(
     override fun getWatches(cromUser: CromUser): List<WatcherApi.WatcherDetails> {
         return watcherManager.getWatches(cromUser).map {
             val project = projectManager.findProject(it.projectId)!!
-            val repo = if(it.repoId != null) repoManager.findRepo(it.repoId!!) else null
+            val repo = if (it.repoId != null) repoManager.findRepo(it.repoId!!) else null
             WatcherApi.WatcherDetails(project, repo)
         }
     }

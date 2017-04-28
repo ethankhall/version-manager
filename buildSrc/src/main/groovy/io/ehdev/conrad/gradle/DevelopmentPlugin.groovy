@@ -9,12 +9,9 @@ class DevelopmentPlugin implements Plugin<Project> {
     void apply(Project project) {
         project.with {
             apply plugin: 'java'
+            apply plugin: 'groovy'
             apply plugin: 'idea'
             apply plugin: 'jacoco'
-
-//            jacoco {
-//                toolVersion = "0.7.7.201606060606"
-//            }
 
             sourceCompatibility = '1.8'
 
@@ -64,7 +61,11 @@ class DevelopmentPlugin implements Plugin<Project> {
 
             idea {
                 module {
-                    scopes.TEST.plus += [configurations.integTestRuntime]
+                    testSourceDirs += sourceSets.integTest.groovy.srcDirs
+                    testSourceDirs += sourceSets.integTest.java.srcDirs
+                    testSourceDirs += sourceSets.integTest.resources.srcDirs
+                    scopes.TEST.plus.add(configurations.integTestCompile)
+                    scopes.TEST.plus.add(configurations.integTestRuntime)
                 }
             }
         }

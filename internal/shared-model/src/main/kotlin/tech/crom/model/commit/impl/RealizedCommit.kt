@@ -10,5 +10,5 @@ data class RealizedCommit(override val commitId: String,
                           val createdAt: ZonedDateTime? = null) : CommitDetails, VersionCommitDetails {
     constructor(commitId: String,
                 version: String,
-                createdAt: ZonedDateTime?): this(commitId, VersionDetails(version), createdAt)
+                createdAt: ZonedDateTime?) : this(commitId, VersionDetails(version), createdAt)
 }

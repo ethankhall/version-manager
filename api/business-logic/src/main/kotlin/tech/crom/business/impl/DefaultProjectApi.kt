@@ -41,7 +41,7 @@ open class DefaultProjectApi @Autowired constructor(
     override fun findProject(projectName: String): CromProject? = projectManager.findProject(projectName)
 
     override fun createProject(cromUser: CromUser, projectName: String): CromProject {
-        if(projectTrackerManager.count(cromUser) >= 10) {
+        if (projectTrackerManager.count(cromUser) >= 10) {
             throw ProjectManager.TooManyProjectsException(cromUser.userName)
         }
 

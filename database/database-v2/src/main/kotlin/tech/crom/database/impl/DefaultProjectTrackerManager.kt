@@ -11,7 +11,7 @@ import tech.crom.model.user.CromUser
 @Service
 open class DefaultProjectTrackerManager @Autowired constructor(
     val dsl: DSLContext
-): ProjectTrackerManager {
+) : ProjectTrackerManager {
 
     override fun count(cromUser: CromUser): Int {
         val pdt = Tables.PROJECT_DETAIL_TRACKER

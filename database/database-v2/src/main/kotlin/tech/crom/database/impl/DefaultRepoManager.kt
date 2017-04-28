@@ -29,9 +29,9 @@ open class DefaultRepoManager @Autowired constructor(
     }
 
     @Caching(evict = arrayOf(
-        CacheEvict("repoById", key="#cromRepo.repoId"),
-        CacheEvict("repoDetailsById", key="#cromRepo.repoId"),
-        CacheEvict("repoByProjectAndName", key="#cromRepo.projectId + #cromRepo.repoName")))
+        CacheEvict("repoById", key = "#cromRepo.repoId"),
+        CacheEvict("repoDetailsById", key = "#cromRepo.repoId"),
+        CacheEvict("repoByProjectAndName", key = "#cromRepo.projectId + #cromRepo.repoName")))
     override fun deleteRepo(cromRepo: CromRepo) {
         val tokens = Tables.REPOSITORY_TOKENS
         dslContext
@@ -49,7 +49,7 @@ open class DefaultRepoManager @Autowired constructor(
     @Caching(evict = arrayOf(
         CacheEvict("repoById", allEntries = true),
         CacheEvict("repoDetailsById", allEntries = true),
-        CacheEvict("repoByProjectAndName", key="#cromProject.projectId + #repoName")))
+        CacheEvict("repoByProjectAndName", key = "#cromProject.projectId + #repoName")))
     override fun createRepo(cromProject: CromProject,
                             repoName: String,
                             versionBumper: CromVersionBumper,
@@ -109,7 +109,7 @@ open class DefaultRepoManager @Autowired constructor(
         return CromRepo(repo.repoDetailId, repo.securityId, repo.projectId, repo.repoName, repo.versionBumperId)
     }
 
-    @Cacheable("repoDetailsById", key="#cromRepo.repoId")
+    @Cacheable("repoDetailsById", key = "#cromRepo.repoId")
     override fun getDetails(cromRepo: CromRepo): RepoManager.CromRepoDetails {
         val repo = fetchOneRepoDetailsById(cromRepo.repoId)!!
         return RepoManager.CromRepoDetails(cromRepo, repo.versionBumperId, repo.public, repo.url, repo.description)

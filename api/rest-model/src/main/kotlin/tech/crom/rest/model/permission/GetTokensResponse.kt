@@ -5,7 +5,6 @@ import com.fasterxml.jackson.annotation.JsonProperty
 import tech.crom.rest.model.OutputModel
 import java.time.ZonedDateTime
 
-
 @OutputModel
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 class GetTokensResponse(

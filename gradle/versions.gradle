@@ -1,6 +1,4 @@
-apply plugin: 'io.ehdev.gradle.dependency-script'
-
 // Because spring boot is opinionated, and I don't want their opinions.
-ext['hibernate.version'] = versions.hibernate
-ext['jackson.version'] = versions.jackson
-ext['jooq.version'] = versions.jooq
+ext['hibernate.version'] = deps.versions.hibernate
+ext['jackson.version'] = deps.versions.jackson
+ext['jooq.version'] = deps.versions.jooq

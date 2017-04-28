@@ -15,7 +15,7 @@ import tech.crom.model.repository.CromRepo
 class DetaultCommitApi @Autowired constructor(
     val commitManager: CommitManager,
     val versionBumperApi: VersionBumperApi
-): CommitApi {
+) : CommitApi {
     override fun findCommit(cromRepo: CromRepo, commitIdContainer: CommitIdContainer): PersistedCommit? {
         return commitManager.findCommit(cromRepo, commitIdContainer)
     }

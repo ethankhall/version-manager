@@ -42,7 +42,7 @@ class RequestDetailsParameterResolver @Autowired constructor(
         val repo = getRepo(rawRequest, project)
 
         val authentication = SecurityContextHolder.getContext().authentication
-        val permission = when(authentication) {
+        val permission = when (authentication) {
             is CromRepositoryAuthentication -> getPermissionsForRepoAuth(repo, authentication)
             is CromUserAuthentication -> getPermissionForUserAuth(project, repo, authentication)
             else -> createNoPermissions()
@@ -51,7 +51,7 @@ class RequestDetailsParameterResolver @Autowired constructor(
         return RequestDetails(project, repo, permission, rawRequest)
     }
 
-    fun createNoPermissions() : RequestPermissions {
+    fun createNoPermissions(): RequestPermissions {
         return RequestPermissions(CromPermission.READ, CromPermission.READ, null)
     }
 
@@ -61,7 +61,7 @@ class RequestDetailsParameterResolver @Autowired constructor(
         return RequestPermissions(projectPermission, repoPermission, auth.user)
     }
 
-    fun getPermissionsForRepoAuth(repo: CromRepo?, auth: CromRepositoryAuthentication) : RequestPermissions {
+    fun getPermissionsForRepoAuth(repo: CromRepo?, auth: CromRepositoryAuthentication): RequestPermissions {
         if (repo != null) {
             if (repo.projectId == auth.source.projectId && repo.repoId == auth.source.repoId) {
                 return RequestPermissions(CromPermission.NONE, CromPermission.WRITE, CromUser.REPO_USER)

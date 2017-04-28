@@ -12,7 +12,7 @@ data class PersistedCommit(val id: Long,
     constructor(id: Long,
                 commitId: String,
                 version: String,
-                createdAt: ZonedDateTime): this(id, commitId, VersionDetails(version), createdAt)
+                createdAt: ZonedDateTime) : this(id, commitId, VersionDetails(version), createdAt)
 
     fun getVersionString(): String = version.versionString
 }

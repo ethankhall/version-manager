@@ -1,6 +1,5 @@
 package tech.crom.database.api
 
-import tech.crom.model.commit.CommitDetails
 import tech.crom.model.commit.CommitIdContainer
 import tech.crom.model.commit.impl.PersistedCommit
 import tech.crom.model.commit.impl.RealizedCommit

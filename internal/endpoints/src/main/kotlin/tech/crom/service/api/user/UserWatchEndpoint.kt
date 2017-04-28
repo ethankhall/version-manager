@@ -13,7 +13,6 @@ import tech.crom.business.api.WatcherApi
 import tech.crom.rest.model.user.GetWatchesResponse
 import tech.crom.web.api.model.RequestDetails
 
-
 @Controller
 @RequestMapping("/api/v1/user")
 open class UserWatchEndpoint @Autowired constructor(

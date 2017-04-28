@@ -10,12 +10,12 @@ data class RequestPermissions(val projectPermission: CromPermission?,
     fun findUserName(): String? = cromUser?.userName
 
     fun findHighestPermission(): CromPermission {
-        if(projectPermission == null) {
+        if (projectPermission == null) {
             return CromPermission.NONE
         }
 
-        if(repoPermission != null) {
-            return if(repoPermission.isHigherOrEqualThan(projectPermission)) repoPermission else projectPermission
+        if (repoPermission != null) {
+            return if (repoPermission.isHigherOrEqualThan(projectPermission)) repoPermission else projectPermission
         }
 
         return projectPermission
