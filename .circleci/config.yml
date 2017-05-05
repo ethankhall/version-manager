@@ -18,10 +18,6 @@ jobs:
 
 
     steps:
-      - run:
-          name: Fix CI Machine
-          command: gcloud --quiet components update && source ~/.bashrc
-
       - checkout
 
       - restore_cache:
@@ -53,6 +49,7 @@ jobs:
           name: Deploy To Google Cloud
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              export PATH="$PATH:/google-cloud-sdk/bin"
               echo $GOOGLE_CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
               gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
               gcloud config set project $GCLOUD_PROJECT
