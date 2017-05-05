@@ -4,10 +4,10 @@ jobs:
     working_directory: ~/checkout
     docker:
       - image: openjdk:8-jdk
-      
+
       - image: mysql:latest
         environment:
-          no_proxy: *.local, 169.254/16
+          no_proxy: "*.local, 169.254/16"
           PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
           GOSU_VERSION: 1.7
           MYSQL_MAJOR: 5.7
