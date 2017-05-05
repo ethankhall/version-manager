@@ -4,6 +4,7 @@ jobs:
     working_directory: ~/checkout
     docker:
       - image: openjdk:8-jdk
+      - image: google/cloud-sdk
 
       - image: mysql:latest
         environment:
@@ -19,7 +20,7 @@ jobs:
     steps:
       - run:
           name: Fix CI Machine
-          command: sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update && source ~/.bashrc
+          command: gcloud --quiet components update && source ~/.bashrc
 
       - checkout
 
