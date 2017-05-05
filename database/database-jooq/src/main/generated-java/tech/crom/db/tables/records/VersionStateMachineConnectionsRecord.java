@@ -19,7 +19,7 @@ import org.jooq.Record3;
 import org.jooq.Row3;
 import org.jooq.impl.UpdatableRecordImpl;
 
-import tech.crom.db.tables.ProjectDetailTrackerTable;
+import tech.crom.db.tables.VersionStateMachineConnectionsTable;
 
 
 /**
@@ -34,58 +34,58 @@ import tech.crom.db.tables.ProjectDetailTrackerTable;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
-@Table(name = "project_detail_tracker", schema = "version_manager_test")
-public class ProjectDetailTrackerRecord extends UpdatableRecordImpl<ProjectDetailTrackerRecord> implements Record3<Long, Long, Long> {
+@Table(name = "version_state_machine_connections", schema = "version_manager_test")
+public class VersionStateMachineConnectionsRecord extends UpdatableRecordImpl<VersionStateMachineConnectionsRecord> implements Record3<Long, Long, Long> {
 
-    private static final long serialVersionUID = -617144044;
+    private static final long serialVersionUID = 1757418896;
 
     /**
-     * Setter for <code>version_manager_test.project_detail_tracker.project_detail_tracker_id</code>.
+     * Setter for <code>version_manager_test.version_state_machine_connections.state_machine_detail_id</code>.
      */
-    public void setProjectDetailTrackerId(Long value) {
+    public void setStateMachineDetailId(Long value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.project_detail_tracker.project_detail_tracker_id</code>.
+     * Getter for <code>version_manager_test.version_state_machine_connections.state_machine_detail_id</code>.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "project_detail_tracker_id", unique = true, nullable = false, precision = 19)
+    @Column(name = "state_machine_detail_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getProjectDetailTrackerId() {
+    public Long getStateMachineDetailId() {
         return (Long) get(0);
     }
 
     /**
-     * Setter for <code>version_manager_test.project_detail_tracker.product_detail_id</code>.
+     * Setter for <code>version_manager_test.version_state_machine_connections.source</code>.
      */
-    public void setProductDetailId(Long value) {
+    public void setSource(Long value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.project_detail_tracker.product_detail_id</code>.
+     * Getter for <code>version_manager_test.version_state_machine_connections.source</code>.
      */
-    @Column(name = "product_detail_id", nullable = false, precision = 19)
+    @Column(name = "source", nullable = false, precision = 19)
     @NotNull
-    public Long getProductDetailId() {
+    public Long getSource() {
         return (Long) get(1);
     }
 
     /**
-     * Setter for <code>version_manager_test.project_detail_tracker.user_id</code>.
+     * Setter for <code>version_manager_test.version_state_machine_connections.destination</code>.
      */
-    public void setUserId(Long value) {
+    public void setDestination(Long value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.project_detail_tracker.user_id</code>.
+     * Getter for <code>version_manager_test.version_state_machine_connections.destination</code>.
      */
-    @Column(name = "user_id", nullable = false, precision = 19)
+    @Column(name = "destination", nullable = false, precision = 19)
     @NotNull
-    public Long getUserId() {
+    public Long getDestination() {
         return (Long) get(2);
     }
 
@@ -126,7 +126,7 @@ public class ProjectDetailTrackerRecord extends UpdatableRecordImpl<ProjectDetai
      */
     @Override
     public Field<Long> field1() {
-        return ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER.PROJECT_DETAIL_TRACKER_ID;
+        return VersionStateMachineConnectionsTable.VERSION_STATE_MACHINE_CONNECTIONS.STATE_MACHINE_DETAIL_ID;
     }
 
     /**
@@ -134,7 +134,7 @@ public class ProjectDetailTrackerRecord extends UpdatableRecordImpl<ProjectDetai
      */
     @Override
     public Field<Long> field2() {
-        return ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER.PRODUCT_DETAIL_ID;
+        return VersionStateMachineConnectionsTable.VERSION_STATE_MACHINE_CONNECTIONS.SOURCE;
     }
 
     /**
@@ -142,7 +142,7 @@ public class ProjectDetailTrackerRecord extends UpdatableRecordImpl<ProjectDetai
      */
     @Override
     public Field<Long> field3() {
-        return ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER.USER_ID;
+        return VersionStateMachineConnectionsTable.VERSION_STATE_MACHINE_CONNECTIONS.DESTINATION;
     }
 
     /**
@@ -150,7 +150,7 @@ public class ProjectDetailTrackerRecord extends UpdatableRecordImpl<ProjectDetai
      */
     @Override
     public Long value1() {
-        return getProjectDetailTrackerId();
+        return getStateMachineDetailId();
     }
 
     /**
@@ -158,7 +158,7 @@ public class ProjectDetailTrackerRecord extends UpdatableRecordImpl<ProjectDetai
      */
     @Override
     public Long value2() {
-        return getProductDetailId();
+        return getSource();
     }
 
     /**
@@ -166,15 +166,15 @@ public class ProjectDetailTrackerRecord extends UpdatableRecordImpl<ProjectDetai
      */
     @Override
     public Long value3() {
-        return getUserId();
+        return getDestination();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ProjectDetailTrackerRecord value1(Long value) {
-        setProjectDetailTrackerId(value);
+    public VersionStateMachineConnectionsRecord value1(Long value) {
+        setStateMachineDetailId(value);
         return this;
     }
 
@@ -182,8 +182,8 @@ public class ProjectDetailTrackerRecord extends UpdatableRecordImpl<ProjectDetai
      * {@inheritDoc}
      */
     @Override
-    public ProjectDetailTrackerRecord value2(Long value) {
-        setProductDetailId(value);
+    public VersionStateMachineConnectionsRecord value2(Long value) {
+        setSource(value);
         return this;
     }
 
@@ -191,8 +191,8 @@ public class ProjectDetailTrackerRecord extends UpdatableRecordImpl<ProjectDetai
      * {@inheritDoc}
      */
     @Override
-    public ProjectDetailTrackerRecord value3(Long value) {
-        setUserId(value);
+    public VersionStateMachineConnectionsRecord value3(Long value) {
+        setDestination(value);
         return this;
     }
 
@@ -200,7 +200,7 @@ public class ProjectDetailTrackerRecord extends UpdatableRecordImpl<ProjectDetai
      * {@inheritDoc}
      */
     @Override
-    public ProjectDetailTrackerRecord values(Long value1, Long value2, Long value3) {
+    public VersionStateMachineConnectionsRecord values(Long value1, Long value2, Long value3) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -212,20 +212,20 @@ public class ProjectDetailTrackerRecord extends UpdatableRecordImpl<ProjectDetai
     // -------------------------------------------------------------------------
 
     /**
-     * Create a detached ProjectDetailTrackerRecord
+     * Create a detached VersionStateMachineConnectionsRecord
      */
-    public ProjectDetailTrackerRecord() {
-        super(ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER);
+    public VersionStateMachineConnectionsRecord() {
+        super(VersionStateMachineConnectionsTable.VERSION_STATE_MACHINE_CONNECTIONS);
     }
 
     /**
-     * Create a detached, initialised ProjectDetailTrackerRecord
+     * Create a detached, initialised VersionStateMachineConnectionsRecord
      */
-    public ProjectDetailTrackerRecord(Long projectDetailTrackerId, Long productDetailId, Long userId) {
-        super(ProjectDetailTrackerTable.PROJECT_DETAIL_TRACKER);
+    public VersionStateMachineConnectionsRecord(Long stateMachineDetailId, Long source, Long destination) {
+        super(VersionStateMachineConnectionsTable.VERSION_STATE_MACHINE_CONNECTIONS);
 
-        set(0, projectDetailTrackerId);
-        set(1, productDetailId);
-        set(2, userId);
+        set(0, stateMachineDetailId);
+        set(1, source);
+        set(2, destination);
     }
 }

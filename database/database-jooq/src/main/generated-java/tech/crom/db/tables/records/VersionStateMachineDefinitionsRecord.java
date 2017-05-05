@@ -20,7 +20,7 @@ import org.jooq.Record3;
 import org.jooq.Row3;
 import org.jooq.impl.UpdatableRecordImpl;
 
-import tech.crom.db.tables.ProjectDetailsTable;
+import tech.crom.db.tables.VersionStateMachineDefinitionsTable;
 
 
 /**
@@ -35,59 +35,59 @@ import tech.crom.db.tables.ProjectDetailsTable;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
-@Table(name = "project_details", schema = "version_manager_test")
-public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsRecord> implements Record3<Long, String, Long> {
+@Table(name = "version_state_machine_definitions", schema = "version_manager_test")
+public class VersionStateMachineDefinitionsRecord extends UpdatableRecordImpl<VersionStateMachineDefinitionsRecord> implements Record3<Long, String, Long> {
 
-    private static final long serialVersionUID = -546362538;
+    private static final long serialVersionUID = 1755060488;
 
     /**
-     * Setter for <code>version_manager_test.project_details.product_detail_id</code>.
+     * Setter for <code>version_manager_test.version_state_machine_definitions.version_state_machine_id</code>.
      */
-    public void setProductDetailId(Long value) {
+    public void setVersionStateMachineId(Long value) {
         set(0, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.project_details.product_detail_id</code>.
+     * Getter for <code>version_manager_test.version_state_machine_definitions.version_state_machine_id</code>.
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "product_detail_id", unique = true, nullable = false, precision = 19)
+    @Column(name = "version_state_machine_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getProductDetailId() {
+    public Long getVersionStateMachineId() {
         return (Long) get(0);
     }
 
     /**
-     * Setter for <code>version_manager_test.project_details.project_name</code>.
+     * Setter for <code>version_manager_test.version_state_machine_definitions.initial_state</code>.
      */
-    public void setProjectName(String value) {
+    public void setInitialState(String value) {
         set(1, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.project_details.project_name</code>.
+     * Getter for <code>version_manager_test.version_state_machine_definitions.initial_state</code>.
      */
-    @Column(name = "project_name", nullable = false, length = 255)
+    @Column(name = "initial_state", nullable = false, length = 64)
     @NotNull
-    @Size(max = 255)
-    public String getProjectName() {
+    @Size(max = 64)
+    public String getInitialState() {
         return (String) get(1);
     }
 
     /**
-     * Setter for <code>version_manager_test.project_details.security_id</code>.
+     * Setter for <code>version_manager_test.version_state_machine_definitions.repo_detail_id</code>.
      */
-    public void setSecurityId(Long value) {
+    public void setRepoDetailId(Long value) {
         set(2, value);
     }
 
     /**
-     * Getter for <code>version_manager_test.project_details.security_id</code>.
+     * Getter for <code>version_manager_test.version_state_machine_definitions.repo_detail_id</code>.
      */
-    @Column(name = "security_id", nullable = false, precision = 19)
+    @Column(name = "repo_detail_id", unique = true, nullable = false, precision = 19)
     @NotNull
-    public Long getSecurityId() {
+    public Long getRepoDetailId() {
         return (Long) get(2);
     }
 
@@ -128,7 +128,7 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
      */
     @Override
     public Field<Long> field1() {
-        return ProjectDetailsTable.PROJECT_DETAILS.PRODUCT_DETAIL_ID;
+        return VersionStateMachineDefinitionsTable.VERSION_STATE_MACHINE_DEFINITIONS.VERSION_STATE_MACHINE_ID;
     }
 
     /**
@@ -136,7 +136,7 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
      */
     @Override
     public Field<String> field2() {
-        return ProjectDetailsTable.PROJECT_DETAILS.PROJECT_NAME;
+        return VersionStateMachineDefinitionsTable.VERSION_STATE_MACHINE_DEFINITIONS.INITIAL_STATE;
     }
 
     /**
@@ -144,7 +144,7 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
      */
     @Override
     public Field<Long> field3() {
-        return ProjectDetailsTable.PROJECT_DETAILS.SECURITY_ID;
+        return VersionStateMachineDefinitionsTable.VERSION_STATE_MACHINE_DEFINITIONS.REPO_DETAIL_ID;
     }
 
     /**
@@ -152,7 +152,7 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
      */
     @Override
     public Long value1() {
-        return getProductDetailId();
+        return getVersionStateMachineId();
     }
 
     /**
@@ -160,7 +160,7 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
      */
     @Override
     public String value2() {
-        return getProjectName();
+        return getInitialState();
     }
 
     /**
@@ -168,15 +168,15 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
      */
     @Override
     public Long value3() {
-        return getSecurityId();
+        return getRepoDetailId();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public ProjectDetailsRecord value1(Long value) {
-        setProductDetailId(value);
+    public VersionStateMachineDefinitionsRecord value1(Long value) {
+        setVersionStateMachineId(value);
         return this;
     }
 
@@ -184,8 +184,8 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
      * {@inheritDoc}
      */
     @Override
-    public ProjectDetailsRecord value2(String value) {
-        setProjectName(value);
+    public VersionStateMachineDefinitionsRecord value2(String value) {
+        setInitialState(value);
         return this;
     }
 
@@ -193,8 +193,8 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
      * {@inheritDoc}
      */
     @Override
-    public ProjectDetailsRecord value3(Long value) {
-        setSecurityId(value);
+    public VersionStateMachineDefinitionsRecord value3(Long value) {
+        setRepoDetailId(value);
         return this;
     }
 
@@ -202,7 +202,7 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
      * {@inheritDoc}
      */
     @Override
-    public ProjectDetailsRecord values(Long value1, String value2, Long value3) {
+    public VersionStateMachineDefinitionsRecord values(Long value1, String value2, Long value3) {
         value1(value1);
         value2(value2);
         value3(value3);
@@ -214,20 +214,20 @@ public class ProjectDetailsRecord extends UpdatableRecordImpl<ProjectDetailsReco
     // -------------------------------------------------------------------------
 
     /**
-     * Create a detached ProjectDetailsRecord
+     * Create a detached VersionStateMachineDefinitionsRecord
      */
-    public ProjectDetailsRecord() {
-        super(ProjectDetailsTable.PROJECT_DETAILS);
+    public VersionStateMachineDefinitionsRecord() {
+        super(VersionStateMachineDefinitionsTable.VERSION_STATE_MACHINE_DEFINITIONS);
     }
 
     /**
-     * Create a detached, initialised ProjectDetailsRecord
+     * Create a detached, initialised VersionStateMachineDefinitionsRecord
      */
-    public ProjectDetailsRecord(Long productDetailId, String projectName, Long securityId) {
-        super(ProjectDetailsTable.PROJECT_DETAILS);
+    public VersionStateMachineDefinitionsRecord(Long versionStateMachineId, String initialState, Long repoDetailId) {
+        super(VersionStateMachineDefinitionsTable.VERSION_STATE_MACHINE_DEFINITIONS);
 
-        set(0, productDetailId);
-        set(1, projectName);
-        set(2, securityId);
+        set(0, versionStateMachineId);
+        set(1, initialState);
+        set(2, repoDetailId);
     }
 }
