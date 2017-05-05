@@ -16,46 +16,46 @@ jobs:
           MYSQL_DATABASE: version_manager_test
 
 
-  steps:
-    - run:
-        name: Fix CI Machine
-        command: sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update && source ~/.bashrc
+    steps:
+      - run:
+          name: Fix CI Machine
+          command: sudo /opt/google-cloud-sdk/bin/gcloud --quiet components update && source ~/.bashrc
 
-    - checkout
+      - checkout
 
-    - restore_cache:
-        key: crom-{{ .Branch }}
+      - restore_cache:
+          key: crom-{{ .Branch }}
 
-    - run:
-        name: Update Cache
-        command: ./gradlew resolveDependencies
+      - run:
+          name: Update Cache
+          command: ./gradlew resolveDependencies
 
-    - save_cache:
-        key: crom-{{ .Branch }}
-        paths:
-          - "~/.gradle"
+      - save_cache:
+          key: crom-{{ .Branch }}
+          paths:
+            - "~/.gradle"
 
-    - run:
-        name: Validate Code
-        command: ./gradlew check
+      - run:
+          name: Validate Code
+          command: ./gradlew check
 
-    - run:
-        name: Copy Artifacts
-        command: |
-            mkdir -p ~/test-results
-            find . -maxdepth 5 -name 'TEST-*.xml' -exec cp {} ~/test-results/ \;
+      - run:
+          name: Copy Artifacts
+          command: |
+              mkdir -p ~/test-results
+              find . -maxdepth 5 -name 'TEST-*.xml' -exec cp {} ~/test-results/ \;
 
-    - store_test_results:
-        path: ~/test-results/
+      - store_test_results:
+          path: ~/test-results/
 
-    - deploy:
-        name: Deploy To Google Cloud
-        command: |
-          if [ "${CIRCLE_BRANCH}" == "master" ]; then
-            echo $GOOGLE_CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
-            gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
-            gcloud config set project $GCLOUD_PROJECT
-            docker login -e 1234@5678.com -u _json_key -p "$(cat ${HOME}/client-secret.json)" https://us.gcr.io
-            ./gradlew claimVersion --refresh-dependencies  --console=plain
-            ./gradlew clean :docker:pushContainers --console=plain
-          fi
+      - deploy:
+          name: Deploy To Google Cloud
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              echo $GOOGLE_CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
+              gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
+              gcloud config set project $GCLOUD_PROJECT
+              docker login -e 1234@5678.com -u _json_key -p "$(cat ${HOME}/client-secret.json)" https://us.gcr.io
+              ./gradlew claimVersion --refresh-dependencies  --console=plain
+              ./gradlew clean :docker:pushContainers --console=plain
+            fi
