@@ -38,7 +38,7 @@ import tech.crom.db.tables.records.CommitDetailsRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class CommitDetailsTable extends TableImpl<CommitDetailsRecord> {
 
-    private static final long serialVersionUID = -1024121557;
+    private static final long serialVersionUID = 791497066;
 
     /**
      * The reference instance of <code>version_manager_test.commit_details</code>
@@ -82,6 +82,11 @@ public class CommitDetailsTable extends TableImpl<CommitDetailsRecord> {
      * The column <code>version_manager_test.commit_details.created_at</code>.
      */
     public final TableField<CommitDetailsRecord, Instant> CREATED_AT = createField("created_at", org.jooq.impl.SQLDataType.TIMESTAMP.nullable(false).defaultValue(org.jooq.impl.DSL.inline("CURRENT_TIMESTAMP(6)", org.jooq.impl.SQLDataType.TIMESTAMP)), this, "", new TimestampConverter());
+
+    /**
+     * The column <code>version_manager_test.commit_details.state</code>.
+     */
+    public final TableField<CommitDetailsRecord, String> STATE = createField("state", org.jooq.impl.SQLDataType.VARCHAR.length(64).nullable(false).defaultValue(org.jooq.impl.DSL.inline("RELEASED", org.jooq.impl.SQLDataType.VARCHAR)), this, "");
 
     /**
      * Create a <code>version_manager_test.commit_details</code> table reference

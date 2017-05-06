@@ -4,6 +4,11 @@
 package tech.crom.db.tables;
 
 
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Generated;
+
 import org.jooq.Field;
 import org.jooq.Identity;
 import org.jooq.Schema;
@@ -11,13 +16,10 @@ import org.jooq.Table;
 import org.jooq.TableField;
 import org.jooq.UniqueKey;
 import org.jooq.impl.TableImpl;
+
 import tech.crom.db.Keys;
 import tech.crom.db.VersionManagerTest;
 import tech.crom.db.tables.records.VersionBumpersRecord;
-
-import javax.annotation.Generated;
-import java.util.Arrays;
-import java.util.List;
 
 
 /**

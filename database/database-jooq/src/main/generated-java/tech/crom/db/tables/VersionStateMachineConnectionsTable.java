@@ -36,7 +36,7 @@ import tech.crom.db.tables.records.VersionStateMachineConnectionsRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class VersionStateMachineConnectionsTable extends TableImpl<VersionStateMachineConnectionsRecord> {
 
-    private static final long serialVersionUID = 157333970;
+    private static final long serialVersionUID = 45331571;
 
     /**
      * The reference instance of <code>version_manager_test.version_state_machine_connections</code>
@@ -55,6 +55,11 @@ public class VersionStateMachineConnectionsTable extends TableImpl<VersionStateM
      * The column <code>version_manager_test.version_state_machine_connections.state_machine_detail_id</code>.
      */
     public final TableField<VersionStateMachineConnectionsRecord, Long> STATE_MACHINE_DETAIL_ID = createField("state_machine_detail_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
+
+    /**
+     * The column <code>version_manager_test.version_state_machine_connections.version_state_machine_id</code>.
+     */
+    public final TableField<VersionStateMachineConnectionsRecord, Long> VERSION_STATE_MACHINE_ID = createField("version_state_machine_id", org.jooq.impl.SQLDataType.BIGINT.nullable(false), this, "");
 
     /**
      * The column <code>version_manager_test.version_state_machine_connections.source</code>.
@@ -117,7 +122,7 @@ public class VersionStateMachineConnectionsTable extends TableImpl<VersionStateM
      */
     @Override
     public List<UniqueKey<VersionStateMachineConnectionsRecord>> getKeys() {
-        return Arrays.<UniqueKey<VersionStateMachineConnectionsRecord>>asList(Keys.KEY_VERSION_STATE_MACHINE_CONNECTIONS_PRIMARY);
+        return Arrays.<UniqueKey<VersionStateMachineConnectionsRecord>>asList(Keys.KEY_VERSION_STATE_MACHINE_CONNECTIONS_PRIMARY, Keys.KEY_VERSION_STATE_MACHINE_CONNECTIONS_SOURCE);
     }
 
     /**
@@ -125,7 +130,7 @@ public class VersionStateMachineConnectionsTable extends TableImpl<VersionStateM
      */
     @Override
     public List<ForeignKey<VersionStateMachineConnectionsRecord, ?>> getReferences() {
-        return Arrays.<ForeignKey<VersionStateMachineConnectionsRecord, ?>>asList(Keys.VERSION_STATE_MACHINE_CONNECTIONS_IBFK_1, Keys.VERSION_STATE_MACHINE_CONNECTIONS_IBFK_2);
+        return Arrays.<ForeignKey<VersionStateMachineConnectionsRecord, ?>>asList(Keys.VERSION_STATE_MACHINE_CONNECTIONS_IBFK_1, Keys.VERSION_STATE_MACHINE_CONNECTIONS_IBFK_2, Keys.VERSION_STATE_MACHINE_CONNECTIONS_IBFK_3);
     }
 
     /**

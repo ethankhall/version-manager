@@ -17,8 +17,8 @@ import javax.validation.constraints.Size;
 
 import org.jooq.Field;
 import org.jooq.Record1;
-import org.jooq.Record4;
-import org.jooq.Row4;
+import org.jooq.Record5;
+import org.jooq.Row5;
 import org.jooq.impl.UpdatableRecordImpl;
 
 import tech.crom.db.tables.VersionStateMachineStatesTable;
@@ -39,9 +39,9 @@ import tech.crom.db.tables.VersionStateMachineStatesTable;
 @Table(name = "version_state_machine_states", schema = "version_manager_test", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"version_state_machine_id", "state_name"})
 })
-public class VersionStateMachineStatesRecord extends UpdatableRecordImpl<VersionStateMachineStatesRecord> implements Record4<Long, Long, String, Boolean> {
+public class VersionStateMachineStatesRecord extends UpdatableRecordImpl<VersionStateMachineStatesRecord> implements Record5<Long, Long, String, Boolean, String> {
 
-    private static final long serialVersionUID = 1546848555;
+    private static final long serialVersionUID = -1185786948;
 
     /**
      * Setter for <code>version_manager_test.version_state_machine_states.version_state_machine_state_id</code>.
@@ -109,6 +109,22 @@ public class VersionStateMachineStatesRecord extends UpdatableRecordImpl<Version
         return (Boolean) get(3);
     }
 
+    /**
+     * Setter for <code>version_manager_test.version_state_machine_states.next_state</code>.
+     */
+    public void setNextState(String value) {
+        set(4, value);
+    }
+
+    /**
+     * Getter for <code>version_manager_test.version_state_machine_states.next_state</code>.
+     */
+    @Column(name = "next_state", length = 64)
+    @Size(max = 64)
+    public String getNextState() {
+        return (String) get(4);
+    }
+
     // -------------------------------------------------------------------------
     // Primary key information
     // -------------------------------------------------------------------------
@@ -122,23 +138,23 @@ public class VersionStateMachineStatesRecord extends UpdatableRecordImpl<Version
     }
 
     // -------------------------------------------------------------------------
-    // Record4 type implementation
+    // Record5 type implementation
     // -------------------------------------------------------------------------
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Row4<Long, Long, String, Boolean> fieldsRow() {
-        return (Row4) super.fieldsRow();
+    public Row5<Long, Long, String, Boolean, String> fieldsRow() {
+        return (Row5) super.fieldsRow();
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public Row4<Long, Long, String, Boolean> valuesRow() {
-        return (Row4) super.valuesRow();
+    public Row5<Long, Long, String, Boolean, String> valuesRow() {
+        return (Row5) super.valuesRow();
     }
 
     /**
@@ -177,6 +193,14 @@ public class VersionStateMachineStatesRecord extends UpdatableRecordImpl<Version
      * {@inheritDoc}
      */
     @Override
+    public Field<String> field5() {
+        return VersionStateMachineStatesTable.VERSION_STATE_MACHINE_STATES.NEXT_STATE;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Long value1() {
         return getVersionStateMachineStateId();
     }
@@ -203,6 +227,14 @@ public class VersionStateMachineStatesRecord extends UpdatableRecordImpl<Version
     @Override
     public Boolean value4() {
         return getAutoTransition();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String value5() {
+        return getNextState();
     }
 
     /**
@@ -245,11 +277,21 @@ public class VersionStateMachineStatesRecord extends UpdatableRecordImpl<Version
      * {@inheritDoc}
      */
     @Override
-    public VersionStateMachineStatesRecord values(Long value1, Long value2, String value3, Boolean value4) {
+    public VersionStateMachineStatesRecord value5(String value) {
+        setNextState(value);
+        return this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public VersionStateMachineStatesRecord values(Long value1, Long value2, String value3, Boolean value4, String value5) {
         value1(value1);
         value2(value2);
         value3(value3);
         value4(value4);
+        value5(value5);
         return this;
     }
 
@@ -267,12 +309,13 @@ public class VersionStateMachineStatesRecord extends UpdatableRecordImpl<Version
     /**
      * Create a detached, initialised VersionStateMachineStatesRecord
      */
-    public VersionStateMachineStatesRecord(Long versionStateMachineStateId, Long versionStateMachineId, String stateName, Boolean autoTransition) {
+    public VersionStateMachineStatesRecord(Long versionStateMachineStateId, Long versionStateMachineId, String stateName, Boolean autoTransition, String nextState) {
         super(VersionStateMachineStatesTable.VERSION_STATE_MACHINE_STATES);
 
         set(0, versionStateMachineStateId);
         set(1, versionStateMachineId);
         set(2, stateName);
         set(3, autoTransition);
+        set(4, nextState);
     }
 }

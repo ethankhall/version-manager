@@ -75,7 +75,7 @@ class ManagerResourceIntegrationTest extends Specification {
         commitManager.findAllCommits(repo1).isEmpty()
 
         when:
-        def commit1 = commitManager.createCommit(repo1, new RealizedCommit('1', '1.0.0', null), [])
+        def commit1 = commitManager.createCommit(repo1, RealizedCommit.createNewCommit('1', '1.0.0', null), [])
 
         then:
         commit1
@@ -84,7 +84,7 @@ class ManagerResourceIntegrationTest extends Specification {
 
         when:
         def commit2 = commitManager.createCommit(repo1,
-            new RealizedCommit('2', '1.0.1', null),
+            RealizedCommit.createNewCommit('2', '1.0.1', null),
             [new CommitIdContainer('1')])
 
         then:

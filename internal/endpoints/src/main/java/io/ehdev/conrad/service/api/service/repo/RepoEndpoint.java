@@ -1,11 +1,5 @@
 package io.ehdev.conrad.service.api.service.repo;
 
-import tech.crom.rest.model.commit.CommitIdCollection;
-import tech.crom.rest.model.permission.PermissionGrant;
-import tech.crom.rest.model.repository.CreateRepoRequest;
-import tech.crom.rest.model.repository.CreateRepoResponse;
-import tech.crom.rest.model.repository.GetRepoResponse;
-import tech.crom.rest.model.version.VersionSearchResponse;
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
@@ -23,11 +17,18 @@ import tech.crom.business.api.PermissionApi;
 import tech.crom.business.api.RepositoryApi;
 import tech.crom.business.api.VersionBumperApi;
 import tech.crom.model.bumper.CromVersionBumper;
+import tech.crom.model.commit.CommitFilter;
 import tech.crom.model.commit.CommitIdContainer;
 import tech.crom.model.commit.impl.PersistedCommit;
 import tech.crom.model.commit.impl.RequestedCommit;
 import tech.crom.model.repository.CromRepo;
 import tech.crom.model.repository.CromRepoDetails;
+import tech.crom.rest.model.commit.CommitIdCollection;
+import tech.crom.rest.model.permission.PermissionGrant;
+import tech.crom.rest.model.repository.CreateRepoRequest;
+import tech.crom.rest.model.repository.CreateRepoResponse;
+import tech.crom.rest.model.repository.GetRepoResponse;
+import tech.crom.rest.model.version.VersionSearchResponse;
 import tech.crom.web.api.model.RequestDetails;
 
 import javax.transaction.Transactional;
@@ -133,7 +134,7 @@ public class RepoEndpoint {
                                                                            @RequestBody CommitIdCollection versionModel) {
 
         List<CommitIdContainer> commits = versionModel.getCommits().stream().map(CommitIdContainer::new).collect(Collectors.toList());
-        PersistedCommit latestCommit = commitApi.findLatestCommit(requestDetails.getCromRepo(), commits);
+        PersistedCommit latestCommit = commitApi.findLatestCommit(requestDetails.getCromRepo(), new CommitFilter(commits));
 
         if (latestCommit == null) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

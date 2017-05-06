@@ -45,7 +45,7 @@ class DefaultMetaDataManagerTest extends Specification {
         metaDataManager.getCurrentSizeOfProject(repo1) == 0
 
         when:
-        def repo1Commit1 = commitManager.createCommit(repo1, new RealizedCommit('1', '1.0.0', null), [])
+        def repo1Commit1 = commitManager.createCommit(repo1, RealizedCommit.createNewCommit('1', '1.0.0', null), [])
         metaDataManager.insertFile(repo1, repo1Commit1, new URI("gs://foo/bar/baz"), new StorageData('filename', 'foo'.bytes, ''))
 
         then:
@@ -53,7 +53,7 @@ class DefaultMetaDataManagerTest extends Specification {
         metaDataManager.getCurrentSizeOfProject(project1) == 3
 
         when:
-        def repo1Commit2 = commitManager.createCommit(repo1, new RealizedCommit('2', '1.0.2', null), [new CommitIdContainer('1')])
+        def repo1Commit2 = commitManager.createCommit(repo1, RealizedCommit.createNewCommit('2', '1.0.2', null), [new CommitIdContainer('1')])
         metaDataManager.insertFile(repo1, repo1Commit2, new URI("gs://foo/bar/baz"), new StorageData('filename', 'foo'.bytes, ''))
 
         then:
@@ -61,7 +61,7 @@ class DefaultMetaDataManagerTest extends Specification {
         metaDataManager.getCurrentSizeOfProject(project1) == 6
 
         when:
-        def repo2Commit1 = commitManager.createCommit(repo2, new RealizedCommit('1', '1.0.0', null), [])
+        def repo2Commit1 = commitManager.createCommit(repo2, RealizedCommit.createNewCommit('1', '1.0.0', null), [])
         metaDataManager.insertFile(repo2, repo2Commit1, new URI("gs://foo/bar/baz"), new StorageData('filename', 'foo'.bytes, ''))
 
         then:
@@ -69,7 +69,7 @@ class DefaultMetaDataManagerTest extends Specification {
         metaDataManager.getCurrentSizeOfProject(project1) == 9
 
         when:
-        def repo2Commit2 = commitManager.createCommit(repo2, new RealizedCommit('2', '1.0.2', null), [new CommitIdContainer('1')])
+        def repo2Commit2 = commitManager.createCommit(repo2, RealizedCommit.createNewCommit('2', '1.0.2', null), [new CommitIdContainer('1')])
         metaDataManager.insertFile(repo2, repo2Commit2, new URI("gs://foo/bar/baz"), new StorageData('filename', 'foo'.bytes, ''))
 
         then:

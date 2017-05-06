@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 
 
@@ -28,12 +29,15 @@ import javax.validation.constraints.NotNull;
 )
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 @Entity
-@Table(name = "version_state_machine_connections", schema = "version_manager_test")
+@Table(name = "version_state_machine_connections", schema = "version_manager_test", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"source", "destination"})
+})
 public class VersionStateMachineConnections implements Serializable {
 
-    private static final long serialVersionUID = -207275667;
+    private static final long serialVersionUID = -184788287;
 
     private Long stateMachineDetailId;
+    private Long versionStateMachineId;
     private Long source;
     private Long destination;
 
@@ -41,16 +45,19 @@ public class VersionStateMachineConnections implements Serializable {
 
     public VersionStateMachineConnections(VersionStateMachineConnections value) {
         this.stateMachineDetailId = value.stateMachineDetailId;
+        this.versionStateMachineId = value.versionStateMachineId;
         this.source = value.source;
         this.destination = value.destination;
     }
 
     public VersionStateMachineConnections(
         Long stateMachineDetailId,
+        Long versionStateMachineId,
         Long source,
         Long destination
     ) {
         this.stateMachineDetailId = stateMachineDetailId;
+        this.versionStateMachineId = versionStateMachineId;
         this.source = source;
         this.destination = destination;
     }
@@ -65,6 +72,16 @@ public class VersionStateMachineConnections implements Serializable {
 
     public void setStateMachineDetailId(Long stateMachineDetailId) {
         this.stateMachineDetailId = stateMachineDetailId;
+    }
+
+    @Column(name = "version_state_machine_id", nullable = false, precision = 19)
+    @NotNull
+    public Long getVersionStateMachineId() {
+        return this.versionStateMachineId;
+    }
+
+    public void setVersionStateMachineId(Long versionStateMachineId) {
+        this.versionStateMachineId = versionStateMachineId;
     }
 
     @Column(name = "source", nullable = false, precision = 19)
@@ -92,6 +109,7 @@ public class VersionStateMachineConnections implements Serializable {
         StringBuilder sb = new StringBuilder("VersionStateMachineConnections (");
 
         sb.append(stateMachineDetailId);
+        sb.append(", ").append(versionStateMachineId);
         sb.append(", ").append(source);
         sb.append(", ").append(destination);
 

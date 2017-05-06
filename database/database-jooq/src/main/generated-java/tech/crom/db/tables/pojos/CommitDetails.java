@@ -33,7 +33,7 @@ import javax.validation.constraints.Size;
 @Table(name = "commit_details", schema = "version_manager_test")
 public class CommitDetails implements Serializable {
 
-    private static final long serialVersionUID = -326606137;
+    private static final long serialVersionUID = -1632041715;
 
     private Long    commitDetailId;
     private Long    repoDetailId;
@@ -41,6 +41,7 @@ public class CommitDetails implements Serializable {
     private String  commitId;
     private String  version;
     private Instant createdAt;
+    private String  state;
 
     public CommitDetails() {}
 
@@ -51,6 +52,7 @@ public class CommitDetails implements Serializable {
         this.commitId = value.commitId;
         this.version = value.version;
         this.createdAt = value.createdAt;
+        this.state = value.state;
     }
 
     public CommitDetails(
@@ -59,7 +61,8 @@ public class CommitDetails implements Serializable {
         Long    parentCommitId,
         String  commitId,
         String  version,
-        Instant createdAt
+        Instant createdAt,
+        String  state
     ) {
         this.commitDetailId = commitDetailId;
         this.repoDetailId = repoDetailId;
@@ -67,6 +70,7 @@ public class CommitDetails implements Serializable {
         this.commitId = commitId;
         this.version = version;
         this.createdAt = createdAt;
+        this.state = state;
     }
 
     @Id
@@ -131,6 +135,16 @@ public class CommitDetails implements Serializable {
         this.createdAt = createdAt;
     }
 
+    @Column(name = "state", nullable = false, length = 64)
+    @Size(max = 64)
+    public String getState() {
+        return this.state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CommitDetails (");
@@ -141,6 +155,7 @@ public class CommitDetails implements Serializable {
         sb.append(", ").append(commitId);
         sb.append(", ").append(version);
         sb.append(", ").append(createdAt);
+        sb.append(", ").append(state);
 
         sb.append(")");
         return sb.toString();

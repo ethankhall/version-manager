@@ -35,12 +35,13 @@ import javax.validation.constraints.Size;
 })
 public class VersionStateMachineStates implements Serializable {
 
-    private static final long serialVersionUID = -370009494;
+    private static final long serialVersionUID = -957478376;
 
     private Long    versionStateMachineStateId;
     private Long    versionStateMachineId;
     private String  stateName;
     private Boolean autoTransition;
+    private String  nextState;
 
     public VersionStateMachineStates() {}
 
@@ -49,18 +50,21 @@ public class VersionStateMachineStates implements Serializable {
         this.versionStateMachineId = value.versionStateMachineId;
         this.stateName = value.stateName;
         this.autoTransition = value.autoTransition;
+        this.nextState = value.nextState;
     }
 
     public VersionStateMachineStates(
         Long    versionStateMachineStateId,
         Long    versionStateMachineId,
         String  stateName,
-        Boolean autoTransition
+        Boolean autoTransition,
+        String  nextState
     ) {
         this.versionStateMachineStateId = versionStateMachineStateId;
         this.versionStateMachineId = versionStateMachineId;
         this.stateName = stateName;
         this.autoTransition = autoTransition;
+        this.nextState = nextState;
     }
 
     @Id
@@ -105,6 +109,16 @@ public class VersionStateMachineStates implements Serializable {
         this.autoTransition = autoTransition;
     }
 
+    @Column(name = "next_state", length = 64)
+    @Size(max = 64)
+    public String getNextState() {
+        return this.nextState;
+    }
+
+    public void setNextState(String nextState) {
+        this.nextState = nextState;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("VersionStateMachineStates (");
@@ -113,6 +127,7 @@ public class VersionStateMachineStates implements Serializable {
         sb.append(", ").append(versionStateMachineId);
         sb.append(", ").append(stateName);
         sb.append(", ").append(autoTransition);
+        sb.append(", ").append(nextState);
 
         sb.append(")");
         return sb.toString();

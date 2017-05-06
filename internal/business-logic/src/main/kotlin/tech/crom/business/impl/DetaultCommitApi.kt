@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service
 import tech.crom.business.api.CommitApi
 import tech.crom.business.api.VersionBumperApi
 import tech.crom.database.api.CommitManager
+import tech.crom.model.commit.CommitFilter
 import tech.crom.model.commit.CommitIdContainer
 import tech.crom.model.commit.VersionDetails
 import tech.crom.model.commit.impl.PersistedCommit
@@ -22,15 +23,15 @@ class DetaultCommitApi @Autowired constructor(
 
     override fun findAllCommits(cromRepo: CromRepo): List<PersistedCommit> = commitManager.findAllCommits(cromRepo)
 
-    override fun findLatestCommit(cromRepo: CromRepo, commitIdContainer: List<CommitIdContainer>): PersistedCommit? {
-        return commitManager.findLatestCommit(cromRepo, commitIdContainer)
+    override fun findLatestCommit(cromRepo: CromRepo, filer: CommitFilter): PersistedCommit? {
+        return commitManager.findCommit(cromRepo, filer)
     }
 
     override fun createCommit(cromRepo: CromRepo,
                               commitModel: RequestedCommit,
                               commitList: List<CommitIdContainer>): PersistedCommit {
 
-        val latestCommit = commitManager.findLatestCommit(cromRepo, commitList)
+        val latestCommit = commitManager.findCommit(cromRepo, CommitFilter(commitList))
         val nextVersion = versionBumperApi
             .findVersionBumper(cromRepo)
             .executor

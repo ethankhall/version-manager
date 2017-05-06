@@ -7,8 +7,13 @@ import java.time.ZonedDateTime
 
 data class RealizedCommit(override val commitId: String,
                           override val version: VersionDetails,
+                          override val state: String,
                           val createdAt: ZonedDateTime? = null) : CommitDetails, VersionCommitDetails {
-    constructor(commitId: String,
-                version: String,
-                createdAt: ZonedDateTime?) : this(commitId, VersionDetails(version), createdAt)
+
+    companion object {
+        @JvmStatic
+        fun createNewCommit(commitId: String, version: String, createdAt: ZonedDateTime?): RealizedCommit {
+            return RealizedCommit(commitId, VersionDetails(version), VersionCommitDetails.DEFAULT_STATE, createdAt)
+        }
+    }
 }

@@ -36,7 +36,7 @@ import tech.crom.db.tables.records.VersionStateMachineStatesRecord;
 @SuppressWarnings({ "all", "unchecked", "rawtypes" })
 public class VersionStateMachineStatesTable extends TableImpl<VersionStateMachineStatesRecord> {
 
-    private static final long serialVersionUID = -32765135;
+    private static final long serialVersionUID = 1646781471;
 
     /**
      * The reference instance of <code>version_manager_test.version_state_machine_states</code>
@@ -70,6 +70,11 @@ public class VersionStateMachineStatesTable extends TableImpl<VersionStateMachin
      * The column <code>version_manager_test.version_state_machine_states.auto_transition</code>.
      */
     public final TableField<VersionStateMachineStatesRecord, Boolean> AUTO_TRANSITION = createField("auto_transition", org.jooq.impl.SQLDataType.BOOLEAN.defaultValue(org.jooq.impl.DSL.inline("0", org.jooq.impl.SQLDataType.BOOLEAN)), this, "");
+
+    /**
+     * The column <code>version_manager_test.version_state_machine_states.next_state</code>.
+     */
+    public final TableField<VersionStateMachineStatesRecord, String> NEXT_STATE = createField("next_state", org.jooq.impl.SQLDataType.VARCHAR.length(64), this, "");
 
     /**
      * Create a <code>version_manager_test.version_state_machine_states</code> table reference

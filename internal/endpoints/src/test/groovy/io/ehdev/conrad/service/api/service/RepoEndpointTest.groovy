@@ -1,6 +1,5 @@
 package io.ehdev.conrad.service.api.service
 
-import tech.crom.rest.model.commit.CommitIdCollection
 import io.ehdev.conrad.service.api.service.repo.RepoEndpoint
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletRequest
@@ -15,6 +14,7 @@ import tech.crom.model.bumper.CromVersionBumper
 import tech.crom.model.commit.impl.PersistedCommit
 import tech.crom.model.repository.CromRepoDetails
 import tech.crom.model.security.authorization.CromPermission
+import tech.crom.rest.model.commit.CommitIdCollection
 import tech.crom.security.authorization.impl.AuthUtils
 import tech.crom.version.bumper.impl.atomic.AtomicVersionBumper
 
@@ -57,7 +57,8 @@ class RepoEndpointTest extends Specification {
         def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model)
 
         then:
-        1 * commitApi.findLatestCommit(_, _) >> new PersistedCommit(AuthUtils.randomLongGenerator(), 'commit', '2.3.4', ZonedDateTime.now())
+        1 * commitApi.findLatestCommit(_, _) >> PersistedCommit.createNewCommit(AuthUtils.randomLongGenerator(),
+            'commit', '2.3.4', ZonedDateTime.now())
 
         history.statusCode == HttpStatus.OK
         history.body.commitId == 'commit'
