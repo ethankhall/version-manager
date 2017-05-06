@@ -47,7 +47,7 @@ include ':internal:authorization'
 
 //api model
 include ':api:rest-model'
-include ':api:business-logic'
+include ':internal:business-logic'
 include ':internal:version-bumper'
 include ':internal:storage'
 include ':internal:state-machine'

@@ -16,8 +16,8 @@ bootRun {
 }
 
 dependencies {
-    compile project(":api:business-logic")
     compile project(":api:rest-model")
+    compile project(":internal:business-logic")
     compile project(":internal:version-bumper")
     compile project(":database:database-v2")
     compile project(":database:database-jooq")
@@ -28,8 +28,6 @@ dependencies {
     compile project(':internal:authentication')
     compile project(':internal:authorization')
     compile libraries.kotlin
-
-//    compile 'org.springframework.boot:spring-boot-devtools'
 
     //Spring
     compile libraries.springBoot

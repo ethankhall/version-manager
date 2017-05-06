@@ -5,7 +5,7 @@ apply plugin: 'local-dev'
 dependencies {
     compile project(':api:rest-model')
     compile project(':database:database-v2')
-    compile project(':api:business-logic')
+    compile project(':internal:business-logic')
     compile project(':internal:shared-model')
 
     compile libraries.springWeb
