@@ -17,4 +17,6 @@ interface CommitManager {
     fun findAllCommits(cromRepo: CromRepo): List<PersistedCommit>
 
     fun moveVersionsInState(cromRepo: CromRepo, transitions: List<StateTransitionNotification>)
+
+    fun setVersionToState(persistedCommit: PersistedCommit, nextState: String)
 }

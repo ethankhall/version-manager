@@ -2,7 +2,8 @@ plugins {
     id 'com.gradle.build-scan' version '1.6'
     id 'tech.crom.version-manager' version 'LATEST'
     id 'io.ehdev.gradle.dependency-script' version 'LATEST'
-    id "org.jetbrains.kotlin.jvm" version "1.1.2" apply false
+    id 'org.jetbrains.kotlin.jvm' version "1.1.2" apply false
+    id 'org.jetbrains.kotlin.plugin.spring' version "1.1.2" apply false
     id 'io.ehdev.gradle.dependency-resolve' version 'LATEST' apply false
     id 'io.ehdev.gradle.build-dir' version 'LATEST' apply false
     id 'io.ehdev.gradle.klint' version 'LATEST' apply false
@@ -50,7 +51,7 @@ versionManager {
 
 apply from: "gradle/database.gradle"
 
-subprojects {
+subprojects { sub ->
     apply plugin: 'java'
     apply plugin: 'io.ehdev.gradle.dependency-resolve'
     apply plugin: 'io.ehdev.gradle.build-dir'
@@ -64,7 +65,8 @@ subprojects {
     }
 
     plugins.withType(org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper) {
-        plugins.apply('io.ehdev.gradle.klint')
+        sub.plugins.apply('io.ehdev.gradle.klint')
+        sub.plugins.apply('org.jetbrains.kotlin.plugin.spring')
     }
 
     ext['libraries'] = deps.libraries

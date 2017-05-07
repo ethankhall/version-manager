@@ -9,6 +9,10 @@ import tech.crom.state.machine.exception.UnknownStateException
 class StateMachineProcessor(val definition: StateMachineDefinition) {
 
     fun doTransition(current: String, nextState: String): List<StateTransitionNotification> {
+        return doTransition(current, nextState, 0)
+    }
+
+    private fun doTransition(current: String, nextState: String, depth: Int): List<StateTransitionNotification> {
         val transitionQueue = mutableListOf<StateTransitionNotification>()
 
         val currentStateDef = definition.stateTransitions[current] ?: throw UnknownStateException(current)
@@ -17,10 +21,12 @@ class StateMachineProcessor(val definition: StateMachineDefinition) {
         if (!currentStateDef.nextStates.contains(nextState)) throw IllegalStateTransitionException(nextState)
 
         if (nextStateDef.forceTransition != null) {
-            transitionQueue.addAll(doTransition(nextState, nextStateDef.forceTransition!!))
+            transitionQueue.addAll(doTransition(nextState, nextStateDef.forceTransition!!, depth + 1))
         }
 
-        transitionQueue.add(StateTransitionNotification(current, nextState))
+        if (depth != 0) {
+            transitionQueue.add(StateTransitionNotification(current, nextState))
+        }
 
         return transitionQueue
     }

@@ -75,6 +75,14 @@ open class DefaultCommitManager @Autowired constructor(
         }
     }
 
+    override fun setVersionToState(persistedCommit: PersistedCommit, nextState: String) {
+        val cd = Tables.COMMIT_DETAILS
+        dslContext.update(cd)
+            .set(cd.STATE, nextState)
+            .where(cd.COMMIT_DETAIL_ID.eq(persistedCommit.id))
+            .execute()
+    }
+
     @Cacheable("commitById", key = "#cromRepo.repoId.toString() + #apiCommit.commitId")
     override fun findCommit(cromRepo: CromRepo, apiCommit: CommitIdContainer): PersistedCommit? {
         return findCommit(cromRepo, CommitFilter(listOf(apiCommit)))

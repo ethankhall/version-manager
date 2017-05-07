@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import tech.crom.business.api.CommitApi
 import tech.crom.business.api.VersionBumperApi
+import tech.crom.business.exception.CommitNotFoundException
 import tech.crom.database.api.CommitManager
 import tech.crom.database.api.StateMachineManager
 import tech.crom.model.commit.CommitFilter
@@ -46,6 +47,18 @@ class DetaultCommitApi @Autowired constructor(
         commitManager.moveVersionsInState(cromRepo, newVersionTransitions)
 
         return commitManager.findCommit(cromRepo, CommitIdContainer(createCommit.commitId))!!
+    }
+
+    @Throws()
+    override fun updateState(cromRepo: CromRepo, commitId: CommitIdContainer, nextState: String) {
+        val commit = commitManager.findCommit(cromRepo, CommitFilter(listOf(commitId))) ?:
+            throw CommitNotFoundException(commitId.commitId)
+
+        val processor = StateMachineProcessor(stateMachineManager.getStateMachine(cromRepo))
+        val newVersionTransitions = processor.doTransition(commit.state, nextState)
+
+        commitManager.moveVersionsInState(cromRepo, newVersionTransitions)
+        commitManager.setVersionToState(commit, nextState)
     }
 
     fun PersistedCommit?.toVersionDetails(): VersionDetails? {

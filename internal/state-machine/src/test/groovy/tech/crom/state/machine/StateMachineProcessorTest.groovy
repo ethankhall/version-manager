@@ -27,9 +27,7 @@ class StateMachineProcessorTest extends Specification {
         def transitions = stateMachineProcessor.doTransition('default', 'next')
 
         then:
-        transitions.size() == 1
-        transitions.first().source == 'default'
-        transitions.first().target == 'next'
+        transitions.size() == 0
     }
 
     def 'will throw if unable to move to new state'() {
@@ -52,10 +50,7 @@ class StateMachineProcessorTest extends Specification {
         def transition = stateMachineProcessor.doTransition('default', 'auto-first')
 
         then:
-        transition.size() == 3
-        transition[2].target == 'auto-first'
-        transition[2].source == 'default'
-
+        transition.size() == 2
         transition[1].target == 'auto'
         transition[1].source == 'auto-first'
 

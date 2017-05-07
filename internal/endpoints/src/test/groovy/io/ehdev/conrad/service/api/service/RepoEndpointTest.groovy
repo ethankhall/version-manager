@@ -1,6 +1,6 @@
 package io.ehdev.conrad.service.api.service
 
-import io.ehdev.conrad.service.api.service.repo.RepoEndpoint
+import tech.crom.service.api.repo.RepoEndpoint
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.web.context.request.RequestContextHolder

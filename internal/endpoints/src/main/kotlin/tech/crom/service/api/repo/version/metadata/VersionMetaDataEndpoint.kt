@@ -1,4 +1,4 @@
-package tech.crom.service.api.metadata
+package tech.crom.service.api.repo.version.metadata
 
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired
@@ -85,7 +85,7 @@ open class VersionMetaDataEndpoint(
         return commitApi.findCommit(requestDetails.cromRepo!!, idContainer) ?: throw VersionNotFoundException(version)
     }
 
-    class UnknownStorageError(e: String) : BaseHttpException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.UNKOWN_STORAGE_BACKEND_ERROR, e)
+    class UnknownStorageError(e: String) : BaseHttpException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.UNKNOWN_STORAGE_BACKEND_ERROR, e)
     class StorageLimitExceeded(e: String?) : BaseHttpException(HttpStatus.NOT_ACCEPTABLE, ErrorCode.PROJECT_STORAGE_LIMIT_EXCEEDED, e)
 
     class VersionNotFoundException(version: String) :
