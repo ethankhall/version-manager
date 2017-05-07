@@ -7,4 +7,6 @@ interface StateMachineManager {
     fun getStateMachine(repo: CromRepo): StateMachineDefinition
 
     fun updateStateMachine(repo: CromRepo, stateMachine: StateMachineDefinition)
+
+    fun registerNewStateMachine(repo: CromRepo)
 }

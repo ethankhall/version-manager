@@ -51,6 +51,7 @@ public class RepoVersionEndpoint {
             .forEach(it -> {
                 GetAllVersionsResponse.CommitModel commit = new GetAllVersionsResponse.CommitModel(it.getCommitId(),
                     it.getVersionString(),
+                    it.getState(),
                     it.getCreatedAt());
                 response.addCommit(commit);
             });
@@ -81,6 +82,7 @@ public class RepoVersionEndpoint {
 
         CreateVersionResponse response = new CreateVersionResponse(versionModel.getCommitId(),
             nextCommit.getVersionString(),
+            nextCommit.getState(),
             nextCommit.getCreatedAt());
         return ResponseEntity.created(uri).body(response);
     }
@@ -97,6 +99,7 @@ public class RepoVersionEndpoint {
 
         GetVersionResponse versionResponse = new GetVersionResponse(commit.getCommitId(),
             commit.getVersionString(),
+            commit.getState(),
             commit.getCreatedAt());
         return ResponseEntity.ok(versionResponse);
     }

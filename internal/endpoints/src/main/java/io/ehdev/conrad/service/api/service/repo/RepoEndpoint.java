@@ -141,6 +141,7 @@ public class RepoEndpoint {
         } else {
             VersionSearchResponse body = new VersionSearchResponse(latestCommit.getCommitId(),
                 latestCommit.getVersion().getVersionString(),
+                latestCommit.getState(),
                 latestCommit.getCreatedAt());
             return ResponseEntity.ok(body);
         }

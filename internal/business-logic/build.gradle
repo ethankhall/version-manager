@@ -8,6 +8,7 @@ dependencies {
     compile group: "javax.transaction",  name: "javax.transaction-api", version: "1.2"
     compile project(":internal:shared-model")
     compile project(":internal:authorization")
+    compile project(":internal:state-machine")
     compile project(":internal:authentication")
     compile project(":database:database-v2")
     compile project(":internal:version-bumper")

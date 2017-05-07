@@ -15,11 +15,11 @@ open class DefaultStateMachineManager @Autowired constructor(
     val dslContext: DSLContext
 ) : StateMachineManager {
 
-    private val vsmDefinitionTable = Tables.VERSION_STATE_MACHINE_DEFINITIONS.`as`("def")
-    private val vsmConnectionsTable = Tables.VERSION_STATE_MACHINE_CONNECTIONS.`as`("conn")
-    private val vsmStatesTable = Tables.VERSION_STATE_MACHINE_STATES.`as`("states")
-
     override fun getStateMachine(repo: CromRepo): StateMachineDefinition {
+        val vsmDefinitionTable = Tables.VERSION_STATE_MACHINE_DEFINITIONS.`as`("def")
+        val vsmConnectionsTable = Tables.VERSION_STATE_MACHINE_CONNECTIONS.`as`("conn")
+        val vsmStatesTable = Tables.VERSION_STATE_MACHINE_STATES.`as`("states")
+
         val definition = dslContext.selectFrom(vsmDefinitionTable)
             .where(vsmDefinitionTable.REPO_DETAIL_ID.eq(repo.repoId))
             .fetchOne()
@@ -44,6 +44,23 @@ open class DefaultStateMachineManager @Autowired constructor(
         }
 
         return StateMachineDefinition(definition.initialState, stateTransition)
+    }
+
+    override fun registerNewStateMachine(repo: CromRepo) {
+        val vsmDefinitionTable = Tables.VERSION_STATE_MACHINE_DEFINITIONS
+        val vsmStatesTable = Tables.VERSION_STATE_MACHINE_STATES
+
+        val id = dslContext.insertInto(vsmDefinitionTable)
+            .columns(vsmDefinitionTable.REPO_DETAIL_ID, vsmDefinitionTable.INITIAL_STATE)
+            .values(repo.repoId, "DEFAULT")
+            .returning()
+            .fetchOne()
+            .into(vsmDefinitionTable)
+
+        dslContext.insertInto(vsmStatesTable)
+            .columns(vsmStatesTable.VERSION_STATE_MACHINE_ID, vsmStatesTable.STATE_NAME)
+            .values(id.versionStateMachineId, "DEFAULT")
+            .execute()
     }
 
     override fun updateStateMachine(repo: CromRepo, stateMachine: StateMachineDefinition) {

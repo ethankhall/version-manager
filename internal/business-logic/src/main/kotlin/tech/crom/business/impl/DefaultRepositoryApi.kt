@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.stereotype.Service
 import tech.crom.business.api.RepositoryApi
 import tech.crom.database.api.RepoManager
+import tech.crom.database.api.StateMachineManager
 import tech.crom.database.api.VersionBumperManager
 import tech.crom.model.bumper.CromVersionBumper
 import tech.crom.model.project.CromProject
@@ -17,6 +18,7 @@ import javax.transaction.Transactional
 open class DefaultRepositoryApi @Autowired constructor(
     val repoManager: RepoManager,
     val versionBumperManager: VersionBumperManager,
+    val stateMachineManager: StateMachineManager,
     val permissionService: PermissionService
 ) : RepositoryApi {
 
@@ -34,6 +36,8 @@ open class DefaultRepositoryApi @Autowired constructor(
 
         val repo = repoManager.createRepo(cromProject, repoName, versionBumper, checkoutUrl, description, isRepoPublic)
         permissionService.registerRepository(repo)
+        stateMachineManager.registerNewStateMachine(repo)
+
         return repo
     }
 

@@ -1,5 +1,6 @@
 package tech.crom.state.machine
 
+import tech.crom.model.commit.VersionCommitDetails
 import tech.crom.model.state.StateMachineDefinition
 import tech.crom.model.state.StateTransitionNotification
 import tech.crom.state.machine.exception.IllegalStateTransitionException
@@ -16,12 +17,23 @@ class StateMachineProcessor(val definition: StateMachineDefinition) {
         if (!currentStateDef.nextStates.contains(nextState)) throw IllegalStateTransitionException(nextState)
 
         if (nextStateDef.forceTransition != null) {
-            definition.stateTransitions[nextState]!!.nextStates
-                .forEach { transitionQueue.addAll(doTransition(nextState, nextStateDef.forceTransition!!)) }
+            transitionQueue.addAll(doTransition(nextState, nextStateDef.forceTransition!!))
         }
 
         transitionQueue.add(StateTransitionNotification(current, nextState))
 
+        return transitionQueue
+    }
+
+    fun newVersionTransitions(): List<StateTransitionNotification> {
+        val transitionQueue = mutableListOf<StateTransitionNotification>()
+        val defaultState = definition.stateTransitions[definition.defaultState]!!
+
+        if (defaultState.forceTransition != null) {
+            transitionQueue.addAll(doTransition(VersionCommitDetails.DEFAULT_STATE, definition.defaultState))
+        }
+
+        transitionQueue.add(StateTransitionNotification(VersionCommitDetails.DEFAULT_STATE, definition.defaultState))
         return transitionQueue
     }
 }

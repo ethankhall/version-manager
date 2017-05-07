@@ -86,6 +86,10 @@ class LongWindedApiIntegrationTest extends Specification {
             context.truncate(it.newInstance()).execute()
         }
 
+        [VersionStateMachineConnectionsTable, VersionStateMachineDefinitionsTable, VersionStateMachineStatesTable].each {
+            context.truncate(it.newInstance()).execute()
+        }
+
         context.execute("SET FOREIGN_KEY_CHECKS = 1") == 0
     }
 
@@ -386,6 +390,7 @@ class LongWindedApiIntegrationTest extends Specification {
         response.statusLine.statusCode == 201
         response.content.commitId == '2'
         response.content.version == '1.0.1'
+        response.content.state == 'DEFAULT'
 
         when:
         body = ['commits': ['2', '1', '0']]
@@ -396,6 +401,7 @@ class LongWindedApiIntegrationTest extends Specification {
         response.content.commitId == "2"
         response.content.postfix == null
         response.content.version == '1.0.1'
+        response.content.state == 'DEFAULT'
 
         when:
         body = ["commits": ['2', '1', '0'], "message": "bla[bump major]", "commitId": "3"]
@@ -405,6 +411,7 @@ class LongWindedApiIntegrationTest extends Specification {
         response.statusLine.statusCode == 201
         response.content.commitId == '3'
         response.content.version == '2.0.0'
+        response.content.state == 'DEFAULT'
 
         when:
         // Should fail because user doesn't have accessLevel
@@ -424,18 +431,23 @@ class LongWindedApiIntegrationTest extends Specification {
         response.statusLine.statusCode == 200
         response.content.commits[0].commitId == '3'
         response.content.commits[0].version == '2.0.0'
+        response.content.commits[0].state == 'DEFAULT'
 
         response.content.commits[1].commitId == '2'
         response.content.commits[1].version == '1.0.1'
+        response.content.commits[1].state == 'DEFAULT'
 
         response.content.commits[2].commitId == '1'
         response.content.commits[2].version == '1.0.0'
+        response.content.commits[2].state == 'DEFAULT'
 
         response.content.commits[3].commitId == '0'
         response.content.commits[3].version == '0.0.1'
+        response.content.commits[3].state == 'DEFAULT'
 
         response.content.latest.commitId == '3'
         response.content.latest.version == '2.0.0'
+        response.content.latest.state == 'DEFAULT'
     }
 
     def 'version search'() {
