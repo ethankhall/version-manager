@@ -1,12 +1,9 @@
 package io.ehdev.conrad.service.api.service.repo;
 
-import tech.crom.rest.model.version.CreateVersionRequest;
-import tech.crom.rest.model.version.CreateVersionResponse;
-import tech.crom.rest.model.version.GetAllVersionsResponse;
-import tech.crom.rest.model.version.GetVersionResponse;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +16,10 @@ import tech.crom.business.api.CommitApi;
 import tech.crom.model.commit.CommitIdContainer;
 import tech.crom.model.commit.impl.PersistedCommit;
 import tech.crom.model.commit.impl.RequestedCommit;
+import tech.crom.rest.model.version.CreateVersionRequest;
+import tech.crom.rest.model.version.CreateVersionResponse;
+import tech.crom.rest.model.version.GetAllVersionsResponse;
+import tech.crom.rest.model.version.GetVersionResponse;
 import tech.crom.service.api.ReverseApiCommitComparator;
 import tech.crom.web.api.model.RequestDetails;
 
@@ -41,6 +42,7 @@ public class RepoVersionEndpoint {
 
     @RepoRequired
     @ReadPermissionRequired
+    @ApiOperation(value = "Get all versions from repo")
     @RequestMapping(value = "/versions", method = RequestMethod.GET)
     public ResponseEntity<GetAllVersionsResponse> getAllVersions(RequestDetails requestDetails) {
         GetAllVersionsResponse response = new GetAllVersionsResponse();
@@ -66,6 +68,7 @@ public class RepoVersionEndpoint {
     @RepoRequired
     @Transactional
     @WritePermissionRequired
+    @ApiOperation(value = "Adds a new version to repo. Will return with next version", tags = {"write-user"})
     @RequestMapping(value = "/version", method = RequestMethod.POST)
     public ResponseEntity<CreateVersionResponse> createNewVersion(RequestDetails requestDetails,
                                                                   @RequestBody CreateVersionRequest versionModel,
@@ -89,6 +92,7 @@ public class RepoVersionEndpoint {
 
     @RepoRequired
     @ReadPermissionRequired
+    @ApiOperation(value = "Get a version, can be version, commit id, or 'latest'")
     @RequestMapping(value = "/version/{versionArg:.+}", method = RequestMethod.GET)
     public ResponseEntity<GetVersionResponse> findVersion(RequestDetails requestDetails,
                                                           @PathVariable("versionArg") String versionArg) {

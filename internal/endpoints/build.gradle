@@ -8,6 +8,7 @@ dependencies {
     compile project(':internal:business-logic')
     compile project(':internal:shared-model')
 
+    compile libraries.swaggerAnnotations
     compile libraries.springWeb
     compile libraries.springCore
     compile libraries.aspectJ

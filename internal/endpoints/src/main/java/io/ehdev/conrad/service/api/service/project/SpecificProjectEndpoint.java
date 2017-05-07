@@ -1,13 +1,10 @@
 package io.ehdev.conrad.service.api.service.project;
 
-import tech.crom.rest.model.permission.PermissionGrant;
-import tech.crom.rest.model.project.CreateProjectRequest;
-import tech.crom.rest.model.project.GetProjectResponse;
-import tech.crom.rest.model.project.RepoDefinitionsDetails;
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ProjectRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -15,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import tech.crom.business.api.PermissionApi;
 import tech.crom.business.api.ProjectApi;
 import tech.crom.business.api.RepositoryApi;
 import tech.crom.database.api.ProjectManager;
@@ -23,6 +19,10 @@ import tech.crom.model.project.CromProject;
 import tech.crom.model.repository.CromRepo;
 import tech.crom.model.security.authorization.CromPermission;
 import tech.crom.model.user.CromUser;
+import tech.crom.rest.model.permission.PermissionGrant;
+import tech.crom.rest.model.project.CreateProjectRequest;
+import tech.crom.rest.model.project.GetProjectResponse;
+import tech.crom.rest.model.project.RepoDefinitionsDetails;
 import tech.crom.web.api.model.RequestDetails;
 
 import javax.servlet.http.HttpServletRequest;
@@ -33,28 +33,25 @@ import java.util.Collection;
 import java.util.List;
 
 @Controller
-@RequestMapping(
-    value = "/api/v1/project/{projectName}",
-    produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/api/v1/project/{projectName}", produces = MediaType.APPLICATION_JSON_VALUE)
 public class SpecificProjectEndpoint {
 
     private final ProjectApi projectApi;
     private final RepositoryApi repositoryApi;
-    private final PermissionApi permissionApi;
 
     @Autowired
-    public SpecificProjectEndpoint(ProjectApi projectApi, RepositoryApi repositoryApi, PermissionApi permissionApi) {
+    public SpecificProjectEndpoint(ProjectApi projectApi, RepositoryApi repositoryApi) {
         this.projectApi = projectApi;
         this.repositoryApi = repositoryApi;
-        this.permissionApi = permissionApi;
     }
 
 
     @LoggedInUserRequired
     @ProjectRequired(exists = false)
     @RequestMapping(method = RequestMethod.POST)
+    @ApiOperation(value = "Creates a new project.", tags = {"logged-in-user"})
     public ResponseEntity<Object> createProject(RequestDetails container,
-                                                              HttpServletRequest request) {
+                                                HttpServletRequest request) {
         try {
             CromProject project = projectApi.createProject(
                 container.getRequestPermission().getCromUser(),
@@ -72,6 +69,7 @@ public class SpecificProjectEndpoint {
     @ProjectRequired
     @ReadPermissionRequired
     @RequestMapping(method = RequestMethod.GET)
+    @ApiOperation(value = "Return an existing project")
     public ResponseEntity<GetProjectResponse> getProject(RequestDetails container) {
         Collection<CromRepo> repos = repositoryApi.findRepo(container.getCromProject());
 
@@ -81,7 +79,7 @@ public class SpecificProjectEndpoint {
         CromPermission permission = container.getRequestPermission().getProjectPermission();
 
         ArrayList<PermissionGrant> permissionList = new ArrayList<>();
-        if(user != null && permission != null) {
+        if (user != null && permission != null) {
             permissionList.add(new PermissionGrant(
                 user.getUserName(),
                 PermissionGrant.AccessLevel.valueOf(permission.name())));
@@ -100,6 +98,7 @@ public class SpecificProjectEndpoint {
     @Transactional
     @ProjectRequired
     @AdminPermissionRequired
+    @ApiOperation(value = "Deletes an existing project", tags = {"admin-user"})
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity deleteProject(RequestDetails container) {
         Collection<CromRepo> repo = repositoryApi.findRepo(container.getCromProject());

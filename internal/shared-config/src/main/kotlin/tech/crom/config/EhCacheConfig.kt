@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Import
 @EnableCaching
 @Configuration
 @Import(MetricsConfiguration::class)
-open class EhCacheConfig() {
+open class EhCacheConfig {
 
     @Bean(destroyMethod = "shutdown")
     open fun ehCacheManager(metricRegistry: MetricRegistry): net.sf.ehcache.CacheManager {

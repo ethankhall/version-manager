@@ -15,9 +15,11 @@ defineVersion("jackson", "2.8.8")
     .lock { withGroup("com.fasterxml.jackson.datatype") }
 defineVersion("flyway", "4.1.2").lock { withGroup("org.flywaydb") }
 defineVersion("dropwizard", "3.1.2").lock { withGroup("io.dropwizard.metrics") }
+defineVersion("swagger", "1.5.13").lock { withGroup("io.swagger")}
 
 excludeLibrary("org.springframework.boot", "spring-boot-starter-tomcat")
 
+defineLibrary("swaggerAnnotations", listOf("io.swagger:swagger-annotations"))
 defineLibrary("jooq", listOf("org.jooq:jooq", "org.jooq:jooq-meta", "org.jooq:jooq-codegen"))
 defineLibrary("kotlin", listOf("org.jetbrains.kotlin:kotlin-stdlib-jre8",
     "org.jetbrains.kotlin:kotlin-stdlib",

@@ -1,10 +1,9 @@
 package io.ehdev.conrad.service.api.service.repo;
 
-import tech.crom.rest.model.permission.CreateTokenResponse;
-import tech.crom.rest.model.permission.GetTokensResponse;
 import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import tech.crom.business.api.TokenManagementApi;
 import tech.crom.model.token.GeneratedTokenDetails;
 import tech.crom.model.token.TokenType;
+import tech.crom.rest.model.permission.CreateTokenResponse;
+import tech.crom.rest.model.permission.GetTokensResponse;
 import tech.crom.web.api.model.RequestDetails;
 
 import javax.transaction.Transactional;
@@ -35,11 +36,12 @@ public class RepoTokenEndpoint {
         this.tokenManagementApi = tokenManagementApi;
     }
 
+    @RepoRequired
     @Transactional
     @LoggedInUserRequired
     @AdminPermissionRequired
-    @RepoRequired
     @RequestMapping(value = "/{tokenId}", method = RequestMethod.DELETE)
+    @ApiOperation(value = "Delete a repository token.", tags = {"admin-user"})
     public ResponseEntity deleteToken(RequestDetails requestDetails,
                                       @PathVariable("tokenId") String tokenId) {
         tokenManagementApi.invalidateToken(tokenId, TokenType.REPOSITORY);
@@ -51,6 +53,7 @@ public class RepoTokenEndpoint {
     @AdminPermissionRequired
     @RepoRequired
     @RequestMapping(method = RequestMethod.POST)
+    @ApiOperation(value = "Creates a repository token.", tags = {"admin-user"})
     public ResponseEntity<CreateTokenResponse> createNewToken(RequestDetails requestDetails,
                                                               @RequestParam(value = "validFor", required = false) Integer validFor) {
         ZonedDateTime now = ZonedDateTime.now(ZoneOffset.UTC);
@@ -70,6 +73,7 @@ public class RepoTokenEndpoint {
     @LoggedInUserRequired
     @AdminPermissionRequired
     @RequestMapping(method = RequestMethod.GET)
+    @ApiOperation(value = "Get all repository tokens.", tags = {"admin-user"})
     public ResponseEntity<GetTokensResponse> findAllTokens(RequestDetails requestDetails) {
         List<GetTokensResponse.TokenEntryModel> tokens = tokenManagementApi
             .getTokens(requestDetails.getCromRepo())

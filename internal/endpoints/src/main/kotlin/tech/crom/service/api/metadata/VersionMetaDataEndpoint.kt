@@ -4,6 +4,7 @@ import io.ehdev.conrad.service.api.aop.annotation.RepoRequired
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired
 import io.ehdev.conrad.service.api.exception.BaseHttpException
 import io.ehdev.conrad.service.api.exception.ErrorCode
+import io.swagger.annotations.ApiOperation
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Service
@@ -31,6 +32,7 @@ open class VersionMetaDataEndpoint(
 
     @RepoRequired
     @RequestMapping(method = arrayOf(RequestMethod.GET))
+    @ApiOperation(value = "Get all files for version.")
     open fun getFiles(requestDetails: RequestDetails,
                       @PathVariable("version") versionArg: String): ResponseEntity<AvailableFilesResponse> {
         val commit = getVersionOrThrow(requestDetails, versionArg)
@@ -41,6 +43,7 @@ open class VersionMetaDataEndpoint(
     @RepoRequired
     @ResponseBody
     @RequestMapping("/{fileName:.+}", method = arrayOf(RequestMethod.GET))
+    @ApiOperation(value = "Get file for version.")
     open fun retrieveFile(requestDetails: RequestDetails,
                           @PathVariable("version") versionArg: String,
                           @PathVariable("fileName") fileName: String,
@@ -58,6 +61,7 @@ open class VersionMetaDataEndpoint(
 
     @RepoRequired
     @WritePermissionRequired
+    @ApiOperation(value = "Add file to version.", tags = arrayOf("write-user"))
     @RequestMapping("/{fileName:.+}", method = arrayOf(RequestMethod.POST))
     open fun uploadFile(requestDetails: RequestDetails,
                         @PathVariable("version") versionArg: String,

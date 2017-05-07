@@ -700,7 +700,7 @@ class LongWindedApiIntegrationTest extends Specification {
 
     def doDelete(String endpoint, UserContainer container) {
         def response = Request
-            .Delete("http://localhost:${environment.getProperty("local.server.port")}/$endpoint")
+            .Delete("http://localhost:${ environment.getProperty("local.server.port") }/$endpoint")
             .addHeader("X-AUTH-TOKEN", container.tokenDetails.value)
             .execute().returnResponse()
 
@@ -711,7 +711,7 @@ class LongWindedApiIntegrationTest extends Specification {
     }
 
     def makeGetRequest(String endpoint, UserContainer container = null) {
-        def builder = Request.Get("http://localhost:${environment.getProperty("local.server.port")}/$endpoint")
+        def builder = Request.Get("http://localhost:${ environment.getProperty("local.server.port") }/$endpoint")
         if (container) {
             builder = builder.addHeader("X-AUTH-TOKEN", container.tokenDetails.value)
         }
@@ -725,7 +725,7 @@ class LongWindedApiIntegrationTest extends Specification {
 
     def makePostRequest(String endpoint, Object body, UserContainer container) {
         def builder = new JsonBuilder(body)
-        def response = Request.Post("http://localhost:${environment.getProperty("local.server.port")}/$endpoint")
+        def response = Request.Post("http://localhost:${ environment.getProperty("local.server.port") }/$endpoint")
             .addHeader("X-AUTH-TOKEN", container.tokenDetails.value)
             .bodyString(builder.toString(), ContentType.APPLICATION_JSON)
             .execute().returnResponse()

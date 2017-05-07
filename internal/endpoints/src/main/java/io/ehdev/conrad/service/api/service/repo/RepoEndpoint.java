@@ -4,6 +4,7 @@ import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired;
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -37,10 +38,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@RequestMapping(
-    value = "/api/v1/project/{projectName}/repo/{repoName}",
-    produces = MediaType.APPLICATION_JSON_VALUE)
-
+@RequestMapping(value = "/api/v1/project/{projectName}/repo/{repoName}", produces = MediaType.APPLICATION_JSON_VALUE)
 public class RepoEndpoint {
 
     private final RepositoryApi repositoryApi;
@@ -63,6 +61,7 @@ public class RepoEndpoint {
     @Transactional
     @AdminPermissionRequired
     @RequestMapping(method = RequestMethod.DELETE)
+    @ApiOperation(value = "Deletes an existing repository", tags = {"admin-user"})
     public ResponseEntity deleteRepo(RequestDetails requestDetails) {
         repositoryApi.deleteRepo(requestDetails.getCromRepo());
         return new ResponseEntity(HttpStatus.OK);
@@ -72,6 +71,7 @@ public class RepoEndpoint {
     @WritePermissionRequired
     @RepoRequired(exists = false)
     @RequestMapping(method = RequestMethod.POST)
+    @ApiOperation(value = "Creates a new repository", tags = {"write-user"})
     public ResponseEntity<CreateRepoResponse> createRepo(RequestDetails requestDetails,
                                                          @RequestBody CreateRepoRequest createModel) {
         String repoName = requestDetails.getRawRequest().getRepoName();
@@ -109,6 +109,7 @@ public class RepoEndpoint {
     @RepoRequired
     @ReadPermissionRequired
     @RequestMapping(method = RequestMethod.GET)
+    @ApiOperation(value = "Get an existing repository")
     public ResponseEntity<GetRepoResponse> getRepoDetails(RequestDetails requestDetails) {
         CromRepoDetails repoDetails = repositoryApi.getRepoDetails(requestDetails.getCromRepo());
 
@@ -129,6 +130,7 @@ public class RepoEndpoint {
 
     @RepoRequired
     @ReadPermissionRequired
+    @ApiOperation(value = "Finds the latest commit from a list of ids")
     @RequestMapping(value = "/search/version", method = RequestMethod.POST)
     public ResponseEntity<VersionSearchResponse> searchForVersionInHistory(RequestDetails requestDetails,
                                                                            @RequestBody CommitIdCollection versionModel) {

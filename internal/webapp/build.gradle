@@ -3,6 +3,7 @@ apply plugin: 'groovy'
 apply plugin: 'kotlin'
 apply plugin: 'local-dev'
 apply plugin: 'org.springframework.boot'
+apply plugin: io.ehdev.conrad.gradle.GeneratedApiDocsPlugin
 apply from: "$rootDir/gradle/publishing-private.gradle"
 
 publish.dependsOn assemble
@@ -13,6 +14,11 @@ springBoot {
 
 bootRun {
     addResources = true
+}
+
+configurations {
+    swaggerCli
+    apiDocsTestCompile.extendsFrom(integTestCompile)
 }
 
 dependencies {
@@ -49,4 +55,34 @@ dependencies {
     integTestCompile libraries.springBoot
     integTestCompile libraries.springBootTest
     integTestCompile libraries.springSecurityTest
+
+    apiDocsTestCompile 'io.springfox:springfox-swagger2:2.6.1'
+
+    swaggerCli 'io.swagger:swagger-codegen-cli:2.2.2'
+}
+
+def swaggerApiJson = new File(buildDir, 'swagger-api-docs.json').absolutePath
+def swaggerApiHtml = new File(buildDir, 'swagger-html').absolutePath
+
+apiDocsTest {
+    systemProperty 'crom.version', project.version.toString()
+    systemProperty 'swagger.docs', swaggerApiJson
+}
+
+tasks.create('swaggerHtml', JavaExec) {
+    inputs.file(swaggerApiJson)
+    outputs.dir(swaggerApiHtml)
+    dependsOn apiDocsTest
+    classpath configurations.swaggerCli
+    main = 'io.swagger.codegen.SwaggerCodegen'
+    args 'generate', '-i', swaggerApiJson, '-l', 'html2', '-o', swaggerApiHtml
+
+    doFirst {
+        new File(swaggerApiHtml).mkdirs()
+    }
+}
+
+tasks.create('archiveSwagger', Zip) {
+    dependsOn swaggerHtml
+    from swaggerApiHtml
 }

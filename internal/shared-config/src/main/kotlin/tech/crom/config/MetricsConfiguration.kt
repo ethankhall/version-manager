@@ -9,10 +9,9 @@ import org.springframework.context.annotation.Configuration
 import java.util.concurrent.TimeUnit
 
 @Configuration
-open class MetricsConfiguration() {
+open class MetricsConfiguration {
 
     @Bean
-    @ConditionalOnMissingBean(MetricRegistry::class)
     open fun metricRegistry(): MetricRegistry {
         return MetricRegistry()
     }
