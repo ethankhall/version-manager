@@ -2,5 +2,8 @@ auth.client.google.client.id: 501986272416-882h8qm11sherv2m99geckohi2mrmffh.apps
 auth.client.google.client.secret: qHv-RKsHe5zavBhjWwXmktMr
 auth.domain: localhost
 
+logging.level.org.jooq: DEBUG
+#logging.level.org.springframework: DEBUG
+
 storage.engine: memory
 jwt.signing.key: secret

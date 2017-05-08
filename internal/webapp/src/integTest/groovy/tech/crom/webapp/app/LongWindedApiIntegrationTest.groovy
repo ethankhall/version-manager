@@ -218,8 +218,12 @@ class LongWindedApiIntegrationTest extends Specification {
         response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer1)
 
         then:
-        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', accessLevel: 'ADMIN']
-        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', accessLevel: 'READ']
+        (response.content.permissions as List).find {
+            it.username == 'user1'
+        } == [username: 'user1', accessLevel: 'ADMIN']
+        (response.content.permissions as List).find {
+            it.username == 'user2'
+        } == [username: 'user2', accessLevel: 'READ']
         (response.content.permissions as List).size() == 2
 
         when:  //user doesn't have enough permissions
@@ -245,8 +249,12 @@ class LongWindedApiIntegrationTest extends Specification {
         response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer1)
 
         then:
-        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', accessLevel: 'ADMIN']
-        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', accessLevel: 'WRITE']
+        (response.content.permissions as List).find {
+            it.username == 'user1'
+        } == [username: 'user1', accessLevel: 'ADMIN']
+        (response.content.permissions as List).find {
+            it.username == 'user2'
+        } == [username: 'user2', accessLevel: 'WRITE']
         (response.content.permissions as List).size() == 2
 
         when:  //user doesn't have enough permissions
@@ -272,16 +280,24 @@ class LongWindedApiIntegrationTest extends Specification {
         response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer1)
 
         then:
-        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', accessLevel: 'ADMIN']
-        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', accessLevel: 'ADMIN']
+        (response.content.permissions as List).find {
+            it.username == 'user1'
+        } == [username: 'user1', accessLevel: 'ADMIN']
+        (response.content.permissions as List).find {
+            it.username == 'user2'
+        } == [username: 'user2', accessLevel: 'ADMIN']
         (response.content.permissions as List).size() == 2
 
         when:
         response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer2)
 
         then:
-        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', accessLevel: 'ADMIN']
-        (response.content.permissions as List).find { it.username == 'user2' } == [username: 'user2', accessLevel: 'ADMIN']
+        (response.content.permissions as List).find {
+            it.username == 'user1'
+        } == [username: 'user1', accessLevel: 'ADMIN']
+        (response.content.permissions as List).find {
+            it.username == 'user2'
+        } == [username: 'user2', accessLevel: 'ADMIN']
         (response.content.permissions as List).size() == 2
 
         //======================================
@@ -298,7 +314,9 @@ class LongWindedApiIntegrationTest extends Specification {
         response = makeGetRequest('api/v1/project/repoUser1/permissions', userContainer1)
 
         then:
-        (response.content.permissions as List).find { it.username == 'user1' } == [username: 'user1', accessLevel: 'ADMIN']
+        (response.content.permissions as List).find {
+            it.username == 'user1'
+        } == [username: 'user1', accessLevel: 'ADMIN']
         (response.content.permissions as List).size() == 1
 
         when:  //user doesn't have enough permissions
@@ -343,6 +361,11 @@ class LongWindedApiIntegrationTest extends Specification {
 
         then:
         response.content.commits[0].createdAt == '2016-09-11T01:15:30.545Z'
+        response.content.commits[0].state == 'DEFAULT'
+        response.content.commits[0].version == '1.0.0'
+
+        response.content.commits[1].state == 'DEFAULT'
+        response.content.commits[1].version == '0.0.1'
 
         when:
         content = ["scmUrl": "git@github.com:foo/bar.git", "bumper": "semver"]
@@ -381,6 +404,33 @@ class LongWindedApiIntegrationTest extends Specification {
         response.statusLine.statusCode == 404
     }
 
+    def 'change the state machine backend'() {
+        def stateMachine = [defaultState  : 'PRE-RELEASE',
+                            transitions   : [
+                                'PRE-RELEASE': [nextStates: ['RELEASED']],
+                                'RELEASED'   : [nextStates: ['EOL']],
+                                'EOL'        : [nextStates: []]],
+                            migrateCurrent: ['DEFAULT': 'PRE-RELEASE']
+        ]
+
+        when:
+        makePutRequest('api/v1/project/repoUser1/repo/repo1/state-machine', stateMachine, userContainer1)
+        makePutRequest('api/v1/project/repoUser1/repo/repo2/state-machine', stateMachine, userContainer1)
+        makePutRequest('api/v1/project/repoUser2/repo/repo1/state-machine', stateMachine, userContainer2)
+        makePutRequest('api/v1/project/repoUser2/repo/repo2/state-machine', stateMachine, userContainer2)
+
+        then:
+        def response = makeGetRequest('api/v1/project/repoUser1/repo/repo1/versions')
+
+        then:
+        response.content.commits[0].createdAt == '2016-09-11T01:15:30.545Z'
+        response.content.commits[0].state == 'PRE-RELEASE'
+        response.content.commits[0].version == '1.0.0'
+
+        response.content.commits[1].state == 'PRE-RELEASE'
+        response.content.commits[1].version == '0.0.1'
+    }
+
     def 'handle versions'() {
         when:
         def body = ["commits": ['1'], "message": "bla", "commitId": "2"]
@@ -390,7 +440,23 @@ class LongWindedApiIntegrationTest extends Specification {
         response.statusLine.statusCode == 201
         response.content.commitId == '2'
         response.content.version == '1.0.1'
-        response.content.state == 'DEFAULT'
+        response.content.state == 'PRE-RELEASE'
+
+        when:
+        response = makePutRequest('api/v1/project/repoUser1/repo/repo1/version/1.0.1/state', [nextState: 'RELEASED'],
+            userContainer1)
+
+        then:
+        response.statusLine.statusCode == 200
+
+        when:
+        response = makeGetRequest('api/v1/project/repoUser1/repo/repo1/version/1.0.1')
+
+        then:
+        response.statusLine.statusCode == 200
+        response.content.commitId == '2'
+        response.content.version == '1.0.1'
+        response.content.state == 'RELEASED'
 
         when:
         body = ['commits': ['2', '1', '0']]
@@ -401,7 +467,7 @@ class LongWindedApiIntegrationTest extends Specification {
         response.content.commitId == "2"
         response.content.postfix == null
         response.content.version == '1.0.1'
-        response.content.state == 'DEFAULT'
+        response.content.state == 'RELEASED'
 
         when:
         body = ["commits": ['2', '1', '0'], "message": "bla[bump major]", "commitId": "3"]
@@ -411,7 +477,7 @@ class LongWindedApiIntegrationTest extends Specification {
         response.statusLine.statusCode == 201
         response.content.commitId == '3'
         response.content.version == '2.0.0'
-        response.content.state == 'DEFAULT'
+        response.content.state == 'PRE-RELEASE'
 
         when:
         // Should fail because user doesn't have accessLevel
@@ -431,23 +497,23 @@ class LongWindedApiIntegrationTest extends Specification {
         response.statusLine.statusCode == 200
         response.content.commits[0].commitId == '3'
         response.content.commits[0].version == '2.0.0'
-        response.content.commits[0].state == 'DEFAULT'
+        response.content.commits[0].state == 'PRE-RELEASE'
 
         response.content.commits[1].commitId == '2'
         response.content.commits[1].version == '1.0.1'
-        response.content.commits[1].state == 'DEFAULT'
+        response.content.commits[1].state == 'RELEASED'
 
         response.content.commits[2].commitId == '1'
         response.content.commits[2].version == '1.0.0'
-        response.content.commits[2].state == 'DEFAULT'
+        response.content.commits[2].state == 'PRE-RELEASE'
 
         response.content.commits[3].commitId == '0'
         response.content.commits[3].version == '0.0.1'
-        response.content.commits[3].state == 'DEFAULT'
+        response.content.commits[3].state == 'PRE-RELEASE'
 
         response.content.latest.commitId == '3'
         response.content.latest.version == '2.0.0'
-        response.content.latest.state == 'DEFAULT'
+        response.content.latest.state == 'PRE-RELEASE'
     }
 
     def 'version search'() {
@@ -723,11 +789,23 @@ class LongWindedApiIntegrationTest extends Specification {
         return new PostResponse(slurper.parseText(responseString) as Map, responseCode)
     }
 
-    def makePostRequest(String endpoint, Object body, UserContainer container) {
+    def makePutRequest(String endpoint, Object body, UserContainer container, ContentType type = ContentType.APPLICATION_JSON) {
+        def builder = new JsonBuilder(body)
+        def response = Request.Put("http://localhost:${ environment.getProperty("local.server.port") }/$endpoint")
+            .addHeader("X-AUTH-TOKEN", container.tokenDetails.value)
+            .bodyString(builder.toString(), type)
+            .execute().returnResponse()
+        def responseString = response.entity.content.text ?: "{}"
+        def responseCode = response.statusLine
+
+        return new PostResponse(slurper.parseText(responseString) as Map, responseCode)
+    }
+
+    def makePostRequest(String endpoint, Object body, UserContainer container, ContentType type = ContentType.APPLICATION_JSON) {
         def builder = new JsonBuilder(body)
         def response = Request.Post("http://localhost:${ environment.getProperty("local.server.port") }/$endpoint")
             .addHeader("X-AUTH-TOKEN", container.tokenDetails.value)
-            .bodyString(builder.toString(), ContentType.APPLICATION_JSON)
+            .bodyString(builder.toString(), type)
             .execute().returnResponse()
         def responseString = response.entity.content.text ?: "{}"
         def responseCode = response.statusLine

@@ -8,7 +8,7 @@ defineVersion("groovy", "2.4.5").lock { withGroup("org.codehaus.groovy") }
 defineVersion("spock", "1.1-groovy-2.4-rc-1").lock { withGroup("org.spockframework") }
 defineVersion("slf4j", "1.7.25").lock { withGroup("org.slf4j") }
 defineVersion("logback", "1.2.3").lock { withGroup("ch.qos.logback") }
-defineVersion("ehcache", "2.8.3").lock { withGroup("net.sf.ehcache") }
+defineVersion("ehcache", "2.10.4").lock { withGroup("net.sf.ehcache") }
 defineVersion("hibernate", "5.3.4.Final")
 defineVersion("jackson", "2.8.8")
     .lock { withGroup("com.fasterxml.jackson.core") }

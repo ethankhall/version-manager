@@ -20,11 +20,15 @@ import tech.crom.business.api.VersionBumperApi
 import tech.crom.model.commit.CommitFilter
 import tech.crom.model.commit.CommitIdContainer
 import tech.crom.model.commit.impl.RequestedCommit
+import tech.crom.model.state.StateMachineDefinition
+import tech.crom.model.state.StateTransitions
 import tech.crom.rest.model.commit.CommitIdCollection
 import tech.crom.rest.model.permission.PermissionGrant
 import tech.crom.rest.model.repository.CreateRepoRequest
 import tech.crom.rest.model.repository.CreateRepoResponse
 import tech.crom.rest.model.repository.GetRepoResponse
+import tech.crom.rest.model.repository.statemachine.UpdateStateMachine
+import tech.crom.rest.model.repository.statemachine.UpdateStateTransitions
 import tech.crom.rest.model.version.VersionSearchResponse
 import tech.crom.web.api.model.RequestDetails
 import javax.transaction.Transactional
@@ -107,6 +111,23 @@ constructor(private val repositoryApi: RepositoryApi,
     }
 
     @RepoRequired
+    @AdminPermissionRequired
+    @RequestMapping(value = "/state-machine", method = arrayOf(RequestMethod.PUT))
+    @ApiOperation(value = "Update the version state FSM")
+    open fun updateStateMachine(requestDetails: RequestDetails,
+                                @RequestBody body: UpdateStateMachine): ResponseEntity<Any> {
+
+        val transitions = body.transitions
+            .map { transition -> Pair(transition.key, transition.value.toStateTransitions()) }
+            .associate { it }
+
+        val stateMachineDefinition = StateMachineDefinition(body.defaultState, transitions)
+        repositoryApi.updateVersionStateMachine(requestDetails.cromRepo!!, stateMachineDefinition, body.migrateCurrent)
+
+        return ResponseEntity(HttpStatus.OK)
+    }
+
+    @RepoRequired
     @ReadPermissionRequired
     @ApiOperation(value = "Finds the latest commit from a list of ids")
     @RequestMapping(value = "/search/version", method = arrayOf(RequestMethod.POST))
@@ -124,5 +145,9 @@ constructor(private val repositoryApi: RepositoryApi,
                 latestCommit.createdAt)
             return ResponseEntity.ok(body)
         }
+    }
+
+    private fun UpdateStateTransitions.toStateTransitions(): StateTransitions {
+        return StateTransitions(this.nextStates, this.autoTransition)
     }
 }

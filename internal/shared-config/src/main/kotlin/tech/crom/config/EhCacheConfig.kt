@@ -19,7 +19,6 @@ open class EhCacheConfig {
     open fun ehCacheManager(metricRegistry: MetricRegistry): net.sf.ehcache.CacheManager {
         val cacheManager = net.sf.ehcache.CacheManager.create()
 
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("versionsForRepo", 10)))
         cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("aclCache")))
         cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("tokensById", 10)))
         cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("tokensByRepo", 10)))

@@ -97,7 +97,7 @@ open class DefaultCommitManager @Autowired constructor(
 
         if (!filer.history.isEmpty() && !"latest".equals(filer.history[0].commitId, ignoreCase = true)) {
             val commitIds = filer.history.map { it.commitId }
-            query = query.and(cd.REPO_DETAIL_ID.eq(cromRepo.repoId).and(cd.COMMIT_ID.`in`(commitIds)))
+            query = query.and(cd.REPO_DETAIL_ID.eq(cromRepo.repoId)).and(cd.COMMIT_ID.`in`(commitIds).or(cd.VERSION.`in`(commitIds)))
         }
 
         if (filer.state != null) {
