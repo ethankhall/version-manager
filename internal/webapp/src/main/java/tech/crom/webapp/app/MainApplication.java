@@ -4,6 +4,8 @@ import org.eclipse.jetty.server.Server;
 import org.eclipse.jetty.util.thread.QueuedThreadPool;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.boot.context.embedded.jetty.JettyEmbeddedServletContainerFactory;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +30,7 @@ import tech.crom.version.bumper.config.VersionBumperConfig;
     VersionBumperConfig.class, BuisnessLogicConfig.class, AuthorizationConfig.class, AuthenticationConfig.class,
     ServiceApiConfig.class, StorageConfig.class})
 @ComponentScan({"tech.crom.webapp.app", "tech.crom.webapp.endpoint"})
-@EnableAutoConfiguration
+@EnableAutoConfiguration(exclude = {JdbcTemplateAutoConfiguration.class, DataSourceAutoConfiguration.class})
 public class MainApplication {
 
     public static void main(String[] args) throws Exception {

@@ -17,6 +17,7 @@ configurations {
 
 dependencies {
     codegen libraries.database
+    codegen libraries.jooqCodeGen
 
     migration project(':database:database-migration')
 

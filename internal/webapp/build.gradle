@@ -44,7 +44,6 @@ dependencies {
 
     //Misc
     compile libraries.logging
-    compile libraries.thymeleaf
     compile 'com.google.code.findbugs:jsr305:3.0.1'
     compile libraries.dropwizard
 

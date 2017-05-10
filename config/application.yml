@@ -4,7 +4,6 @@ auth:
         google:
             client:
                 id: 501986272416-882h8qm11sherv2m99geckohi2mrmffh.apps.googleusercontent.com
-            client:
                 secret: qHv-RKsHe5zavBhjWwXmktMr
 
 server:
@@ -28,8 +27,9 @@ storage:
 
 spring:
     datasource:
-        url: jdbc:postgresql://172.0.1.100/version_manager
-        username: version
+        url: jdbc:mysql://127.0.0.1:3306/version_manager_test?verifyServerCertificate=false&useSSL=true
+        username: root
         password: password
+        dbname: version_manager_test
     jpa:
         show-sql: true

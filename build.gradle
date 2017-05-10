@@ -40,10 +40,6 @@ allprojects {
     apply from: "$rootDir/gradle/versions.gradle"
 }
 
-subprojects {
-    tasks.create('allDeps', DependencyReportTask)
-}
-
 versionManager {
     projectName = 'ethankhall'
     repoName = 'version-manager'
@@ -55,6 +51,9 @@ subprojects { sub ->
     apply plugin: 'java'
     apply plugin: 'io.ehdev.gradle.dependency-resolve'
     apply plugin: 'io.ehdev.gradle.build-dir'
+    apply plugin: 'io.ehdev.gradle.dependency-script'
+
+    tasks.create('allDeps', DependencyReportTask)
 
     tasks.withType(Test) { test ->
         test.maxHeapSize = '512m'
@@ -68,7 +67,7 @@ subprojects { sub ->
         sub.plugins.apply('io.ehdev.gradle.klint')
         sub.plugins.apply('org.jetbrains.kotlin.plugin.spring')
     }
-
+    
     ext['libraries'] = deps.libraries
 }
 

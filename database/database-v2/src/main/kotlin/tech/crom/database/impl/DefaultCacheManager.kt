@@ -9,7 +9,7 @@ import tech.crom.model.repository.CromRepo
 
 @Service
 class DefaultCacheManager @Autowired constructor(
-    val cacheManager: EhCacheCacheManager): CacheManager {
+    val cacheManager: EhCacheCacheManager) : CacheManager {
 
     override fun purgeCacheFor(cromRepo: CromRepo) {
         cacheManager.cacheManager.getEhcache("commitById").removeAll()
