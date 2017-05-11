@@ -8,7 +8,6 @@ import tech.crom.business.exception.CommitNotFoundException
 import tech.crom.database.api.CacheManager
 import tech.crom.database.api.CommitManager
 import tech.crom.database.api.StateMachineManager
-import tech.crom.logger.getLogger
 import tech.crom.model.commit.CommitFilter
 import tech.crom.model.commit.CommitIdContainer
 import tech.crom.model.commit.VersionDetails
@@ -25,15 +24,9 @@ class DetaultCommitApi @Autowired constructor(
     val versionBumperApi: VersionBumperApi
 ) : CommitApi {
 
-    val logger by getLogger()
-
-    override fun findCommit(cromRepo: CromRepo, commitIdContainer: CommitIdContainer): PersistedCommit? {
-        return commitManager.findCommit(cromRepo, commitIdContainer)
-    }
-
     override fun findAllCommits(cromRepo: CromRepo): List<PersistedCommit> = commitManager.findAllCommits(cromRepo)
 
-    override fun findLatestCommit(cromRepo: CromRepo, filer: CommitFilter): PersistedCommit? {
+    override fun findCommit(cromRepo: CromRepo, filer: CommitFilter): PersistedCommit? {
         return commitManager.findCommit(cromRepo, filer)
     }
 

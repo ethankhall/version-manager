@@ -12,9 +12,7 @@ interface CommitApi {
                      commitModel: RequestedCommit,
                      commitList: List<CommitIdContainer>): PersistedCommit
 
-    fun findCommit(cromRepo: CromRepo, commitIdContainer: CommitIdContainer): PersistedCommit?
-
-    fun findLatestCommit(cromRepo: CromRepo, filer: CommitFilter): PersistedCommit?
+    fun findCommit(cromRepo: CromRepo, filer: CommitFilter): PersistedCommit?
 
     fun findAllCommits(cromRepo: CromRepo): List<PersistedCommit>
 

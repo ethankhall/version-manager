@@ -44,20 +44,20 @@ class RepoEndpointTest extends Specification {
     def 'find version finds nothing'() {
         when:
         def model = new CommitIdCollection(['a', 'b', 'c'])
-        def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model)
+        def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model, null)
 
         then:
-        1 * commitApi.findLatestCommit(_, _) >> null
+        1 * commitApi.findCommit(_, _) >> null
         history.statusCode == HttpStatus.NOT_FOUND
     }
 
     def 'find version'() {
         when:
         def model = new CommitIdCollection(['a', 'b', 'c'])
-        def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model)
+        def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model, null)
 
         then:
-        1 * commitApi.findLatestCommit(_, _) >> PersistedCommit.createNewCommit(AuthUtils.randomLongGenerator(),
+        1 * commitApi.findCommit(_, _) >> PersistedCommit.createNewCommit(AuthUtils.randomLongGenerator(),
             'commit', '2.3.4', ZonedDateTime.now())
 
         history.statusCode == HttpStatus.OK

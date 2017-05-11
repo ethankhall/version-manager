@@ -12,7 +12,9 @@ import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
 import tech.crom.business.api.CommitApi
+import tech.crom.model.commit.CommitFilter
 import tech.crom.model.commit.CommitIdContainer
 import tech.crom.model.commit.impl.RequestedCommit
 import tech.crom.rest.model.version.CreateVersionRequest
@@ -82,8 +84,10 @@ constructor(private val commitApi: CommitApi) {
     @ApiOperation(value = "Get a version, can be version, commit id, or 'latest'")
     @RequestMapping(value = "/version/{versionArg:.+}", method = arrayOf(RequestMethod.GET))
     fun findVersion(requestDetails: RequestDetails,
-                    @PathVariable("versionArg") versionArg: String): ResponseEntity<GetVersionResponse> {
-        val commit = commitApi.findCommit(requestDetails.cromRepo!!, CommitIdContainer(versionArg)) ?:
+                    @PathVariable("versionArg") versionArg: String,
+                    @RequestParam("filter", required = false) filter: String?): ResponseEntity<GetVersionResponse> {
+        val commitFilter = CommitFilter(listOf(CommitIdContainer(versionArg)), filter)
+        val commit = commitApi.findCommit(requestDetails.cromRepo!!, commitFilter) ?:
             return ResponseEntity(HttpStatus.NOT_FOUND)
 
         val versionResponse = GetVersionResponse(commit.commitId,

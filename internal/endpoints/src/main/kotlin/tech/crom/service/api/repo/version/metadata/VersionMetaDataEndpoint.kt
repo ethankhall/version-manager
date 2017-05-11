@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.multipart.MultipartFile
 import tech.crom.business.api.CommitApi
 import tech.crom.business.api.StorageApi
+import tech.crom.model.commit.CommitFilter
 import tech.crom.model.commit.CommitIdContainer
 import tech.crom.model.commit.impl.PersistedCommit
 import tech.crom.model.metadata.StorageData
@@ -81,8 +82,8 @@ open class VersionMetaDataEndpoint(
     }
 
     private fun getVersionOrThrow(requestDetails: RequestDetails, version: String): PersistedCommit {
-        val idContainer = CommitIdContainer(version)
-        return commitApi.findCommit(requestDetails.cromRepo!!, idContainer) ?: throw VersionNotFoundException(version)
+        val commitFilter = CommitFilter(listOf(CommitIdContainer(version)))
+        return commitApi.findCommit(requestDetails.cromRepo!!, commitFilter) ?: throw VersionNotFoundException(version)
     }
 
     class UnknownStorageError(e: String) : BaseHttpException(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.UNKNOWN_STORAGE_BACKEND_ERROR, e)

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
 import tech.crom.business.api.CommitApi
 import tech.crom.business.api.PermissionApi
 import tech.crom.business.api.RepositoryApi
@@ -132,9 +133,10 @@ constructor(private val repositoryApi: RepositoryApi,
     @ApiOperation(value = "Finds the latest commit from a list of ids")
     @RequestMapping(value = "/search/version", method = arrayOf(RequestMethod.POST))
     open fun searchForVersionInHistory(requestDetails: RequestDetails,
-                                       @RequestBody versionModel: CommitIdCollection): ResponseEntity<VersionSearchResponse> {
+                                       @RequestBody versionModel: CommitIdCollection,
+                                       @RequestParam("filter", required = false) filter: String?): ResponseEntity<VersionSearchResponse> {
         val commits = versionModel.commits.map { CommitIdContainer(it) }.toList()
-        val latestCommit = commitApi.findLatestCommit(requestDetails.cromRepo!!, CommitFilter(commits))
+        val latestCommit = commitApi.findCommit(requestDetails.cromRepo!!, CommitFilter(commits, filter))
 
         if (latestCommit == null) {
             return ResponseEntity(HttpStatus.NOT_FOUND)
