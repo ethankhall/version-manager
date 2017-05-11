@@ -17,7 +17,7 @@ import tech.crom.model.repository.CromRepo
 import tech.crom.state.machine.StateMachineProcessor
 
 @Service
-class DetaultCommitApi @Autowired constructor(
+class DefaultCommitApi @Autowired constructor(
     val commitManager: CommitManager,
     val stateMachineManager: StateMachineManager,
     val cacheManager: CacheManager,

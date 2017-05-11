@@ -13,7 +13,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.core.env.Environment;
-import tech.crom.business.config.BuisnessLogicConfig;
+import tech.crom.business.config.BusinessLogicConfig;
 import tech.crom.config.ClockConfig;
 import tech.crom.config.DatabaseConfig;
 import tech.crom.config.SharedMasterConfig;
@@ -27,7 +27,7 @@ import tech.crom.version.bumper.config.VersionBumperConfig;
 @EnableCaching
 @Configuration
 @Import({DatabaseConfig.class, ClockConfig.class, SharedMasterConfig.class, SpringTransactionProvider.class,
-    VersionBumperConfig.class, BuisnessLogicConfig.class, AuthorizationConfig.class, AuthenticationConfig.class,
+    VersionBumperConfig.class, BusinessLogicConfig.class, AuthorizationConfig.class, AuthenticationConfig.class,
     ServiceApiConfig.class, StorageConfig.class})
 @ComponentScan({"tech.crom.webapp.app", "tech.crom.webapp.endpoint"})
 @EnableAutoConfiguration(exclude = {JdbcTemplateAutoConfiguration.class, DataSourceAutoConfiguration.class})

@@ -13,4 +13,11 @@ dependencies {
     compile project(":database:database-v2")
     compile project(":internal:version-bumper")
     compile project(":internal:storage")
+
+    testCompile libraries.testingLibraries
+
+    integTestCompile libraries.springTest
+    integTestCompile libraries.springBootTest
+    integTestCompile project(":internal:shared-config")
+    integTestCompile project(":internal:version-bumper")
 }

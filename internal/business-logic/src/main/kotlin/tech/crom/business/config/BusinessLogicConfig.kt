@@ -5,4 +5,4 @@ import org.springframework.context.annotation.Configuration
 
 @Configuration
 @ComponentScan("tech.crom.business")
-open class BuisnessLogicConfig
+open class BusinessLogicConfig
