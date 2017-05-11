@@ -1,5 +1,5 @@
 apply plugin: 'java'
-apply plugin: 'local-dev'
+apply plugin: 'io.ehdev.gradle.development'
 
 sourceSets {
     main {

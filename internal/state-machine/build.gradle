@@ -1,6 +1,6 @@
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "groovy"
-apply plugin: 'local-dev'
+apply plugin: 'io.ehdev.gradle.development'
 
 dependencies {
     compile libraries.kotlin

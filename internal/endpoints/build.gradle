@@ -1,7 +1,7 @@
 apply plugin: 'groovy'
 apply plugin: 'org.jetbrains.kotlin.jvm'
 apply plugin: 'org.jetbrains.kotlin.plugin.spring'
-apply plugin: 'local-dev'
+apply plugin: 'io.ehdev.gradle.development'
 
 dependencies {
     compile project(':api:rest-model')
