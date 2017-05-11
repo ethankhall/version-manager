@@ -12,7 +12,7 @@ import tech.crom.security.authentication.getRootPage
 
 @Service
 @RequestMapping
-open class RootPageController @Autowired constructor(val environment: Environment){
+open class RootPageController @Autowired constructor(val environment: Environment) {
 
     @RequestMapping(value = "/", produces = arrayOf("application/xml", "application/json"))
     @ResponseStatus(HttpStatus.OK)

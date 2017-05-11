@@ -1,6 +1,10 @@
 package tech.crom.rest.model.permission
 
-import com.fasterxml.jackson.annotation.*
+import com.fasterxml.jackson.annotation.JsonClassDescription
+import com.fasterxml.jackson.annotation.JsonFormat
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.annotation.JsonPropertyDescription
+import com.fasterxml.jackson.annotation.JsonTypeName
 import tech.crom.rest.model.InputModel
 
 @InputModel

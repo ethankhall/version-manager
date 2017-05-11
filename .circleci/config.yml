@@ -1,0 +1,59 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/checkout
+    docker:
+      - image: openjdk:8-jdk
+      - image: google/cloud-sdk
+
+      - image: mysql:latest
+        environment:
+          no_proxy: "*.local, 169.254/16"
+          PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+          GOSU_VERSION: 1.7
+          MYSQL_MAJOR: 5.7
+          MYSQL_VERSION: 5.7.17-1debian8
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: version_manager_test
+
+
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: crom-{{ .Branch }}
+
+      - run:
+          name: Update Cache
+          command: ./gradlew resolveDependencies
+
+      - save_cache:
+          key: crom-{{ .Branch }}
+          paths:
+            - "~/.gradle"
+
+      - run:
+          name: Validate Code
+          command: ./gradlew check
+
+      - run:
+          name: Copy Artifacts
+          command: |
+              mkdir -p ~/test-results
+              find . -maxdepth 5 -name 'TEST-*.xml' -exec cp {} ~/test-results/ \;
+
+      - store_test_results:
+          path: ~/test-results/
+
+      - deploy:
+          name: Deploy To Google Cloud
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              export PATH="$PATH:/google-cloud-sdk/bin"
+              echo $GOOGLE_CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
+              gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
+              gcloud config set project $GCLOUD_PROJECT
+              docker login -e 1234@5678.com -u _json_key -p "$(cat ${HOME}/client-secret.json)" https://us.gcr.io
+              ./gradlew claimVersion --refresh-dependencies  --console=plain
+              ./gradlew clean :docker:pushContainers --console=plain
+            fi

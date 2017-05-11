@@ -1,47 +1,45 @@
 package tech.crom.state.machine
 
+import tech.crom.model.commit.VersionCommitDetails
 import tech.crom.model.state.StateMachineDefinition
 import tech.crom.model.state.StateTransitionNotification
 import tech.crom.state.machine.exception.IllegalStateTransitionException
 import tech.crom.state.machine.exception.UnknownStateException
-import tech.crom.state.machine.exception.UnknownVersionIdException
 
-class StateMachineProcessor(val definition: StateMachineDefinition, val currentStateMachine: MutableMap<Long, String>) {
+class StateMachineProcessor(val definition: StateMachineDefinition) {
 
-    fun doTransition(versionId: Long, nextState: String): List<StateTransitionNotification> {
+    fun doTransition(current: String, nextState: String): List<StateTransitionNotification> {
+        return doTransition(current, nextState, 0)
+    }
+
+    private fun doTransition(current: String, nextState: String, depth: Int): List<StateTransitionNotification> {
         val transitionQueue = mutableListOf<StateTransitionNotification>()
-        val currentState = currentStateMachine[versionId] ?: throw UnknownVersionIdException(versionId)
 
-        val currentStateDef = definition.stateTransitions[currentState] ?: throw UnknownStateException(currentState)
+        val currentStateDef = definition.stateTransitions[current] ?: throw UnknownStateException(current)
         val nextStateDef = definition.stateTransitions[nextState] ?: throw UnknownStateException(nextState)
 
         if (!currentStateDef.nextStates.contains(nextState)) throw IllegalStateTransitionException(nextState)
 
         if (nextStateDef.forceTransition != null) {
-            currentStateMachine
-                .filterValues { it == nextState }
-                .forEach { transitionQueue.addAll(doTransition(it.key, nextStateDef.forceTransition!!)) }
+            transitionQueue.addAll(doTransition(nextState, nextStateDef.forceTransition!!, depth + 1))
         }
 
-        currentStateMachine[versionId] = nextState
-        transitionQueue.add(StateTransitionNotification(versionId, currentState, nextState))
+        if (depth != 0) {
+            transitionQueue.add(StateTransitionNotification(current, nextState))
+        }
 
         return transitionQueue
     }
 
-    fun addVersion(versionId: Long): List<StateTransitionNotification> {
+    fun newVersionTransitions(): List<StateTransitionNotification> {
         val transitionQueue = mutableListOf<StateTransitionNotification>()
-        val nextStateDef = definition.stateTransitions[definition.defaultState] ?: throw UnknownStateException(definition.defaultState)
+        val defaultState = definition.stateTransitions[definition.defaultState]!!
 
-        if (nextStateDef.forceTransition != null) {
-            currentStateMachine
-                .filterValues { it == definition.defaultState }
-                .forEach { transitionQueue.addAll(doTransition(it.key, nextStateDef.forceTransition!!)) }
+        if (defaultState.forceTransition != null) {
+            transitionQueue.addAll(doTransition(VersionCommitDetails.DEFAULT_STATE, definition.defaultState))
         }
 
-        currentStateMachine[versionId] = definition.defaultState
-        transitionQueue.add(StateTransitionNotification(versionId, null, definition.defaultState))
-
+        transitionQueue.add(StateTransitionNotification(VersionCommitDetails.DEFAULT_STATE, definition.defaultState))
         return transitionQueue
     }
 }

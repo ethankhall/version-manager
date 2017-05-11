@@ -16,7 +16,6 @@ import tech.crom.rest.model.user.GetFullProfileResponse
 import tech.crom.rest.model.user.PostUserUpdate
 import tech.crom.web.api.model.RequestDetails
 
-
 @Controller
 @RequestMapping("/api/v1/user")
 open class UserEndpoint @Autowired constructor(
@@ -39,11 +38,11 @@ open class UserEndpoint @Autowired constructor(
 
         update.updates.forEach {
             val value = it.value.trim()
-            if(value.length < 3) {
+            if (value.length < 3) {
                 throw BaseHttpException(HttpStatus.NOT_ACCEPTABLE, ErrorCode.UPDATE_MUST_BE_LONGER, "`$value` must be at least 3 characters long.")
             }
 
-            user = when(it.field) {
+            user = when (it.field) {
                 PostUserUpdate.FieldDetails.DISPLAY_NAME -> user.copy(displayName = value)
                 PostUserUpdate.FieldDetails.USER_NAME -> updateUserName(user, value)
             }

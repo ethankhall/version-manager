@@ -26,7 +26,7 @@ import javax.sql.DataSource
 
 @Configuration
 @ComponentScan("tech.crom.database")
-@Import(MetricsConfiguration::class)
+@Import(EhCacheConfig::class, MetricsConfiguration::class)
 open class DatabaseConfig {
 
     @Autowired

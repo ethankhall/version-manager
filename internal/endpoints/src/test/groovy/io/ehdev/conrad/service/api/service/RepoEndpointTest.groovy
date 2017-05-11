@@ -1,7 +1,6 @@
 package io.ehdev.conrad.service.api.service
 
-import tech.crom.rest.model.commit.CommitIdCollection
-import io.ehdev.conrad.service.api.service.repo.RepoEndpoint
+import tech.crom.service.api.repo.RepoEndpoint
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletRequest
 import org.springframework.web.context.request.RequestContextHolder
@@ -15,6 +14,7 @@ import tech.crom.model.bumper.CromVersionBumper
 import tech.crom.model.commit.impl.PersistedCommit
 import tech.crom.model.repository.CromRepoDetails
 import tech.crom.model.security.authorization.CromPermission
+import tech.crom.rest.model.commit.CommitIdCollection
 import tech.crom.security.authorization.impl.AuthUtils
 import tech.crom.version.bumper.impl.atomic.AtomicVersionBumper
 
@@ -44,20 +44,21 @@ class RepoEndpointTest extends Specification {
     def 'find version finds nothing'() {
         when:
         def model = new CommitIdCollection(['a', 'b', 'c'])
-        def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model)
+        def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model, null)
 
         then:
-        1 * commitApi.findLatestCommit(_, _) >> null
+        1 * commitApi.findCommit(_, _) >> null
         history.statusCode == HttpStatus.NOT_FOUND
     }
 
     def 'find version'() {
         when:
         def model = new CommitIdCollection(['a', 'b', 'c'])
-        def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model)
+        def history = repoEndpoint.searchForVersionInHistory(createTestingRepoModel(), model, null)
 
         then:
-        1 * commitApi.findLatestCommit(_, _) >> new PersistedCommit(AuthUtils.randomLongGenerator(), 'commit', '2.3.4', ZonedDateTime.now())
+        1 * commitApi.findCommit(_, _) >> PersistedCommit.createNewCommit(AuthUtils.randomLongGenerator(),
+            'commit', '2.3.4', ZonedDateTime.now())
 
         history.statusCode == HttpStatus.OK
         history.body.commitId == 'commit'

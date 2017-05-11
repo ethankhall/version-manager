@@ -5,4 +5,4 @@ import org.springframework.context.annotation.Import
 
 @Configuration
 @Import(MetricsConfiguration::class, EhCacheConfig::class)
-open class SharedMasterConfig()
+open class SharedMasterConfig

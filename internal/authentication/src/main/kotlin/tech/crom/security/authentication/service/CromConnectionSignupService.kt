@@ -5,11 +5,10 @@ import org.springframework.social.connect.Connection
 import org.springframework.social.connect.ConnectionSignUp
 import org.springframework.stereotype.Service
 import tech.crom.database.api.UserManager
-import java.util.*
-
+import java.util.Random
 
 @Service
-class CromConnectionSignupService @Autowired constructor(val userManager: UserManager): ConnectionSignUp {
+class CromConnectionSignupService @Autowired constructor(val userManager: UserManager) : ConnectionSignUp {
 
     internal val randomNumber = Random()
 

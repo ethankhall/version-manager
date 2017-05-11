@@ -1,6 +1,6 @@
 apply plugin: 'java'
 apply plugin: 'groovy'
-apply plugin: 'local-dev'
+apply plugin: 'io.ehdev.gradle.development'
 apply plugin: 'kotlin'
 
 dependencies {
@@ -8,6 +8,8 @@ dependencies {
     compile project(":internal:shared-model")
     compile libraries.kotlin
     compile libraries.logging
+    compile libraries.springCore
+    compile libraries.ehcache
     compile libraries.springSecurity
     compile libraries.database
 

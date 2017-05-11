@@ -24,7 +24,7 @@ open class DefaultWatcherManager @Autowired constructor(
                 .and(watcher.REPO_DETAIL_ID.isNull))
             .fetchOne(0, Int::class.java)
 
-        if(size == 0) {
+        if (size == 0) {
             dslContext.insertInto(watcher, watcher.USER_ID, watcher.PROJECT_DETAIL_ID)
                 .values(cromUser.userId, cromProject.projectId)
                 .execute()
@@ -40,7 +40,7 @@ open class DefaultWatcherManager @Autowired constructor(
                 .and(watcher.REPO_DETAIL_ID.eq(cromRepo.repoId)))
             .fetchOne(0, Int::class.java)
 
-        if(size == 0) {
+        if (size == 0) {
             dslContext.insertInto(watcher, watcher.USER_ID, watcher.PROJECT_DETAIL_ID, watcher.REPO_DETAIL_ID)
                 .values(cromUser.userId, cromRepo.projectId, cromRepo.repoId)
                 .execute()

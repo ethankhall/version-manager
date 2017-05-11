@@ -8,7 +8,7 @@ import org.springframework.transaction.TransactionDefinition
 import org.springframework.transaction.TransactionStatus
 import org.springframework.transaction.support.DefaultTransactionDefinition
 
-internal class SpringTransactionProvider(private val txMgr: DataSourceTransactionManager) : org.jooq.TransactionProvider {
+class SpringTransactionProvider(private val txMgr: DataSourceTransactionManager) : org.jooq.TransactionProvider {
 
     override fun begin(ctx: TransactionContext) {
         logger.debug("Begin transaction")
@@ -34,7 +34,6 @@ internal class SpringTransactionProvider(private val txMgr: DataSourceTransactio
     internal inner class SpringTransaction(val tx: TransactionStatus) : Transaction
 
     companion object {
-
         private val logger = LoggerFactory.getLogger(SpringTransactionProvider::class.java)
     }
 }

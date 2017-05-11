@@ -13,13 +13,12 @@ import org.springframework.context.annotation.Import
 @EnableCaching
 @Configuration
 @Import(MetricsConfiguration::class)
-open class EhCacheConfig() {
+open class EhCacheConfig {
 
     @Bean(destroyMethod = "shutdown")
     open fun ehCacheManager(metricRegistry: MetricRegistry): net.sf.ehcache.CacheManager {
         val cacheManager = net.sf.ehcache.CacheManager.create()
 
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("versionsForRepo", 10)))
         cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("aclCache")))
         cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("tokensById", 10)))
         cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("tokensByRepo", 10)))
@@ -40,7 +39,7 @@ open class EhCacheConfig() {
 
     private fun createCache(name: String, ttl: Long? = null, maxEntries: Long = 5000, policy: String = "LRU"): Cache {
         val cacheConfiguration = CacheConfiguration()
-        if(ttl != null) {
+        if (ttl != null) {
             cacheConfiguration.timeToLiveSeconds = ttl
         }
         cacheConfiguration.name = name

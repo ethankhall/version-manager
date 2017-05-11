@@ -31,7 +31,6 @@ open class WebSecurityConfig @Autowired constructor(
     @Autowired
     lateinit var env: Environment
 
-
     override fun configure(http: HttpSecurity) {
         //@formatter:off
         http

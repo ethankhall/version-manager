@@ -1,5 +1,5 @@
 apply plugin: 'java'
-apply plugin: 'local-dev'
+apply plugin: 'io.ehdev.gradle.development'
 
 sourceSets {
     main {
@@ -17,6 +17,7 @@ configurations {
 
 dependencies {
     codegen libraries.database
+    codegen libraries.jooqCodeGen
 
     migration project(':database:database-migration')
 

@@ -1,8 +1,7 @@
 package tech.crom.database.impl
 
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.SpringApplicationContextLoader
-import org.springframework.test.context.ContextConfiguration
+import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.transaction.annotation.Transactional
 import spock.lang.Specification
 import tech.crom.config.ClockConfig
@@ -16,7 +15,7 @@ import tech.crom.model.commit.CommitIdContainer
 import tech.crom.model.commit.impl.RealizedCommit
 
 @Transactional
-@ContextConfiguration(classes = [DatabaseConfig, ClockConfig, CromDoaConfig], loader = SpringApplicationContextLoader.class)
+@SpringBootTest(classes = [DatabaseConfig, ClockConfig, CromDoaConfig], webEnvironment = SpringBootTest.WebEnvironment.NONE)
 class ManagerResourceIntegrationTest extends Specification {
 
     @Autowired
@@ -76,7 +75,7 @@ class ManagerResourceIntegrationTest extends Specification {
         commitManager.findAllCommits(repo1).isEmpty()
 
         when:
-        def commit1 = commitManager.createCommit(repo1, new RealizedCommit('1', '1.0.0', null), [])
+        def commit1 = commitManager.createCommit(repo1, RealizedCommit.createNewCommit('1', '1.0.0', null), [])
 
         then:
         commit1
@@ -85,7 +84,7 @@ class ManagerResourceIntegrationTest extends Specification {
 
         when:
         def commit2 = commitManager.createCommit(repo1,
-            new RealizedCommit('2', '1.0.1', null),
+            RealizedCommit.createNewCommit('2', '1.0.1', null),
             [new CommitIdContainer('1')])
 
         then:

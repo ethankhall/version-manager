@@ -12,7 +12,7 @@ fun Instant.toZonedDateTime(): ZonedDateTime = ZonedDateTime.ofInstant(this, Zon
 
 fun findCromAuthentication(): CromAuthentication? {
     val authentication = SecurityContextHolder.getContext().authentication
-    return when(authentication) {
+    return when (authentication) {
         is CromAuthentication -> authentication
         else -> null
     }

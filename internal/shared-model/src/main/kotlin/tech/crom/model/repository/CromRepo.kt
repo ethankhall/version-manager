@@ -7,7 +7,7 @@ data class CromRepo(val repoId: Long,
                     val securityId: Long,
                     val projectId: Long,
                     val repoName: String,
-                    val versionBumperId: Long): AuthorizedObject {
+                    val versionBumperId: Long) : AuthorizedObject {
     override fun getId(): Serializable = securityId
 
     override fun toString(): String {

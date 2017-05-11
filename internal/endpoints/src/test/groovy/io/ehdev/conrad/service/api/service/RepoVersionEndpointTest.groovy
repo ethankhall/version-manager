@@ -1,12 +1,12 @@
 package io.ehdev.conrad.service.api.service
 
-import tech.crom.rest.model.version.CreateVersionRequest
-import io.ehdev.conrad.service.api.service.repo.RepoVersionEndpoint
+import tech.crom.service.api.repo.version.RepoVersionEndpoint
 import org.springframework.http.HttpStatus
 import org.springframework.mock.web.MockHttpServletRequest
 import spock.lang.Specification
 import tech.crom.business.api.CommitApi
 import tech.crom.model.commit.impl.PersistedCommit
+import tech.crom.rest.model.version.CreateVersionRequest
 import tech.crom.security.authorization.impl.AuthUtils
 
 import java.time.ZonedDateTime
@@ -29,7 +29,7 @@ class RepoVersionEndpointTest extends Specification {
         def versions = repoEndpoint.getAllVersions(createTestingRepoModel())
 
         then:
-        1 * commitApi.findAllCommits(_) >> [ new PersistedCommit(AuthUtils.randomLongGenerator(), 'abcd1234', '1.2.3', ZonedDateTime.now())]
+        1 * commitApi.findAllCommits(_) >> [PersistedCommit.createNewCommit(AuthUtils.randomLongGenerator(), 'abcd1234', '1.2.3', ZonedDateTime.now())]
         versions.getStatusCode() == HttpStatus.OK
         versions.body.commits.size() == 1
         versions.body.commits[0].commitId == 'abcd1234'
@@ -43,7 +43,7 @@ class RepoVersionEndpointTest extends Specification {
         def versions = repoEndpoint.getAllVersions(createTestingRepoModel())
 
         then:
-        1 * commitApi.findAllCommits(_) >> [ ]
+        1 * commitApi.findAllCommits(_) >> []
         versions.getStatusCode() == HttpStatus.OK
         versions.body.commits.size() == 0
         versions.body.latest == null
@@ -51,7 +51,7 @@ class RepoVersionEndpointTest extends Specification {
 
     def 'can create version'() {
         def versionIds = ['a', 'b', 'c']
-        def nextCommit = new PersistedCommit(AuthUtils.randomLongGenerator(), 'b', '1.2.4', ZonedDateTime.now())
+        def nextCommit = PersistedCommit.createNewCommit(AuthUtils.randomLongGenerator(), 'b', '1.2.4', ZonedDateTime.now())
 
         when:
         def model = new CreateVersionRequest(versionIds, "Some Message", "f")

@@ -1,0 +1,23 @@
+apply plugin: 'java'
+apply plugin: 'kotlin'
+apply plugin: 'io.ehdev.gradle.development'
+
+dependencies {
+    compile libraries.kotlin
+    compile libraries.logging
+    compile group: "javax.transaction",  name: "javax.transaction-api", version: "1.2"
+    compile project(":internal:shared-model")
+    compile project(":internal:authorization")
+    compile project(":internal:state-machine")
+    compile project(":internal:authentication")
+    compile project(":database:database-v2")
+    compile project(":internal:version-bumper")
+    compile project(":internal:storage")
+
+    testCompile libraries.testingLibraries
+
+    integTestCompile libraries.springTest
+    integTestCompile libraries.springBootTest
+    integTestCompile project(":internal:shared-config")
+    integTestCompile project(":internal:version-bumper")
+}

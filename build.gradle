@@ -1,6 +1,16 @@
 plugins {
     id 'com.gradle.build-scan' version '1.6'
-    id "org.jetbrains.kotlin.jvm" version "1.1.1"
+    id 'tech.crom.version-manager' version 'LATEST'
+    id 'io.ehdev.gradle.dependency-script' version 'LATEST'
+    id 'org.jetbrains.kotlin.jvm' version "1.1.2" apply false
+    id 'org.jetbrains.kotlin.plugin.spring' version "1.1.2" apply false
+    id 'io.ehdev.gradle.dependency-resolve' version 'LATEST' apply false
+    id 'io.ehdev.gradle.build-dir' version 'LATEST' apply false
+    id 'io.ehdev.gradle.klint' version 'LATEST' apply false
+    id "org.springframework.boot" version "1.5.3.RELEASE" apply false
+    id "org.flywaydb.flyway" version "4.2.0" apply false
+    id 'base'
+    id 'jacoco'
 }
 
 buildScan {
@@ -12,11 +22,13 @@ buildScan {
 
 allprojects {
     apply plugin: 'idea'
+
     group = 'crom.tech'
 
     repositories {
         mavenCentral()
         jcenter()
+        mavenLocal()
         maven {
             url 'http://repo.spring.io/milestone'
         }
@@ -26,44 +38,22 @@ allprojects {
     }
 
     apply from: "$rootDir/gradle/versions.gradle"
-
-    afterEvaluate {
-        configurations.all.each {
-            it.resolutionStrategy.eachDependency { DependencyResolveDetails details ->
-                if (details.requested.group == 'org.springframework') {
-                    details.useVersion(ext.versions.spring)
-                }
-            }
-        }
-    }
 }
-
-subprojects {
-    tasks.create('allDeps', DependencyReportTask)
-}
-
-apply from: "gradle/database.gradle"
-apply plugin: 'version-manager'
-apply plugin: 'base'
-apply plugin: 'jacoco'
 
 versionManager {
     projectName = 'ethankhall'
     repoName = 'version-manager'
 }
 
+apply from: "gradle/database.gradle"
 
-subprojects {
-    if (it.path != ':web-ui') {
-        buildDir = new File(rootProject.getProjectDir(), "build/${ project.path.replace(':', '/').substring(1) }")
-        apply plugin: 'java'
-    }
+subprojects { sub ->
+    apply plugin: 'java'
+    apply plugin: 'io.ehdev.gradle.dependency-resolve'
+    apply plugin: 'io.ehdev.gradle.build-dir'
+    apply plugin: 'io.ehdev.gradle.dependency-script'
 
-    task resolveDependencies {
-        doLast {
-            configurations.findAll { it.canBeResolved }.each { it.files }
-        }
-    }
+    tasks.create('allDeps', DependencyReportTask)
 
     tasks.withType(Test) { test ->
         test.maxHeapSize = '512m'
@@ -72,6 +62,13 @@ subprojects {
         test.environment 'SPRING_DATASOURCE_USERNAME', database.user
         test.environment 'SPRING_DATASOURCE_PASSWORD', database.password
     }
+
+    plugins.withType(org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper) {
+        sub.plugins.apply('io.ehdev.gradle.klint')
+        sub.plugins.apply('org.jetbrains.kotlin.plugin.spring')
+    }
+    
+    ext['libraries'] = deps.libraries
 }
 
 idea.project.ipr {
@@ -82,42 +79,4 @@ idea.project.ipr {
     }
 }
 
-task mergeReport(type: JacocoMerge) {
-    dependsOn { subprojects.collect { it.tasks.withType(Test) }.flatten() }
-    executionData fileTree(dir: "$rootDir/build", include: '**/*.exec')
-}
-
-evaluationDependsOnChildren()
-
-task testCoverage(type: JacocoReport) {
-    dependsOn mergeReport
-    sourceDirectories = files(subprojects.findAll { it.path != ':web-ui' }.sourceSets.main.allSource.srcDirs)
-    classDirectories = files(subprojects.findAll { it.path != ':web-ui' }.sourceSets.main.output).asFileTree.matching {
-        exclude '**/io/ehdev/conrad/db/tables/**'
-    }
-    executionData = mergeReport.executionData
-
-    onlyIf = {
-        true
-    }
-}
-
-check.dependsOn testCoverage
-
-task testReport(type: TestReport) {
-    destinationDir = file("$buildDir/reports/allTests")
-    reportOn subprojects.collect { it.tasks.withType(Test) }.flatten()
-}
-
-check.dependsOn testReport
-
-task generateDocumentation(type: Copy) {
-    from {
-        subprojects.collect {
-            it.tasks.withType(org.asciidoctor.gradle.AsciidoctorTask).collect { task -> task.outputDir }
-        }.flatten()
-    }
-    into "$buildDir/documentation"
-}
-
-build.dependsOn generateDocumentation
+apply from: "gradle/coverage.gradle"

@@ -1,0 +1,28 @@
+task mergeReport(type: JacocoMerge) {
+    dependsOn { subprojects.collect { it.tasks.withType(Test) }.flatten() }
+    executionData fileTree(dir: "$rootDir/build", include: '**/*.exec')
+}
+
+evaluationDependsOnChildren()
+
+task testCoverage(type: JacocoReport) {
+    dependsOn mergeReport
+    sourceDirectories = files(subprojects.findAll { it.path != ':web-ui' }.sourceSets.main.allSource.srcDirs)
+    classDirectories = files(subprojects.findAll { it.path != ':web-ui' }.sourceSets.main.output).asFileTree.matching {
+        exclude '**/io/ehdev/conrad/db/tables/**'
+    }
+    executionData = mergeReport.executionData
+
+    onlyIf = {
+        true
+    }
+}
+
+check.dependsOn testCoverage
+
+task testReport(type: TestReport) {
+    destinationDir = file("$buildDir/reports/allTests")
+    reportOn subprojects.collect { it.tasks.withType(Test) }.flatten()
+}
+
+check.dependsOn testReport

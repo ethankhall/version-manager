@@ -1,7 +1,5 @@
 package tech.crom.service.api.user
 
-import tech.crom.rest.model.permission.CreateTokenResponse
-import tech.crom.rest.model.permission.GetTokensResponse
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
@@ -13,10 +11,11 @@ import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
 import tech.crom.business.api.TokenManagementApi
 import tech.crom.model.token.TokenType
+import tech.crom.rest.model.permission.CreateTokenResponse
+import tech.crom.rest.model.permission.GetTokensResponse
 import tech.crom.web.api.model.RequestDetails
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
-
 
 @Controller
 @RequestMapping("/api/v1/user/tokens")

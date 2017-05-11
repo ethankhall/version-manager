@@ -1,6 +1,7 @@
 package tech.crom.version.bumper.impl.atomic
 
 import tech.crom.model.bumper.CromVersionBumper
+import tech.crom.model.commit.VersionCommitDetails
 import tech.crom.model.commit.VersionDetails
 import tech.crom.model.commit.impl.RealizedCommit
 import tech.crom.model.commit.impl.RequestedCommit
@@ -8,7 +9,7 @@ import tech.crom.model.commit.impl.RequestedCommit
 class AtomicVersionBumper : CromVersionBumper.Executor {
     override fun calculateNextVersion(commitModel: RequestedCommit, lastVersion: VersionDetails?): RealizedCommit {
         val currentVersion = getCurrentVersion(lastVersion)
-        return RealizedCommit(commitModel.commitId, VersionDetails((currentVersion + 1).toString()))
+        return RealizedCommit(commitModel.commitId, VersionDetails((currentVersion + 1).toString()), VersionCommitDetails.DEFAULT_STATE)
     }
 
     private fun getCurrentVersion(lastVersion: VersionDetails?): Int {

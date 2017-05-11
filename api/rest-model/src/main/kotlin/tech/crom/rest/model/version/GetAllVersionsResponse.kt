@@ -14,7 +14,10 @@ class GetAllVersionsResponse() {
     @JsonProperty("latest")
     var latest: CommitModel? = null
 
-    class CommitModel(commitId: String, version: String, createdAt: ZonedDateTime) : BaseVersionResponse(commitId, version, createdAt)
+    class CommitModel(commitId: String,
+                      version: String,
+                      @JsonProperty("state") val state: String,
+                      createdAt: ZonedDateTime) : BaseVersionResponse(commitId, version, createdAt)
 
     fun addCommit(commit: CommitModel) {
         commits.add(commit)

@@ -4,7 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.security.acls.domain.BasePermission
 import org.springframework.security.acls.domain.ObjectIdentityImpl
 import org.springframework.security.acls.domain.PrincipalSid
-import org.springframework.security.acls.model.*
+import org.springframework.security.acls.model.Acl
+import org.springframework.security.acls.model.MutableAcl
+import org.springframework.security.acls.model.MutableAclService
+import org.springframework.security.acls.model.NotFoundException
+import org.springframework.security.acls.model.Permission
+import org.springframework.security.acls.model.Sid
 import org.springframework.stereotype.Service
 import tech.crom.database.api.ProjectManager
 import tech.crom.findCromAuthentication
@@ -36,7 +41,7 @@ class DefaultPermissionService @Autowired constructor(
 
         val sid = findCromAuthentication()?.toSid() ?: return CromPermission.NONE
         val acl: Acl
-        
+
         try {
             acl = aclService.readAclById(oi, listOf(sid)) ?: return CromPermission.NONE
         } catch (nfe: NotFoundException) {
@@ -45,7 +50,7 @@ class DefaultPermissionService @Autowired constructor(
 
         createPermissionGrantList(CromPermission.ADMIN).forEach {
             try {
-                if(acl.isGranted(listOf(it), listOf(sid), false)) {
+                if (acl.isGranted(listOf(it), listOf(sid), false)) {
                     return convertPermission(it)
                 }
             } catch (nfe: NotFoundException) {
@@ -63,9 +68,9 @@ class DefaultPermissionService @Autowired constructor(
         val acl = aclService.readAclById(oi, listOf(sid)) as MutableAcl
 
         accessLevel.getSelfAndLower().reversed().forEach { permission ->
-            for(i in acl.entries.size - 1 downTo 0) {
+            for (i in acl.entries.size - 1 downTo 0) {
                 val entry = acl.entries[i]
-                if(entry.permission == convertPermission(permission) && entry.sid == sid) {
+                if (entry.permission == convertPermission(permission) && entry.sid == sid) {
                     acl.deleteAce(i)
                 }
             }
@@ -98,7 +103,7 @@ class DefaultPermissionService @Autowired constructor(
     }
 
     private fun validatePermissions(auth: CromAuthentication?, accessLevel: CromPermission, oi: ObjectIdentityImpl): Boolean {
-        if(auth == null) {
+        if (auth == null) {
             return accessLevel.isHigherOrEqualThan(CromPermission.READ)
         }
 

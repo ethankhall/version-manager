@@ -24,7 +24,7 @@ class JooqMetricsCollector(metrics: MetricRegistry, env: Environment) : DefaultE
     }
 
     override fun executeEnd(ctx: ExecuteContext) {
-        localTimer.get().end({ctx.query()})
+        localTimer.get().end({ ctx.query() })
     }
 
     class LocalTimer(val timer: Timer, val slowQueryTimeout: Long) {
