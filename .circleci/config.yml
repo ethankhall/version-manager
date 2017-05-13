@@ -44,10 +44,17 @@ jobs:
       - store_test_results:
           path: ~/test-results/
 
+      - setup_remote_docker
+
       - deploy:
           name: Deploy To Google Cloud
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              set -x
+              VER="17.03.0-ce"
+              curl -L -o /tmp/docker-$VER.tgz https://get.docker.com/builds/Linux/x86_64/docker-$VER.tgz
+              tar -xz -C /tmp -f /tmp/docker-$VER.tgz
+              mv /tmp/docker/* /usr/bin
               echo $GOOGLE_CLIENT_SECRET | base64 --decode > ${HOME}/client-secret.json
               docker login -e 1234@5678.com -u _json_key -p "$(cat ${HOME}/client-secret.json)" https://us.gcr.io
               ./gradlew claimVersion --refresh-dependencies  --console=plain
