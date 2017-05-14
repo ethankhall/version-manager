@@ -17,6 +17,9 @@ jobs:
 
 
     steps:
+      - run:
+          name: start ssh
+          command: start_agent
       - add_ssh_keys:
           fingerprints:
             - "57:92:aa:e8:2b:e7:bf:3c:ff:fb:f2:ce:4f:c7:9c:82"
