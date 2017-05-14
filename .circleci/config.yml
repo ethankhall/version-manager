@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/checkout
     docker:
-      - image: ethankhall/merged-docker-build-platform:latest
+      - image: ethankhall/merged-docker-build-platform:sha256:e5807378d6a4e4c83aaee13d95a69079265a7802250463fff8fedacbbcf51a71
 
       - image: mysql:latest
         environment:
@@ -20,7 +20,7 @@ jobs:
       - run:
           name: start ssh
           command: ssh-agent
-          
+
       - add_ssh_keys:
           fingerprints:
             - "57:92:aa:e8:2b:e7:bf:3c:ff:fb:f2:ce:4f:c7:9c:82"
@@ -62,6 +62,6 @@ jobs:
               gcloud auth activate-service-account --key-file ${HOME}/client-secret.json
               gcloud config set project $GCLOUD_PROJECT
               docker login -e 1234@5678.com -u _json_key -p "$(cat ${HOME}/client-secret.json)" https://us.gcr.io
-              ./gradlew claimVersion --refresh-dependencies  --console=plain
+              ./gradlew claimVersion -d --console=plain
               ./gradlew clean :docker:pushContainers --console=plain
             fi
