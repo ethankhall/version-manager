@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/checkout
     docker:
-      - image: ethankhall/merged-docker-build-platform:sha256:e5807378d6a4e4c83aaee13d95a69079265a7802250463fff8fedacbbcf51a71
+      - image: ethankhall/merged-docker-build-platform:release-0.0.10
 
       - image: mysql:latest
         environment:
