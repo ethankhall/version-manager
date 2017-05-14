@@ -44,6 +44,8 @@ jobs:
       - store_test_results:
           path: ~/test-results/
 
+      - add_ssh_keys
+      
       - setup_remote_docker
 
       - deploy:
