@@ -17,6 +17,10 @@ jobs:
 
 
     steps:
+      - add_ssh_keys
+          fingerprints:
+            - "57:92:aa:e8:2b:e7:bf:3c:ff:fb:f2:ce:4f:c7:9c:82"
+
       - checkout
 
       - restore_cache:
@@ -44,8 +48,6 @@ jobs:
       - store_test_results:
           path: ~/test-results/
 
-      - add_ssh_keys
-      
       - setup_remote_docker
 
       - deploy:
