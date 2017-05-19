@@ -85,7 +85,7 @@ constructor(private val commitApi: CommitApi) {
     @RequestMapping(value = "/version/{versionArg:.+}", method = arrayOf(RequestMethod.GET))
     fun findVersion(requestDetails: RequestDetails,
                     @PathVariable("versionArg") versionArg: String,
-                    @RequestParam("filter", required = false) filter: String?): ResponseEntity<GetVersionResponse> {
+                    @RequestParam("filter", required = false) filter: String?): ResponseEntity<Any> {
         val commitFilter = CommitFilter(listOf(CommitIdContainer(versionArg)), filter)
         val commit = commitApi.findCommit(requestDetails.cromRepo!!, commitFilter) ?:
             return ResponseEntity(HttpStatus.NOT_FOUND)
