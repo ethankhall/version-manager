@@ -4,15 +4,17 @@ apply plugin: 'maven-publish'
 apply plugin: 'io.ehdev.gradle.development'
 
 dependencies {
-    compile libraries.kotlin
+    compile deps.libraries.kotlin
 
     compile 'javax.validation:validation-api:1.1.0.Final'
     compile 'org.jetbrains:annotations:13.0'
-    compile libraries.jackson
+    compile deps.libraries.jackson
 
-    testCompile libraries.testingLibraries
+    testCompile deps.libraries.groovy
+    testCompile deps.libraries.testingLibraries
 
-    integTestCompile libraries.testingLibraries
+    integTestCompile deps.libraries.testingLibraries
+    integTestCompile deps.libraries.groovy
     integTestCompile 'com.kjetland:mbknor-jackson-jsonschema_2.12:1.0.11'
     integTestCompile 'org.reflections:reflections:0.9.10'
 }

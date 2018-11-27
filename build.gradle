@@ -1,23 +1,13 @@
 plugins {
-    id 'com.gradle.build-scan' version '1.6'
-    id 'tech.crom.version-manager' version 'LATEST'
     id 'io.ehdev.gradle.dependency-script' version 'LATEST'
-    id 'org.jetbrains.kotlin.jvm' version "1.1.2" apply false
-    id 'org.jetbrains.kotlin.plugin.spring' version "1.1.2" apply false
+    id 'org.jetbrains.kotlin.jvm' version "1.2.51" apply false
+    id 'org.jetbrains.kotlin.plugin.spring' version "1.2.51" apply false
     id 'io.ehdev.gradle.dependency-resolve' version 'LATEST' apply false
     id 'io.ehdev.gradle.build-dir' version 'LATEST' apply false
     id 'io.ehdev.gradle.klint' version 'LATEST' apply false
-    id "org.springframework.boot" version "1.5.3.RELEASE" apply false
-    id "org.flywaydb.flyway" version "4.2.0" apply false
+    id "org.flywaydb.flyway" version "5.1.4" apply false
     id 'base'
     id 'jacoco'
-}
-
-buildScan {
-    licenseAgreementUrl = 'https://gradle.com/terms-of-service'
-    licenseAgree = 'yes'
-
-    publishAlways()
 }
 
 allprojects {
@@ -29,20 +19,9 @@ allprojects {
         mavenCentral()
         jcenter()
         mavenLocal()
-        maven {
-            url 'http://repo.spring.io/milestone'
-        }
-        maven {
-            url "http://repository.jetbrains.com/all"
-        }
     }
 
     apply from: "$rootDir/gradle/versions.gradle"
-}
-
-versionManager {
-    projectName = 'ethankhall'
-    repoName = 'version-manager'
 }
 
 apply from: "gradle/database.gradle"
@@ -66,6 +45,13 @@ subprojects { sub ->
     plugins.withType(org.jetbrains.kotlin.gradle.plugin.KotlinPluginWrapper) {
         sub.plugins.apply('io.ehdev.gradle.klint')
         sub.plugins.apply('org.jetbrains.kotlin.plugin.spring')
+    }
+
+
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = "1.8"
+        }
     }
     
     ext['libraries'] = deps.libraries

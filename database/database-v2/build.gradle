@@ -6,17 +6,15 @@ apply plugin: 'kotlin'
 dependencies {
     compile project(":database:database-jooq")
     compile project(":internal:shared-model")
-    compile libraries.kotlin
-    compile libraries.logging
-    compile libraries.springCore
-    compile libraries.ehcache
-    compile libraries.springSecurity
-    compile libraries.database
+    compile deps.libraries.kotlin
+    compile deps.libraries.logging
+    compile deps.libraries.spring
+    compile deps.libraries.ehcache
+    compile deps.libraries.database
 
-    testCompile libraries.testingLibraries
+    testCompile deps.libraries.testingLibraries
 
-    integTestCompile libraries.springTest
-    integTestCompile libraries.springBootTest
+    integTestCompile deps.libraries.springTest
     integTestCompile project(":internal:shared-config")
     integTestCompile project(":internal:version-bumper")
 }

@@ -18,7 +18,7 @@ import tech.crom.config.ClockConfig;
 import tech.crom.config.DatabaseConfig;
 import tech.crom.config.SharedMasterConfig;
 import tech.crom.config.SpringTransactionProvider;
-import tech.crom.security.authentication.config.AuthenticationConfig;
+import tech.crom.security.auth.config.AuthenticationConfig;
 import tech.crom.security.authorization.config.AuthorizationConfig;
 import tech.crom.service.api.config.ServiceApiConfig;
 import tech.crom.storage.config.StorageConfig;

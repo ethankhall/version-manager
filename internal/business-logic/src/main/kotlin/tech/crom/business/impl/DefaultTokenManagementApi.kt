@@ -9,7 +9,7 @@ import tech.crom.model.token.GeneratedTokenDetails
 import tech.crom.model.token.RetrievedTokenDetails
 import tech.crom.model.token.TokenType
 import tech.crom.model.user.CromUser
-import tech.crom.security.authentication.jwt.JwtManager
+import tech.crom.security.auth.jwt.JwtManager
 import java.time.ZonedDateTime
 
 @Service

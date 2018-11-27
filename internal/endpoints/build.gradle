@@ -8,21 +8,14 @@ dependencies {
     compile project(':database:database-v2')
     compile project(':internal:business-logic')
     compile project(':internal:shared-model')
-
-    compile libraries.swaggerAnnotations
-    compile libraries.springWeb
-    compile libraries.springCore
-    compile libraries.aspectJ
-
-    compile libraries.springSecurity
-    compile libraries.servletCore
-    compile libraries.jackson
-    compile libraries.apacheCommons
+    
+    compile deps.libraries.spring
+    compile deps.libraries.aspectJ
+    compile deps.libraries.commonsLang
 
     compile 'javax.validation:validation-api:1.1.0.Final'
     compile 'org.hibernate:hibernate-validator:5.0.1.Final'
 
-    testCompile libraries.groovy
-    testCompile libraries.springTest
-    testCompile libraries.testingLibraries
+    testCompile deps.libraries.groovy
+    testCompile deps.libraries.testingLibraries
 }

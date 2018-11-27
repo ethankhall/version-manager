@@ -3,9 +3,9 @@ apply plugin: 'groovy'
 
 dependencies {
     compile project(":internal:shared-model")
-    compile libraries.kotlin
-    compile libraries.googleCloud
-    compile libraries.springBoot
+    compile deps.libraries.kotlin
+    compile deps.libraries.googleCloud
+    compile deps.libraries.spring
 
-    testCompile libraries.springTest
+    testCompile deps.libraries.testingLibraries
 }

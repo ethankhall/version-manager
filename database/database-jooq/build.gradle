@@ -10,101 +10,37 @@ sourceSets {
 }
 
 configurations {
-    migration
-    codegen
-    compile.extendsFrom codegen
+    jooq
 }
 
 dependencies {
-    codegen libraries.database
-    codegen libraries.jooqCodeGen
+    jooq deps.libraries.jooqCodeGen
+    jooq 'com.sun.xml.bind:jaxb-impl:2.2.11'
+    jooq 'com.sun.xml.bind:jaxb-core:2.2.11'
+    jooq group: 'javax.activation', name: 'activation', version: '1.1.1'
 
-    migration project(':database:database-migration')
-
-    compile project(':database:database-migration')
-    compile 'javax.validation:validation-api:1.1.0.Final'
-    compile 'javax.persistence:persistence-api:1.0.2'
+    compile deps.libraries.database
+    compile group: 'javax.persistence', name: 'javax.persistence-api', version: '2.2'
+    compile group: 'javax.validation', name: 'validation-api', version: '2.0.1.Final'
 }
 
-def createLibraryXml = task createLibraryXml {
+task prepairJooqConfig(type: Copy) {
+    from "$projectDir/src/config/library.xml"
+    into "$buildDir/jooq"
+    outputs.upToDateWhen { false }
+    filter(org.apache.tools.ant.filters.ReplaceTokens, tokens: [
+        'JDBC_URL' : database.url.replace("&", '&amp;'),
+        'DB_USER'  : database.user,
+        'DB_PASSWD': database.password,
+        'SCHEMA'   : database.name,
+        'DEST'     : "$projectDir/src/main/generated-java" as String
+    ])
+}
+
+task generateClassesFromDatabase(type: JavaExec) {
     dependsOn ':database:database-migration:flywayMigrate'
-    ext.libraryFile = file("$buildDir/library.xml")
-    ext.outputDir = file('src/main/generated-java')
-    inputs.files(configurations.migration)
-    inputs.files(configurations.migration)
-    outputs.dir(ext.outputDir)
-    doFirst {
-        (ext.libraryFile as File).parentFile.mkdirs()
-    }
-    doLast {
-        def xml = new groovy.xml.StreamingMarkupBuilder().bind { bnd ->
-            configuration('xmlns': 'http://www.jooq.org/xsd/jooq-codegen-3.7.0.xsd') {
-                mkp.comment("Generated at ${new Date()}")
-                jdbc() {
-                    driver(database.driver)
-                    url(database.url)
-                    user(database.user)
-                    password(database.password)
-                }
-                generator() {
-                    database() {
-                        bnd.name('org.jooq.util.mysql.MySQLDatabase')
-                        excludes('schema_version')
-                        inputSchema('version_manager_test')
-                        customTypes() {
-                            customType() {
-                                bnd.name("Instant")
-                                type('java.time.Instant')
-                                converter('tech.crom.db.converter.TimestampConverter')
-                            }
-                        }
-                        forcedTypes() {
-                            forcedType() {
-                                bnd.name('Instant')
-                                types('timestamp')
-                            }
-
-                            forcedType() {
-                                bnd.name('Boolean')
-                                types('tinyint')
-                            }
-                        }
-                    }
-                    generate([:]) {
-                        pojos true
-                        daos false
-                        jpaAnnotations true
-                        validationAnnotations true
-                    }
-                    strategy() {
-                        matchers() {
-                            tables() {
-                                table() {
-                                    tableClass() {
-                                        transform("PASCAL")
-                                        expression('$0_Table')
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    target() {
-                        packageName('tech.crom.db')
-                        directory(ext.outputDir.absolutePath)
-                    }
-                }
-            }
-        }
-
-        ext.libraryFile.text = groovy.xml.XmlUtil.serialize(xml)
-    }
-}
-
-task generateDataModel(type: JavaExec, dependsOn: ['createLibraryXml']) {
-    inputs.files(configurations.codegen)
-    inputs.file(createLibraryXml.libraryFile.absolutePath)
-    outputs.dir(createLibraryXml.outputDir.absolutePath)
-    setMain('org.jooq.util.GenerationTool')
-    args(createLibraryXml.libraryFile.absolutePath)
-    classpath configurations.codegen
+    dependsOn prepairJooqConfig
+    classpath configurations.jooq
+    main =  'org.jooq.codegen.GenerationTool'
+    args "$buildDir/jooq/library.xml"
 }

@@ -3,8 +3,6 @@ apply plugin: 'kotlin'
 
 
 dependencies {
-    compile libraries.kotlin
-    compile libraries.logging
-    compile libraries.springSecurity
-    compile libraries.springSocial
+    compile deps.libraries.kotlin
+    compile deps.libraries.logging
 }

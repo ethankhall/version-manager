@@ -3,12 +3,10 @@ apply plugin: 'kotlin'
 
 dependencies {
     compile project(':internal:shared-model')
-    compile libraries.kotlin
-    compile libraries.logging
-    compile libraries.springCore
-    compile libraries.dropwizard
-    compile libraries.ehcache
-    compile libraries.springBootBase
-    compile libraries.database
-    compile libraries.jackson
+    compile deps.libraries.kotlin
+    compile deps.libraries.logging
+    compile deps.libraries.spring
+    compile deps.libraries.ehcache
+    compile deps.libraries.database
+    compile deps.libraries.jackson
 }

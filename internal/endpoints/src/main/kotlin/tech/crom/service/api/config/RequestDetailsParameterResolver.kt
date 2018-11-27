@@ -2,10 +2,10 @@ package tech.crom.service.api.config
 
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.MethodParameter
-import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Service
 import org.springframework.web.bind.support.WebDataBinderFactory
 import org.springframework.web.context.request.NativeWebRequest
+import org.springframework.web.context.request.ServletWebRequest
 import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 import org.springframework.web.servlet.HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE
@@ -14,8 +14,6 @@ import tech.crom.database.api.ProjectManager
 import tech.crom.database.api.RepoManager
 import tech.crom.model.project.CromProject
 import tech.crom.model.repository.CromRepo
-import tech.crom.model.security.authentication.CromRepositoryAuthentication
-import tech.crom.model.security.authentication.CromUserAuthentication
 import tech.crom.model.security.authorization.CromPermission
 import tech.crom.model.user.CromUser
 import tech.crom.web.api.model.RequestDetails
@@ -31,11 +29,11 @@ class RequestDetailsParameterResolver @Autowired constructor(
     override fun supportsParameter(parameter: MethodParameter): Boolean = parameter.parameterType == RequestDetails::class.java
 
     override fun resolveArgument(parameter: MethodParameter, mavContainer: ModelAndViewContainer, webRequest: NativeWebRequest, binderFactory: WebDataBinderFactory): RequestDetails {
-        val httpServletRequest = webRequest.getNativeRequest(HttpServletRequest::class.java)
+        val httpServletRequest = webRequest.getNativeRequest(ServletWebRequest::class.java)
         return createRequestDetails(httpServletRequest)
     }
 
-    fun createRequestDetails(httpServletRequest: HttpServletRequest): RequestDetails {
+    fun createRequestDetails(httpServletRequest: ServletWebRequest): RequestDetails {
         val rawRequest = httpServletRequest.createRawRequestDetails()
 
         val project = getProject(rawRequest)
@@ -84,18 +82,18 @@ class RequestDetailsParameterResolver @Autowired constructor(
 
     companion object {
         @Suppress("UNCHECKED_CAST")
-        private fun getParameters(webRequest: HttpServletRequest): Map<String, String> {
-            return webRequest.getAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE) as Map<String, String>
+        private fun getParameters(webRequest: ServletWebRequest): Map<String, String> {
+            return webRequest.request.getAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE) as Map<String, String>
         }
     }
 
-    fun HttpServletRequest.createRawRequestDetails(): RequestDetails.RawRequestDetails {
-        val path = this.requestURI.substring(this.contextPath.length)
+    fun ServletWebRequest.createRawRequestDetails(): RequestDetails.RawRequestDetails {
+        val path = this.request.requestURI.substring(this.contextPath.length)
         val headers = mutableMapOf<String, String>()
-        this.headerNames.toList().forEach {
+        this.request.headerNames.toList().forEach {
             headers[it] = this.getHeader(it)
         }
 
-        return RequestDetails.RawRequestDetails(path, this.method, headers, getParameters(this))
+        return RequestDetails.RawRequestDetails(path, this.request.method, headers, getParameters(this))
     }
 }

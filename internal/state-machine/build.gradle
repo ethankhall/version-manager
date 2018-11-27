@@ -3,8 +3,8 @@ apply plugin: "groovy"
 apply plugin: 'io.ehdev.gradle.development'
 
 dependencies {
-    compile libraries.kotlin
+    compile deps.libraries.kotlin
     compile project(":internal:shared-model")
 
-    testCompile libraries.testingLibraries
+    testCompile deps.libraries.testingLibraries
 }
