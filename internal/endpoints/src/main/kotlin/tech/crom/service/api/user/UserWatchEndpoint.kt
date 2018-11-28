@@ -15,29 +15,29 @@ import tech.crom.web.api.model.RequestDetails
 
 @Controller
 @RequestMapping("/api/v1/user")
-open class UserWatchEndpoint @Autowired constructor(
+class UserWatchEndpoint @Autowired constructor(
     val watcherApi: WatcherApi
 ) {
 
     @ProjectRequired
     @LoggedInUserRequired
-    @RequestMapping(value = "/watch/project/{projectName}", method = arrayOf(RequestMethod.POST))
-    open fun watchProject(requestDetails: RequestDetails): ResponseEntity<Any> {
+    @RequestMapping(value = ["/watch/project/{projectName}"], method = [RequestMethod.POST])
+    fun watchProject(requestDetails: RequestDetails): ResponseEntity<Any> {
         watcherApi.addWatch(requestDetails.requestPermission.cromUser!!, requestDetails.cromProject!!)
         return ResponseEntity(HttpStatus.CREATED)
     }
 
     @RepoRequired
     @LoggedInUserRequired
-    @RequestMapping(value = "/watch/project/{projectName}/repo/{repoName}", method = arrayOf(RequestMethod.POST))
-    open fun watchRepo(requestDetails: RequestDetails): ResponseEntity<Any> {
+    @RequestMapping(value = ["/watch/project/{projectName}/repo/{repoName}"], method = [RequestMethod.POST])
+    fun watchRepo(requestDetails: RequestDetails): ResponseEntity<Any> {
         watcherApi.addWatch(requestDetails.requestPermission.cromUser!!, requestDetails.cromRepo!!)
         return ResponseEntity(HttpStatus.CREATED)
     }
 
     @LoggedInUserRequired
-    @RequestMapping(value = "/watch", method = arrayOf(RequestMethod.GET))
-    open fun getWatches(requestDetails: RequestDetails): ResponseEntity<GetWatchesResponse> {
+    @RequestMapping(value = ["/watch"], method = [RequestMethod.GET])
+    fun getWatches(requestDetails: RequestDetails): ResponseEntity<GetWatchesResponse> {
         val watches = watcherApi.getWatches(requestDetails.requestPermission.cromUser!!)
         val details = watches.map { GetWatchesResponse.WatchDetails(it.cromProject.projectName, it.cromRepo?.repoName) }
         return ResponseEntity.ok(GetWatchesResponse(details))

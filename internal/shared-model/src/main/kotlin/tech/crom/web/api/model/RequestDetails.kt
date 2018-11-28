@@ -8,7 +8,7 @@ data class RequestDetails(val cromProject: CromProject?,
                           val requestPermission: RequestPermissions,
                           val rawRequest: RawRequestDetails) {
 
-    data class RawRequestDetails(val requestPath: String, val method: String, val headers: Map<String, String>, val requestParameters: Map<String, String>) {
+    data class RawRequestDetails(val requestParameters: Map<String, String>) {
         fun getProjectName(): String? = requestParameters["projectName"]
 
         fun getRepoName(): String? = requestParameters["repoName"]

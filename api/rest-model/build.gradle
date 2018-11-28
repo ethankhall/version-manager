@@ -1,7 +1,6 @@
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "groovy"
 apply plugin: 'maven-publish'
-apply plugin: 'io.ehdev.gradle.development'
 
 dependencies {
     compile deps.libraries.kotlin
@@ -12,33 +11,4 @@ dependencies {
 
     testCompile deps.libraries.groovy
     testCompile deps.libraries.testingLibraries
-
-    integTestCompile deps.libraries.testingLibraries
-    integTestCompile deps.libraries.groovy
-    integTestCompile 'com.kjetland:mbknor-jackson-jsonschema_2.12:1.0.11'
-    integTestCompile 'org.reflections:reflections:0.9.10'
-}
-
-integTest {
-    ext.outputDir = file("$buildDir/jsonschema/output")
-
-    outputs.dir(ext.outputDir)
-
-    doFirst {
-        delete ext.outputDir
-        ext.outputDir.mkdirs()
-    }
-    environment('OUTPUT_DIR', ext.outputDir)
-}
-
-task copyDefinitions(type: Sync) {
-    dependsOn integTest
-    from integTest.outputDir
-    into project.hasProperty('destDir') ? project.property("destDir") : '.'
-
-    doFirst {
-        if (!project.hasProperty('destDir')) {
-            throw new GradleException("-PdestDir not set!")
-        }
-    }
 }

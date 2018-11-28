@@ -15,7 +15,8 @@ dependencies {
     compile deps.libraries.commonsLang
     compile deps.libraries.httpClient
 
-    testCompile libraries.testingLibraries
+    testCompile deps.libraries.testingLibraries
+    testCompile deps.libraries.springTest
 
     integTestCompile project(":database:database-migration")
     integTestCompile deps.libraries.database

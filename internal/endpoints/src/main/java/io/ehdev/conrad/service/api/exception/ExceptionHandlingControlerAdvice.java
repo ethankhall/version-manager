@@ -11,7 +11,6 @@ import java.util.Map;
 @ControllerAdvice
 public class ExceptionHandlingControlerAdvice {
 
-
     @ExceptionHandler(BaseHttpException.class)
     ResponseEntity<Map> handleControllerException(BaseHttpException e) throws IOException {
         ModelMap modelMap = new ModelMap();

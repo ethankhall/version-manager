@@ -1,8 +1,8 @@
 package tech.crom.config
 
-import com.codahale.metrics.MetricRegistry
 import com.zaxxer.hikari.HikariConfig
 import com.zaxxer.hikari.HikariDataSource
+import io.micrometer.core.instrument.MeterRegistry
 import org.jooq.DSLContext
 import org.jooq.SQLDialect
 import org.jooq.TransactionProvider
@@ -26,39 +26,38 @@ import javax.sql.DataSource
 
 @Configuration
 @ComponentScan("tech.crom.database")
-@Import(EhCacheConfig::class, MetricsConfiguration::class)
-open class DatabaseConfig {
+@Import(EhCacheConfig::class)
+class DatabaseConfig {
 
     @Autowired
     internal var environment: Environment? = null
 
     @Autowired
-    internal var metricRegistry: MetricRegistry? = null
+    internal var meterRegistry: MeterRegistry? = null
 
     @Bean
-    open fun dataSource(): DataSource {
+    fun dataSource(): DataSource {
         val config = HikariConfig()
         config.jdbcUrl = environment!!.getRequiredProperty("spring.datasource.url")
         config.username = environment!!.getRequiredProperty("spring.datasource.username")
         config.password = environment!!.getRequiredProperty("spring.datasource.password")
         config.catalog = environment!!.getRequiredProperty("spring.datasource.dbname")
         config.leakDetectionThreshold = 2000
-        config.metricRegistry = metricRegistry
         return TransactionAwareDataSourceProxy(HikariDataSource(config))
     }
 
     @Bean
-    open fun transactionManager(): DataSourceTransactionManager {
+    fun transactionManager(): DataSourceTransactionManager {
         return DataSourceTransactionManager(dataSource())
     }
 
     @Bean
-    open fun connectionProvider(): org.jooq.ConnectionProvider {
+    fun connectionProvider(): org.jooq.ConnectionProvider {
         return DataSourceConnectionProvider(dataSource())
     }
 
     @Bean
-    open fun defaultDSLContext(): DSLContext {
+    fun defaultDSLContext(): DSLContext {
         return DefaultDSLContext(jooqConfiguration())
     }
 
@@ -72,12 +71,12 @@ open class DatabaseConfig {
             .derive(connectionProvider())
             .derive(transactionProvider())
             .derive(SQLDialect.MYSQL)
-            .derive(DefaultExecuteListenerProvider(JooqMetricsCollector(metricRegistry!!, environment!!)))
+            .derive(DefaultExecuteListenerProvider(JooqMetricsCollector(meterRegistry!!, environment!!)))
             .derive(settings)
     }
 
     @Bean
-    open fun transactionProvider(): TransactionProvider {
+    fun transactionProvider(): TransactionProvider {
         return SpringTransactionProvider(transactionManager())
     }
 }

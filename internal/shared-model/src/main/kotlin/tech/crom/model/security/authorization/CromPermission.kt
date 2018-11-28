@@ -1,6 +1,6 @@
 package tech.crom.model.security.authorization
 
-enum class CromPermission(private val permissionLevel: Int) {
+enum class CromPermission(val permissionLevel: Int) {
     NONE(0),
     READ(1),
     WRITE(2),

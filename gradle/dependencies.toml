@@ -52,8 +52,7 @@ spring = [
 ]
 
 springTest = [
-    'org.springframework:spring-test',
-    'org.springframework.security:spring-security-test'
+    'org.springframework:spring-test'
 ]
 
 httpClient = [

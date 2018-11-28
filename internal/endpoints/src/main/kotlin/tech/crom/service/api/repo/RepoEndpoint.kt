@@ -4,7 +4,6 @@ import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired
-import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
@@ -35,8 +34,8 @@ import tech.crom.web.api.model.RequestDetails
 import javax.transaction.Transactional
 
 @Service
-@RequestMapping(value = "/api/v1/project/{projectName}/repo/{repoName}", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-open class RepoEndpoint @Autowired
+@RequestMapping(value = ["/api/v1/project/{projectName}/repo/{repoName}"], produces = [MediaType.APPLICATION_JSON_VALUE])
+class RepoEndpoint @Autowired
 constructor(private val repositoryApi: RepositoryApi,
             private val permissionApi: PermissionApi,
             private val versionBumperApi: VersionBumperApi,
@@ -45,9 +44,8 @@ constructor(private val repositoryApi: RepositoryApi,
     @RepoRequired
     @Transactional
     @AdminPermissionRequired
-    @RequestMapping(method = arrayOf(RequestMethod.DELETE))
-    @ApiOperation(value = "Deletes an existing repository", tags = arrayOf("admin-user"))
-    open fun deleteRepo(requestDetails: RequestDetails): ResponseEntity<Any> {
+    @RequestMapping(method = [RequestMethod.DELETE])
+    fun deleteRepo(requestDetails: RequestDetails): ResponseEntity<Any> {
         repositoryApi.deleteRepo(requestDetails.cromRepo!!)
         return ResponseEntity(HttpStatus.OK)
     }
@@ -55,10 +53,9 @@ constructor(private val repositoryApi: RepositoryApi,
     @Transactional
     @WritePermissionRequired
     @RepoRequired(exists = false)
-    @RequestMapping(method = arrayOf(RequestMethod.POST))
-    @ApiOperation(value = "Creates a new repository", tags = arrayOf("write-user"))
-    open fun createRepo(requestDetails: RequestDetails,
-                        @RequestBody createModel: CreateRepoRequest): ResponseEntity<CreateRepoResponse> {
+    @RequestMapping(method = [RequestMethod.POST])
+    fun createRepo(requestDetails: RequestDetails,
+                   @RequestBody createModel: CreateRepoRequest): ResponseEntity<CreateRepoResponse> {
         val repoName = requestDetails.rawRequest.getRepoName()
         val versionBumper = versionBumperApi.findVersionBumper(createModel.bumperName)
         val repo = repositoryApi.createRepo(requestDetails.cromProject!!,
@@ -75,7 +72,7 @@ constructor(private val repositoryApi: RepositoryApi,
 
             var commitIdContainer: CommitIdContainer? = null
             for (requestedCommit in requestedCommits) {
-                val commitList = if (commitIdContainer == null) emptyList<CommitIdContainer>() else listOf<CommitIdContainer>(commitIdContainer)
+                val commitList = if (commitIdContainer == null) emptyList() else listOf(commitIdContainer)
                 val (_, commitId) = commitApi.createCommit(repo, requestedCommit, commitList)
                 commitIdContainer = CommitIdContainer(commitId)
             }
@@ -91,9 +88,8 @@ constructor(private val repositoryApi: RepositoryApi,
 
     @RepoRequired
     @ReadPermissionRequired
-    @RequestMapping(method = arrayOf(RequestMethod.GET))
-    @ApiOperation(value = "Get an existing repository")
-    open fun getRepoDetails(requestDetails: RequestDetails): ResponseEntity<GetRepoResponse> {
+    @RequestMapping(method = [RequestMethod.GET])
+    fun getRepoDetails(requestDetails: RequestDetails): ResponseEntity<GetRepoResponse> {
         val (cromRepo, _, _, checkoutUrl) = repositoryApi.getRepoDetails(requestDetails.cromRepo!!)
 
         val restRepoModel = GetRepoResponse(
@@ -113,10 +109,9 @@ constructor(private val repositoryApi: RepositoryApi,
 
     @RepoRequired
     @AdminPermissionRequired
-    @RequestMapping(value = "/state-machine", method = arrayOf(RequestMethod.PUT))
-    @ApiOperation(value = "Update the version state FSM")
-    open fun updateStateMachine(requestDetails: RequestDetails,
-                                @RequestBody body: UpdateStateMachine): ResponseEntity<Any> {
+    @RequestMapping(value = ["/state-machine"], method = [RequestMethod.PUT])
+    fun updateStateMachine(requestDetails: RequestDetails,
+                           @RequestBody body: UpdateStateMachine): ResponseEntity<Any> {
 
         val transitions = body.transitions
             .map { transition -> Pair(transition.key, transition.value.toStateTransitions()) }
@@ -130,11 +125,10 @@ constructor(private val repositoryApi: RepositoryApi,
 
     @RepoRequired
     @ReadPermissionRequired
-    @ApiOperation(value = "Finds the latest commit from a list of ids")
-    @RequestMapping(value = "/search/version", method = arrayOf(RequestMethod.POST))
-    open fun searchForVersionInHistory(requestDetails: RequestDetails,
-                                       @RequestBody versionModel: CommitIdCollection,
-                                       @RequestParam("filter", required = false) filter: String?): ResponseEntity<VersionSearchResponse> {
+    @RequestMapping(value = ["/search/version"], method = [RequestMethod.POST])
+    fun searchForVersionInHistory(requestDetails: RequestDetails,
+                                  @RequestBody versionModel: CommitIdCollection,
+                                  @RequestParam("filter", required = false) filter: String?): ResponseEntity<VersionSearchResponse> {
         val commits = versionModel.commits.map { CommitIdContainer(it) }.toList()
         val latestCommit = commitApi.findCommit(requestDetails.cromRepo!!, CommitFilter(commits, filter))
 

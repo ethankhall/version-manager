@@ -6,4 +6,4 @@ import org.springframework.context.annotation.Import
 
 @Configuration
 @ComponentScan("tech.crom.security.auth")
-open class AuthenticationConfig
+class AuthenticationConfig

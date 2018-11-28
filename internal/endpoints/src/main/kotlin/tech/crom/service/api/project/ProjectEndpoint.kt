@@ -11,12 +11,12 @@ import tech.crom.business.api.ProjectApi
 import tech.crom.rest.model.project.FindProjectResponse
 
 @Controller
-@RequestMapping(value = "/api/v1/projects", produces = arrayOf(MediaType.APPLICATION_JSON_VALUE))
-open class ProjectEndpoint @Autowired constructor(
+@RequestMapping(value = ["/api/v1/projects"], produces = [MediaType.APPLICATION_JSON_VALUE])
+class ProjectEndpoint @Autowired constructor(
     val projectApi: ProjectApi
 ) {
 
-    @RequestMapping(method = arrayOf(RequestMethod.GET))
+    @RequestMapping(method = [RequestMethod.GET])
     fun findProjects(@RequestParam("offset", defaultValue = "0") offset: String,
                      @RequestParam("size", defaultValue = "50") size: String): ResponseEntity<FindProjectResponse> {
         val offsetInt = offset.toInt()

@@ -1,0 +1,6 @@
+{
+    "ADMIN": true,
+    "WRITE": false,
+    "READ": false,
+    "NONE": true
+}

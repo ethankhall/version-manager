@@ -3,6 +3,7 @@ apply plugin: 'groovy'
 apply plugin: 'kotlin'
 apply plugin: 'io.ehdev.gradle.development'
 apply from: "$rootDir/gradle/publishing-private.gradle"
+apply plugin: 'application'
 
 publish.dependsOn assemble
 
@@ -11,6 +12,8 @@ io.ehdev.gradle.internal.AddTestSourceSets.addSourceSet(project, 'apiDocsTest')
 configurations {
     apiDocsTestCompile.extendsFrom(integTestCompile)
 }
+
+mainClassName = 'io.ehdev.account.web.AccountApplication'
 
 dependencies {
     compile project(":api:rest-model")

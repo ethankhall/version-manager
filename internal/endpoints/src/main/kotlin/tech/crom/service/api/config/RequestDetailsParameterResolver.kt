@@ -3,97 +3,69 @@ package tech.crom.service.api.config
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.core.MethodParameter
 import org.springframework.stereotype.Service
-import org.springframework.web.bind.support.WebDataBinderFactory
-import org.springframework.web.context.request.NativeWebRequest
-import org.springframework.web.context.request.ServletWebRequest
-import org.springframework.web.method.support.HandlerMethodArgumentResolver
-import org.springframework.web.method.support.ModelAndViewContainer
-import org.springframework.web.servlet.HandlerMapping.URI_TEMPLATE_VARIABLES_ATTRIBUTE
-import tech.crom.business.api.PermissionApi
+import org.springframework.web.reactive.BindingContext
+import org.springframework.web.reactive.function.server.RouterFunctions
+import org.springframework.web.reactive.result.method.HandlerMethodArgumentResolver
+import org.springframework.web.server.ServerWebExchange
+import reactor.core.publisher.Mono
 import tech.crom.database.api.ProjectManager
 import tech.crom.database.api.RepoManager
 import tech.crom.model.project.CromProject
 import tech.crom.model.repository.CromRepo
 import tech.crom.model.security.authorization.CromPermission
-import tech.crom.model.user.CromUser
+import tech.crom.security.auth.ApiUser
 import tech.crom.web.api.model.RequestDetails
 import tech.crom.web.api.model.RequestPermissions
-import javax.servlet.http.HttpServletRequest
+import java.security.Principal
+import java.util.*
 
 @Service
 class RequestDetailsParameterResolver @Autowired constructor(
     val projectManager: ProjectManager,
-    val repoManager: RepoManager,
-    val permissionApi: PermissionApi) : HandlerMethodArgumentResolver {
+    val repoManager: RepoManager) : HandlerMethodArgumentResolver {
 
     override fun supportsParameter(parameter: MethodParameter): Boolean = parameter.parameterType == RequestDetails::class.java
 
-    override fun resolveArgument(parameter: MethodParameter, mavContainer: ModelAndViewContainer, webRequest: NativeWebRequest, binderFactory: WebDataBinderFactory): RequestDetails {
-        val httpServletRequest = webRequest.getNativeRequest(ServletWebRequest::class.java)
-        return createRequestDetails(httpServletRequest)
-    }
+    override fun resolveArgument(parameter: MethodParameter, bindingContext: BindingContext, exchange: ServerWebExchange): Mono<Any> {
+        val parameters = RequestDetails.RawRequestDetails(exchange.getAttributeOrDefault(RouterFunctions.URI_TEMPLATE_VARIABLES_ATTRIBUTE, emptyMap<String, String>()))
+        val projectRepo = Mono
+            .fromCallable { getProject(parameters) }
+            .map { project -> (project to getRepo(parameters, project)) }
 
-    fun createRequestDetails(httpServletRequest: ServletWebRequest): RequestDetails {
-        val rawRequest = httpServletRequest.createRawRequestDetails()
-
-        val project = getProject(rawRequest)
-        val repo = getRepo(rawRequest, project)
-
-        val authentication = SecurityContextHolder.getContext().authentication
-        val permission = when (authentication) {
-            is CromRepositoryAuthentication -> getPermissionsForRepoAuth(repo, authentication)
-            is CromUserAuthentication -> getPermissionForUserAuth(project, repo, authentication)
-            else -> createNoPermissions()
-        }
-
-        return RequestDetails(project, repo, permission, rawRequest)
-    }
-
-    fun createNoPermissions(): RequestPermissions {
-        return RequestPermissions(CromPermission.READ, CromPermission.READ, null)
-    }
-
-    fun getPermissionForUserAuth(project: CromProject?, repo: CromRepo?, auth: CromUserAuthentication): RequestPermissions {
-        val projectPermission = if (project != null) permissionApi.findHighestPermission(project) else CromPermission.READ
-        val repoPermission = if (repo != null) permissionApi.findHighestPermission(repo) else CromPermission.READ
-        return RequestPermissions(projectPermission, repoPermission, auth.user)
-    }
-
-    fun getPermissionsForRepoAuth(repo: CromRepo?, auth: CromRepositoryAuthentication): RequestPermissions {
-        if (repo != null) {
-            if (repo.projectId == auth.source.projectId && repo.repoId == auth.source.repoId) {
-                return RequestPermissions(CromPermission.NONE, CromPermission.WRITE, CromUser.REPO_USER)
+        return exchange.getPrincipal<Principal>()
+            .map { permissionFromPrincipal(it) }
+            .switchIfEmpty(Mono.just(DEFAULT_PERMISSIONS))
+            .zipWith(projectRepo) { permissions, (project, repo) ->
+                buildRequestDetails(permissions, project, repo, parameters)
             }
-        }
-
-        return createNoPermissions()
     }
 
-    fun getProject(request: RequestDetails.RawRequestDetails): CromProject? {
-        val projectName = request.getProjectName() ?: return null
+    private fun permissionFromPrincipal(it: Principal?): List<CromPermission> {
+        return when (it) {
+            is ApiUser -> it.permissions
+            else -> DEFAULT_PERMISSIONS
+        }
+    }
+
+    private fun buildRequestDetails(permissions: List<CromPermission>, project: CromProject?, repo: CromRepo?, parameters: RequestDetails.RawRequestDetails): RequestDetails {
+        val highestPermission = permissions.sortedWith(Comparator.comparingInt { it.permissionLevel }).lastOrNull()
+            ?: CromPermission.READ
+        return RequestDetails(project, repo, RequestPermissions(highestPermission, highestPermission, null), parameters)
+    }
+
+
+    fun getProject(parameters: RequestDetails.RawRequestDetails): CromProject? {
+        val projectName = parameters.getProjectName() ?: return null
         return projectManager.findProject(projectName)
     }
 
-    fun getRepo(request: RequestDetails.RawRequestDetails, project: CromProject?): CromRepo? {
+    fun getRepo(parameters: RequestDetails.RawRequestDetails, project: CromProject?): CromRepo? {
         project ?: return null
-        val repoName = request.getRepoName() ?: return null
+        val repoName = parameters.getRepoName() ?: return null
         return repoManager.findRepo(project, repoName)
     }
 
     companion object {
-        @Suppress("UNCHECKED_CAST")
-        private fun getParameters(webRequest: ServletWebRequest): Map<String, String> {
-            return webRequest.request.getAttribute(URI_TEMPLATE_VARIABLES_ATTRIBUTE) as Map<String, String>
-        }
-    }
-
-    fun ServletWebRequest.createRawRequestDetails(): RequestDetails.RawRequestDetails {
-        val path = this.request.requestURI.substring(this.contextPath.length)
-        val headers = mutableMapOf<String, String>()
-        this.request.headerNames.toList().forEach {
-            headers[it] = this.getHeader(it)
-        }
-
-        return RequestDetails.RawRequestDetails(path, this.request.method, headers, getParameters(this))
+        private val DEFAULT_PERMISSIONS = listOf(CromPermission.READ)
     }
 }

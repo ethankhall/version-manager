@@ -5,6 +5,7 @@ apply plugin: "groovy"
 dependencies {
     compile deps.libraries.kotlin
     compile project(":internal:shared-model")
+    compile deps.libraries.spring
 
     testCompile deps.libraries.testingLibraries
 }

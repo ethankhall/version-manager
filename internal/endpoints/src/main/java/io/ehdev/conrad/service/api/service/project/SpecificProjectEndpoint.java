@@ -4,7 +4,6 @@ import io.ehdev.conrad.service.api.aop.annotation.AdminPermissionRequired;
 import io.ehdev.conrad.service.api.aop.annotation.LoggedInUserRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ProjectRequired;
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired;
-import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -12,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.util.UriComponentsBuilder;
 import tech.crom.business.api.ProjectApi;
 import tech.crom.business.api.RepositoryApi;
 import tech.crom.database.api.ProjectManager;
@@ -25,9 +25,7 @@ import tech.crom.rest.model.project.GetProjectResponse;
 import tech.crom.rest.model.project.RepoDefinitionsDetails;
 import tech.crom.web.api.model.RequestDetails;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -49,16 +47,15 @@ public class SpecificProjectEndpoint {
     @LoggedInUserRequired
     @ProjectRequired(exists = false)
     @RequestMapping(method = RequestMethod.POST)
-    @ApiOperation(value = "Creates a new project.", tags = {"logged-in-user"})
     public ResponseEntity<Object> createProject(RequestDetails container,
-                                                HttpServletRequest request) {
+                                                UriComponentsBuilder builder) {
         try {
             CromProject project = projectApi.createProject(
                 container.getRequestPermission().getCromUser(),
                 container.getRawRequest().getProjectName());
 
             CreateProjectRequest createProjectModel = new CreateProjectRequest(project.getProjectName());
-            return ResponseEntity.created(URI.create(request.getRequestURL().toString())).body(createProjectModel);
+            return ResponseEntity.created(builder.build().toUri()).body(createProjectModel);
         } catch (ProjectManager.ProjectAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.CONFLICT);
         } catch (ProjectManager.TooManyProjectsException e) {
@@ -69,7 +66,6 @@ public class SpecificProjectEndpoint {
     @ProjectRequired
     @ReadPermissionRequired
     @RequestMapping(method = RequestMethod.GET)
-    @ApiOperation(value = "Return an existing project")
     public ResponseEntity<GetProjectResponse> getProject(RequestDetails container) {
         Collection<CromRepo> repos = repositoryApi.findRepo(container.getCromProject());
 
@@ -98,7 +94,6 @@ public class SpecificProjectEndpoint {
     @Transactional
     @ProjectRequired
     @AdminPermissionRequired
-    @ApiOperation(value = "Deletes an existing project", tags = {"admin-user"})
     @RequestMapping(method = RequestMethod.DELETE)
     public ResponseEntity deleteProject(RequestDetails container) {
         Collection<CromRepo> repo = repositoryApi.findRepo(container.getCromProject());

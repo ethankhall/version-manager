@@ -47,6 +47,10 @@ subprojects { sub ->
         sub.plugins.apply('org.jetbrains.kotlin.plugin.spring')
     }
 
+    configurations.compile {
+        exclude group: 'ch.qos.logback'
+        exclude group: 'org.apache.logging.log4j', module: 'log4j-to-slf4j'
+    }
 
     tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
         kotlinOptions {

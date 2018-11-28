@@ -9,12 +9,12 @@ import tech.crom.rest.model.constant.BumperListReponse
 
 @Service
 @RequestMapping("/api/v1/constant")
-open class StaticDetailsEndpoint(
+class StaticDetailsEndpoint(
     val versionBumperApi: VersionBumperApi
 ) {
 
-    @RequestMapping("/bumpers", method = arrayOf(RequestMethod.GET))
-    open fun getVersionBumpers(): ResponseEntity<BumperListReponse> {
+    @RequestMapping("/bumpers", method = [RequestMethod.GET])
+    fun getVersionBumpers(): ResponseEntity<BumperListReponse> {
         val list = versionBumperApi.findAll().map { BumperListReponse.Bumper(it.bumperName, it.description) }
 
         return ResponseEntity.ok(BumperListReponse(list))

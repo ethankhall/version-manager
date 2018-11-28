@@ -9,7 +9,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.env.Environment;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import tech.crom.web.api.model.RequestDetails;
 
@@ -36,7 +35,7 @@ public class LoggedInUserCheck implements Ordered {
         RequestDetails container = findRequestDetails(joinPoint);
 
         if(container.getRequestPermission().getCromUser() == null) {
-            logger.info("Not authorized user, forbidden from accessing private apis: {}", SecurityContextHolder.getContext().getAuthentication());
+            logger.info("Not authorized user, forbidden from accessing private apis.");
             throw new NonUserNotAllowedException();
         }
     }

@@ -18,10 +18,10 @@ import tech.crom.web.api.model.RequestDetails
 
 @Service
 @RequestMapping("/api/v1/project/{projectName}/repo/{repoName}/version/{version:.+}/state")
-open class RepoVersionStateEndpoint(
+class RepoVersionStateEndpoint(
     val commitApi: CommitApi
 ) {
-    @RequestMapping(method = arrayOf(RequestMethod.PUT), consumes = arrayOf(MediaType.APPLICATION_JSON_VALUE))
+    @RequestMapping(method = [RequestMethod.PUT], consumes = [MediaType.APPLICATION_JSON_VALUE])
     fun migrateState(requestDetails: RequestDetails,
                      @PathVariable("version") versionArg: String,
                      @RequestBody body: UpdateVersionState): ResponseEntity<Any> {

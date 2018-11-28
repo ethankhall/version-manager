@@ -1,7 +1,5 @@
 package tech.crom.config
 
-import com.codahale.metrics.MetricRegistry
-import com.codahale.metrics.ehcache.InstrumentedEhcache
 import net.sf.ehcache.Cache
 import net.sf.ehcache.config.CacheConfiguration
 import org.springframework.cache.annotation.EnableCaching
@@ -12,27 +10,26 @@ import org.springframework.context.annotation.Import
 
 @EnableCaching
 @Configuration
-@Import(MetricsConfiguration::class)
-open class EhCacheConfig {
+class EhCacheConfig {
 
     @Bean(destroyMethod = "shutdown")
-    open fun ehCacheManager(metricRegistry: MetricRegistry): net.sf.ehcache.CacheManager {
+    fun ehCacheManager(): net.sf.ehcache.CacheManager {
         val cacheManager = net.sf.ehcache.CacheManager.create()
 
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("aclCache")))
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("tokensById", 10)))
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("tokensByRepo", 10)))
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("tokensByUser", 10)))
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("userById", 30)))
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("repoById", 30)))
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("repoDetailsById", 30)))
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("repoByProjectAndName", 30)))
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("projectByName", 30)))
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("projectById", 30)))
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("allCommitsByRepo", 30)))
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("commitById", 30)))
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("versionBumperByName")))
-        cacheManager.addCache(InstrumentedEhcache.instrument(metricRegistry, createCache("versionBumperByRepo")))
+        cacheManager.addCache(createCache("aclCache"))
+        cacheManager.addCache(createCache("tokensById", 10))
+        cacheManager.addCache(createCache("tokensByRepo", 10))
+        cacheManager.addCache(createCache("tokensByUser", 10))
+        cacheManager.addCache(createCache("userById", 30))
+        cacheManager.addCache(createCache("repoById", 30))
+        cacheManager.addCache(createCache("repoDetailsById", 30))
+        cacheManager.addCache(createCache("repoByProjectAndName", 30))
+        cacheManager.addCache(createCache("projectByName", 30))
+        cacheManager.addCache(createCache("projectById", 30))
+        cacheManager.addCache(createCache("allCommitsByRepo", 30))
+        cacheManager.addCache(createCache("commitById", 30))
+        cacheManager.addCache(createCache("versionBumperByName"))
+        cacheManager.addCache(createCache("versionBumperByRepo"))
 
         return cacheManager
     }
@@ -50,7 +47,7 @@ open class EhCacheConfig {
     }
 
     @Bean
-    open fun cacheManager(ehCacheManager: net.sf.ehcache.CacheManager): EhCacheCacheManager {
+    fun cacheManager(ehCacheManager: net.sf.ehcache.CacheManager): EhCacheCacheManager {
         return EhCacheCacheManager(ehCacheManager)
     }
 }

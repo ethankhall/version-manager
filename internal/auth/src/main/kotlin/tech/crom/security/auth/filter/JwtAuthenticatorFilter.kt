@@ -44,21 +44,27 @@ class JwtAuthenticatorFilter(accountManagerHost: String, private val om: ObjectM
         val credentials = findAuthToken(exchange)
         val attributes = exchange.getAttributeOrDefault(RouterFunctions.URI_TEMPLATE_VARIABLES_ATTRIBUTE, emptyMap<String, String>())
 
-        val principal: Mono<Principal> = if (null != credentials) {
-            val resolvedCreds = resolveCredentials(credentials)
-            val permissions = resolvePermissions(credentials, attributes)
-            resolvedCreds.zipWith(permissions) { cred, perm ->
-                when (cred) {
-                    is ApiUser -> cred.copy(permissions = perm)
-                    else -> AnonymousUser()
-                }
-            }
-        } else {
-            Mono.just(AnonymousUser())
-        }
+        val principal: Mono<Principal> = getPrincipal(credentials, attributes)
 
         val newExchange = exchange.mutate().principal(principal).build()
         return chain.filter(newExchange)
+    }
+
+    internal fun getPrincipal(credentials: String?, attributes: Map<String, String>): Mono<Principal> {
+        return if (null != credentials) {
+            val resolvedCreds = resolveCredentials(credentials)
+            val permissions = resolvePermissions(credentials, attributes)
+
+            resolvedCreds
+                .zipWith(permissions) { cred, perm ->
+                    when (cred) {
+                        is ApiUser -> cred.copy(permissions = perm)
+                        else -> AnonymousUser()
+                    } as Principal
+                }.switchIfEmpty(Mono.just(AnonymousUser()))
+        } else {
+            Mono.just(AnonymousUser())
+        }
     }
 
     private fun resolvePermissions(credentials: String, attributes: Map<String, String>): Mono<List<CromPermission>> {
@@ -114,7 +120,7 @@ class JwtAuthenticatorFilter(accountManagerHost: String, private val om: ObjectM
                         val json = om.readTree(body)
                         val permissionList = mutableListOf<CromPermission>()
                         for (permission in CromPermission.values()) {
-                            if (json.get(permission.name).asBoolean(false)) {
+                            if (json.has(permission.name) && json.get(permission.name).asBoolean(false)) {
                                 permissionList.add(permission)
                             }
                         }

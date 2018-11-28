@@ -1,0 +1,10 @@
+{
+    "user": {
+        "userId": -1,
+        "userRef": "amin",
+        "email": "admin@admin.com",
+        "name": "admin",
+        "userType": "SuperAdmin"
+    },
+    "authToken": "LK2CvWAqp0klaTuC9YgSz6KWGykcKJEps2kdu3jfdo1kj4idm3i"
+}

@@ -3,7 +3,6 @@ package tech.crom.service.api.repo.version
 import io.ehdev.conrad.service.api.aop.annotation.ReadPermissionRequired
 import io.ehdev.conrad.service.api.aop.annotation.RepoRequired
 import io.ehdev.conrad.service.api.aop.annotation.WritePermissionRequired
-import io.swagger.annotations.ApiOperation
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -13,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.util.UriComponentsBuilder
 import tech.crom.business.api.CommitApi
 import tech.crom.model.commit.CommitFilter
 import tech.crom.model.commit.CommitIdContainer
@@ -23,19 +23,16 @@ import tech.crom.rest.model.version.GetAllVersionsResponse
 import tech.crom.rest.model.version.GetVersionResponse
 import tech.crom.service.api.ReverseApiCommitComparator
 import tech.crom.web.api.model.RequestDetails
-import java.net.URI
-import javax.servlet.http.HttpServletRequest
 import javax.transaction.Transactional
 
 @Service
 @RequestMapping("/api/v1/project/{projectName}/repo/{repoName}")
-open class RepoVersionEndpoint @Autowired
+class RepoVersionEndpoint @Autowired
 constructor(private val commitApi: CommitApi) {
 
     @RepoRequired
     @ReadPermissionRequired
-    @ApiOperation(value = "Get all versions from repo")
-    @RequestMapping(value = "/versions", method = arrayOf(RequestMethod.GET))
+    @RequestMapping(value = ["/versions"], method = [RequestMethod.GET])
     fun getAllVersions(requestDetails: RequestDetails): ResponseEntity<GetAllVersionsResponse> {
         val response = GetAllVersionsResponse()
 
@@ -60,17 +57,16 @@ constructor(private val commitApi: CommitApi) {
     @RepoRequired
     @Transactional
     @WritePermissionRequired
-    @ApiOperation(value = "Adds a new version to repo. Will return with next version", tags = arrayOf("write-user"))
-    @RequestMapping(value = "/version", method = arrayOf(RequestMethod.POST))
+    @RequestMapping(value = ["/version"], method = [RequestMethod.POST])
     fun createNewVersion(requestDetails: RequestDetails,
                          @RequestBody versionModel: CreateVersionRequest,
-                         request: HttpServletRequest): ResponseEntity<CreateVersionResponse> {
+                         request: UriComponentsBuilder): ResponseEntity<CreateVersionResponse> {
         val commits = versionModel.commits.map { CommitIdContainer(it) }.toList()
 
         val commitModel = RequestedCommit(versionModel.commitId, versionModel.message, null)
         val nextCommit = commitApi.createCommit(requestDetails.cromRepo!!, commitModel, commits)
 
-        val uri = URI.create(request.requestURL.toString() + "/" + nextCommit.getVersionString())
+        val uri = request.path(nextCommit.getVersionString()).build().toUri()
 
         val response = CreateVersionResponse(versionModel.commitId,
             nextCommit.getVersionString(),
@@ -81,8 +77,7 @@ constructor(private val commitApi: CommitApi) {
 
     @RepoRequired
     @ReadPermissionRequired
-    @ApiOperation(value = "Get a version, can be version, commit id, or 'latest'")
-    @RequestMapping(value = "/version/{versionArg:.+}", method = arrayOf(RequestMethod.GET))
+    @RequestMapping(value = ["/version/{versionArg:.+}"], method = [RequestMethod.GET])
     fun findVersion(requestDetails: RequestDetails,
                     @PathVariable("versionArg") versionArg: String,
                     @RequestParam("filter", required = false) filter: String?): ResponseEntity<Any> {
